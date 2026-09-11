@@ -1,0 +1,5 @@
+--- Chapter 7 --- Aramaic/Hebrew Traces as Liturgical Markers / Exotic Markers (not textual-tradition evidence). Catalog: Talitha koum, Ephphatha, Eli/Eli, lema sabachthani. Each: context, immediate Greek translation, implication for authorial practice.
+--- Chapter 8 --- Predictive Outcomes (falsifiable): (1) LXX-only manuscript discoveries; (2) No authentic Hebrew gospel predating Greek versions; (3) Redactional LXX-editing layers in Gospels; (4) Sociolinguistic evidence reinforcing Greek dominance; (5) Stylometric signatures of LXX vocabulary. Each with falsifier.
+--- Chapter 9 --- Conclusion + Future Research: Synthesis of LXX-vs-MT evidence; bracketed historical-Jesus position; theological/historiographical implications; open agenda.
+--- Appendix A (Speculative / Separate Project) --- Mythic Parallels: Generic resemblance with Hellenistic archetypes (Osiris, Asclepius, Heracles, mystery cults). Labeled speculative. Not part of core LXX-dependence argument. Intended for separate article/project.
+--- Appendix B --- Full Claim–Evidence Matrix (all claims listed with 9 evidence fields per framework).
