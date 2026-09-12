@@ -164,3 +164,8 @@ Evidence: Luke 4:18 (Isa 61:1 — LXX form of 'good news' / 'release'); Luke 3:4
 Matrix per entry: 1 Luke 4:18; 2 Luke 3:4; 3 Luke 24:27.
 Same 9 fields as John chunk: Text/Edition (NA28 / Göttingen / BHS); Date (1st-c. CE; 2nd-c. manuscript); LXX (Isa 61:1 / 40:3); MT (Hebrew Vorlage comparison); NT alignment; Counter; Counter-counter; Confidence (High for 3:4/4:18; Medium for 24:27 as broad synthesis); Falsifier (Hebrew Vorlage matching Luke's exact LXX-form).
 Status: Core (not bracketed) — same pattern as John/Mark; reinforces 4-canon framework.
+
+---
+## Chunk 3/7 — Mistranslation / LXX Divergence Full Matrix (Zech 12:10 / Deut 21:23 / Hosea 11:1)
+Evidence: Matthew 27:28 (Zech 12:10 — LXX 'pierce'); Galatians 3:13 (Deut 21:23 — LXX-form 'hanged'); Matthew 2:15 (Hosea 11:1 — LXX-form 'son'). Each row uses 9 fields with same structure: Text/Edition, Date/Attestation, LXX word, MT/Hebrew Vorlage, NT alignment, Mainstream counter (Hebrew Vorlage possible), Counter-counter (systematic LXX alignment undermines), Confidence (High for Isa 7:14 / Hosea 11:1; Medium for Zech / Deut), Falsifier (Hebrew manuscript showing NT reading without LXX intermediary).
+Status: Core (not bracketed) — demonstrates dependence through mistranslation, not just citation.
