@@ -51,11 +51,11 @@ Because the core claim is partly speculative (the mythic‑parallel component), 
 
 ---
 
-### Chapter 3 – Septuagint vs. Masoretic Text in the Earliest Gospels (Mark and Q)
-**Goal:** Systematically compare Old Testament quotations in Mark and the hypothetical Q source against both LXX and MT, demonstrating consistent LXX alignment.
+### Chapter 3 – Septuagint vs. Masoretic Text in the Earliest Gospels (Mark and Matthew)
+**Goal:** Systematically compare Old Testament quotations in Mark and Matthew against both LXX and MT, demonstrating consistent LXX alignment.
 
 **Content:**
-- Method: collate every OT citation/allusion in Mark and reconstructed Q.
+- Method: collate every OT citation/allusion in Mark and Matthew.
 - For each, record the LXX reading and the MT reading; note deviations.
 - Highlight passages where LXX diverges from MT (e.g., Isa. 7:14, Zech. 11:12–13).
 - Show that Mark’s citations often match LXX *and* exhibit LXX stylistic patterns (e.g., “he will come with clouds of heaven” from Dan. 7:13 matches LXX).
@@ -174,7 +174,7 @@ Because the core claim is partly speculative (the mythic‑parallel component), 
 
 **Content:**
 1. **Comprehensive LXX vs. MT Comparison:**
-   - Appendice A: For every major OT quotation in Mark and Q, a side‑by‑side table of LXX, MT, and any significant divergences.
+   - Appendice A: For every major OT quotation in Mark and Matthew, a side‑by‑side table of LXX, MT, and any significant divergences.
    - Use the **Göttingen LXX** and **BHS** for rigorous collation.
 2. **Reassessment of Non‑Christian Sources:**
    - Appendice B: Critical textual notes on Josephus and Tacitus, with arguments for possible interpolation or secondary dependence on Christian LXX tradition.

@@ -8,7 +8,7 @@
 
 ## What this is about
 
-This project builds a peer-review-grade book arguing that the New Testament — especially Mark, Q, Paul — was shaped primarily by the **Greek Septuagint (LXX)** rather than direct Hebrew scriptural knowledge, operating in a **Greek-speaking Jewish diaspora** with limited Hebrew literacy. The thesis has two parts:
+This project builds a peer-review-grade book arguing that the New Testament — especially Mark, Matthew, Luke, and John — was shaped primarily by the **Greek Septuagint (LXX)** rather than direct Hebrew scriptural knowledge, operating in a **Greek-speaking Jewish diaspora** with limited Hebrew literacy, with speculative components (mythic parallels) clearly marked.
 
 1. **Solid core (testable):** Systematic LXX alignment in NT citations; diaspora sociolinguistic evidence (Greek inscriptions, papyri, synagogue records); earliest Christian sources (Pliny 112 CE, Ignatius, Acts) confirming Greek-language, LXX-based communities.
 2. **Speculative / to-test component:** Mythic parallels (Osiris, Asclepius, Perseus, Heracles, mystery cult motifs) suggesting the NT story was partly shaped by Hellenistic mythic archetypes. This component is explicitly marked speculative and open to further empirical testing.
@@ -31,7 +31,7 @@ The goal: a defensible, source-backed argument that forces mainstream scholarshi
 
 1. **Introduction** — Thesis, theoretical framework, method  
 2. **Language Environment & Earliest Christians** — Diaspora literacy (Dura-Europos inscriptions, Pliny, Ignatius, Acts)  
-3. **LXX vs MT in Mark & Q** — Systematic comparison of OT citations  
+3. **LXX vs MT in Mark and Matthew** — Systematic comparison of OT citations  
 4. **Non-Christian References & Semitic Traces** — Josephus (interpolation analysis), Tacitus, Aramaic words as liturgical markers  
 5. **Mythic Parallels** — Explicitly speculative; Hellenistic / Greco-Egyptian archetype comparisons  
 6. **Evidence of First Christians** — Expanded primary-source review (Papyrus 46, Didache, Dura-Europos)  

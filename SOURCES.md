@@ -1,6 +1,6 @@
 # Supporting Books & Sources for "Shaped by the Septuagint"
 
-This repo is a preliminary work-in-progress for a peer-review-grade book arguing that the New Testament (especially Mark, Q, and Paul) relies primarily on the Greek Septuagint (LXX) rather than direct Hebrew textual knowledge — within the context of a Greek-speaking Jewish diaspora with limited Hebrew literacy, with speculative components (mythic parallels) clearly marked.
+This repo is a preliminary work-in-progress for a peer-review-grade book arguing that the New Testament (especially Mark, Matthew, Luke, and John) relies primarily on the Greek Septuagint (LXX) rather than direct Hebrew textual knowledge — within the context of a Greek-speaking Jewish diaspora with limited Hebrew literacy, with speculative components (mythic parallels) clearly marked.
 
 ---
 
@@ -22,7 +22,7 @@ This repo is a preliminary work-in-progress for a peer-review-grade book arguing
 
 ---
 
-## III. Septuagint vs. Masoretic Text in the Gospels (Mark / Q / NT Citations)
+## III. Septuagint vs. Masoretic Text in the Gospels (Mark / Matthew / Luke / John / NT Citations)
 
 9. **Academic PDFs on LXX in NT** — Multiple academia.edu papers: *The Usage of the Septuagint in the New Testament and the Ramifications Thereof*; *The Use of the Septuagint in New Testament Research*; *When God Spoke Greek: The Septuagint and the Making of the Christian Bible*.
 10. **Bible Interp / Septuagint article (2005)** — Growing appreciation of LXX influence on NT language, thought, and interpretation; discusses diaspora Jewish use of LXX.
