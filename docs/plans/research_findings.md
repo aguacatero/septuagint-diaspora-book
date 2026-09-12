@@ -234,3 +234,28 @@ Luke 4:18 — Isaiah 61:1 (LXX "spirit of the Lord is upon me")
 
 Luke 3:4 / Isaiah 40:3 — parallel to John 1:23 / Mark 1:2-3 (LXX single-Isaiah)
 - Same 9-field structure; reinforces cross-gospel consistency; high confidence
+
+---
+## Batch 3 — Mistranslation Full Matrix (Durable)
+
+Mistranslation Link — Zechariah 12:10 / John 19:37 + Mark 15:28
+- 1 Text/Ed: John 19:37 / Mark 15:28; NA28 / Göttingen LXX Zechariah / BHS
+- 2 Date/Attestation: 1st-c. CE (John / Mark); LXX critical edition (reconstructed from 2nd-c. BCE fragments)
+- 3 LXX Word: LXX-form of Zech 12:10 — "they will look to him whom they pierced" (LXX preference)
+- 4 MT/Hebrew Vorlage: MT shows different phrasing; no 1st-c. Hebrew manuscript shows LXX-style form
+- 5 NT Alignment: John 19:37 and Mark 15:28 both follow LXX-style form; consistency supports LXX dependence
+- 6 Mainstream Counter: Some scholars claim Mark's reference is random style; others propose independent tradition
+- 7 CC: Systematic LXX-preference across both Gospels; random choice undermined by coherence across citations
+- 8 Confidence: High (direct LXX-MT comparison; dual Gospel reference)
+- 9 Falsifier: 1st-c. Hebrew manuscript of Zechariah showing identical LXX-style piercing language
+
+Mistranslation Link — Deuteronomy 21:23 / Galatians 3:13 (Paul)
+- 1 Text/Ed: Gal 3:13; NA28 / Göttingen LXX Deut / BHS
+- 2 Date/Attestation: 1st-c. (Paul's undisputed letters ~50s CE); LXX Deut reconstructed
+- 3 LXX Word: Deut 21:23 — LXX-form of "cursed is everyone who hangs on a tree"
+- 4 MT/Hebrew Vorlage: MT available; LXX form diverges in wording
+- 5 NT Alignment: Paul treats LXX as authoritative Scripture (not gloss); Gal 3:13 follows LXX-form
+- 6 Mainstream Counter: Paul could know Hebrew but uses LXX for rhetorical/argumentative purposes
+- 7 CC: Paul's theological framework relies on LXX-phrasing; LXX is the functional biblical text for Paul's Greek-speaking audience
+- 8 Confidence: High (undisputed Pauline citation; critical editions available; P2 framework confirms)
+- 9 Falsifier: Evidence that Paul's LXX citations are systematically replaced by MT-form readings in earliest manuscript tradition
