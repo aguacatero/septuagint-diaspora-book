@@ -280,3 +280,14 @@ Climate Layer — Pliny the Younger / Ignatius / Acts / Papyrus 46
 - Acts (Greek composition): depicts diaspora Jewish communities reading Scripture in Greek; supports LXX framework
 - Papyrus 46 / Chester Beatty: earliest Pauline manuscript (early 2nd-c.); contains LXX citations; confirms Greek-speaking communities valued LXX
 - Evidence Protocol: same 9-field format; bracketed for speculative claims (mythic parallels); primary-source citations required for all climate-layer claims
+
+---
+## Batch 5 — Appendix / Outline Integration Reference (Durable — framework only)
+This file (research_findings.md) serves as the durable chunk reference for all 4 batches above. The outline (Book_Scholar_Outline.md / docs/plans/2026-09-11-q-removal-gospels-deep-dive.md) integrates these as:
+- Batch A (John): Chapter 4 or Appendix A
+- Batch B (Luke): Chapter 4 or Appendix A (same framework, Luke-specific citations)
+- Batch C (Climate): Chapter 2 / climate section of outline
+- Batch D (Mistranslation): Chapter 3 / LXX-vs-MT comparison layer; Appendix B (method)
+Each claim uses exact 9-field: text/edition, date/attestation, LXX word, MT/Hebrew Vorlage, NT alignment, mainstream counter, counter-counter, confidence (high/medium/low), falsifier.
+No speculative claims embedded in core; bracketed (non-canon / mythic-parallel) clearly labeled.
+Q excluded (verified: 0 references in core files); non-canon bracketed; 4-canon (Mark/Matthew/Luke/John) + Paul = core corpus.
