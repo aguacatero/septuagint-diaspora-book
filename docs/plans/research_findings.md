@@ -135,3 +135,9 @@ These are cases where the NT citation follows the LXX reading, which is a diverg
 - Philo of Alexandria (Wikipedia / primary): LXX-only Jewish-Hellenistic scholar; model for diaspora LXX dependence (not speculative — direct primary-source reference)
 - Dura-Europos synagogue (Smarthistory / Posen Library): Greek-dominant inscriptions; bracketed caveat — 3rd-c. not 1st-c.
 - Pliny / Ignatius / Acts / Papyrus 46: already in outline; reinforce with explicit citation to primary sources (no new URL needed — already in repo)
+
+---
+## Batch D — Mistranslation / LXX Divergence (Verified)
+- Hosea 11:1 in Matthew 2:15 — LXX-form (son / child reference); compare with MT Hebrew Vorlage; ETS JETS / Spirit and Truth article references (see URLs above)
+- Isaiah 7:14 parthenos/almah — already in 9-field example (research_findings.md); reinforce with 4QIsa reference
+- Deuteronomy 21:23 / Gal 3:13 (Paul) — already in outline; reinforce with critical edition reference
