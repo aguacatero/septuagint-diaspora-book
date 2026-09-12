@@ -129,3 +129,9 @@ These are cases where the NT citation follows the LXX reading, which is a diverg
 - Luke 4:18 (Isa 61:1 LXX): https://intertextual.bible/text/lxx-isaiah-61.1/luke-4.18 (direct comparison)
 - Luke 3:4 / Isa 40:3 (John 1:23 parallel) — same LXX-form; Mark/Mt comparison needed
 - Luke 24:27 — post-resurrection OT exposition; LXX-form throughout Luke-Acts
+
+---
+## Batch C — Climate / Additional Diaspora (Verified)
+- Philo of Alexandria (Wikipedia / primary): LXX-only Jewish-Hellenistic scholar; model for diaspora LXX dependence (not speculative — direct primary-source reference)
+- Dura-Europos synagogue (Smarthistory / Posen Library): Greek-dominant inscriptions; bracketed caveat — 3rd-c. not 1st-c.
+- Pliny / Ignatius / Acts / Papyrus 46: already in outline; reinforce with explicit citation to primary sources (no new URL needed — already in repo)
