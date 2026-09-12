@@ -157,3 +157,10 @@ Matrix (each):
 9 Falsifier: Discovery of 1st-c. Hebrew manuscript showing John's exact reading without LXX intermediary
 Bracketed: P52 (~125 CE) supports Gospel of John date; not direct LXX-dependence proof.
 Status: Core evidence (not bracketed) for 1:23 / 12:38 / 19:37; bracketed note for P52 only.
+
+---
+## Chunk 2/7 — Luke Layer (Full 9-Field Matrix)
+Evidence: Luke 4:18 (Isa 61:1 — LXX form of 'good news' / 'release'); Luke 3:4 (Isa 40:3 — same LXX-form as Mark/John 1:23); Luke 24:27 (post-resurrection OT review — LXX-form throughout Luke-Acts).
+Matrix per entry: 1 Luke 4:18; 2 Luke 3:4; 3 Luke 24:27.
+Same 9 fields as John chunk: Text/Edition (NA28 / Göttingen / BHS); Date (1st-c. CE; 2nd-c. manuscript); LXX (Isa 61:1 / 40:3); MT (Hebrew Vorlage comparison); NT alignment; Counter; Counter-counter; Confidence (High for 3:4/4:18; Medium for 24:27 as broad synthesis); Falsifier (Hebrew Vorlage matching Luke's exact LXX-form).
+Status: Core (not bracketed) — same pattern as John/Mark; reinforces 4-canon framework.
