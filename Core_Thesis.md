@@ -8,7 +8,7 @@
 
 2. **Historical-Jesus question bracketed.** The textual-linguistic argument stands independently: the LXX's dominance in NT citations is a linguistic/sociolinguistic fact regardless of whether a minimal historical Jesus existed. Neither assumed nor denied in the core argument.
 
-3. **Primary corpus:** Undisputed Pauline corpus + Mark + Matthew + Luke–Acts. Hypothetical Q treated only in separate source-critical appendix. Patristic witnesses (Ignatius, Polycarp, Irenaeus) used for earliest Christian language/context, not as independent historical anchors.
+3. **Primary corpus:** Undisputed Pauline corpus + Mark + Matthew + Luke–Acts. Patristic witnesses (Ignatius, Polycarp, Irenaeus) used for earliest Christian language/context, not as independent historical anchors.
 
 4. **Evidence protocol:** Every claim must have:
    - Primary text reference (with chapter/verse, critical edition)
@@ -78,7 +78,7 @@
 ### Chapter 4 – Septuagint vs. Masoretic Text in Matthew and Luke
 - Same systematic comparison for Matthew and Luke LXX citations
 - Where do the three Synoptics agree/disagree on LXX vs. MT
-- Source-critical observations (including brief Q appendix)
+- Source-critical observations (including brief appendix on alternative source traditions).
 
 ### Chapter 5 – Paul's Use of the Septuagint
 - Every LXX citation in undisputed Pauline letters
@@ -114,3 +114,36 @@
 ### Appendix B – Claim–Evidence Matrix (Full listing)
 - Every cited claim with its evidence components per the evidence protocol
 - Confidence ratings and falsifiability notes
+---
+## Appendix C — Deep-Dive Reinforcement: 1st-Century Climate & Literary Patterns (Bracketed, Not Core)
+
+Purpose: Build a body of circumstantial and literary evidence that reinforces the LXX-dependence thesis by showing the Greek-speaking Jewish diaspora's scriptural culture, the literary conventions of the Gospels, and the historical context of 1st-century communities.
+
+### 1. LXX vs MT — Per Gospel Evidence (Mark / Matthew / Luke / John)
+For each canonical gospel, document:
+- Every major OT citation; LXX wording vs MT/Hebrew Vorlage; which tradition the NT author appears to follow.
+- Confidence rating (high/medium/low) and falsifier (what discovery would undermine).
+- Note: Q source removed; comparison is between the gospel text and the LXX/MT critical editions directly.
+
+### 2. 1st-Century Climate — Historical / Contextual Evidence
+- **Dura-Europos synagogue inscriptions** (3rd-c., but showing Greek dominance; note dating limitation).
+- **Pliny the Younger's letter to Trajan** (c. 112 CE): describes Greek-speaking Christian communities worshiping Christus; not proof of Jesus' historicity, but evidence of Greek-language religious practice.
+- **Ignatius of Antioch** (early 2nd-c.): letters steeped in LXX language, addressing Greek-speaking churches.
+- **Acts**: depicts diaspora Jewish communities reading Scripture in Greek; Greek composition.
+- **Papyrus 46 (Chester Beatty)**: earliest Pauline manuscript with LXX citations.
+- **Didache / Shepherd of Hermas**: LXX-based Eucharist prayers and visions.
+
+### 3. Literary / Circumstantial Evidence
+- **Midrashic expansions** in Matthew: how LXX phrasing is incorporated into narrative structures.
+- **Fulfillment formulas** as evidence of deliberate scriptural selection from LXX texts.
+- **Greek idiom and vocabulary patterns** distinct from Hebrew syntax, reinforcing the thesis of Greek-language composition.
+- **Non-canonical early gospels (bracketed)**: Gospel of Thomas (Coptic, 2nd-c., not 1st-c., no direct LXX dependence shown); Gospel of Peter; Gospel of Mary; Papyrus 52 (John fragment, ~125 CE). These are included as speculative, comparative material only — not evidence for the core argument.
+
+### Evidence Protocol (Applied Here)
+Every claim in this appendix must have:
+- Primary text reference + edition
+- Dating / attestation layer
+- LXX / MT comparison (where relevant)
+- Mainstream counter + counter-counter
+- Confidence + falsifier
+- Explicit [Bracketed] label for speculative or comparative claims (mythic parallels, non-canon gospels)
