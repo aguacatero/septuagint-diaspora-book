@@ -76,3 +76,7 @@ This bibliography is intentionally broad to cover: (a) the LXX/source-critical c
 ---
 *Repo home: https://github.com/aguacatero/septuagint-diaspora-book*
 *Book outline: `Book_Scholar_Outline.md` in this repo / `Documents/Jewish Diaspora/Book_Scholar_Outline.md` locally.*
+
+---
+## Speculative Content Note
+The mythic parallels in the book (Osiris, Asclepius, Heracles, mystery cults) are **explicitly bracketed** and labeled speculative in `Book_Part4.md`. They do not form part of the core LXX-dependence argument. Sources for this section (Osiris/Adonis/Attis, Asclepius/Perseus/Heracles, Eleusinian/Mithraic ritual parallels, Philo of Alexandria) are listed here as supporting comparative literature only and are **not** evidence for the core thesis. Counter-arguments on this front are found in `Book_Part1.md` (counter-counter gate).
