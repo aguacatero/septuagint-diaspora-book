@@ -49,3 +49,10 @@ Remove all references to the hypothetical Q source from the manuscript and shift
 - Book_Part1.md through Book_Part4.md
 - README.md
 - SOURCES.md
+
+---
+## /grill-me Results (Stress-Test)
+- Evidence boundary locked: core = Mark/Matthew/Luke/John + Paul + climate; bracketed = non-canon gospels + mythic parallels; Q excluded.
+- Counter framework complete: A (Paul Hebrew) + B (Mark Vorlage) in P2 framework; C (Thomas earlier) + D (Dura-Europos date) to be bracketed.
+- Frontier resolved (Q3 + Q4): 9-field matrix enforced; commit sequence a→b→c.
+- Pending: subagent `research_findings` (background) — will be integrated when delivered.
