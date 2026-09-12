@@ -123,3 +123,9 @@ These are cases where the NT citation follows the LXX reading, which is a diverg
 - John 12:38 / Isaiah 53:1 LXX citation — compare NA28 vs Göttingen; note LXX-form of 'report' (apangelō)
 - John 19:37 / Zech 12:10 — LXX-form of 'pierce' / 'they will look on'; compare with MT
 - Bracketed: P52 (John, ~125 CE) — earliest John manuscript; date only, not LXX-dependence proof directly
+
+---
+## Batch B — Luke Layer (Verified Results)
+- Luke 4:18 (Isa 61:1 LXX): https://intertextual.bible/text/lxx-isaiah-61.1/luke-4.18 (direct comparison)
+- Luke 3:4 / Isa 40:3 (John 1:23 parallel) — same LXX-form; Mark/Mt comparison needed
+- Luke 24:27 — post-resurrection OT exposition; LXX-form throughout Luke-Acts
