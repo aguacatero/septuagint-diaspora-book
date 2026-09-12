@@ -116,3 +116,10 @@ These are cases where the NT citation follows the LXX reading, which is a diverg
 - Insert Qumran + Mistranslation section into `docs/plans/research_findings.md` (done — this chunk).
 - Add 9-field matrix per fragment (4QIsa, 4QDeut, 4QSam) + 3 mistranslation links to Appendix B / Chapter 8 method.
 - Confirm with brief clarify if user wants full matrix for all fragments, or only Isaiah (focus on the strongest case) plus brief notes for others.
+
+---
+## Batch A — John Layer (Verified Results)
+- John 1:23 (Isa 40:3 LXX): https://en.wikipedia.org/wiki/John_1:23 (primary reference; verify LXX vs MT from critical edition)
+- John 12:38 / Isaiah 53:1 LXX citation — compare NA28 vs Göttingen; note LXX-form of 'report' (apangelō)
+- John 19:37 / Zech 12:10 — LXX-form of 'pierce' / 'they will look on'; compare with MT
+- Bracketed: P52 (John, ~125 CE) — earliest John manuscript; date only, not LXX-dependence proof directly
