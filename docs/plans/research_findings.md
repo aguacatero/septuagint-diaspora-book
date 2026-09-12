@@ -217,3 +217,20 @@ John 19:37 — Zechariah 12:10 (LXX-form "they will look on him whom they pierce
 - 7 CC: Systematic LXX preference across Mark + John undermines randomness claim
 - 8 Confidence: High (direct LXX comparison; dual Gospel reference)
 - 9 Falsifier: Discovery of Hebrew Vorlage of Zechariah showing identical LXX-style wording
+
+---
+## Batch 2 — Luke Full 9-Field Matrix (Durable — committed next)
+
+Luke 4:18 — Isaiah 61:1 (LXX "spirit of the Lord is upon me")
+- 1 Text/Ed: Luke 4:18; NA28 / Göttingen LXX Isaiah / BHS
+- 2 Date/Attestation: 1st-c. CE; Luke composed ~80-90 CE; earliest manuscript 2nd-c.
+- 3 LXX Word: Isaiah 61:1 LXX-form; NT uses LXX rather than MT in key phrases
+- 4 MT/Hebrew Vorlage: MT available; LXX form differs (LXX more universalizing)
+- 5 NT Alignment: Luke 4:18 follows LXX; Mark 1:2-3 shows same pattern (single-Isaiah tradition)
+- 6 Mainstream Counter: Luke could have reconstructed from memory; some scholars propose Hebrew awareness
+- 7 CC: Systematic LXX-pattern across Luke OT citations; coincidence undermined by repetition
+- 8 Confidence: High (primary comparison; Mark/Mt/Lk alignment)
+- 9 Falsifier: Systematic MT-only alignment in Luke's OT citations
+
+Luke 3:4 / Isaiah 40:3 — parallel to John 1:23 / Mark 1:2-3 (LXX single-Isaiah)
+- Same 9-field structure; reinforces cross-gospel consistency; high confidence
