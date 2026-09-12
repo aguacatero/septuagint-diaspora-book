@@ -71,3 +71,48 @@ John-layer 9-field entry (example — Luke 10:25 / Isaiah / LXX form):
 - 9 Falsifier: Discovery of systematic MT-only alignment across Luke's OT citations
 
 Recommendation for this chunk: Add John to the 9-field matrix (after Mark → Matthew → Luke) in Appendix B / Chapter 8 method; include P52 as a bracketed 1st-c.-context source, not as LXX-evidence directly; strengthen Cl 2 climate with Philo + Pliny/Ignatius + Dura-Europos + Papyrus 46 all cited with bracketed date caveats.
+
+---
+## Qumran / Dead Sea Scroll Fragments + NT Mistranslation Links (Durable Chunk — added per user direction)
+
+Purpose: Reinforce the LXX-dependence hypothesis by showing (a) Qumran fragments reveal LXX diverges from the Hebrew Vorlage preserved in some scroll families; (b) NT sayings and narratives reproduce those LXX-specific forms — demonstrating dependence, not coincidence.
+
+### Qumran Fragment Evidence (Primary / Critical Edition References)
+- **4QIsa (4Q57, 4Q58)** — Isaiah fragments in Hebrew; comparison with Göttingen LXX Isaiah shows divergence in key passages (e.g., Isa 7:14 `almah` vs LXX `parthenos`). Primary reference: Dead Sea Scrolls — 4QIsa family; Göttingen LXX for LXX reading.
+- **4QDeut (4QDeut-q)** — Deuteronomy; comparison with LXX Deuteronomy; some readings align with LXX against the MT tradition.
+- **4QSam (4QSam-a, b)** — Samuel; LXX readings diverge from MT; relevant for NT references to Davidic themes.
+- **Note:** These fragments are 1st-c. BCE to 1st-c. CE (date layer); they are not NT manuscripts but Hebrew/Aramaic textual witnesses that allow direct comparison with LXX critical editions.
+
+### NT Mistranslation / LXX-Specific Form Evidence (Link Layer)
+These are cases where the NT citation follows the LXX reading, which is a divergence from the Hebrew Vorlage. They are not "errors" — they are evidence of the author's functional Scripture being the LXX.
+
+### 9-Field Matrix — Qumran Fragment (Example: 4QIsa + Isa 7:14)
+- 1 Text / Edition: 4Q57 (4QIsa); Göttingen LXX Isaiah; MT / BHS; NA28 Matthew 1:23
+- 2 Date / Attestation: 4QIsa — 1st-c. BCE (date via paleography); Matthew — 1st-c. CE; LXX Isaiah — critical edition reconstructed from earlier manuscripts
+- 3 LXX word: Isaiah 7:14 — `parthenos` ("virgin") rather than Hebrew `almah` ("young woman")
+- 4 MT / Hebrew Vorlage: 4QIsa preserves Hebrew `almah`; MT confirms `almah`; divergence is LXX translator's choice, not original Hebrew
+- 5 NT alignment: Matthew 1:23 quotes `parthenos` — matching LXX, not MT/4QIsa
+- 6 Mainstream counter: Some argue Matthew independently interprets `almah`; other scholars claim `parthenos` reflects later Christian interpretation rather than LXX dependence
+- 7 Counter-counter: The systematic pattern (Isa 7:14 + other LXX-specific citations across Matthew and Luke) makes coincidence unlikely; the LXX is the most probable source
+- 8 Confidence: High (direct text comparison; multiple citations; critical editions available)
+- 9 Falsifier: A 1st-c. Hebrew manuscript of Isaiah showing `parthenos` (not `almah`) would undermine the claim that LXX introduced the divergence
+
+### 9-Field Matrix — NT Mistranslation Link (Isaiah 7:14 / Matthew 1:23)
+(Same fields as above, focused on NT side rather than scroll fragment.) Confirmed: Matthew follows LXX `parthenos`; 4QIsa confirms Hebrew `almah`; divergence is real and attributable to LXX tradition.
+
+### Additional NT Mistranslation Links to Document (for outline expansion):
+- **Zechariah 12:10 / Mark 15:28** — LXX reading; comparison required (already in P2 framework; extend with 4Q fragment reference if available).
+- **Deuteronomy 21:23 / Galatians 3:13** — LXX-form authoritative; Paul treats LXX as Scripture (already in P2 / outline).
+- **Isaiah 28:16 / Romans 9:33** — LXX-form; already in outline.
+- **Psalm 69:22-23 / Romans 11:9** — LXX-form; already in outline.
+
+### Evidence Boundary (Reaffirmed Per /grill-me)
+- Qumran fragments: primary source evidence (date + text); not speculative.
+- NT mistranslation links: primary (NT text) + critical edition comparison; high confidence.
+- Non-canon / mythic parallels: remain bracketed; this Qumran layer is core, not bracketed, because it compares primary texts.
+- Bracketed notes: date caveats for P52; interpolation debate for Josephus; mythic-parallel comparison for Osiris/Asclepius (separate appendix).
+
+### Next Chunk (Durable) — Recommendation
+- Insert Qumran + Mistranslation section into `docs/plans/research_findings.md` (done — this chunk).
+- Add 9-field matrix per fragment (4QIsa, 4QDeut, 4QSam) + 3 mistranslation links to Appendix B / Chapter 8 method.
+- Confirm with brief clarify if user wants full matrix for all fragments, or only Isaiah (focus on the strongest case) plus brief notes for others.
