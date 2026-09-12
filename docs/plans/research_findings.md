@@ -141,3 +141,19 @@ These are cases where the NT citation follows the LXX reading, which is a diverg
 - Hosea 11:1 in Matthew 2:15 — LXX-form (son / child reference); compare with MT Hebrew Vorlage; ETS JETS / Spirit and Truth article references (see URLs above)
 - Isaiah 7:14 parthenos/almah — already in 9-field example (research_findings.md); reinforce with 4QIsa reference
 - Deuteronomy 21:23 / Gal 3:13 (Paul) — already in outline; reinforce with critical edition reference
+
+---
+## Batch 1 — John Layer (Full 9-Field Matrix) — Chunk 1/7
+Evidence: John 1:23 (Isa 40:3 — LXX single-Isaiah tradition); John 12:38 (Isa 53:1 — LXX-form of 'report'); John 19:37 (Zech 12:10 — LXX 'pierce').
+Matrix (each):
+1 Text/Edition: NA28 / Göttingen LXX / BHS (per John citation)
+2 Date/Attestation: 1st-c. CE (Mark/Mt parallel suggests earlier); manuscript tradition 2nd-c.
+3 LXX word: John 1:23 aligns with Isa 40:3 LXX; 12:38 with Isa 53:1 LXX; 19:37 with Zech 12:10 LXX
+4 MT/Hebrew Vorlage: MT separates Isaiah sources; Hebrew Vorlage lacks LXX editorial choices
+5 NT alignment: John cites LXX-form; consistent with Mark/Mt/Lk pattern
+6 Mainstream counter: Author could have used Hebrew source or oral tradition
+7 Counter-counter: Consistent alignment across 3 citations; no single-citation claim; pattern supports LXX
+8 Confidence: High (primary text); Medium (for individual citation standalone)
+9 Falsifier: Discovery of 1st-c. Hebrew manuscript showing John's exact reading without LXX intermediary
+Bracketed: P52 (~125 CE) supports Gospel of John date; not direct LXX-dependence proof.
+Status: Core evidence (not bracketed) for 1:23 / 12:38 / 19:37; bracketed note for P52 only.
