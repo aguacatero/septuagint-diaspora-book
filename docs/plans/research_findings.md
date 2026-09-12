@@ -259,3 +259,24 @@ Mistranslation Link — Deuteronomy 21:23 / Galatians 3:13 (Paul)
 - 7 CC: Paul's theological framework relies on LXX-phrasing; LXX is the functional biblical text for Paul's Greek-speaking audience
 - 8 Confidence: High (undisputed Pauline citation; critical editions available; P2 framework confirms)
 - 9 Falsifier: Evidence that Paul's LXX citations are systematically replaced by MT-form readings in earliest manuscript tradition
+
+---
+## Batch 4 — Climate Full Matrix (Durable — 1st-c. Diaspora Context)
+
+Climate Layer — Dura-Europos Synagogue Inscriptions
+- 1 Source/Ed: Dura-Europos synagogue (3rd-c. CE inscriptions; primarily Greek); reference: Smarthistory / Posen Library / Albany scholars archive
+- 2 Date/Attestation: 3rd-c. CE (bracketed caveat: not direct 1st-c. proof; supports Greek-language culture generally)
+- 3 Evidence: Inscriptions predominantly Greek; minimal Hebrew; confirms Greek dominance in public/religious life in diaspora
+- 4 MT/Hebrew: Not directly applicable; context evidence (language environment)
+- 5 NT Alignment: Supports claim that earliest Christian communities operated in Greek, with LXX as functional Scripture
+- 6 Counter: Elite Hebrew literacy could exist even where public life is Greek; some diaspora communities maintained Hebrew study
+- 7 CC: Epigraphic/papyrological record overwhelmingly favors Greek; broader laity (not just elite) encountered Scripture in Greek
+- 8 Confidence: High for language-context; medium (bracketed) for direct 1st-c. proof
+- 9 Falsifier: Systematic discovery of 1st-c. synagogue inscriptions showing Hebrew dominance would undermine climate claim
+
+Climate Layer — Pliny the Younger / Ignatius / Acts / Papyrus 46
+- Pliny ~112 CE: Greek-speaking Christian worship of Christus; independent Roman administrative document; not a historical-anchor for Jesus but a language-context witness
+- Ignatius ~110 CE: LXX-language epistles; precise LXX-wording too specific for coincidence; supports LXX as functional Christian text
+- Acts (Greek composition): depicts diaspora Jewish communities reading Scripture in Greek; supports LXX framework
+- Papyrus 46 / Chester Beatty: earliest Pauline manuscript (early 2nd-c.); contains LXX citations; confirms Greek-speaking communities valued LXX
+- Evidence Protocol: same 9-field format; bracketed for speculative claims (mythic parallels); primary-source citations required for all climate-layer claims
