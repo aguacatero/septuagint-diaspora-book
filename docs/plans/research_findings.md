@@ -169,3 +169,51 @@ Status: Core (not bracketed) — same pattern as John/Mark; reinforces 4-canon f
 ## Chunk 3/7 — Mistranslation / LXX Divergence Full Matrix (Zech 12:10 / Deut 21:23 / Hosea 11:1)
 Evidence: Matthew 27:28 (Zech 12:10 — LXX 'pierce'); Galatians 3:13 (Deut 21:23 — LXX-form 'hanged'); Matthew 2:15 (Hosea 11:1 — LXX-form 'son'). Each row uses 9 fields with same structure: Text/Edition, Date/Attestation, LXX word, MT/Hebrew Vorlage, NT alignment, Mainstream counter (Hebrew Vorlage possible), Counter-counter (systematic LXX alignment undermines), Confidence (High for Isa 7:14 / Hosea 11:1; Medium for Zech / Deut), Falsifier (Hebrew manuscript showing NT reading without LXX intermediary).
 Status: Core (not bracketed) — demonstrates dependence through mistranslation, not just citation.
+
+---
+## Chunk 4/7 — Climate / 1st-Century Context Full Matrix (Philo / P46 / P52 / Dura-Europos / Pliny / Ignatius)
+Evidence per source:
+1 Philo of Alexandria — LXX-only; primary-source model for diaspora; bracketed comparison only (not direct NT dependence proof).
+2 Pliny — c. 112 CE; Greek-speaking Christians; language-context only; not historical-anchor.
+3 Ignatius — c. 110 CE; LXX-wording; language-context; not independent historical-anchor.
+4 Papyrus 46 — earliest Pauline manuscript; LXX citations confirm Greek-speaking community valued LXX.
+5 Papyrus 52 (~125 CE) — earliest John fragment; date-only evidence; bracketed.
+6 Dura-Europos synagogue inscriptions — Greek dominant; 3rd-c. not 1st-c.; bracketed caveat.
+9-field applied where applicable: for climate evidence, fields 1-3 (source/date/LXX) apply; fields 4-5 (MT/alignment) don't apply — marked N/A with explanation; fields 6-7 (counter/CC) note date caveat; field 8 (confidence) high for language context, low for direct historical proof; field 9 (falsifier) = new archaeological/epigraphic discovery overturning Greek-dominance in relevant diaspora center.
+Status: Core for climate framework; bracketed notes for date / scope limitations.
+
+---
+## Batch 1 — John Full 9-Field Matrix (Durable — committed next)
+
+John 1:23 — Isaiah 40:3 (LXX single-Isaiah tradition; "prepare the way")
+- 1 Text/Ed: John 1:23; NA28 / Göttingen LXX Isaiah / BHS; NA28 Mark 1:2-3 comparative
+- 2 Date/Attestation: 1st-c. CE; earliest John manuscript (P52 ~125 CE, bracketed)
+- 3 LXX Word: Isaiah 40:3 — prepare way of the Lord (LXX editorial form; mirrors Mark 1:2-3)
+- 4 MT/Hebrew Vorlage: Hebrew Vorlage available; LXX form differs in wording (LXX simpler/less specific)
+- 5 NT Alignment: John 1:23 quotes LXX form; consistent with Mark 1:2-3 (single-Isaiah tradition)
+- 6 Mainstream Counter: John may have used independent source; some argue Mark's conflation is editorial, not source-driven
+- 7 Counter-Counter: John's citation pattern aligns with LXX editorial tradition, not Hebrew; consistency across Synoptics strengthens LXX-dependence claim
+- 8 Confidence: High (primary text comparison with Mark; critical edition available)
+- 9 Falsifier: Discovery of Hebrew Vorlage of Isaiah showing identical "single-Isaiah" wording in 1st-c. manuscript
+
+John 12:38 — Isaiah 53:1 (LXX-form report / belief)
+- 1 Text/Ed: John 12:38; NA28 / Göttingen LXX Isaiah / BHS
+- 2 Date/Attestation: 1st-c.
+- 3 LXX Word: LXX-form of Isaiah 53:1; NT uses LXX phrasing ("who has believed our report?")
+- 4 MT: MT reads differently (Hebrew text varies); LXX is the functional source
+- 5 NT Alignment: John 12:38 follows LXX; supports LXX-dependence thesis for John's use
+- 6 Counter: John may have interpreted independently; some scholars propose Hebrew awareness
+- 7 CC: Pattern of LXX-alignment across John's OT citations is systematic, not coincidental
+- 8 Confidence: Medium (requires full corpus comparison to reach high)
+- 9 Falsifier: Systematic MT-only alignment across John's OT citations
+
+John 19:37 — Zechariah 12:10 (LXX-form "they will look on him whom they pierced")
+- 1 Text/Ed: John 19:37; NA28 / Göttingen LXX Zech / BHS
+- 2 Date/Attestation: 1st-c.
+- 3 LXX Word: LXX-form of Zechariah 12:10; NT citation follows LXX
+- 4 MT: Hebrew Vorlage differs; LXX is source
+- 5 NT Alignment: John 19:37 matches LXX; consistent with Mark 15:28 (Zech 12:10 reference)
+- 6 Counter: Mark's citation (15:28) is disputed; some argue random style
+- 7 CC: Systematic LXX preference across Mark + John undermines randomness claim
+- 8 Confidence: High (direct LXX comparison; dual Gospel reference)
+- 9 Falsifier: Discovery of Hebrew Vorlage of Zechariah showing identical LXX-style wording
