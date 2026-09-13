@@ -20,6 +20,24 @@ The conclusion is **not predetermined**. The method must be able to produce resu
 6. [`research/CUL/`](research/CUL/) — Hellenistic / Greco-Roman comparison controls.
 7. [`research/HIS/`](research/HIS/) — claim-by-claim historical residue audit.
 
+## Hermes / OpenRouter research workflow
+
+If you are running this project through Hermes, start with [`HERMES_START.md`](HERMES_START.md).
+
+The operating model is:
+
+**GitHub contract → Hermes/OpenRouter + Open Notebook research → staged research branch → adversarial review → canonical promotion to `main` → next batch.**
+
+Key files:
+
+- [`docs/workflow/RESEARCH_WORKFLOW.md`](docs/workflow/RESEARCH_WORKFLOW.md) — full volley and review process.
+- [`docs/workflow/HERMES_INSTRUCTIONS.md`](docs/workflow/HERMES_INSTRUCTIONS.md) — exact operating rules for Hermes.
+- [`research-queue/CURRENT_BATCH.md`](research-queue/CURRENT_BATCH.md) — the only active research task.
+- [`research-queue/BACKLOG.md`](research-queue/BACKLOG.md) — dependency-ordered future batches.
+- [`research/inbox/`](research/inbox/) — non-canonical staging area for machine-assisted research packets.
+
+Hermes must not directly rewrite the project constitution or canonical evidence registry. Its job is to produce auditable candidate research, including counterevidence, for later review.
+
 ## Core methodological changes
 
 - The old binary **“LXX vs. MT”** model is retired in favor of first-century textual pluriformity: Old Greek, other Jewish Greek traditions/revisions, Hebrew textual witnesses, authorial adaptation, oral/liturgical transmission, and indeterminate cases can all be classified.
@@ -68,4 +86,4 @@ They are retained for provenance and **must not be treated as verified current f
 
 ## Status
 
-Research architecture v2 is being established before the argumentative manuscript is rewritten. The next research phase is the complete quotation census and TXT classification across the defined primary corpus.
+The research architecture is established. The active next step is the bounded Hermes/OpenRouter TXT pilot defined in `research-queue/CURRENT_BATCH.md`; after review, the workflow will scale to the complete quotation census across the defined primary corpus.
