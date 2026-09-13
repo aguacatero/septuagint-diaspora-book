@@ -14,11 +14,12 @@ Before beginning, read:
 
 1. `docs/design/PROJECT_CONSTITUTION.md`
 2. `docs/workflow/RESEARCH_WORKFLOW.md`
-3. `docs/workflow/HERMES_INSTRUCTIONS.md`
-4. `research/registry/SCHEMA.md`
-5. `research/TXT/README.md`
-6. `research/TXT/textual_classifications.md`
-7. `research/TXT/hebrew_consultation_test.md`
+3. `docs/workflow/SOURCE_ACQUISITION.md`
+4. `docs/workflow/HERMES_INSTRUCTIONS.md`
+5. `research/registry/SCHEMA.md`
+6. `research/TXT/README.md`
+7. `research/TXT/textual_classifications.md`
+8. `research/TXT/hebrew_consultation_test.md`
 
 If this batch file conflicts with those documents, the higher-level documents govern.
 
@@ -33,6 +34,43 @@ Write outputs only under:
 `research/inbox/B001-pauline-txt-pilot/`
 
 Do not edit canonical registry files.
+
+## Phase 0 — Acquire the source packet
+
+Do **not** assume the books and editions needed for this batch have already been collected.
+
+Hermes is responsible for locating and acquiring the strongest lawfully accessible source packet before final classification work begins.
+
+Follow `docs/workflow/SOURCE_ACQUISITION.md`.
+
+Use Internet Archive/Open Library where appropriate, especially for public-domain or unrestricted scans of older scholarship. Public-domain/open-access/authorized full-text files may be downloaded and imported into Open Notebook. Borrow-only or controlled-lending materials may only be accessed through the user's legitimate authorized access and must not be obtained by bypassing DRM, borrowing limits, or access controls.
+
+For B001, attempt to assemble at minimum:
+
+### Primary textual sources
+
+- an academically reliable Greek New Testament text sufficient to verify the Pauline wording;
+- an academically reliable Old Greek / Septuagint text for the assigned comparanda;
+- an academically reliable Hebrew text/witness for each comparandum;
+- relevant textual apparatus, Greek revisions, DSS/Qumran evidence, or specialist textual notes where material to the comparison.
+
+### Secondary scholarship
+
+Build a core Pauline-scripture source packet sufficient to avoid passage-by-passage web improvisation.
+
+Seek several strong general works on Paul's use of Scripture/Septuagint plus passage-specific treatments where necessary. Prefer specialist monographs, peer-reviewed articles, critical commentaries, and scholarly reference works.
+
+Do not require every desired book to be available before research can proceed. If an important item is unavailable, record it in `source_gaps.md`, identify the best lawful substitute, and state whether the gap limits classification.
+
+### Open Notebook ingestion gate
+
+Use or create:
+
+`SDP-01 Paul`
+
+Import every full-text source actually relied upon. Verify edition identity and ingestion. For scans, verify page mapping and inspect page images rather than trusting OCR for Greek/Hebrew or textual apparatus.
+
+Before final passage classifications begin, the minimum source packet must either be ingested or its gaps explicitly documented.
 
 ## Assigned passages
 
@@ -110,6 +148,8 @@ Create:
 ```text
 research/inbox/B001-pauline-txt-pilot/
 ├── README.md
+├── acquisition_manifest.csv
+├── source_gaps.md
 ├── source_manifest.csv
 ├── candidate_registry.csv
 ├── adversarial_review.md
@@ -128,6 +168,14 @@ research/inbox/B001-pauline-txt-pilot/
     ├── PAU-B001-10-TXT.md
     ├── PAU-B001-11-TXT.md
     └── PAU-B001-12-TXT.md
+```
+
+## `acquisition_manifest.csv` minimum fields
+
+Use the schema in `docs/workflow/SOURCE_ACQUISITION.md`:
+
+```csv
+acquisition_id,requested_source,author_or_editor,title,year,edition_or_volume,provider,provider_identifier,provider_url,access_class,local_filename,open_notebook_label,ingestion_status,page_mapping_verified,ocr_quality,notes
 ```
 
 ## `source_manifest.csv` minimum fields
@@ -202,6 +250,8 @@ Do not inherit any previous `mistranslation`, LXX-alignment, or Hebrew-use class
 
 The batch is ready for review only when:
 
+- the acquisition phase has produced `acquisition_manifest.csv` and `source_gaps.md`;
+- the minimum source packet is ingested or unavailable items are explicitly documented;
 - all 12 passage reports exist, or blocked passages have explicit blocked reports;
 - every substantive secondary-source claim is traceable to a verified source/page or clearly marked otherwise;
 - all primary textual claims identify the edition/witness used;
@@ -216,4 +266,4 @@ The batch is ready for review only when:
 
 Success does **not** mean twelve passages support Greek-scriptural dominance.
 
-Success means the batch produces twelve auditable research packets whose classifications could be promoted, revised, disputed, rejected, or left indeterminate without changing the method.
+Success means the workflow successfully acquires a documented source packet and produces twelve auditable research packets whose classifications could be promoted, revised, disputed, rejected, or left indeterminate without changing the method.
