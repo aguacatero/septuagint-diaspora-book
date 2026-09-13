@@ -9,10 +9,11 @@ Before doing research:
 1. Pull the latest `main`.
 2. Read `docs/design/PROJECT_CONSTITUTION.md`.
 3. Read `docs/workflow/RESEARCH_WORKFLOW.md`.
-4. Read `research/registry/SCHEMA.md`.
-5. Read the module rules relevant to the batch.
-6. Read `research-queue/CURRENT_BATCH.md`.
-7. Create the research branch named by the batch contract.
+4. Read `docs/workflow/SOURCE_ACQUISITION.md`.
+5. Read `research/registry/SCHEMA.md`.
+6. Read the module rules relevant to the batch.
+7. Read `research-queue/CURRENT_BATCH.md`.
+8. Create the research branch named by the batch contract.
 
 Do not rely on remembered instructions from an earlier run when repo instructions are available.
 
@@ -26,6 +27,26 @@ Do not silently resolve uncertainty. Mark it.
 
 Do not promote staged findings into canonical registry files.
 
+## Phase 0 — Source acquisition and ingestion
+
+Unless the active batch explicitly says its source packet is already complete, begin by acquiring the sources needed for the batch.
+
+Follow `docs/workflow/SOURCE_ACQUISITION.md`.
+
+Your responsibilities include:
+
+- identify the exact editions and specialist works required;
+- search lawful sources, including Internet Archive/Open Library where appropriate;
+- download public-domain, open-access, or otherwise authorized full-text copies when available;
+- never bypass borrowing restrictions, DRM, authentication, or access controls;
+- import usable full-text sources into the batch's Open Notebook notebook;
+- verify edition identity, scan quality, page mapping, and ingestion;
+- create `acquisition_manifest.csv`;
+- create `source_gaps.md`;
+- continue with documented substitutes when a source cannot be acquired and the batch can still proceed.
+
+Do not begin final passage classifications until the batch's minimum source packet has been acquired/ingested or the missing sources have been explicitly documented with their limitations.
+
 ## Use of Open Notebook
 
 When Open Notebook is available:
@@ -35,7 +56,7 @@ When Open Notebook is available:
 - preserve filenames/source titles so another researcher can locate them;
 - query sources for exact passages, page references, textual variants, author arguments, and counterarguments;
 - inspect the underlying source before citing a Notebook-generated answer;
-- record missing/inaccessible sources in `unresolved_questions.md`.
+- record missing/inaccessible sources in `source_gaps.md` and `unresolved_questions.md`.
 
 Suggested persistent notebooks:
 
@@ -54,10 +75,11 @@ Do not require one model to do every role.
 A recommended pattern is:
 
 1. **Discovery pass** — inexpensive model to identify candidate sources/search terms.
-2. **Extraction pass** — model focused on exact source extraction and structured notes.
-3. **Reasoning pass** — strongest appropriate model to compare textual witnesses and apply the project method.
-4. **Adversarial pass** — independent prompt/model asked to disprove the provisional classification.
-5. **Citation verification pass** — verify source/page/claim correspondence before commit.
+2. **Acquisition pass** — verify bibliographic identity, locate lawful full text, and prepare Open Notebook ingestion.
+3. **Extraction pass** — model focused on exact source extraction and structured notes.
+4. **Reasoning pass** — strongest appropriate model to compare textual witnesses and apply the project method.
+5. **Adversarial pass** — independent prompt/model asked to disprove the provisional classification.
+6. **Citation verification pass** — verify source/page/claim correspondence before commit.
 
 For disputed cases, use a different model family for the adversarial pass when practical.
 
@@ -158,7 +180,7 @@ Do not overwrite an existing canonical ID. If uncertain about numbering, use a t
 
 Stop and record the problem rather than improvising when:
 
-- a required primary witness cannot be accessed;
+- a required primary witness cannot be accessed and no adequate substitute exists;
 - critical source metadata cannot be verified;
 - two strong sources materially conflict and the conflict cannot be resolved;
 - the current batch contract is ambiguous;
@@ -170,6 +192,8 @@ Stop and record the problem rather than improvising when:
 Before committing:
 
 - all required batch passages have a report or an explicit blocked-status entry;
+- `acquisition_manifest.csv` exists when acquisition was performed;
+- `source_gaps.md` exists;
 - `source_manifest.csv` exists;
 - `candidate_registry.csv` exists;
 - `adversarial_review.md` exists;
