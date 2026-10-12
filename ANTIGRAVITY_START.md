@@ -14,3 +14,16 @@ Goal: process the B001 corpus **one source at a time**, using NotebookLM for sou
 Use Google/Gemini models for Antigravity orchestration. Use the `aguacatero/chatgpt-relay` reusable review controller for exact-SHA review handoff. Do not use the legacy Claude/Haiku relay worker.
 
 Do not begin the next source until the current source packet is independently accepted.
+
+
+## Background schedule
+
+After the first successful interactive smoke test of the NotebookLM browser flow, create an Antigravity recurring task that resumes this workflow **hourly**.
+
+Scheduled-run instruction:
+
+```text
+Open aguacatero/septuagint-diaspora-book on branch research/B001-notebooklm-serial. Read ANTIGRAVITY_START.md and resume B001 from research-queue/B001_NOTEBOOKLM_STATE.json. Work only on the single active source. If the source is awaiting independent ChatGPT review, check PR #2 comments through the chatgpt-relay review controller; apply required corrections when present or, after an accepted exact-SHA review, promote the source to SDP-01 Paul and advance to the next queue item. Stop at any login, source-access, citation-verification, owner-only, or review-pending gate. Never process two sources concurrently and never merge the PR.
+```
+
+Use Antigravity's `/schedule` capability (or the equivalent scheduled-task UI). Hourly is intentionally conservative; the workflow is state-driven, not speed-driven.
