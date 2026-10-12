@@ -3,13 +3,16 @@
 Read and obey:
 
 1. `.agents/skills/notebooklm-serial-research/SKILL.md`
-2. `research-queue/CURRENT_BATCH.md`
-3. `docs/workflow/NOTEBOOKLM_ANTIGRAVITY_SERIAL.md`
-4. `docs/workflow/NOTEBOOKLM_EXTRACTION_PROMPTS.md`
-5. `research-queue/B001_NOTEBOOKLM_SOURCE_QUEUE.csv`
-6. `research-queue/B001_NOTEBOOKLM_STATE.json`
+2. `docs/workflow/NOTEBOOKLM_BROWSER_PREFLIGHT.md`
+3. `research-queue/CURRENT_BATCH.md`
+4. `docs/workflow/NOTEBOOKLM_ANTIGRAVITY_SERIAL.md`
+5. `docs/workflow/NOTEBOOKLM_EXTRACTION_PROMPTS.md`
+6. `research-queue/B001_NOTEBOOKLM_SOURCE_QUEUE.csv`
+7. `research-queue/B001_NOTEBOOKLM_STATE.json`
 
 Goal: process the B001 corpus **one source at a time**, using NotebookLM for source-bounded extraction, verifying citations, committing the source packet to GitHub, and stopping at the independent ChatGPT review gate before advancing.
+
+Before any NotebookLM browser work, run `bash scripts/start_notebooklm_debug_chrome.sh` and require `curl -fsS http://127.0.0.1:9222/json/version` to succeed. The automation browser must use the dedicated research Chrome profile/endpoint defined in `NOTEBOOKLM_BROWSER_PREFLIGHT.md`, not the owner's normal Chrome profile.
 
 Use Google/Gemini models for Antigravity orchestration. Use the `aguacatero/chatgpt-relay` reusable review controller for exact-SHA review handoff. Do not use the legacy Claude/Haiku relay worker.
 
