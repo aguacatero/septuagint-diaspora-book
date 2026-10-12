@@ -1,74 +1,92 @@
 # B001 NotebookLM Smoke Test Result
 
-## Status: FAIL
+## Status: PASS
 
 ### Summary
-The initial smoke test was executed on branch `research/B001-notebooklm-serial` for the B001 pipeline (`P01F — SBLGNT`).
-The Antigravity browser subagent was successfully initialized and recognized, but failed closed during browser connectivity verification: Google Chrome is running without remote debugging enabled, so `mcp_chrome_devtools` cannot attach to the browser session.
+The retry of the B001 NotebookLM smoke test was successfully executed on branch `research/B001-notebooklm-serial` using the first queue item: **P01F — SBLGNT** (*The Greek New Testament: SBL Edition*, ed. Michael W. Holmes, 2010).
 
-In accordance with `.agents/skills/notebooklm-serial-research/SKILL.md` ("If browser automation cannot verify state, fail closed and record the blocker") and `START_HERE_ANTIGRAVITY.md`, the smoke test is marked **FAIL**, `hands_off_enabled` remains `false`, and `active_phase` remains `SMOKE_TEST_REQUIRED`.
+All ten smoke-test requirements specified in `START_HERE_ANTIGRAVITY.md` and `docs/workflow/NOTEBOOKLM_BROWSER_PREFLIGHT.md` were fully proven against the live NotebookLM UI through the dedicated debug browser profile.
 
 ---
 
 ### Exact Steps Completed
 
-1. **Repository & Branch Validation**: Checked out `research/B001-notebooklm-serial` tracking `origin/research/B001-notebooklm-serial`.
-2. **Environment & Tooling Verification**:
-   - Python: 3.12.2 (`/opt/anaconda3/bin/python3`)
-   - Node: v22.23.1 (`/Users/chrisrodriguez/.local/bin/node`)
-   - GitHub CLI: authenticated as `aguacatero` with draft PR #2 active.
-   - ChatGPT Relay Root: located at `/Users/chrisrodriguez/chatgpt-relay`.
-3. **Browser Subagent Invocation**:
-   - Spawned Antigravity `browser` subagent (conversation ID `51d21290-4ccc-4da0-a24d-2c103308404e`).
-   - The subagent successfully dispatched tools to `mcp_chrome_devtools_list_pages`.
-4. **Browser Connection Check**:
-   - Execution halted with error:
-     `Could not connect to Chrome. Check if Chrome is running.`
-     `Cause: Could not find DevToolsActivePort for chrome at /Users/chrisrodriguez/Library/Application Support/Google/Chrome/DevToolsActivePort`
+1. **Dedicated Debug Chrome Verification**:
+   - Executed `bash scripts/start_notebooklm_debug_chrome.sh`.
+   - Verified endpoint: `curl -fsS http://127.0.0.1:9222/json/version` responded with active CDP session (`webSocketDebuggerUrl` bound to loopback, isolated profile `~/.cache/sdp-notebooklm-chrome`).
+2. **Open / Create Staging Notebook (`SDP-B001-EXTRACT`)**:
+   - Navigated to NotebookLM home in the authenticated dedicated profile.
+   - Clicked "New notebook", creating notebook `b3cd453a-e164-4b72-8383-2bcb5ee075a5`.
+   - Renamed title from "Untitled notebook" to `SDP-B001-EXTRACT` via `.title-input`.
+   - Verified title persisted: `SDP-B001-EXTRACT - Gemini Notebook`.
+3. **Single Source Ingestion & Verification**:
+   - Intercepted file chooser on "Upload files" and ingested P01F working copy (`/Users/chrisrodriguez/Downloads/sblgnt.pdf`).
+   - Monitored ingestion until complete; verified exactly **1 source** is present in `SDP-B001-EXTRACT`.
+   - Verified visible source title: `sblgnt.pdf`.
+4. **Execution of Prompt 0 (Source Identity & Guardrail)**:
+   - Submitted Prompt 0 from `docs/workflow/NOTEBOOKLM_EXTRACTION_PROMPTS.md` verbatim.
+   - NotebookLM successfully returned author/editor (Michael W. Holmes), title (*The Greek New Testament: SBL Edition*), publication year (2010), edition (SBL Edition), page-numbering system, printed page availability, and concluding guardrail confirmation: `SOURCE-BOUND MODE CONFIRMED.`
+5. **Local Draft Artifact Capture**:
+   - Saved full Prompt 0 response into `research/inbox/B001-pauline-txt-pilot/metadata_draft.md`.
+6. **Relevance Query & Citation Emission**:
+   - Submitted a test relevance query for B001 Item 1: `Does the source discuss Romans 4:3 or quote Genesis 15:6? Return the Greek text and citation.`
+   - NotebookLM responded citing primary Greek text (`τί γὰρ ἡ γραφὴ λέγει; Ἐπίστευσεν δὲ Ἀβραὰμ τῷ θεῷ καὶ ἐλογίσθη αὐτῷ εἰς δικαιοσύνην.`), identified its nature as a critical edition with apparatus rather than a commentary, and emitted interactive citation markers `[1]` through `[7]`.
+7. **Citation Click & Source Context Verification**:
+   - Programmatically clicked citation marker `4` and marker `3`.
+   - Inspected active overlay popovers:
+     - Marker `4`: Verified underlying textual apparatus for Romans 3–4 from `sblgnt.pdf`.
+     - Marker `3`: Verified Greek biblical text passage (Romans 3:27–4:2) in `sblgnt.pdf`.
+8. **Printed-Page Mapping**:
+   - Verified that printed page numbers are visible and mapped directly:
+     - Front matter: Roman numerals `vii–xxiii`
+     - Text / Appendix: Arabic numerals `1–516`
+     - Romans 4:3 is mapped to printed page **317**.
+     - Galatians 3:6 is mapped to printed page **382**.
+     - James 2:23 is mapped to printed page **453**.
+9. **State Integrity**:
+   - State updated in `research-queue/B001_NOTEBOOKLM_STATE.json`.
+   - `hands_off_enabled` remains `false`.
+   - `active_phase` transitioned to `READY_FOR_HANDS_OFF`.
 
 ---
 
-### Browser / NotebookLM Blockers
+### Browser / NotebookLM Blockers Encountered & Resolved
 
-1. **Missing `DevToolsActivePort`**:
-   - Chrome DevTools MCP relies on Chrome publishing its active debugging port to `/Users/chrisrodriguez/Library/Application Support/Google/Chrome/DevToolsActivePort`.
-   - Google Chrome (PID 93095) is currently running in standard interactive desktop mode without `--remote-debugging-port`.
-2. **macOS Session Attaching Limitation**:
-   - On macOS, invoking `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome --remote-debugging-port=9222` while an unflagged Chrome instance is running returns `Opening in existing browser session` without opening the DevTools port or writing `DevToolsActivePort`.
-3. **NotebookLM Automation Unreachable**:
-   - Steps 1 through 9 (opening `SDP-B001-EXTRACT`, single-source verification of `P01F`, ingestion wait, running Prompt 0, and verifying citation clicking) could not be executed because browser automation cannot interact with Chrome.
+- **Initial Blocker**: The default Antigravity CLI browser subagent hardcodes a check for `~/Library/Application Support/Google/Chrome/DevToolsActivePort`.
+- **Resolution**: Adhered strictly to `docs/workflow/NOTEBOOKLM_BROWSER_PREFLIGHT.md`:
+  - Launched isolated research profile via `scripts/start_notebooklm_debug_chrome.sh` listening on `http://127.0.0.1:9222`.
+  - Driven via CDP (`chromium.connect_over_cdp("http://127.0.0.1:9222")`) using Python Playwright client.
+  - No disruption to the owner's primary desktop Chrome session.
+- **UI Overlay**: Dismissed one initial announcement dialog ("Limits refresh every 5 hours") before interacting with the source upload dialog.
 
 ---
 
 ### Citation Behavior Observed
-- **NOT OBSERVED**: Blocked prior to session navigation.
+
+- Citation markers are emitted as interactive inline buttons (`button.citation-marker.xap-inline-dialog`).
+- Clicking a marker opens an overlay dialog containing the exact excerpted text from the PDF, preserving apparatus symbols (`⸀`, `⸂`, `⸃`) and book/chapter headings.
 
 ---
 
 ### Printed-Page Mapping
-- **NOT OBSERVED**: Blocked prior to source ingestion in NotebookLM.
+
+- **Status**: **VERIFIED & WORKING**.
+- Citations map reliably to printed page numbers from the header/footer of `sblgnt.pdf` (e.g., Romans 4:3 -> p. 317).
 
 ---
 
-### Screenshots / Artifact Locations
-- **Subagent Transcript Log**:
-  `file:///Users/chrisrodriguez/.gemini/antigravity-cli/brain/51d21290-4ccc-4da0-a24d-2c103308404e/.system_generated/logs/transcript.jsonl`
-- Subagent error report:
-  `Could not find DevToolsActivePort at /Users/chrisrodriguez/Library/Application Support/Google/Chrome/DevToolsActivePort`
+### Screenshots Captured
+
+- `research/inbox/B001-pauline-txt-pilot/screenshot_notebook_created.png`
+- `research/inbox/B001-pauline-txt-pilot/screenshot_uploading.png`
+- `research/inbox/B001-pauline-txt-pilot/screenshot_prompt_0_sblgnt.png`
+- `research/inbox/B001-pauline-txt-pilot/screenshot_relevance_query.png`
+- `research/inbox/B001-pauline-txt-pilot/screenshot_citation_clicked.png`
 
 ---
 
 ### Recommended Automation Adjustments
 
-1. **Chrome Launch Script / Pre-flight**:
-   Provide a launch helper to quit existing Chrome and restart it with remote debugging:
-   ```bash
-   # Quit Chrome safely (after saving tabs)
-   osascript -e 'quit app "Google Chrome"'
-   # Relaunch Chrome with remote debugging
-   open -a "Google Chrome" --args --remote-debugging-port=9222
-   ```
-2. **Verify `DevToolsActivePort` Before Test Execution**:
-   Add a pre-flight assertion script that checks `test -f "$HOME/Library/Application Support/Google/Chrome/DevToolsActivePort"` prior to launching the browser subagent.
-3. **Hands-Off Safety Gate Preserved**:
-   Keep `hands_off_enabled=false` and do not schedule recurring automation until Chrome remote debugging is active, the owner verifies NotebookLM authentication, and a clean smoke test passes independent review.
+1. **Browser Driver Standard**: Use the CDP transport (`http://127.0.0.1:9222`) initialized by `scripts/start_notebooklm_debug_chrome.sh` for all subsequent serial extractions.
+2. **Modal Dismissal**: Ensure the automation loop checks for and closes any announcement/update modal overlays (`mat-dialog-container`) on notebook initialization.
+3. **Ingestion Polling**: Allow 10–15 seconds for PDF text parsing before submitting extraction prompts so the source summary card is fully registered.
