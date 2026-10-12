@@ -12,6 +12,22 @@
 - Review controller: `aguacatero/chatgpt-relay/scripts/review_loop.py`
 - Legacy relay worker is forbidden for this lane.
 
+## Browser transport correction after first failed test
+
+The first smoke-test attempt at SHA `bb4447992b003a24899fb62dab2d828db80a4ce3` failed correctly before NotebookLM because the Chrome DevTools transport attempted the owner's normal Chrome profile.
+
+The accepted retry architecture is now documented in:
+
+`docs/workflow/NOTEBOOKLM_BROWSER_PREFLIGHT.md`
+
+It uses:
+- a dedicated persistent Chrome profile at `~/.cache/sdp-notebooklm-chrome`;
+- loopback DevTools endpoint `http://127.0.0.1:9222`;
+- explicit MCP/browser attachment to that endpoint;
+- one-time Google login in the dedicated research profile if needed.
+
+Do not accept a retry that merely launches the normal Chrome profile with `--remote-debugging-port`.
+
 ## Why a smoke test is required
 
 The scholarly workflow is deterministic, but consumer NotebookLM is being driven through a browser UI rather than a stable public automation API.
