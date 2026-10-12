@@ -8,7 +8,7 @@ Antigravity rewrites this file for every source before requesting review.
 - Exact citation: `TBD`
 - Public/source locator: `TBD`
 - Branch: `research/B001-notebooklm-serial`
-- Draft PR: `TBD`
+- Draft PR: `2`
 - REVIEWED_SHA requested: `TBD`
 
 ## Files in scope
