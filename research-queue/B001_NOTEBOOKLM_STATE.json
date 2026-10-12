@@ -1,0 +1,16 @@
+{
+  "batch": "B001-pauline-txt-pilot",
+  "workflow": "NOTEBOOKLM_SERIAL",
+  "branch": "research/B001-notebooklm-serial",
+  "draft_pr": null,
+  "extraction_notebook": "SDP-B001-EXTRACT",
+  "synthesis_notebook": "SDP-01 Paul",
+  "active_source_id": null,
+  "active_phase": "READY",
+  "last_accepted_source_id": null,
+  "last_reviewed_sha": null,
+  "chatgpt_relay_mode": "REVIEW_LOOP_ONLY",
+  "allow_legacy_relay_worker": false,
+  "allow_paid_api": false,
+  "updated_at": "2026-10-12"
+}
