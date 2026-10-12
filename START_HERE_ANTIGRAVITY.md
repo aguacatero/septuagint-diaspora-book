@@ -9,11 +9,20 @@ Copy/paste this into Antigravity with this repository open:
 ```text
 Open aguacatero/septuagint-diaspora-book and checkout branch research/B001-notebooklm-serial.
 
-Read START_HERE_ANTIGRAVITY.md, then read and obey ANTIGRAVITY_START.md and .agents/skills/notebooklm-serial-research/SKILL.md.
+Read START_HERE_ANTIGRAVITY.md, then read and obey ANTIGRAVITY_START.md, docs/workflow/NOTEBOOKLM_BROWSER_PREFLIGHT.md, and .agents/skills/notebooklm-serial-research/SKILL.md.
 
 This is the FIRST RUN. Perform ONLY the NotebookLM smoke test described below. Do not start the full source queue and do not create the recurring schedule yet.
 
 Use Google/Gemini models only. Use Antigravity's browser subagent to operate the normal NotebookLM UI. Do not use unofficial NotebookLM private APIs. Do not use Claude, Codex, paid OpenAI APIs, or chatgpt-relay/scripts/relay.sh run.
+
+Before touching NotebookLM, run:
+
+bash scripts/start_notebooklm_debug_chrome.sh
+
+Verify:
+curl -fsS http://127.0.0.1:9222/json/version
+
+Then ensure the browser automation transport is connected to http://127.0.0.1:9222 as described in docs/workflow/NOTEBOOKLM_BROWSER_PREFLIGHT.md. Do not use the normal/default Chrome profile. If the dedicated research profile requires Google login, stop for the owner to sign in once and then resume.
 
 Smoke-test source: the first queue item, P01F — SBLGNT.
 
@@ -76,6 +85,7 @@ Never process two sources concurrently. Never auto-merge PR #2. Stop only at an 
 
 - `ANTIGRAVITY_START.md`
 - `.agents/skills/notebooklm-serial-research/SKILL.md`
+- `docs/workflow/NOTEBOOKLM_BROWSER_PREFLIGHT.md`
 - `docs/workflow/NOTEBOOKLM_ANTIGRAVITY_SERIAL.md`
 - `docs/workflow/NOTEBOOKLM_EXTRACTION_PROMPTS.md`
 - `research-queue/B001_NOTEBOOKLM_SOURCE_QUEUE.csv`
