@@ -2,7 +2,7 @@
   "batch": "B001-pauline-txt-pilot",
   "workflow": "NOTEBOOKLM_SERIAL",
   "branch": "research/B001-notebooklm-serial",
-  "draft_pr": null,
+  "draft_pr": 2,
   "extraction_notebook": "SDP-B001-EXTRACT",
   "synthesis_notebook": "SDP-01 Paul",
   "active_source_id": null,
