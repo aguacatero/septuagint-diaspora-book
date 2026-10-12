@@ -6,11 +6,13 @@
   "extraction_notebook": "SDP-B001-EXTRACT",
   "synthesis_notebook": "SDP-01 Paul",
   "active_source_id": null,
-  "active_phase": "READY",
+  "active_phase": "SMOKE_TEST_REQUIRED",
   "last_accepted_source_id": null,
   "last_reviewed_sha": null,
   "chatgpt_relay_mode": "REVIEW_LOOP_ONLY",
   "allow_legacy_relay_worker": false,
   "allow_paid_api": false,
-  "updated_at": "2026-10-12"
+  "updated_at": "2026-10-12",
+  "smoke_test_status": "PENDING",
+  "hands_off_enabled": false
 }
