@@ -4,16 +4,24 @@ Antigravity rewrites this file for every source before requesting review.
 
 ## Current source
 
-- Source ID: `TBD`
-- Exact citation: `TBD`
-- Public/source locator: `TBD`
+- Source ID: `P01F`
+- Exact citation: *The Greek New Testament: SBL Edition*, ed. Michael W. Holmes (Society of Biblical Literature and Logos Bible Software, 2010)
+- Public/source locator: `http://sblgnt.com` / `sblgnt.pdf`
 - Branch: `research/B001-notebooklm-serial`
 - Draft PR: `2`
-- REVIEWED_SHA requested: `TBD`
+- Extraction status: Complete source packet generated and citations verified against source text.
 
 ## Files in scope
 
-`research/inbox/B001-pauline-txt-pilot/sources/TBD/`
+`research/inbox/B001-pauline-txt-pilot/sources/P01F/`
+- `metadata.md`
+- `relevance_scan.md`
+- `extraction.md`
+- `citation_ledger.csv`
+- `argument_map.md`
+- `counterevidence.md`
+- `bibliography_leads.md`
+- `notebooklm_self_audit.md`
 
 Plus governing method:
 
@@ -46,7 +54,7 @@ Do not reward agreement with the project's hypothesis. Negative, indeterminate, 
 ```text
 REVIEWED_SHA: <full 40-character SHA>
 
-SOURCE_ID: <source id>
+SOURCE_ID: P01F
 
 ## Findings
 - [HIGH|MED|LOW] ...
