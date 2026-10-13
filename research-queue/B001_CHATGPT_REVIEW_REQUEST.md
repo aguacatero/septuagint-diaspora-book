@@ -4,18 +4,18 @@ Antigravity rewrites this file for every source before requesting review.
 
 ## Current source
 
-- Source ID: `P01F`
-- Exact citation: *The Greek New Testament: SBL Edition*, ed. Michael W. Holmes (Society of Biblical Literature and Logos Bible Software, 2010)
-- Public/source locator: `http://sblgnt.com` / `sblgnt.pdf`
+- Source ID: `P02F`
+- Exact citation: *The Old Testament in Greek according to the Septuagint, Vol. I: Genesis–IV Kings*, ed. Henry Barclay Swete, D.D. (Cambridge University Press, 3rd ed. 1901)
+- Public/source locator: `https://archive.org/details/oldtestamentingr0001henr`
 - Branch: `research/B001-notebooklm-serial`
 - Draft PR: `2`
-- Extraction status: Complete source packet generated and citations verified against source text.
+- Extraction status: Complete primary route source packet generated and citations verified against source text.
 - Review readiness: `READY`
 - Review target: `LIVE_PR_HEAD`
 
 ## Files in scope
 
-`research/inbox/B001-pauline-txt-pilot/sources/P01F/`
+`research/inbox/B001-pauline-txt-pilot/sources/P02F/`
 - `metadata.md`
 - `relevance_scan.md`
 - `extraction.md`
@@ -57,7 +57,7 @@ Do not reward agreement with the project's hypothesis. Negative, indeterminate, 
 ```text
 REVIEWED_SHA: <reviewer inserts current live PR HEAD>
 
-SOURCE_ID: P01F
+SOURCE_ID: P02F
 
 ## Findings
 - [HIGH|MED|LOW] ...

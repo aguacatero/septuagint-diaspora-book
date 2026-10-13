@@ -7,7 +7,9 @@ import websockets
 def get_page_ws_url():
     with urllib.request.urlopen("http://127.0.0.1:9222/json") as r:
         tabs = json.loads(r.read())
-    nb_tabs = [t for t in tabs if "notebook" in t.get("url", "") and t.get("type") == "page"]
+    nb_tabs = [t for t in tabs if "b3cd453a" in t.get("url", "") and t.get("type") == "page"]
+    if not nb_tabs:
+        nb_tabs = [t for t in tabs if "notebook" in t.get("url", "") and t.get("type") == "page"]
     if not nb_tabs:
         raise RuntimeError("No NotebookLM page found at http://127.0.0.1:9222")
     return nb_tabs[0]["webSocketDebuggerUrl"]
@@ -136,7 +138,7 @@ async def run_prompt(prompt_text, max_wait=75):
                 const overlays = Array.from(document.querySelectorAll(".citation-dialog, .citation-popover, .citation-panel, .source-viewer, xap-inline-dialog-container, [role='dialog'], .cdk-overlay-container"));
                 for (const o of overlays) {
                     const t = o.innerText.trim();
-                    if (t.includes("sblgnt") || t.length > 30) {
+                    if (t.includes("swete") || t.includes("sblgnt") || t.length > 20) {
                         return t;
                     }
                 }
