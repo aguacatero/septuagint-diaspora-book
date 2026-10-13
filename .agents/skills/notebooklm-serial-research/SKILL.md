@@ -79,7 +79,7 @@ If any of these checks fail, stop and record the blocker. Do not query a mixed n
 
 ### Phase C — Run deterministic extraction
 
-Run the prompt sequence in `NOTEBOOKLM_EXTRACTION_PROMPTS.md` in order.
+Read the current queue item's `source_class`, then run the matching PRIMARY or SECONDARY route in `NOTEBOOKLM_EXTRACTION_PROMPTS.md`. Do not use the secondary author-argument route for a primary critical text.
 
 Write durable outputs under:
 
@@ -91,6 +91,7 @@ Required files:
 - `relevance_scan.md`
 - `extraction.md`
 - `citation_ledger.csv`
+- `primary_text_ledger.csv` when `source_class=PRIMARY`
 - `argument_map.md`
 - `counterevidence.md`
 - `bibliography_leads.md`
@@ -128,7 +129,7 @@ Commit message:
 
 `B001 <SOURCE_ID>: NotebookLM extraction ready for review`
 
-Record the resulting full SHA in the review request.
+`B001_CHATGPT_REVIEW_REQUEST.md` must mark the source `Review readiness: READY` and `Review target: LIVE_PR_HEAD`. Do **not** try to write the commit's own SHA into the file; that is self-referential. The independent reviewer resolves the exact live PR HEAD at review time and writes that SHA in the resulting PR comment.
 
 ### Phase F — Independent ChatGPT review via chatgpt-relay controller
 
