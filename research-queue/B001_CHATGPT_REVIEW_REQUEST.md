@@ -10,6 +10,8 @@ Antigravity rewrites this file for every source before requesting review.
 - Branch: `research/B001-notebooklm-serial`
 - Draft PR: `2`
 - Extraction status: Complete source packet generated and citations verified against source text.
+- Review readiness: `READY`
+- Review target: `LIVE_PR_HEAD`
 
 ## Files in scope
 
@@ -52,7 +54,7 @@ Do not reward agreement with the project's hypothesis. Negative, indeterminate, 
 ## Required response format
 
 ```text
-REVIEWED_SHA: <full 40-character SHA>
+REVIEWED_SHA: <reviewer inserts current live PR HEAD>
 
 SOURCE_ID: P01F
 
