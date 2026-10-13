@@ -1,8 +1,17 @@
 # B001 NotebookLM Extraction Prompts
 
-Run these prompts in order against `SDP-B001-EXTRACT` after verifying that the notebook contains exactly one research source.
+Run these prompts against `SDP-B001-EXTRACT` only after verifying that the notebook contains exactly one research source.
 
 Always keep the current source as the only selected source.
+
+## Choose the route by source class
+
+Read `source_class` from `research-queue/B001_NOTEBOOKLM_SOURCE_QUEUE.csv`.
+
+- `PRIMARY` → use **PRIMARY ROUTE** below. A critical text is evidence because of the text/apparatus it prints, not because it "discusses" the B001 comparison.
+- `SECONDARY` → use **SECONDARY ROUTE** below. Extract the scholar's claims, reasoning, qualifications, disagreements, and bibliography leads.
+
+Never run the secondary author-argument route as a substitute for extracting primary textual evidence.
 
 ---
 
@@ -14,7 +23,75 @@ Save to `metadata.md`.
 
 ---
 
-## Prompt 1 — Exhaustive B001 relevance scan
+# PRIMARY ROUTE
+
+Use this for critical editions, biblical texts, manuscript editions, and other primary textual witnesses.
+
+## Primary Prompt 1 — B001 textual inventory
+
+> Work only from this primary source. For each of the 12 B001 comparisons, determine whether the relevant side of the comparison is actually present in this source.
+>
+> For a Greek New Testament edition, extract the Pauline NT wording.
+> For a Septuagint/Old Greek edition, extract the relevant Greek Jewish-scriptural wording.
+> For a Hebrew witness/edition, extract the relevant Hebrew wording.
+>
+> For each B001 ID return:
+> - status: TEXT_PRESENT / NOT_IN_SOURCE;
+> - exact passage/reference represented in this source;
+> - exact printed text needed for comparison;
+> - printed page or stable locator;
+> - whether an apparatus entry occurs at the target wording;
+> - exact apparatus information if present;
+> - what the apparatus entry does and does not establish.
+>
+> Do not classify a verse as NOT DISCUSSED merely because the edition has no commentary. The printed text itself is the evidence.
+
+Save to `relevance_scan.md`.
+
+## Primary Prompt 2 — Primary text ledger
+
+> Work only from this source. Convert every TEXT_PRESENT B001 item into a primary-evidence row.
+>
+> For each row provide:
+> - evidence_id: <SOURCE_ID>-P###;
+> - source_id;
+> - B001 ID;
+> - witness role (NT_GREEK / OLD_GREEK / HEBREW / OTHER);
+> - passage reference;
+> - exact source text;
+> - printed page / locator;
+> - NotebookLM citation;
+> - apparatus_present YES/NO;
+> - apparatus reading(s) and compared witnesses/editions when present;
+> - textual feature relevant to later comparison;
+> - limitation of this source for the B001 question.
+>
+> Do not infer an LXX-vs-Hebrew conclusion from this source alone unless this source itself supplies both sides.
+
+Save prose to `extraction.md` and rows to `primary_text_ledger.csv`.
+
+## Primary Prompt 3 — Variants and discriminating features
+
+> Work only from this source. For each B001 target, identify any variant, orthographic, syntactic, lexical, citation-formula, or punctuation feature visible in the text/apparatus that may matter when this source is compared with the corresponding textual tradition later. If there is no apparatus entry or no discriminating feature, say NONE IN THIS SOURCE. Do not manufacture manuscript evidence not present in the edition.
+
+Save to `counterevidence.md`.
+
+## Primary Prompt 4 — Primary-source self-audit
+
+> Audit the primary extraction against this source only.
+>
+> Check that every exact text, page, apparatus entry, witness label, and statement of absence was visibly verified in the source. Check especially that "no apparatus entry" was observed rather than inferred, and that OCR did not corrupt Greek/Hebrew or apparatus symbols.
+>
+> Return CORRECTIONS REQUIRED or NO CORRECTIONS FOUND with itemized corrections and citations.
+
+Save to `notebooklm_self_audit.md`.
+
+For schema stability, `citation_ledger.csv`, `argument_map.md`, and `bibliography_leads.md` may contain clearly labeled ancillary editorial-method notes, but they are **not** substitutes for `primary_text_ledger.csv`.
+
+---
+
+# SECONDARY ROUTE
+## Secondary Prompt 1 — Exhaustive B001 relevance scan
 
 > Work only from this source. Search the entire source for substantive discussion relevant to any of these B001 comparisons:
 >
@@ -37,7 +114,7 @@ Save to `relevance_scan.md`.
 
 ---
 
-## Prompt 2 — Evidence extraction
+## Secondary Prompt 2 — Evidence extraction
 
 > Work only from this source. For every B001 item marked substantive or extended, extract the author's actual position.
 >
@@ -67,7 +144,7 @@ Set `verification_status=UNVERIFIED` initially.
 
 ---
 
-## Prompt 3 — Argument map
+## Secondary Prompt 3 — Argument map
 
 > Work only from this source. For each substantive B001 discussion, map the author's reasoning as:
 >
@@ -85,7 +162,7 @@ Save to `argument_map.md`.
 
 ---
 
-## Prompt 4 — Counterevidence and disagreements
+## Secondary Prompt 4 — Counterevidence and disagreements
 
 > Work only from this source. Extract every place where the author:
 > - expresses uncertainty;
@@ -101,7 +178,7 @@ Save to `counterevidence.md`.
 
 ---
 
-## Prompt 5 — Bibliography leads
+## Secondary Prompt 5 — Bibliography leads
 
 > Work only from this source. For each substantive B001 discussion, list the sources in footnotes/bibliography that the author relies on or disputes and that look directly relevant to the textual problem. Give the cited author, title or abbreviated title, year if visible, pages if visible, and why it matters. Do not invent full bibliographic details that are not visible.
 
@@ -109,7 +186,7 @@ Save to `bibliography_leads.md`.
 
 ---
 
-## Prompt 6 — NotebookLM self-audit
+## Secondary Prompt 6 — NotebookLM self-audit
 
 > Audit your own extraction against this source only.
 >
