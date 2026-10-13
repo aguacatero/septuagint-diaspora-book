@@ -1,5 +1,5 @@
 order,source_id,source_class,author_or_editor,title,year,notebook_label,status,review_status,notes
-1,P01F,PRIMARY,Michael W. Holmes,The Greek New Testament: SBL Edition,2010,P01F — SBLGNT — Greek New Testament — Holmes 2010,EXTRACTED,AWAITING_REVIEW,Free scholarly Greek NT working text; apparatus limits must remain explicit
+1,P01F,PRIMARY,Michael W. Holmes,The Greek New Testament: SBL Edition,2010,P01F — SBLGNT — Greek New Testament — Holmes 2010,DONE,ACCEPTED,Free scholarly Greek NT working text; apparatus limits must remain explicit
 2,P02F,PRIMARY,H. B. Swete,The Old Testament in Greek According to the Septuagint Vol. I,public-domain,P02F — Swete LXX — Vol 1 Genesis–IV Kings,PENDING,NOT_REVIEWED,Working Greek OT source for Genesis Exodus Deuteronomy; not equivalent to Göttingen
 3,P03F,PRIMARY,H. B. Swete,The Old Testament in Greek According to the Septuagint Vol. III,public-domain,P03F — Swete LXX — Vol 3 Prophets,PENDING,NOT_REVIEWED,Working Greek OT source for Hosea Joel Isaiah; not equivalent to Göttingen
 4,S01F,SECONDARY,James Aageson,Paul's Use of Scripture,1984,S01F — Aageson — Paul’s Use of Scripture — 1984,PENDING,NOT_REVIEWED,Open-access dissertation; methodology/general Pauline use
