@@ -19,6 +19,7 @@ Antigravity rewrites this file for every source before requesting review.
 - `metadata.md`
 - `relevance_scan.md`
 - `extraction.md`
+- `primary_text_ledger.csv`
 - `citation_ledger.csv`
 - `argument_map.md`
 - `counterevidence.md`
