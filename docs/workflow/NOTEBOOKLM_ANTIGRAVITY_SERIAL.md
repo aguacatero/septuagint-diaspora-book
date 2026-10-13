@@ -148,12 +148,15 @@ Before each independent review, Antigravity rewrites:
 It must contain:
 - source ID and exact citation;
 - current branch and PR;
-- full 40-character HEAD SHA;
+- `Review readiness: READY`;
+- `Review target: LIVE_PR_HEAD`;
 - paths changed for this source;
 - exact review scope;
 - source URL/identifier when public;
 - extraction limitations;
 - required verdict format.
+
+The request file must not attempt to contain its own commit SHA. At review time ChatGPT resolves the **current live PR HEAD**, verifies the request is still READY for the active source, and writes that exact 40-character SHA into the PR review comment. The review controller then rejects stale comments if HEAD later changes.
 
 ChatGPT should review only the named source packet plus governing methodology unless it finds a cross-cutting problem.
 
