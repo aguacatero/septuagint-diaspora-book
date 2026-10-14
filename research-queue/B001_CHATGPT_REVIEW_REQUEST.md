@@ -56,6 +56,7 @@ Do not reward agreement with the project's hypothesis. Negative, indeterminate, 
 ## Required response format
 
 ```text
+ISSUED_AT_PT: <YYYY-MM-DD HH:MM PT>
 REVIEWED_SHA: <reviewer inserts current live PR HEAD>
 
 SOURCE_ID: P02F
