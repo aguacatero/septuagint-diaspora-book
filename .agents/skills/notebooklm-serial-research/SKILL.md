@@ -25,6 +25,7 @@ This skill governs the active B001 research lane. It does not change the Project
 8. **Citation provenance is mandatory.** Every substantive author claim and every direct quotation must retain a locator. If NotebookLM cannot expose a printed page or reliable source location, mark `LOCATOR_UNVERIFIED`.
 9. **Primary-text claims are separate from secondary-author claims.** Do not turn a secondary author's assertion into a primary-text fact.
 10. **No premature book prose.** Produce evidence records and argument maps first. Final prose comes after passage-level synthesis and review.
+11. **Timestamp every owner-facing status.** Every pipeline/checkpoint message must include an absolute America/Los_Angeles date and time in the header, plus source, live HEAD, current state, what it is waiting on, and whether owner action is required.
 
 ## State machine
 
