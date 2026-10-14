@@ -41,6 +41,8 @@ then independently review the named source packet at the **current live PR HEAD*
 
 The request file deliberately does not contain its own commit SHA. The reviewer resolves live HEAD at review time and writes:
 
+`ISSUED_AT_PT: <YYYY-MM-DD HH:MM PT>`
+
 `REVIEWED_SHA: <current full 40-character HEAD SHA>`
 
 in the PR comment.
@@ -55,7 +57,7 @@ Check:
 - whether the packet follows the correct PRIMARY or SECONDARY extraction route;
 - whether it is safe to promote into `SDP-01 Paul`.
 
-Post `SOURCE_PACKET: ACCEPT` or `SOURCE_PACKET: REVISE` to PR #2. Do not edit Antigravity's research packet while acting as independent reviewer.
+Post `SOURCE_PACKET: ACCEPT` or `SOURCE_PACKET: REVISE` to PR #2. Every review comment must include `ISSUED_AT_PT` near the top so the owner can tell exactly when the verdict was issued. Do not edit Antigravity's research packet while acting as independent reviewer.
 
 ### If `active_phase` is extraction/work in progress
 
@@ -89,3 +91,21 @@ For `SECONDARY` queue items, extract the scholar's claims, reasoning, qualificat
 ## Current-batch boundary
 
 Do not begin later research batches until B001 has passed the defined completion/review gates.
+
+
+## Owner-facing progress format
+
+When the user asks for status, lead with:
+
+```text
+STATUS AS OF: YYYY-MM-DD HH:MM PT
+Source: <SOURCE_ID>
+Live HEAD: <SHA>
+State: <state>
+Last independent review: <verdict + timestamp>
+Waiting on: <who/what>
+Owner action: <NONE or explicit action>
+Progress: <accepted sources>/<total queue sources>
+```
+
+Then explain only meaningful blockers or recent changes.
