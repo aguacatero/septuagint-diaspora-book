@@ -34,8 +34,8 @@ These items document the printed Greek text and textual apparatus for the five P
 - **NotebookLM Citation:** [1]
 - **Apparatus Present:** YES (in preceding clause)
 - **Apparatus Readings & Witnesses:** `24 τη γυναικι] προς την γυναικα DE`
-- **Textual Feature:** Prepositional variant in preceding clause (Codex Alexandrinus A has `τῇ γυναικὶ αὐτοῦ`; Codex Cottonianus D and Codex Bodleianus E read `πρὸς τὴν γυναῖκα`); target quotation clause proper (`καὶ ἔσονται οἱ δύο εἰς σάρκα μίαν`) includes explicit numeral subject `οἱ δύο` and is attested without variation across the witnesses collated by Swete at this locus (A, D, E; cf. accepted P01F-P007 1 Cor 6:16 `Ἔσονται γάρ, φησίν, οἱ δύο εἰς σάρκα μίαν`).
-- **Limitation:** Supplies only the Greek uncial witnesses collated by Swete at this locus (A, D, E; B in lacuna); lacks Hebrew text of Gen 2:24 and New Testament citation context (evaluated under accepted P01F-P007).
+- **Textual Feature:** Prepositional variant in preceding clause (Codex Alexandrinus A has `τῇ γυναικὶ αὐτοῦ`; Codex Cottonianus D and Codex Bodleianus E read `πρὸς τὴν γυναῖκα`); target quotation clause proper (`καὶ ἔσονται οἱ δύο εἰς σάρκα μίαν`) includes explicit numeral subject `οἱ δύο` and is attested without variation across the witnesses collated by Swete at this locus (A, D, E; cf. accepted P01F-P009 1 Cor 6:16 `Ἔσονται γάρ, φησίν, οἱ δύο εἰς σάρκα μίαν`).
+- **Limitation:** Supplies only the Greek uncial witnesses collated by Swete at this locus (A, D, E; B in lacuna); lacks Hebrew text of Gen 2:24 and New Testament citation context (evaluated under accepted P01F-P009).
 
 ---
 
@@ -62,8 +62,8 @@ These items document the printed Greek text and textual apparatus for the five P
 - **NotebookLM Citation:** [5]
 - **Apparatus Present:** YES
 - **Apparatus Readings & Witnesses:** `5–6 plurima mutila in F; 6 πειν B* (πιειν Bab A)`
-- **Textual Feature:** Target narrative clause `καὶ ἐκάθισεν ὁ λαὸς φαγεῖν καὶ πιεῖν, καὶ ἀνέστησαν παίζειν` features singular verb `ἐκάθισεν` with collective subject `ὁ λαός`, coordinated aorist infinitives `φαγεῖν καὶ πιεῖν` (where the original hand of Codex Vaticanus B\* exhibits the itacistic spelling `πειν`, corrected by B\^ab and A to `πιειν`), followed by plural verb `ἀνέστησαν` governing `παίζειν`. Exhibits close lexical and syntactic agreement with 1 Cor 10:7 (cf. accepted P01F-P008), with a drinking-infinitive form difference: P02F prints `πιεῖν` (with B\* `πειν`), whereas accepted P01F-P008 prints `πεῖν`.
-- **Limitation:** Supplies only the Greek uncial witnesses collated by Swete at this locus (B, A; F mutilated); lacks Hebrew text of Exod 32:6 and New Testament citation context (evaluated under accepted P01F-P008).
+- **Textual Feature:** Target narrative clause `καὶ ἐκάθισεν ὁ λαὸς φαγεῖν καὶ πιεῖν, καὶ ἀνέστησαν παίζειν` features singular verb `ἐκάθισεν` with collective subject `ὁ λαός`, coordinated aorist infinitives `φαγεῖν καὶ πιεῖν` (where the original hand of Codex Vaticanus B\* exhibits the itacistic spelling `πειν`, corrected by B\^ab and A to `πιειν`), followed by plural verb `ἀνέστησαν` governing `παίζειν`. Exhibits close lexical and syntactic agreement with 1 Cor 10:7 (cf. accepted P01F-P011), with a drinking-infinitive form difference: P02F prints `πιεῖν` (with B\* `πειν`), whereas accepted P01F-P011 prints `πεῖν`.
+- **Limitation:** Supplies only the Greek uncial witnesses collated by Swete at this locus (B, A; F mutilated); lacks Hebrew text of Exod 32:6 and New Testament citation context (evaluated under accepted P01F-P011).
 
 ---
 
@@ -76,8 +76,8 @@ These items document the printed Greek text and textual apparatus for the five P
 - **NotebookLM Citation:** [6]
 - **Apparatus Present:** YES
 - **Apparatus Readings & Witnesses:** `23 ου κοιμ.] ουκ επικοιμ. AF | αυτο] αυτον AF | κεκατηραμενος AF | ου 2°] + μη AF | μιανειτε] μιανειται A μιανηται F`
-- **Textual Feature:** Target clause reads `ὅτι κεκαταραμένος ὑπὸ θεοῦ πᾶς κρεμάμενος ἐπὶ ξύλου`, featuring the perfect passive participle `κεκαταραμένος` (Codex B; Codices A and F read phonological variant `κεκατηραμενος`); all witnesses collated by Swete at this locus (B, A, F) unanimously retain the divine agent phrase `ὑπὸ θεοῦ` (cf. accepted P01F-P002 in Gal 3:13, where Paul reads predicate verbal adjective `Ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου` without `ὑπὸ θεοῦ`).
-- **Limitation:** Supplies only the Greek uncial witnesses collated by Swete at this locus (B, A, F); lacks Hebrew text of Deut 21:23 and New Testament citation context (evaluated under accepted P01F-P002).
+- **Textual Feature:** Target clause reads `ὅτι κεκαταραμένος ὑπὸ θεοῦ πᾶς κρεμάμενος ἐπὶ ξύλου`, featuring the perfect passive participle `κεκαταραμένος` (Codex B; Codices A and F read phonological variant `κεκατηραμενος`); all witnesses collated by Swete at this locus (B, A, F) unanimously retain the divine agent phrase `ὑπὸ θεοῦ` (cf. accepted P01F-P012 in Gal 3:13, where Paul reads predicate verbal adjective `Ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου` without `ὑπὸ θεοῦ`).
+- **Limitation:** Supplies only the Greek uncial witnesses collated by Swete at this locus (B, A, F); lacks Hebrew text of Deut 21:23 and New Testament citation context (evaluated under accepted P01F-P012).
 
 ---
 

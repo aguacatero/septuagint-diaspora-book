@@ -53,7 +53,7 @@ From Swete's Preface and Table of Manuscripts:
   - For preceding clause: `24 τη γυναικι] προς την γυναικα DE`
   - For target quotation clause proper (`καὶ ἔσονται οἱ δύο εἰς σάρκα μίαν`): `NONE IN THIS SOURCE`
 - **Discriminating Textual Features:**
-  - *Subject Numeral:* The target clause explicitly contains the subject numeral phrase `οἱ δύο` (`καὶ ἔσονται οἱ δύο εἰς σάρκα μίαν`), attested without variation across the witnesses collated by Swete at this locus (A, D, E; cf. accepted P01F-P007 1 Corinthians 6:16 `Ἔσονται γάρ, φησίν, οἱ δύο εἰς σάρκα μίαν`).
+  - *Subject Numeral:* The target clause explicitly contains the subject numeral phrase `οἱ δύο` (`καὶ ἔσονται οἱ δύο εἰς σάρκα μίαν`), attested without variation across the witnesses collated by Swete at this locus (A, D, E; cf. accepted P01F-P009 1 Corinthians 6:16 `Ἔσονται γάρ, φησίν, οἱ δύο εἰς σάρκα μίαν`).
   - *Preceding Clause Variant:* Codex Alexandrinus (A) reads dative `τῇ γυναικὶ αὐτοῦ`, while Codex Cottonianus (D) and Codex Bodleianus (E) read the prepositional accusative construction `πρὸς τὴν γυναῖκα`.
   - *Punctuation:* The citation clause is preceded by a high point (`·`) after `αὐτοῦ`.
 
@@ -83,7 +83,7 @@ From Swete's Preface and Table of Manuscripts:
 - **Discriminating Textual Features:**
   - *Orthographical Variant:* The original hand of Codex Vaticanus ($B^*$) wrote the itacistic form `πειν`, while the ancient corrector $B^{ab}$ and Codex Alexandrinus (A) read `πιειν`.
   - *Witness Defect:* Codex Ambrosianus (F) is noted as largely mutilated in this verse (`plurima mutila in F`).
-  - *Lexical & Syntactic Agreement with Drinking-Infinitive Form Difference:* The narrative quotation clause `καὶ ἐκάθισεν ὁ λαὸς φαγεῖν καὶ πιεῖν, καὶ ἀνέστησαν παίζειν` exhibits close lexical and syntactic congruence with Paul's quotation in 1 Cor 10:7 (cf. accepted P01F-P008 `Ἐκάθισεν ὁ λαὸς φαγεῖν καὶ πεῖν, καὶ ἀνέστησαν παίζειν`), with a specific drinking-infinitive form difference: P02F prints `πιεῖν` (with $B^*$ itacistic `πειν` and $B^{ab}$, A `πιειν`), whereas accepted P01F-P008 prints `πεῖν` (with textual variant `πιεῖν`).
+  - *Lexical & Syntactic Agreement with Drinking-Infinitive Form Difference:* The narrative quotation clause `καὶ ἐκάθισεν ὁ λαὸς φαγεῖν καὶ πιεῖν, καὶ ἀνέστησαν παίζειν` exhibits close lexical and syntactic congruence with Paul's quotation in 1 Cor 10:7 (cf. accepted P01F-P011 `Ἐκάθισεν ὁ λαὸς φαγεῖν καὶ πεῖν, καὶ ἀνέστησαν παίζειν`), with a specific drinking-infinitive form difference: P02F prints `πιεῖν` (with $B^*$ itacistic `πειν` and $B^{ab}$, A `πιειν`), whereas accepted P01F-P011 prints `πεῖν` (with textual variant `πιεῖν`).
 
 ---
 
@@ -95,7 +95,7 @@ From Swete's Preface and Table of Manuscripts:
 - **Apparatus Entry at Target Wording:**
   - `23 ου κοιμ.] ουκ επικοιμ. AF | αυτο] αυτον AF | κεκατηραμενος AF | ου 2°] + μη AF | μιανειτε] μιανειται A μιανηται F`
 - **Discriminating Textual Features:**
-  - *Participle vs. Adjective:* The Septuagint reads the perfect passive participle `κεκαταραμένος` (Codex B) or phonological variant `κεκατηραμενος` (Codices A and F; cf. accepted P01F-P002 in Galatians 3:13 which reads the predicate verbal adjective `Ἐπικατάρατος`).
-  - *Retention of Divine Agency:* All witnesses collated by Swete at this locus (Codices B, A, and F) **unanimously retain** the agentive prepositional phrase `ὑπὸ θεοῦ` ("cursed by God"); cf. accepted P01F-P002 in Galatians 3:13, which conspicuously omits `ὑπὸ θεοῦ`.
-  - *Articular vs. Anarthrous Participle:* Swete's uncial text reads anarthrous `πᾶς κρεμάμενος ἐπὶ ξύλου` (no article before `κρεμάμενος`; cf. accepted P01F-P002 in Galatians 3:13 articular `πᾶς ὁ κρεμάμενος ἐπὶ ξύλου`).
+  - *Participle vs. Adjective:* The Septuagint reads the perfect passive participle `κεκαταραμένος` (Codex B) or phonological variant `κεκατηραμενος` (Codices A and F; cf. accepted P01F-P012 in Galatians 3:13 which reads the predicate verbal adjective `Ἐπικατάρατος`).
+  - *Retention of Divine Agency:* All witnesses collated by Swete at this locus (Codices B, A, and F) **unanimously retain** the agentive prepositional phrase `ὑπὸ θεοῦ` ("cursed by God"); cf. accepted P01F-P012 in Galatians 3:13, which conspicuously omits `ὑπὸ θεοῦ`.
+  - *Articular vs. Anarthrous Participle:* Swete's uncial text reads anarthrous `πᾶς κρεμάμενος ἐπὶ ξύλου` (no article before `κρεμάμενος`; cf. accepted P01F-P012 in Galatians 3:13 articular `πᾶς ὁ κρεμάμενος ἐπὶ ξύλου`).
   - *Syntax & Punctuation:* Introduced by causal conjunction `ὅτι` and punctuated with a Greek colon (`:`) before the command `καὶ οὐ μιανεῖτε`.
