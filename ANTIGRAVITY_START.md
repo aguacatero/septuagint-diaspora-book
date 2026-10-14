@@ -30,3 +30,24 @@ Open aguacatero/septuagint-diaspora-book on branch research/B001-notebooklm-seri
 ```
 
 Use Antigravity's `/schedule` capability (or the equivalent scheduled-task UI). Hourly is intentionally conservative; the workflow is state-driven, not speed-driven.
+
+
+## Required human-readable status format
+
+Every Antigravity pipeline report shown to the owner MUST begin with a Pacific-time timestamp and use this compact structure:
+
+```text
+### B001 Pipeline Check — YYYY-MM-DD HH:MM PT
+Iteration: <N>
+Source: <SOURCE_ID> — <short title>
+Live HEAD: <full 40-character SHA>
+State: <ACTIVE_PHASE>
+Last review: <ACCEPT|REVISE|NONE> — <review timestamp if known>
+Action taken: <one concise sentence>
+Waiting on: <CHATGPT REVIEW|ANTIGRAVITY WORK|OWNER|NOTHING>
+Owner action: <NONE or explicit action>
+```
+
+Use America/Los_Angeles local time. Include the date every time; never output only an iteration number or relative phrase such as "next hour."
+
+For longer reports, put the timestamped status block first, then details below it. The owner must be able to understand current state from the first 8 lines alone.
