@@ -9,7 +9,8 @@ Antigravity rewrites this file for every source before requesting review.
 - Public/source locator: `https://archive.org/details/oldtestamentingr0001henr`
 - Branch: `research/B001-notebooklm-serial`
 - Draft PR: `2`
-- Extraction status: Complete primary route source packet generated and citations verified against source text.
+- Extraction status: Complete primary route source packet revised and re-audited per PR comment 6159404391 findings.
+- Re-review context: Addressed all 5 required corrections from Comment 6159404391 (queue CSV status synchronized, verbatim claims removed with explicit drinking-infinitive form difference preserved, Pauline comparanda strictly source-bounded and attributed to accepted P01F IDs, witness consensus scoped to Swete collations at each locus, self-audit updated).
 - Review readiness: `READY`
 - Review target: `LIVE_PR_HEAD`
 

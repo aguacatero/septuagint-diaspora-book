@@ -34,3 +34,19 @@
 ### 2. Unaccented Apparatus Typography
 - **Observation:** Swete’s apparatus prints Greek variant readings strictly without accents or breathings (e.g., `24 τη γυναικι] προς την γυναικα DE` on p. 4; `23 ου κοιμ.] ουκ επικοιμ. AF | αυτο] αυτον AF | κεκατηραμενος AF | ου 2°] + μη AF | μιανειτε] μιανειται A μιανηται F` on p. 386).
 - **Confirmation:** Swete's exact typographic convention of unaccented, unbreathed Greek typography is preserved across all apparatus entries in `primary_text_ledger.csv`, `extraction.md`, `relevance_scan.md`, and `counterevidence.md`.
+
+### 3. Queue and State Synchronization (Review Comment 6159404391 Finding 1)
+- **Observation:** `B001_NOTEBOOKLM_STATE.json` indicated `active_source_id: "P02F"`, `active_phase: "AWAITING_REVIEW"`, while row 2 in `research-queue/B001_NOTEBOOKLM_SOURCE_QUEUE.csv` remained marked `PENDING,NOT_REVIEWED`.
+- **Correction:** Row 2 in `B001_NOTEBOOKLM_SOURCE_QUEUE.csv` synchronized to `status: IN_PROGRESS`, `review_status: AWAITING_REVIEW` to align the restartable state machine across all repository ledgers.
+
+### 4. Elimination of Verbatim Claim on Exodus 32:6 (Review Comment 6159404391 Finding 2)
+- **Observation:** Characterizing Exodus 32:6 as a "verbatim match" to 1 Corinthians 10:7 contradicted the source evidence: P02F prints `πιεῖν` (with $B^*$ itacistic `πειν` and $B^{ab}$, A `πιειν`), whereas accepted P01F-P008 prints `πεῖν`.
+- **Correction:** Removed all "verbatim" descriptors. Replaced across `extraction.md`, `primary_text_ledger.csv`, `relevance_scan.md`, and `counterevidence.md` with: "close lexical and syntactic agreement with 1 Cor 10:7 (cf. accepted P01F-P008), with a drinking-infinitive form difference (P02F prints `πιεῖν` vs accepted P01F-P008 `πεῖν`)."
+
+### 5. Source-Bounded Primary Extraction & Provenanced P01F Attribution (Review Comment 6159404391 Finding 3)
+- **Observation:** Several notes in P02F contained unprovenanced assertions regarding Pauline wording. The PRIMARY route contract mandates strict source-bounding to the currently loaded witness.
+- **Correction:** Scrupulously scoped all P02F evidence to the printed text and apparatus of Swete Vol. I. External comparisons with the Pauline textual tradition are explicitly attributed to their accepted P01F evidence IDs (`P01F-P001`, `P01F-P002`, `P01F-P007`, `P01F-P008`, `P01F-P010`) or reserved for downstream passage-level synthesis.
+
+### 6. Scoped Witness-Consensus Language (Review Comment 6159404391 Finding 4)
+- **Observation:** Unqualified phrases such as "unanimous agreement among collated uncials" could be misconstrued as claims regarding the entire Greek manuscript tradition rather than the specific witnesses collated by Swete.
+- **Correction:** Scoped all witness-agreement language across `extraction.md`, `primary_text_ledger.csv`, `relevance_scan.md`, and `counterevidence.md` strictly to "the witnesses collated by Swete at this locus (e.g. B, A, D, E, F as extant)."

@@ -24,9 +24,9 @@ From Swete's Preface and Table of Manuscripts:
 - **Printed Text:** `καὶ ἐπίστευσεν Ἀβρὰμ τῷ θεῷ, καὶ ἐλογίσθη αὐτῷ εἰς δικαιοσύνην.`
 - **Apparatus Entry:** `NONE IN THIS SOURCE` (apparatus on p. 25 covers variants for Gen 14:20–24 and 15:1, 7, 10, 12; no entry at 15:6).
 - **Discriminating Textual Features:**
-  - *Proper Name:* Spelled with a single alpha as `Ἀβράμ` (Abram), preceding the covenant name change at Genesis 17:5. In contrast, Paul in Romans 4:3 reads the Hellenized covenant form `Ἀβραάμ` (Abraham).
-  - *Syntax & Formula:* Opens with coordinating conjunction `καί` (`καὶ ἐπίστευσεν...`), coordinating directly with the narrative of Genesis 15:5, and the passive clause is introduced by coordinating `καί` (`καὶ ἐλογίσθη αὐτῷ εἰς δικαιοσύνην`). In Romans 4:3, Paul embeds the citation after an introductory formula (`τί γὰρ ἡ γραφὴ λέγει;`) with the postpositive connective `δὲ` (`Ἐπίστευσεν δὲ Ἀβραάμ...`).
-  - *Witness Agreement:* Unanimous consensus between extant uncial witnesses A and D; no textual divergence is recorded.
+  - *Proper Name:* Spelled with a single alpha as `Ἀβράμ` (Abram), preceding the covenant name change at Genesis 17:5 (cf. accepted P01F-P001 in Romans 4:3, which reads covenant form `Ἀβραάμ`).
+  - *Syntax & Formula:* Opens with coordinating conjunction `καί` (`καὶ ἐπίστευσεν...`), coordinating directly with the narrative of Genesis 15:5, and the passive clause is introduced by coordinate verb phrase `καὶ ἐλογίσθη αὐτῷ εἰς δικαιοσύνην` (cf. accepted P01F-P001 in Romans 4:3 `Ἐπίστευσεν δὲ Ἀβραάμ...` following introductory formula `τί γὰρ ἡ γραφὴ λέγει;`).
+  - *Witness Agreement:* Unanimous consensus among the witnesses collated by Swete at this locus (extant uncial witnesses Codex Alexandrinus A and Cotton Genesis D; Codex Vaticanus B in lacuna); no textual divergence is recorded.
 
 ---
 
@@ -53,7 +53,7 @@ From Swete's Preface and Table of Manuscripts:
   - For preceding clause: `24 τη γυναικι] προς την γυναικα DE`
   - For target quotation clause proper (`καὶ ἔσονται οἱ δύο εἰς σάρκα μίαν`): `NONE IN THIS SOURCE`
 - **Discriminating Textual Features:**
-  - *Subject Numeral:* The target clause explicitly contains the subject numeral phrase `οἱ δύο` (`καὶ ἔσονται οἱ δύο εἰς σάρκα μίαν`), attested unanimously without variation across all collated uncials (A, D, E). This explicit subject `οἱ δύο` matches the Pauline quotation in 1 Corinthians 6:16 (`Ἔσονται γάρ, φησίν, οἱ δύο εἰς σάρκα μίαν`).
+  - *Subject Numeral:* The target clause explicitly contains the subject numeral phrase `οἱ δύο` (`καὶ ἔσονται οἱ δύο εἰς σάρκα μίαν`), attested without variation across the witnesses collated by Swete at this locus (A, D, E; cf. accepted P01F-P007 1 Corinthians 6:16 `Ἔσονται γάρ, φησίν, οἱ δύο εἰς σάρκα μίαν`).
   - *Preceding Clause Variant:* Codex Alexandrinus (A) reads dative `τῇ γυναικὶ αὐτοῦ`, while Codex Cottonianus (D) and Codex Bodleianus (E) read the prepositional accusative construction `πρὸς τὴν γυναῖκα`.
   - *Punctuation:* The citation clause is preceded by a high point (`·`) after `αὐτοῦ`.
 
@@ -66,8 +66,8 @@ From Swete's Preface and Table of Manuscripts:
 - **Printed Text:** `Οὐ φιμώσεις βοῦν ἀλοῶντα.`
 - **Apparatus Entry:** `NONE IN THIS SOURCE` (apparatus on p. 392 covers 24:15–21 and 25:1, 2, 3, 5; no variation unit at 25:4).
 - **Discriminating Textual Features:**
-  - *Prohibition Verb:* Preserves the future indicative prohibition verb `φιμώσεις` (`Οὐ φιμώσεις`), with unanimous agreement across primary uncial witnesses B, A, and F.
-  - *Absence of Variant:* No occurrence of the lexical alternative `κημώσεις` (found in modern critical editions of 1 Corinthians 9:9, e.g., Tregelles, NIV, Holmes SBLGNT) appears anywhere in the uncial Septuagint manuscript tradition collated by Swete.
+  - *Prohibition Verb:* Preserves the future indicative prohibition verb `φιμώσεις` (`Οὐ φιμώσεις`), with unanimous agreement across the witnesses collated by Swete at this locus (B, A, and F).
+  - *Absence of Variant:* No occurrence of the lexical alternative `κημώσεις` appears anywhere among the witnesses collated by Swete at this locus (cf. accepted P01F-P010 in 1 Corinthians 9:9).
   - *Syntax & Punctuation:* Formatted as a concise independent legal sentence starting with capitalized `Οὐ` and ending with a period (`.`).
 
 ---
@@ -81,9 +81,9 @@ From Swete's Preface and Table of Manuscripts:
   - `5–6 plurima mutila in F`
   - `6 ορθρισας] + ο.....F* (om ο F?) | θυ... F | πειν B* (πιειν Bab A)`
 - **Discriminating Textual Features:**
-  - *Orthographical Variant:* The original hand of Codex Vaticanus ($B^*$) wrote the itacistic form `πειν`, while the ancient corrector $B^{ab}$ and Codex Alexandrinus (A) read `πιειν`. Holmes's SBLGNT prints `πεῖν` in 1 Cor 10:7 with a variant `πιεῖν`.
+  - *Orthographical Variant:* The original hand of Codex Vaticanus ($B^*$) wrote the itacistic form `πειν`, while the ancient corrector $B^{ab}$ and Codex Alexandrinus (A) read `πιειν`.
   - *Witness Defect:* Codex Ambrosianus (F) is noted as largely mutilated in this verse (`plurima mutila in F`).
-  - *Verbatim Agreement:* The narrative quotation clause `καὶ ἐκάθισεν ὁ λαὸς φαγεῖν καὶ πιεῖν, καὶ ἀνέστησαν παίζειν` exhibits exact grammatical and lexical congruence with Paul's quotation in 1 Cor 10:7 (`Ἐκάθισεν ὁ λαὸς φαγεῖν καὶ πεῖν, καὶ ἀνέστησαν παίζειν`).
+  - *Lexical & Syntactic Agreement with Drinking-Infinitive Form Difference:* The narrative quotation clause `καὶ ἐκάθισεν ὁ λαὸς φαγεῖν καὶ πιεῖν, καὶ ἀνέστησαν παίζειν` exhibits close lexical and syntactic congruence with Paul's quotation in 1 Cor 10:7 (cf. accepted P01F-P008 `Ἐκάθισεν ὁ λαὸς φαγεῖν καὶ πεῖν, καὶ ἀνέστησαν παίζειν`), with a specific drinking-infinitive form difference: P02F prints `πιεῖν` (with $B^*$ itacistic `πειν` and $B^{ab}$, A `πιειν`), whereas accepted P01F-P008 prints `πεῖν` (with textual variant `πιεῖν`).
 
 ---
 
@@ -95,7 +95,7 @@ From Swete's Preface and Table of Manuscripts:
 - **Apparatus Entry at Target Wording:**
   - `23 ου κοιμ.] ουκ επικοιμ. AF | αυτο] αυτον AF | κεκατηραμενος AF | ου 2°] + μη AF | μιανειτε] μιανειται A μιανηται F`
 - **Discriminating Textual Features:**
-  - *Participle vs. Adjective:* The Septuagint reads the perfect passive participle `κεκαταραμένος` (Codex B) or phonological variant `κεκατηραμενος` (Codices A and F). In contrast, Paul in Galatians 3:13 reads the predicate verbal adjective `Ἐπικατάρατος` (`Ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου`).
-  - *Retention of Divine Agency:* All extant uncial witnesses collated by Swete (Codices B, A, and F) **unanimously retain** the agentive prepositional phrase `ὑπὸ θεοῦ` ("cursed by God"). Paul's quotation in Galatians 3:13 conspicuously **omits** `ὑπὸ θεοῦ`.
-  - *Articular vs. Anarthrous Participle:* Swete's uncial text reads anarthrous `πᾶς κρεμάμενος ἐπὶ ξύλου` (no article before `κρεμάμενος`), whereas Pauline textual witnesses in Galatians 3:13 read articular `πᾶς ὁ κρεμάμενος ἐπὶ ξύλου`.
-  - *Syntax & Punctuation:* Introduced by causal conjunction `ὅτι` and terminated by a high point (`·`) before the command `καὶ οὐ μιανεῖτε`.
+  - *Participle vs. Adjective:* The Septuagint reads the perfect passive participle `κεκαταραμένος` (Codex B) or phonological variant `κεκατηραμενος` (Codices A and F; cf. accepted P01F-P002 in Galatians 3:13 which reads the predicate verbal adjective `Ἐπικατάρατος`).
+  - *Retention of Divine Agency:* All witnesses collated by Swete at this locus (Codices B, A, and F) **unanimously retain** the agentive prepositional phrase `ὑπὸ θεοῦ` ("cursed by God"); cf. accepted P01F-P002 in Galatians 3:13, which conspicuously omits `ὑπὸ θεοῦ`.
+  - *Articular vs. Anarthrous Participle:* Swete's uncial text reads anarthrous `πᾶς κρεμάμενος ἐπὶ ξύλου` (no article before `κρεμάμενος`; cf. accepted P01F-P002 in Galatians 3:13 articular `πᾶς ὁ κρεμάμενος ἐπὶ ξύλου`).
+  - *Syntax & Punctuation:* Introduced by causal conjunction `ὅτι` and punctuated with a Greek colon (`:`) before the command `καὶ οὐ μιανεῖτε`.
