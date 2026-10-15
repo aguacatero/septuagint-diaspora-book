@@ -61,7 +61,7 @@ From Swete's Preface (Vol. III, pp. v–xix) and Table of Manuscripts:
   `16 om κς 2° א A Q* (hab Qmg) Γ | εμβαλω א A Q | Σιων BabאAQΓ | αυτης] + ※ τεθεμελιωμενον Qmg | ο πιστευων] + επ αυτω א A Q | ου μη καταισχυνθη] οι γ' (θη sup ras A?vid) ου σπευσει Qmg`
 - **Discriminating Textual Features:**
   - *Prepositional Complement `ἐπ᾽ αὐτῷ`:* Codex Vaticanus (B) base text reads anarthrous participial clause without complement: `ὁ πιστεύων οὐ μὴ καταισχυνθῇ`. However, Codices Sinaiticus ($\aleph$), Alexandrinus (A), and Marchalianus (Q) unanimously add `ἐπ᾽ αὐτῷ` (`ο πιστευων] + επ αυτω א A Q`).
-  - *Relation to Pauline Citation:* In Romans 10:11 (cf. accepted P01F-P004 `λέγει γὰρ ἡ γραφή· Πᾶς ὁ πιστεύων ἐπʼ αὐτῷ οὐ καταισχυνθήσεται`) and Romans 9:33 (`καὶ ὁ πιστεύων ἐπʼ αὐτῷ οὐ καταισχυνθήσεται`), Paul incorporates `ἐπ᾽ αὐτῷ`. Swete's apparatus demonstrates that `ἐπ᾽ αὐτῷ` is firmly established in the early Greek Old Testament uncial tradition ($\aleph, A, Q$) and was not invented by Paul.
+  - *Relation to Pauline Citation:* In Romans 10:11 (cf. accepted P01F-P004 `λέγει γὰρ ἡ γραφή· Πᾶς ὁ πιστεύων ἐπʼ αὐτῷ οὐ καταισχυνθήσεται`) and Romans 9:33 (`καὶ ὁ πιστεύων ἐπʼ αὐτῷ οὐ καταισχυνθήσεται`), Paul incorporates `ἐπ᾽ αὐτῷ`. Swete's apparatus demonstrates that `ἐπ᾽ αὐτῷ` is attested in Swete-collated Greek OT witnesses ($\aleph, A, Q$), matching the accepted Pauline reading; whether this reading reflects pre-Pauline textual priority or another relationship is deferred to later cross-source synthesis.
   - *Absence of Universal Quantifier `πᾶς`:* No manuscript collated by Swete at this locus (B, $\aleph$, A, Q, Γ) contains the initial universal quantifier `πᾶς`; in Rom 10:11 `Πᾶς` represents Paul's contextual framing.
   - *Verb Mood / Hexapla:* All Greek uncials read subjunctive `καταισχυνθῇ` (governed by `οὐ μή`), while the Hexaplaric note records that the Three ($\alpha', \sigma', \theta'$) read `οὐ σπεύσει` in $Q^{mg}$, representing the Hebrew verb form יָחִישׁ. The letters `θη` of `καταισχυνθη` were written over an erasure in Codex A (`θη sup ras A?vid`).
 
@@ -75,9 +75,8 @@ From Swete's Preface (Vol. III, pp. v–xix) and Table of Manuscripts:
 - **Apparatus Entry:**
   `32 αν] εαν א | επικαληται א* (-λεσηται אc.a -λησηται אc.b) | Σιων BabאAQ | om εν 2° A | ευαγγελισμενος (-νοι Q*vid)`
 - **Discriminating Textual Features:**
-  - *Verbatim Agreement of Target Clause:* The target quotation clause `καὶ ἔσται πᾶς ὃς ἂν ἐπικαλέσηται τὸ ὄνομα Κυρίου σωθήσεται` is attested with complete unanimity across the collated uncial witnesses (B, A, Q, and $\aleph^{c.a}$).
-  - *Orthographic / Tense Variants:* Codex Sinaiticus original hand ($\aleph^*$) reads present/itacistic subjunctive `ἐπικαλῆται` (corrected by $\aleph^{c.a}$ to aorist `ἐπικαλέσηται`, with $\aleph^{c.b}$ reading `ἐπικαλήσηται`), and $\aleph$ reads `ἐάν` for `ἄν`. Codex Vaticanus (B) writes itacistic `Σειών` (corrected by $B^{ab}, \aleph, A, Q$ to `Σιών`).
-  - *Relation to Pauline Citation:* The Old Greek text identical to Paul's quotation in Rom 10:13 (cf. accepted P01F-P005 `Πᾶς γὰρ ὃς ἂν ἐπικαλέσηται τὸ ὄνομα κυρίου σωθήσεται`), where Paul substitutes introductory coordinating `καὶ ἔσται` with explanatory postpositive `γάρ` (`Πᾶς γάρ`).
+  - *Quotation Clause Support and Sinaiticus Variation:* The target quotation clause wording `καὶ ἔσται πᾶς ὃς ἂν ἐπικαλέσηται τὸ ὄνομα Κυρίου σωθήσεται` is strongly supported by B, A, Q, and corrected Sinaiticus ($\aleph^{c.a}$), closely matching the quotation wording in Rom 10:13 (cf. accepted P01F-P005 `Πᾶς γὰρ ὃς ἂν ἐπικαλέσηται τὸ ὄνομα κυρίου σωθήσεται`, where Paul substitutes introductory coordinating `καὶ ἔσται` with explanatory postpositive `γάρ`).
+  - *Orthographic / Tense Variants in Apparatus:* The apparatus records minor/formal variation in Codex Sinaiticus: $\aleph$ reads `ἐάν` for `ἄν` (`32 αν] εαν א`), and the original hand ($\aleph^*$) reads present/itacistic subjunctive `ἐπικαλῆται` (corrected by $\aleph^{c.a}$ to aorist `ἐπικαλέσηται`, and by $\aleph^{c.b}$ to `ἐπικαλήσηται`). Codex Vaticanus (B) prints itacistic `Σειών` (corrected by $B^{ab}, \aleph, A, Q$ to `Σιών`).
 
 ---
 
@@ -92,7 +91,7 @@ From Swete's Preface (Vol. III, pp. v–xix) and Table of Manuscripts:
   - *Word Order of Counselor Phrase:* Codex Vaticanus (B) base text reads `αὐτοῦ σύμβουλος`. In contrast, Codices Alexandrinus (A), Marchalianus (Q), and Cryptoferratensis (Γ) invert the pronoun to read `σύμβουλος αὐτοῦ` (`13 συμβουλος αυτου AQΓ`).
   - *Relation to Pauline Citation:* Paul in Romans 11:34 (cf. accepted P01F-P006 `Τίς γὰρ ἔγνω νοῦν κυρίου; ἢ τίς σύμβουλος αὐτοῦ ἐγένετο;`) follows the postpositive word order `σύμβουλος αὐτοῦ`, exactly matching the reading of AQΓ against B.
   - *Verb Form:* B base text prints circumflex contract future `συμβιβᾷ`, whereas $\aleph^{c.a}$, A, $Q^{mg}$, and Γ read full future indicative `συμβιβάσει`.
-  - *Early Pauline Assimilation in Verse 14:* The apparatus documents that the original hand of Codex Sinaiticus ($\aleph^*$) and Codex Alexandrinus (A) interpolated the exact wording of Romans 11:35 into verse 14 (`+ ἢ τίς προέδωκεν αὐτῷ καὶ ἀνταποδοθήσεται αὐτῷ`), providing evidence of secondary Christian scribal harmonization back into Old Greek manuscripts.
+  - *Attestation of Rom 11:35 Wording in Verse 14:* The apparatus documents that the original hand of Codex Sinaiticus ($\aleph^*$) and Codex Alexandrinus (A) add the exact wording found in Romans 11:35 into verse 14 (`14 ... αυτω 2°] + η τις προεδωκεν αυτω και ανταποδοθησεται (-δωθ. A) αυτω א* (improb אc.a et postea) A`), demonstrating that this Pauline-matching addition is attested in Greek OT witnesses collated by Swete. Swete's apparatus alone documents witness attestation but does not establish direction of dependence or causation (such as Christian scribal harmonization), which is deferred to later cross-source synthesis.
 
 ---
 
@@ -102,10 +101,10 @@ From Swete's Preface (Vol. III, pp. v–xix) and Table of Manuscripts:
 - **Base Text Printed:** Codex Vaticanus (B)
 - **Printed Text:** `καὶ ἔσται ἐν τῇ ἡμέρᾳ ἐκείνῃ ἡ ῥίζα τοῦ Ἰεσσαὶ καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν, ἐπ᾽ αὐτῷ ἔθνη ἐλπιοῦσιν. καὶ ἔσται ἡ ἀνάπαυσις αὐτοῦ τιμή.`
 - **Apparatus Entry:**
-  `NONE IN THIS SOURCE` for target text. (Page 122 apparatus records only `10 εθνω (sic) A` and notes for 11:13–16; 12:1–3).
+  `10 εθνω (sic) A` (records an orthographic/scribal omission of final nu in Codex Alexandrinus at `ἐθνῶν` in the target quotation phrase; no other variant for v. 10; notes on p. 122 cover 11:13–16; 12:1–3).
 - **Discriminating Textual Features:**
-  - *Verbatim Uncial Consensus:* The target quotation text `ἡ ῥίζα τοῦ Ἰεσσαὶ καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν, ἐπ᾽ αὐτῷ ἔθνη ἐλπιοῦσιν` is attested unanimously without substantive textual variant across all witnesses collated by Swete at this locus (Codex Vaticanus B base text, Codex Sinaiticus $\aleph$, Codex Alexandrinus A, Codex Marchalianus Q, and Codex rescriptus Cryptoferratensis Γ).
-  - *Relation to Pauline Citation:* Matches Paul's quotation in Romans 15:12 (cf. accepted P01F-P007 `καὶ πάλιν Ἠσαΐας λέγει· Ἔσται ἡ ῥίζα τοῦ Ἰεσσαί, καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν· ἐπʼ αὐτῷ ἔθνη ἐλπιοῦσιν`), where Paul cites the passage following an introductory attribution formula (`καὶ πάλιν Ἠσαΐας λέγει`).
+  - *Target Clause Attestation & Scribal Form:* The target quotation text `ἡ ῥίζα τοῦ Ἰεσσαὶ καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν, ἐπ᾽ αὐτῷ ἔθνη ἐλπιοῦσιν` has no substantive lexical or syntactic variant among the witnesses collated by Swete at this locus (Codex Vaticanus B base text, Codex Sinaiticus $\aleph$, Codex Alexandrinus A, Codex Marchalianus Q, and Codex rescriptus Cryptoferratensis Γ), with the apparatus recording only the scribal form `10 εθνω (sic) A`.
+  - *Relation to Pauline Citation:* Matches the quotation wording in Romans 15:12 (cf. accepted P01F-P007 `καὶ πάλιν Ἠσαΐας λέγει· Ἔσται ἡ ῥίζα τοῦ Ἰεσσαί, καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν· ἐπʼ αὐτῷ ἔθνη ἐλπιοῦσιν`), where Paul cites the passage following an introductory attribution formula (`καὶ πάλιν Ἠσαΐας λέγει`).
 
 ---
 
@@ -119,7 +118,7 @@ From Swete's Preface (Vol. III, pp. v–xix) and Table of Manuscripts:
 - **Discriminating Textual Features:**
   - *Unanimous Attestation of Verb `κρύψω`:* In the second coordinate clause (`καὶ τὴν σύνεσιν τῶν συνετῶν κρύψω`), all witnesses collated by Swete at this locus (Codex Vaticanus B, Codex Sinaiticus $\aleph$, Codex Alexandrinus A, Codex Marchalianus Q, Codex Cryptoferratensis Γ) unanimously read `κρύψω`. None of the collated witnesses reads the verb `ἀθετήσω` found in 1 Corinthians 1:19 (cf. accepted P01F-P008 `γέγραπται γάρ· Ἀπολῶ τὴν σοφίαν τῶν σοφῶν, καὶ τὴν σύνεσιν τῶν συνετῶν ἀθετήσω`).
   - *Introductory Clause Variants:* Codex Sinaiticus original hand ($\aleph^*$) and Codex Alexandrinus (A) add `ἐγώ` after `ἰδού` (`+ εγω א* A`). The Dublin fragment (Z) adds emphatic possessive pronouns (`σοφῶν + αὐτῶν Z`, `συνετῶν + αὐτοῦ Z`).
-  - *Textual Significance:* The presence of `κρύψω` in all Greek Old Testament uncials confirms that the lexical replacement `ἀθετήσω` in 1 Cor 1:19 represents a distinctively Pauline or secondary adaptation not attested in the primary Greek uncial tradition of Isaiah.
+  - *Textual Significance:* The presence of `κρύψω` in all witnesses collated by Swete at this locus establishes that the verb `ἀθετήσω` found in Paul's citation in 1 Cor 1:19 (cf. accepted P01F-P008 `καὶ τὴν σύνεσιν τῶν συνετῶν ἀθετήσω`) is not attested among the Greek Old Testament uncials collated in this edition. Whether `ἀθετήσω` represents a distinctively Pauline adaptation or derives from an uncollated Greek variant is deferred to later cross-source and secondary-scholarship synthesis.
 
 ---
 

@@ -48,7 +48,7 @@ These items document the printed Greek text and textual apparatus for the seven 
 - **NotebookLM Citation:** [3]
 - **Apparatus Present:** YES
 - **Apparatus Readings & Witnesses:** `16 om κς 2° א A Q* (hab Qmg) Γ | εμβαλω א A Q | Σιων BabאAQΓ | αυτης] + ※ τεθεμελιωμενον Qmg | ο πιστευων] + επ αυτω א A Q | ου μη καταισχυνθη] οι γ' (θη sup ras A?vid) ου σπευσει Qmg`
-- **Textual Feature:** Codex Vaticanus (B) base text reads `ὁ πιστεύων οὐ μὴ καταισχυνθῇ` without a prepositional complement, but Codices Sinaiticus (א), Alexandrinus (A), and Marchalianus (Q) all explicitly add `ἐπ᾽ αὐτῷ` (`+ επ αυτω א A Q`), which provides the direct textual antecedent for Paul's quotation in Rom 10:11 (cf. accepted P01F-P004 `Πᾶς ὁ πιστεύων ἐπʼ αὐτῷ οὐ καταισχυνθήσεται`) and Rom 9:33. The apparatus also records the Hexaplaric reading of the Three (Aquila, Symmachus, Theodotion) `οὐ σπεύσει` in Qmg, reflecting the Hebrew יָחִישׁ.
+- **Textual Feature:** Codex Vaticanus (B) base text reads `ὁ πιστεύων οὐ μὴ καταισχυνθῇ` without a prepositional complement, but Codices Sinaiticus (א), Alexandrinus (A), and Marchalianus (Q) all explicitly add `ἐπ᾽ αὐτῷ` (`+ επ αυτω א A Q`), matching the wording found in Paul's quotation in Rom 10:11 (cf. accepted P01F-P004 `Πᾶς ὁ πιστεύων ἐπʼ αὐτῷ οὐ καταισχυνθήσεται`) and Rom 9:33; whether this attestation represents a direct textual antecedent is deferred to later cross-source synthesis. The apparatus also records the Hexaplaric reading of the Three (Aquila, Symmachus, Theodotion) `οὐ σπεύσει` in Qmg, reflecting the Hebrew יָחִישׁ.
 - **Limitation:** Supplies only the Greek uncial witnesses collated by Swete at this locus (B, א, A, Q, Γ); lacks Hebrew MT text of Isa 28:16 and New Testament citation context (evaluated under accepted P01F-P004).
 
 ---
@@ -62,7 +62,7 @@ These items document the printed Greek text and textual apparatus for the seven 
 - **NotebookLM Citation:** [4]
 - **Apparatus Present:** YES
 - **Apparatus Readings & Witnesses:** `32 αν] εαν א | επικαληται א* (-λεσηται אc.a -λησηται אc.b) | Σιων BabאAQ | om εν 2° A | ευαγγελισμενος (-νοι Q*vid)`
-- **Textual Feature:** The target quotation clause `καὶ ἔσται πᾶς ὃς ἂν ἐπικαλέσηται τὸ ὄνομα Κυρίου σωθήσεται` is supported with virtual unanimity across the collated uncials (B, A, Q, and אc.a; א* has present/itacistic `ἐπικαλῆται`), exhibiting complete verbatim agreement with the Pauline citation clause in Rom 10:13 (apart from Paul's contextual postpositive conjunction `γάρ`; cf. accepted P01F-P005 `Πᾶς γὰρ ὃς ἂν ἐπικαλέσηται τὸ ὄνομα κυρίου σωθήσεται`).
+- **Textual Feature:** The target quotation clause wording `καὶ ἔσται πᾶς ὃς ἂν ἐπικαλέσηται τὸ ὄνομα Κυρίου σωθήσεται` is strongly supported by B, A, Q, and corrected Sinaiticus (אc.a), closely matching the quotation wording in Rom 10:13 (where Paul substitutes introductory coordinating `καὶ ἔσται` with explanatory postpositive `γάρ`; cf. accepted P01F-P005 `Πᾶς γὰρ ὃς ἂν ἐπικαλέσηται τὸ ὄνομα κυρίου σωθήσεται`), while the apparatus records minor formal variation in Sinaiticus (`αν] εαν א` and `επικαληται א*` [-λεσηται אc.a, -λησηται אc.b]).
 - **Limitation:** Supplies only the Greek uncial witnesses collated by Swete at this locus (B, א, A, Q); lacks Hebrew MT text of Joel 2:32 (3:5) and New Testament citation context (evaluated under accepted P01F-P005).
 
 ---
@@ -76,7 +76,7 @@ These items document the printed Greek text and textual apparatus for the seven 
 - **NotebookLM Citation:** [5]
 - **Apparatus Present:** YES
 - **Apparatus Readings & Witnesses:** `13 συμβουλος αυτου AQΓ | συμβιβα] συμβιβασει אc.a (-βασι sed rurs ras σι) AQmgΓ | 14 ... αυτω 2°] + η τις προεδωκεν αυτω και ανταποδοθησεται (-δωθ. A) αυτω א* (improb אc.a et postea) A`
-- **Textual Feature:** Codex Vaticanus (B) base text reads the word order `αὐτοῦ σύμβουλος`, while Codices Alexandrinus (A), Marchalianus (Q), and Cryptoferratensis (Γ) read `σύμβουλος αὐτοῦ`, which matches the exact word order quoted by Paul in Rom 11:34 (cf. accepted P01F-P006 `ἢ τίς σύμβουλος αὐτοῦ ἐγένετο;`). Furthermore, the apparatus reveals an early scribal interpolation in verse 14 in א* and A adding the subsequent Pauline citation from Rom 11:35 (`+ ἢ τίς προέδωκεν αὐτῷ καὶ ἀνταποδοθήσεται αὐτῷ`).
+- **Textual Feature:** Codex Vaticanus (B) base text reads the word order `αὐτοῦ σύμβουλος`, while Codices Alexandrinus (A), Marchalianus (Q), and Cryptoferratensis (Γ) read `σύμβουλος αὐτοῦ`, which matches the exact word order quoted by Paul in Rom 11:34 (cf. accepted P01F-P006 `ἢ τίς σύμβουλος αὐτοῦ ἐγένετο;`). Furthermore, the apparatus documents that א* and A add the wording of Romans 11:35 into verse 14 (`+ ἢ τίς προέδωκεν αὐτῷ καὶ ἀνταποδοθήσεται αὐτῷ`), demonstrating that this Pauline-matching addition is attested in Greek OT witnesses collated by Swete (direction of dependence or causation is deferred to cross-source synthesis).
 - **Limitation:** Supplies only the Greek uncial witnesses collated by Swete at this locus (B, א, A, Q, Γ); lacks Hebrew MT text of Isa 40:13 and New Testament citation context (evaluated under accepted P01F-P006).
 
 ---
@@ -88,9 +88,9 @@ These items document the printed Greek text and textual apparatus for the seven 
 - **Exact Printed Text:** `καὶ ἔσται ἐν τῇ ἡμέρᾳ ἐκείνῃ ἡ ῥίζα τοῦ Ἰεσσαὶ καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν, ἐπ᾽ αὐτῷ ἔθνη ἐλπιοῦσιν. καὶ ἔσται ἡ ἀνάπαυσις αὐτοῦ τιμή.`
 - **Printed Page / Locator:** Page 122
 - **NotebookLM Citation:** [6]
-- **Apparatus Present:** NO
-- **Apparatus Readings & Witnesses:** None for verse 10. The apparatus on page 122 records only a scribal orthographic error in Codex A (`10 εθνω (sic) A`) and notes for 11:13–16 and 12:1–3, with no substantive variant recorded for verse 10.
-- **Textual Feature:** The target quotation clause `ἡ ῥίζα τοῦ Ἰεσσαὶ καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν, ἐπ᾽ αὐτῷ ἔθνη ἐλπιοῦσιν` is attested unanimously without variant across all witnesses collated by Swete at this locus (Codex Vaticanus B base text, Codex Sinaiticus א, Codex Alexandrinus A, Codex Marchalianus Q, and Codex rescriptus Cryptoferratensis Γ), matching the Pauline quotation in Rom 15:12 (cf. accepted P01F-P007 `Ἔσται ἡ ῥίζα τοῦ Ἰεσσαί, καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν· ἐπʼ αὐτῷ ἔθνη ἐλπιοῦσιν`).
+- **Apparatus Present:** YES
+- **Apparatus Readings & Witnesses:** `10 εθνω (sic) A` (records an orthographic/scribal omission of final nu in Codex Alexandrinus inside the target quotation phrase; no other variant for v. 10; notes on p. 122 cover 11:13–16 and 12:1–3).
+- **Textual Feature:** The target quotation clause `ἡ ῥίζα τοῦ Ἰεσσαὶ καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν, ἐπ᾽ αὐτῷ ἔθνη ἐλπιοῦσιν` has no substantive lexical or syntactic variant among the witnesses collated by Swete at this locus (Codex Vaticanus B base text, Codex Sinaiticus א, Codex Alexandrinus A, Codex Marchalianus Q, and Codex rescriptus Cryptoferratensis Γ), matching the quotation wording in Rom 15:12 (cf. accepted P01F-P007 `Ἔσται ἡ ῥίζα τοῦ Ἰεσσαί, καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν· ἐπʼ αὐτῷ ἔθνη ἐλπιοῦσιν`).
 - **Limitation:** Supplies only the Greek uncial witnesses collated by Swete at this locus (B, א, A, Q, Γ); lacks Hebrew MT text of Isa 11:10 and New Testament citation context (evaluated under accepted P01F-P007).
 
 ---

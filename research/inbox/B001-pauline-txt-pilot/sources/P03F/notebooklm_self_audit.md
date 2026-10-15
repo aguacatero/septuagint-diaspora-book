@@ -11,9 +11,8 @@
 
 1. **Exact Text & Diacritics:** Every Greek word, breathing, accent, and punctuation mark was checked against the high-resolution facsimile scans of Swete's 1894 Cambridge edition.
 2. **Page Locators:** All page numbers (pp. 2, 3, 42, 122, 149, 151–152, 174) were verified directly against the running page headers, marginal book/chapter indicators, and printed footers of the volume.
-3. **Apparatus Entries:** The 6 present apparatus units (Hos 1:10 on p. 2; Hos 2:23 on p. 3; Joel 2:32 on p. 42; Isa 28:16 on p. 149; Isa 29:14 on p. 152; Isa 40:13 on p. 174) were verified against the foot of the page, confirming uncial manuscript sigla (Codices B, א, A, Q, Γ, Z, correctors $B^*, B^{ab}, \aleph^*, \aleph^{c.a}, \aleph^{c.b}, A^*, A^a, Q^*, Q^{mg}$).
-4. **Statements of Absence ("No Apparatus Entry"):** The single prophetic target with no apparatus entry at the target wording was directly confirmed by observing the variation units present on the page rather than inferred from the lack of commentary:
-   - *Isaiah 11:10 (p. 122):* The apparatus at the foot of page 122 records only a scribal orthographic error in Codex A (`10 εθνω (sic) A`) and notes for 11:13–16 and 12:1–3; no entry exists for the target clause `ἡ ῥίζα τοῦ Ἰεσσαὶ καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν, ἐπ᾽ αὐτῷ ἔθνη ἐλπιοῦσιν`.
+3. **Apparatus Entries:** All 7 prophetic loci (Hos 1:10 on p. 2; Hos 2:23 on p. 3; Joel 2:32 on p. 42; Isa 11:10 on p. 122; Isa 28:16 on p. 149; Isa 29:14 on p. 152; Isa 40:13 on p. 174) have their apparatus entries verified against the foot of the page, confirming uncial manuscript sigla (Codices B, א, A, Q, Γ, Z, correctors $B^*, B^{ab}, \aleph^*, \aleph^{c.a}, \aleph^{c.b}, A^*, A^a, Q^*, Q^{mg}$).
+4. **Apparatus Entry at Isaiah 11:10:** Classified as `apparatus_present=YES` because the apparatus at the foot of page 122 contains `10 εθνω (sic) A`, documenting a scribal form of `ἐθνῶν` inside the target quotation phrase; confirmed that no substantive lexical or syntactic variant is recorded for the target clause among the collated witnesses.
 5. **Pentateuch Absences:** The 5 Pentateuch passages (Genesis 15:6, Genesis 2:24, Deuteronomy 25:4, Exodus 32:6, Deuteronomy 21:23) were verified as absent from Volume III (which covers Hosea through 4 Maccabees) and belonging properly to Volume I (*Genesis–IV Kings*, evaluated under accepted source P02F).
 6. **Canonical Provenance Mapping:** Cross-source references to accepted P01F evidence strictly match the accepted canonical ledger rows:
    - Hos 2:23 / Rom 9:25 -> `P01F-P002`
@@ -52,3 +51,15 @@
 
 ### 5. Source-Bounded Primary Extraction & Scoped Witness Consensus
 - **Confirmation:** All textual claims are source-bounded to Swete Vol. III. Witness consensus statements are explicitly scoped to "the witnesses collated by Swete at this locus (e.g. B, א, A, Q, Γ, Z as extant)."
+
+### 6. Apparatus Classification for Isaiah 11:10 (P03F-P006)
+- **Review Finding:** Isaiah 11:10 was previously classified as having no apparatus entry, but the page 122 apparatus records `10 εθνω (sic) A` inside the target quotation phrase containing `ἐθνῶν`.
+- **Correction:** Changed to `apparatus_present=YES` with `10 εθνω (sic) A` recorded across `primary_text_ledger.csv`, `relevance_scan.md`, `extraction.md`, and `counterevidence.md`, while confirming that no substantive lexical or syntactic variants occur for the target clause among the witnesses collated by Swete at this locus.
+
+### 7. Scoped Textual Support for Joel 2:32 (P03F-P004)
+- **Review Finding:** Target clause in Joel 2:32 was described as having "complete unanimity" / "complete verbatim agreement," but the apparatus records minor formal variation in Sinaiticus (`αν] εαν א` and `επικαληται א*` [-λεσηται אc.a, -λησηται אc.b]).
+- **Correction:** Replaced "complete unanimity" with statements that B, A, Q, and corrected Sinaiticus (אc.a) support the quotation wording, while explicitly preserving the apparatus variants in Sinaiticus.
+
+### 8. Reframing Origin and Direction-of-Dependence Claims
+- **Review Finding:** Textual notes previously contained claims about priority, Pauline invention, or scribal harmonization that went beyond what Swete's manual edition alone can establish (Isa 28:16 "not invented by Paul"; Isa 40:13/14 "secondary Christian scribal harmonization"; Isa 29:14 "distinctively Pauline").
+- **Correction:** Reframed all such claims into strictly source-bounded statements ("attested in Swete-collated Greek OT witnesses," "matches the accepted Pauline reading," "not attested among witnesses collated by Swete"); deferred causal hypotheses, priority determinations, and harmonization theories to cross-source synthesis.
