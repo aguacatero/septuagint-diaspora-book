@@ -5,11 +5,16 @@
 This is a public-facing research and book project designed as a serious crossover work: readable by educated non-specialists while using a method intended to withstand specialist scrutiny.
 
 
-## Project progress
+## Research progress
 
-![Project progress bar](assets/progress.svg)
+![Six-stage research roadmap](assets/progress.svg)
 
-**Milestones complete: 1 of 6 (17%)**
+**Current: B001 — Pauline TXT pilot underway** ([current research batch](research-queue/CURRENT_BATCH.md)). The research constitution, evidence framework, and controlled workflow are established. The pilot validates the method on twelve Pauline quotations before the [complete TXT corpus](research-queue/BACKLOG.md); NAR, CUL, HIS, and manuscript development follow the reviewed research.
+
+*The roadmap tracks independently accepted research-to-book gates, not a percentage of scholarship completed, manuscript pages written, or confidence in the hypothesis. Candidate work and unreviewed LLM output do not count as accepted.*
+
+<details>
+<summary>Milestone gates (1/6 accepted)</summary>
 
 - [x] **Foundation** — establish the project constitution, evidence registry design, and research workflow.
 - [ ] **TXT: Textual analysis** — finish the Pauline pilot, complete quotation census, and author-by-author synthesis.
@@ -18,9 +23,11 @@ This is a public-facing research and book project designed as a serious crossove
 - [ ] **HIS: Historical audit** — complete the independent, claim-by-claim historical residue review.
 - [ ] **Book** — write and review the evidence-grounded manuscript.
 
-**Currently underway:** [B001 — Pauline TXT pilot](research-queue/CURRENT_BATCH.md). See the [research backlog](research-queue/BACKLOG.md).
+</details>
 
-*This graphic tracks six reviewed delivery milestones, not source counts or manuscript pages. A milestone counts only after review and acceptance into `main`. Future contributors and LLM agents: follow [AGENTS.md](AGENTS.md) and synchronize the bar with `python3 scripts/update_progress.py`.*
+*Contributors and LLM agents: see [AGENTS.md](AGENTS.md) for review-gated status updates and the [progress generator](scripts/update_progress.py).*
+
+---
 
 ## Current research question
 
