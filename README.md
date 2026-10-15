@@ -4,29 +4,30 @@
 
 This is a public-facing research and book project designed as a serious crossover work: readable by educated non-specialists while using a method intended to withstand specialist scrutiny.
 
+
+## Project progress
+
+![Project progress bar](assets/progress.svg)
+
+**Milestones complete: 1 of 6 (17%)**
+
+- [x] **Foundation** — establish the project constitution, evidence registry design, and research workflow.
+- [ ] **TXT: Textual analysis** — finish the Pauline pilot, complete quotation census, and author-by-author synthesis.
+- [ ] **NAR: Narrative analysis** — complete reviewed scriptural narrative-generation studies.
+- [ ] **CUL: Cultural comparison** — complete controlled Hellenistic and Greco-Roman literary comparisons.
+- [ ] **HIS: Historical audit** — complete the independent, claim-by-claim historical residue review.
+- [ ] **Book** — write and review the evidence-grounded manuscript.
+
+**Currently underway:** [B001 — Pauline TXT pilot](research-queue/CURRENT_BATCH.md). See the [research backlog](research-queue/BACKLOG.md).
+
+*This graphic tracks six reviewed delivery milestones, not source counts or manuscript pages. A milestone counts only after review and acceptance into `main`. Future contributors and LLM agents: follow [AGENTS.md](AGENTS.md) and synchronize the bar with `python3 scripts/update_progress.py`.*
+
 ## Current research question
 
 The project tests whether the canonical Gospel authors' demonstrable scriptural practice is better explained primarily by **Greek Jewish scriptural traditions** than by direct consultation of Hebrew Scripture; how scriptural texts may have shaped or generated Gospel narrative details; how those narratives participate in the wider Hellenistic and Greco-Roman literary environment; and what historical evidence remains after those literary processes are accounted for.
 
 The conclusion is **not predetermined**. The method must be able to produce results contrary to the initiating hypothesis.
 
-
-## Project progress
-
-**Milestones complete: 1 of 6 (17%)**
-
-`██░░░░░░░░░░ 17%`
-
-- [x] **Foundation** — establish the project constitution, evidence registry design, and research workflow.
-- [ ] **TXT: Textual analysis** — finish the Pauline pilot, full quotation census for the primary corpus, and author-by-author synthesis.
-- [ ] **NAR: Narrative analysis** — complete reviewed scriptural narrative-generation studies.
-- [ ] **CUL: Cultural comparison** — complete controlled Hellenistic and Greco-Roman literary comparisons.
-- [ ] **HIS: Historical audit** — complete the independent, claim-by-claim historical residue review.
-- [ ] **Book** — write and review the evidence-grounded manuscript.
-
-**Currently underway:** [B001 — Pauline TXT pilot](research-queue/CURRENT_BATCH.md). See the [research backlog](research-queue/BACKLOG.md) for the full dependency-ordered plan.
-
-*This bar tracks six major delivery milestones, not the percentage of sources analyzed or manuscript pages written. Update the count only when a milestone's work has been reviewed and accepted into `main`; unreviewed research branches do not count.*
 
 ## Start here
 
