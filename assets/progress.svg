@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="108" viewBox="0 0 800 108" role="img" aria-labelledby="progress-title progress-description">
+  <title id="progress-title">Project progress: 17%</title>
+  <desc id="progress-description">1 of 6 research-to-book milestones complete</desc>
+  <rect x="0" y="0" width="800" height="108" rx="15" fill="#f6f8fa"/>
+  <text x="24" y="35" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="bold" fill="#24292f">Research-to-book progress</text>
+  <text x="776" y="35" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="bold" fill="#24292f">17%  (1/6)</text>
+  <rect x="24" y="57" width="732" height="27" rx="13.5" fill="#d0d7de"/>
+  <clipPath id="progress-clip"><rect x="24" y="57" width="732" height="27" rx="13.5"/></clipPath>
+  <rect x="24" y="57" width="122" height="27" fill="#238636" clip-path="url(#progress-clip)"/>
+</svg>
