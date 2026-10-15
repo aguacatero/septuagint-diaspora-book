@@ -1,10 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="108" viewBox="0 0 800 108" role="img" aria-labelledby="progress-title progress-description">
-  <title id="progress-title">Project progress: 17%</title>
-  <desc id="progress-description">1 of 6 research-to-book milestones complete</desc>
-  <rect x="0" y="0" width="800" height="108" rx="15" fill="#f6f8fa"/>
-  <text x="24" y="35" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="bold" fill="#24292f">Research-to-book progress</text>
-  <text x="776" y="35" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="bold" fill="#24292f">17%  (1/6)</text>
-  <rect x="24" y="57" width="732" height="27" rx="13.5" fill="#d0d7de"/>
-  <clipPath id="progress-clip"><rect x="24" y="57" width="732" height="27" rx="13.5"/></clipPath>
-  <rect x="24" y="57" width="122" height="27" fill="#238636" clip-path="url(#progress-clip)"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="122" viewBox="0 0 740 122" role="img" aria-labelledby="title description">
+  <title id="title">Research roadmap: 1 of 6 gates accepted</title>
+  <desc id="description">BASE done, TXT active, NAR pending, CUL pending, HIS pending, BOOK pending. Green means accepted; amber means active research; gray means pending.</desc>
+  <rect x="1" y="1" width="738" height="120" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="20" y="27" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#0f172a">Research roadmap</text>
+  <text x="720" y="27" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#475569">1 / 6 gates accepted</text>
+  <rect x="20" y="42" width="108" height="34" rx="6" fill="#86efac"/>
+  <text x="74" y="64" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" fill="#14532d">BASE · DONE</text>
+  <rect x="138" y="42" width="108" height="34" rx="6" fill="#fbbf24"/>
+  <text x="192" y="64" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" fill="#78350f">TXT · ACTIVE</text>
+  <rect x="256" y="42" width="108" height="34" rx="6" fill="#e2e8f0"/>
+  <text x="310" y="64" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#334155">NAR · PENDING</text>
+  <rect x="374" y="42" width="108" height="34" rx="6" fill="#e2e8f0"/>
+  <text x="428" y="64" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#334155">CUL · PENDING</text>
+  <rect x="492" y="42" width="108" height="34" rx="6" fill="#e2e8f0"/>
+  <text x="546" y="64" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#334155">HIS · PENDING</text>
+  <rect x="610" y="42" width="108" height="34" rx="6" fill="#e2e8f0"/>
+  <text x="664" y="64" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#334155">BOOK · PENDING</text>
+  <text x="20" y="103" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#475569">Green = accepted · Amber = active research</text>
+  <text x="720" y="103" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#475569">Gray = pending</text>
 </svg>
