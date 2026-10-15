@@ -4,6 +4,8 @@ These instructions govern Hermes research runs for *Shaped by the Septuagint*.
 
 ## Start-of-run checklist
 
+**First, read `AGENTS.md`** for mandatory public README progress reporting and review-gated updates.
+
 Before doing research:
 
 1. Pull the latest `main`.
@@ -203,3 +205,5 @@ Before committing:
 - no unsupported `verified` claims appear in the packet.
 
 Commit the research packet to the batch branch and report the branch name + commit SHA for review.
+
+Include a **README progress assessment** in the report: what accepted phase milestone (if any) might become eligible after review, and whether the active-batch label should change. Do not mark milestones complete or modify public `main` yourself. The reviewer/promoter applies `AGENTS.md` and runs `python3 scripts/update_progress.py` after acceptance.
