@@ -25,7 +25,7 @@ GitHub `main` is the source of truth. Do not rely on prior session memory when r
 
 ## README progress handoff
 
-At the end of every research run, inspect `README.md` and include a **README progress assessment** in your handoff. Do not advance the six-milestone progress bar from a research branch: only a reviewer/promoter may change accepted milestone status on `main`. On acceptance, the reviewer updates `README.md`'s current batch and runs `python3 scripts/update_progress.py` and `python3 scripts/update_progress.py --check` so the SVG remains in sync. See `AGENTS.md`.
+At the end of every research run, inspect `README.md` and include a **README progress assessment** in your handoff. Do not advance the six-gate research roadmap from a research branch: only a reviewer/promoter may change accepted milestone status on `main`. On acceptance, the reviewer updates `README.md`'s current batch and runs `python3 scripts/update_progress.py` and `python3 scripts/update_progress.py --check` so the SVG remains in sync. See `AGENTS.md`.
 
 ## Current task
 
