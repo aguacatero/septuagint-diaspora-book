@@ -154,6 +154,12 @@ Possible outcomes for each candidate:
 
 Rejected or corrected claims are preserved where methodologically useful.
 
+## Public-facing progress (required at promotion)
+
+All contributors and agents must follow the repository-root `AGENTS.md`. At the end of each task, check the `README.md` **Project progress** section. The public SVG bar (`assets/progress.svg`) is generated from the six milestone checkboxes with `python3 scripts/update_progress.py`; use `python3 scripts/update_progress.py --check` to verify it.
+
+Research-batch output is **candidate work** and does not advance public milestones. After independent review and accepted promotion into `main`, the reviewer/promoter must update the README's **Currently underway** label, mark any *fully completed* phase milestone, regenerate the SVG, and commit public status alongside the promotion. If no phase is complete, preserve the previous percentage and still update the active batch when applicable. Research agents must include a README progress assessment in their handoff, without changing public `main` on their own.
+
 ## 9. Next volley
 
 After review, accepted findings are promoted into `main`, corrections are recorded, and `research-queue/CURRENT_BATCH.md` is advanced to the next task.
