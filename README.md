@@ -5,6 +5,12 @@
 This is a public-facing research and book project designed as a serious crossover work: readable by educated non-specialists while using a method intended to withstand specialist scrutiny.
 
 
+## Optional local Antigravity automation
+
+[Fresh-session recovery and shared 5-hour token budgeting](docs/AGY_AUTOPILOT.md) is available for local setup. Each controlled project is capped at 35% of a user-configured token budget; the scheduler is **not enabled on your Mac by merging this repository change** and does not claim to read Google's account quota.
+
+---
+
 ## Research progress
 
 ![Six-stage research roadmap](assets/progress.svg)
