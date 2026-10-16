@@ -29,3 +29,7 @@ These instructions apply to **every AI assistant or human contributor** working 
 ## End-of-task report
 
 State whether README progress was **updated** or **checked and unchanged**. If updated, name the new count and link the commit/PR. If waiting on review or permission, state the blocker. This step also applies to future ChatGPT sessions that open this repository directly.
+
+## Optional Antigravity fresh-session autopilot
+
+For local unattended headless sessions, use [the quota-aware scheduler](docs/AGY_AUTOPILOT.md) and [fresh-session skill](.agents/skills/fresh-session/SKILL.md). It is local, opt-in and **not activated by repo merge**. Preserve every research acceptance gate above. Scheduler sessions use Gemini only and never auto-promote drafts or merge PRs.
