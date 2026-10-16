@@ -1,0 +1,18 @@
+{
+  "batch": "B001-pauline-txt-pilot",
+  "workflow": "NOTEBOOKLM_SERIAL",
+  "branch": "research/B001-notebooklm-serial",
+  "draft_pr": 2,
+  "extraction_notebook": "SDP-B001-EXTRACT",
+  "synthesis_notebook": "SDP-01 Paul",
+  "active_source_id": "P03F",
+  "active_phase": "AWAITING_REVIEW",
+  "last_accepted_source_id": "P02F",
+  "last_reviewed_sha": "3949ddf690cf190fcb202e1841efe15fcecb8252",
+  "chatgpt_relay_mode": "REVIEW_LOOP_ONLY",
+  "allow_legacy_relay_worker": false,
+  "allow_paid_api": false,
+  "updated_at": "2026-10-14",
+  "smoke_test_status": "PASSED",
+  "hands_off_enabled": true
+}
