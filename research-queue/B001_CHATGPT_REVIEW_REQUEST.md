@@ -4,22 +4,21 @@ Antigravity rewrites this file for every source before requesting review.
 
 ## Current source
 
-- Source ID: `P03F`
-- Exact citation: *The Old Testament in Greek according to the Septuagint, Vol. III: Hosea–4 Maccabees*, ed. Henry Barclay Swete, D.D. (Cambridge University Press, 1894)
-- Public/source locator: `https://archive.org/details/oldtestamenting03swet`
+- Source ID: `S01F`
+- Exact citation: James W. Aageson, *Paul's Use of Scripture: A Comparative Study of Biblical Interpretation in Early Palestinian Judaism and the New Testament With Special Reference to Romans 9–11* (Doctor of Philosophy thesis, Mansfield College, Faculty of Theology, University of Oxford, Michaelmas 1983 / degree granted 1984)
+- Public/source locator: Oxford University Research Archive (ORA), DOI: 10.5287/ora-7rgnn1ox1, `https://ora.ox.ac.uk/objects/uuid:3925520e-0524-4eb0-b9ed-d34140c0a915`
 - Branch: `research/B001-notebooklm-serial`
 - Draft PR: `2`
-- Extraction status: Complete primary route source packet extracted via NotebookLM from `swete_lxx_vol3_p03f_target.pdf` as sole source in `SDP-B001-EXTRACT`, covering the 7 B001 prophetic loci (Hosea 2:23, Hosea 1:10, Isaiah 28:16, Joel 2:32, Isaiah 40:13, Isaiah 11:10, Isaiah 29:14), with verified uncial apparatus collations (Codices B, א, A, Q, Γ, Z) and exact P01F cross-source canonical ledger attributions.
+- Extraction status: Complete secondary route source packet extracted via NotebookLM from `aageson_1984_pauls_use_of_scripture.pdf` as sole source in `SDP-B001-EXTRACT`, covering all 12 B001 comparisons, with 18 verified evidence claims (`S01F-E001` through `S01F-E018`) in `citation_ledger.csv` (`verification_status=VERIFIED`, verified against physical thesis page numbers), structural argument map, counterevidence/disagreements, bibliography leads, and self-audit.
 - Review readiness: `READY`
 - Review target: `LIVE_PR_HEAD`
 
 ## Files in scope
 
-`research/inbox/B001-pauline-txt-pilot/sources/P03F/`
+`research/inbox/B001-pauline-txt-pilot/sources/S01F/`
 - `metadata.md`
 - `relevance_scan.md`
 - `extraction.md`
-- `primary_text_ledger.csv`
 - `citation_ledger.csv`
 - `argument_map.md`
 - `counterevidence.md`
@@ -58,7 +57,7 @@ Do not reward agreement with the project's hypothesis. Negative, indeterminate, 
 ISSUED_AT_PT: <YYYY-MM-DD HH:MM PT>
 REVIEWED_SHA: <reviewer inserts current live PR HEAD>
 
-SOURCE_ID: P03F
+SOURCE_ID: S01F
 
 ## Findings
 - [HIGH|MED|LOW] ...

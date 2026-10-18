@@ -6,7 +6,7 @@
   "extraction_notebook": "SDP-B001-EXTRACT",
   "synthesis_notebook": "SDP-01 Paul",
   "active_source_id": "S01F",
-  "active_phase": "PENDING",
+  "active_phase": "AWAITING_REVIEW",
   "last_accepted_source_id": "P03F",
   "last_reviewed_sha": "b54a604fcc5767d24fd0a71d7c12e4dedc70135a",
   "chatgpt_relay_mode": "REVIEW_LOOP_ONLY",
