@@ -54,15 +54,14 @@ The sections below provide a descriptive map of Swete's **explicitly attested ed
   - In Hosea, Joel, and Isaiah, the apparatus functions as a negative apparatus citing uncial variants from B at the foot of each page.
   - Variant readings in the apparatus are printed in Greek minuscules without accents or breathings (e.g. `23 αγαπησω] ελεησω AQ` on p. 3; `16 ο πιστευων] + επ αυτω א A Q` on p. 149).
 - **REVIEWER INFERENCE:**
-  - The apparatus is designed as a compact uncial collation for manual use; silence of a collated witness generally denotes agreement with Codex B, subject to Swete's explicit warning regarding decipherment gaps in fragmentary palimpsests such as Codex Γ.
+  - The apparatus is designed as a compact uncial collation for manual use; silence in this negative apparatus denotes that no variant was reported by the editor rather than positive proof of witness collation at every word, subject to Swete's explicit warning regarding decipherment gaps in fragmentary palimpsests such as Codex Γ.
 
 ---
 
 ### 4. Methodological Scope Regarding New Testament Citations
 
-- **SWETE EXPLICIT CLAIM:**
-  - The volume provides the text of the Old Testament in Greek and contains no discussions, excursuses, or evaluations of New Testament citations or Pauline usage.
 - **EDITION-LEVEL OBSERVATION:**
+  - The volume provides the text of the Old Testament in Greek with a critical apparatus of primary uncials, and contains no authorial discussions, excursuses, or evaluations of New Testament citations or Pauline usage.
   - The edition documents the Greek text and uncial variants at the Old Testament loci cited by Paul (Hos 1:10, 2:23; Joel 2:32; Isa 11:10, 28:16, 29:14, 40:13).
   - Swete records witness readings without expressing judgments on whether Pauline quotations influenced Old Testament manuscripts or vice versa (e.g., the addition in א* and A at Isa 40:14 corresponding to Rom 11:35 is simply collated as an apparatus entry).
 - **REVIEWER INFERENCE:**

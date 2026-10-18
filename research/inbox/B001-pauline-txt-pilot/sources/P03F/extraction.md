@@ -20,7 +20,7 @@ These items document the printed Greek text and textual apparatus for the seven 
 - **NotebookLM Citation:** [1]
 - **Apparatus Present:** YES
 - **Apparatus Readings & Witnesses:** `23 αγαπησω] ελεησω AQ | ηγαπημενην] ηλεημενην AQ`
-- **Textual Feature:** The base text of Codex Vaticanus (B) exhibits love-terminology (`ἀγαπήσω` and participle `ἠγαπημένην`), directly matching the verb/participle stem in Paul's citation in Rom 9:25 (cf. accepted P01F-P002 `καὶ τὴν οὐκ ἠγαπημένην ἠγαπημένην`), whereas Codices Alexandrinus (A) and Marchalianus (Q) substitute mercy-terminology (`ἐλεήσω / ἠλεημένην`, cf. 1 Pet 2:10). The noun phrase designation `τῷ Οὐ λαῷ μου` is unanimously attested across B, A, and Q without apparatus variation.
+- **Textual Feature:** The base text of Codex Vaticanus (B) exhibits love-terminology (`ἀγαπήσω` and participle `ἠγαπημένην`), directly matching the verb/participle stem in Paul's citation in Rom 9:25 (cf. accepted P01F-P002 `καὶ τὴν οὐκ ἠγαπημένην ἠγαπημένην`), whereas Codices Alexandrinus (A) and Marchalianus (Q) substitute mercy-terminology (`ἐλεήσω / ἠλεημένην`, cf. 1 Pet 2:10). The noun phrase designation `τῷ Οὐ λαῷ μου` has no variant reported among B, A, and Q.
 - **Limitation:** Supplies only the Greek uncial witnesses collated by Swete at this locus (Codex Vaticanus B base text, Codex Alexandrinus A, Codex Marchalianus Q); lacks Hebrew MT text of Hos 2:23 and New Testament citation context (evaluated under accepted P01F-P002).
 
 ---
@@ -90,7 +90,7 @@ These items document the printed Greek text and textual apparatus for the seven 
 - **NotebookLM Citation:** [6]
 - **Apparatus Present:** YES
 - **Apparatus Readings & Witnesses:** `10 εθνω (sic) A` (records an orthographic/scribal omission of final nu in Codex Alexandrinus inside the target quotation phrase; no other variant for v. 10; notes on p. 122 cover 11:13–16 and 12:1–3).
-- **Textual Feature:** The target quotation clause `ἡ ῥίζα τοῦ Ἰεσσαὶ καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν, ἐπ᾽ αὐτῷ ἔθνη ἐλπιοῦσιν` has no substantive lexical or syntactic variant among the witnesses collated by Swete at this locus (Codex Vaticanus B base text, Codex Sinaiticus א, Codex Alexandrinus A, Codex Marchalianus Q, and Codex rescriptus Cryptoferratensis Γ), matching the quotation wording in Rom 15:12 (cf. accepted P01F-P007 `Ἔσται ἡ ῥίζα τοῦ Ἰεσσαί, καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν· ἐπʼ αὐτῷ ἔθνη ἐλπιοῦσιν`).
+- **Textual Feature:** Inside the target quotation clause `ἡ ῥίζα τοῦ Ἰεσσαὶ καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν, ἐπ᾽ αὐτῷ ἔθνη ἐλπιοῦσιν`, the apparatus records the scribal form `10 εθνω (sic) A`; no additional variant is reported among the witnesses Swete could collate at this locus, matching the quotation wording in Rom 15:12 (cf. accepted P01F-P007 `Ἔσται ἡ ῥίζα τοῦ Ἰεσσαί, καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν· ἐπʼ αὐτῷ ἔθνη ἐλπιοῦσιν`). In this negative apparatus, silence denotes that no variant was reported rather than affirmative proof of unanimous collation where witness coverage or legibility (such as Γ) is unverified.
 - **Limitation:** Supplies only the Greek uncial witnesses collated by Swete at this locus (B, א, A, Q, Γ); lacks Hebrew MT text of Isa 11:10 and New Testament citation context (evaluated under accepted P01F-P007).
 
 ---
@@ -104,7 +104,7 @@ These items document the printed Greek text and textual apparatus for the seven 
 - **NotebookLM Citation:** [7]
 - **Apparatus Present:** YES
 - **Apparatus Readings & Witnesses:** `14 ιδου] + εγω א* (improb אc.a) A | αυτους] + μεταθεσει Z | σοφων] + αυτων Z | συνετων] + αυτου Z`
-- **Textual Feature:** All witnesses collated by Swete at this locus (Codex Vaticanus B, Codex Sinaiticus א, Codex Alexandrinus A, Codex Marchalianus Q, Codex Cryptoferratensis Γ) unanimously read the closing future verb `κρύψω` (`καὶ τὴν σύνεσιν τῶν συνετῶν κρύψω`). None of the collated witnesses reads the verb `ἀθετήσω` found in Paul's citation in 1 Cor 1:19 (cf. accepted P01F-P008 `καὶ τὴν σύνεσιν τῶν συνετῶν ἀθετήσω`). In the introductory clause, א* and A read `ἰδοὺ ἐγώ`, and Dublin fragment Z adds possessive pronouns `αὐτῶν` and `αὐτοῦ`.
+- **Textual Feature:** No variant is reported against the base text closing future verb `κρύψω` (`καὶ τὴν σύνεσιν τῶν συνετῶν κρύψω`) among the witnesses Swete could collate at this locus; no witness collated by Swete is reported reading the verb `ἀθετήσω` found in Paul's citation in 1 Cor 1:19 (cf. accepted P01F-P008 `καὶ τὴν σύνεσιν τῶν συνετῶν ἀθετήσω`). In a negative apparatus, silence denotes no variant reported rather than proven affirmative agreement across all named witnesses where coverage or decipherability (such as Γ) is unverified. In the introductory clause, א* and A read `ἰδοὺ ἐγώ`, and Dublin fragment Z adds possessive pronouns `αὐτῶν` and `αὐτοῦ`.
 - **Limitation:** Supplies only the Greek uncial witnesses collated by Swete at this locus (B, א, A, Q, Γ, Z); lacks Hebrew MT text of Isa 29:14 and New Testament citation context (evaluated under accepted P01F-P008).
 
 ---
@@ -136,5 +136,5 @@ These items document the printed Greek text and textual apparatus for the seven 
 ## Part 3: Textual-Critical Evaluation of Apparatus Limits
 
 1. **Uncial Scope:** The evidence in P03F is strictly limited to the major uncial manuscripts collated by Swete for the prophetic books (B, א, A, Q, Γ, Z). Minuscule families, catena traditions, and papyri (such as 967) are not cited.
-2. **Apparatus Reporting Conventions:** Swete reports variants from the base text (B); silence in the apparatus denotes agreement with B among the witnesses cited in the margin as extant for that page.
+2. **Apparatus Reporting Conventions:** Swete reports variants from the base text (Codex Vaticanus B) in a negative apparatus. In such an apparatus, silence denotes that no variant is reported by the editor, rather than automatically proving independently verified positive agreement; as Swete explicitly cautions regarding fragmentary or difficult witnesses (e.g. Codex rescriptus Cryptoferratensis Γ, Preface p. viii: "it will be precarious for the reader of this edition to draw conclusions from the silence of Γ, which may be due to the impossibility of deciphering its testimony"), drawing conclusions from silence requires establishing manuscript presence, coverage, and legibility at the specific locus.
 3. **Primary Route Boundary:** No Hebrew MT readings or NT textual variants are manufactured from P03F; cross-source NT comparisons reference accepted P01F canonical evidence rows (`P01F-P002` through `P01F-P008`).

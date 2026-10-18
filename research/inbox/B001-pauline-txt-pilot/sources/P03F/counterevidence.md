@@ -33,7 +33,7 @@ From Swete's Preface (Vol. III, pp. v–xix) and Table of Manuscripts:
 - **Discriminating Textual Features:**
   - *Lexical Variation (Love vs. Mercy):* The base text of Codex Vaticanus (B) uses love-terminology: future active verb `ἀγαπήσω` and perfect passive participle `ἠγαπημένην` (`καὶ ἀγαπήσω τὴν Οὐκ ἠγαπημένην`). In contrast, Codices Alexandrinus (A) and Marchalianus (Q) substitute mercy-terminology: `ἐλεήσω` and `ἠλεημένην` (`καὶ ἐλεήσω τὴν Οὐκ ἠλεημένην`).
   - *Relation to Pauline Citation:* Paul in Romans 9:25 (cf. accepted P01F-P002 `ὡς καὶ ἐν τῷ Ὡσηὲ λέγει· Καλέσω τὸν οὐ λαόν μου λαόν μου καὶ τὴν οὐκ ἠγαπημένην ἠγαπημένην`) uses the participle `ἠγαπημένην` matching Codex B, whereas 1 Peter 2:10 reflects the mercy vocabulary of AQ (`οἱ οὐκ ἠλεημένοι νῦν δὲ ἐλεηθέντες`).
-  - *People Formula:* The designations `τῷ Οὐ λαῷ μου` and `Λαός μου εἶ σύ` are attested without variation across the witnesses collated by Swete at this locus (B, A, Q).
+  - *People Formula:* The designations `τῷ Οὐ λαῷ μου` and `Λαός μου εἶ σύ` have no apparatus variant reported among the witnesses collated by Swete at this locus (B, A, Q).
 
 ---
 
@@ -60,7 +60,7 @@ From Swete's Preface (Vol. III, pp. v–xix) and Table of Manuscripts:
 - **Apparatus Entry:**
   `16 om κς 2° א A Q* (hab Qmg) Γ | εμβαλω א A Q | Σιων BabאAQΓ | αυτης] + ※ τεθεμελιωμενον Qmg | ο πιστευων] + επ αυτω א A Q | ου μη καταισχυνθη] οι γ' (θη sup ras A?vid) ου σπευσει Qmg`
 - **Discriminating Textual Features:**
-  - *Prepositional Complement `ἐπ᾽ αὐτῷ`:* Codex Vaticanus (B) base text reads anarthrous participial clause without complement: `ὁ πιστεύων οὐ μὴ καταισχυνθῇ`. However, Codices Sinaiticus ($\aleph$), Alexandrinus (A), and Marchalianus (Q) unanimously add `ἐπ᾽ αὐτῷ` (`ο πιστευων] + επ αυτω א A Q`).
+  - *Prepositional Complement `ἐπ᾽ αὐτῷ`:* Codex Vaticanus (B) base text reads anarthrous participial clause without complement: `ὁ πιστεύων οὐ μὴ καταισχυνθῇ`. However, Codices Sinaiticus ($\aleph$), Alexandrinus (A), and Marchalianus (Q) all explicitly add `ἐπ᾽ αὐτῷ` (`ο πιστευων] + επ αυτω א A Q`).
   - *Relation to Pauline Citation:* In Romans 10:11 (cf. accepted P01F-P004 `λέγει γὰρ ἡ γραφή· Πᾶς ὁ πιστεύων ἐπʼ αὐτῷ οὐ καταισχυνθήσεται`) and Romans 9:33 (`καὶ ὁ πιστεύων ἐπʼ αὐτῷ οὐ καταισχυνθήσεται`), Paul incorporates `ἐπ᾽ αὐτῷ`. Swete's apparatus demonstrates that `ἐπ᾽ αὐτῷ` is attested in Swete-collated Greek OT witnesses ($\aleph, A, Q$), matching the accepted Pauline reading; whether this reading reflects pre-Pauline textual priority or another relationship is deferred to later cross-source synthesis.
   - *Absence of Universal Quantifier `πᾶς`:* No manuscript collated by Swete at this locus (B, $\aleph$, A, Q, Γ) contains the initial universal quantifier `πᾶς`; in Rom 10:11 `Πᾶς` represents Paul's contextual framing.
   - *Verb Mood / Hexapla:* All Greek uncials read subjunctive `καταισχυνθῇ` (governed by `οὐ μή`), while the Hexaplaric note records that the Three ($\alpha', \sigma', \theta'$) read `οὐ σπεύσει` in $Q^{mg}$, representing the Hebrew verb form יָחִישׁ. The letters `θη` of `καταισχυνθη` were written over an erasure in Codex A (`θη sup ras A?vid`).
@@ -103,8 +103,8 @@ From Swete's Preface (Vol. III, pp. v–xix) and Table of Manuscripts:
 - **Apparatus Entry:**
   `10 εθνω (sic) A` (records an orthographic/scribal omission of final nu in Codex Alexandrinus at `ἐθνῶν` in the target quotation phrase; no other variant for v. 10; notes on p. 122 cover 11:13–16; 12:1–3).
 - **Discriminating Textual Features:**
-  - *Target Clause Attestation & Scribal Form:* The target quotation text `ἡ ῥίζα τοῦ Ἰεσσαὶ καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν, ἐπ᾽ αὐτῷ ἔθνη ἐλπιοῦσιν` has no substantive lexical or syntactic variant among the witnesses collated by Swete at this locus (Codex Vaticanus B base text, Codex Sinaiticus $\aleph$, Codex Alexandrinus A, Codex Marchalianus Q, and Codex rescriptus Cryptoferratensis Γ), with the apparatus recording only the scribal form `10 εθνω (sic) A`.
-  - *Relation to Pauline Citation:* Matches the quotation wording in Romans 15:12 (cf. accepted P01F-P007 `καὶ πάλιν Ἠσαΐας λέγει· Ἔσται ἡ ῥίζα τοῦ Ἰεσσαί, καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν· ἐπʼ αὐτῷ ἔθνη ἐλπιοῦσιν`), where Paul cites the passage following an introductory attribution formula (`καὶ πάλιν Ἠσαΐας λέγει`).
+  - *Target Clause Attestation & Scribal Form:* The apparatus records only the scribal form `10 εθνω (sic) A` for verse 10; no additional variant is reported among the witnesses Swete could collate at this locus for the target quotation text `ἡ ῥίζα τοῦ Ἰεσσαὶ καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν, ἐπ᾽ αὐτῷ ἔθνη ἐλπιοῦσιν`. In a negative apparatus, silence denotes no variant reported rather than proven affirmative agreement across all named witnesses where coverage or decipherability (such as $\Gamma$) is unverified.
+  - *Relation to Pauline Citation:* The printed base text matches the quotation wording in Romans 15:12 (cf. accepted P01F-P007 `καὶ πάλιν Ἠσαΐας λέγει· Ἔσται ἡ ῥίζα τοῦ Ἰεσσαί, καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν· ἐπʼ αὐτῷ ἔθνη ἐλπιοῦσιν`), where Paul cites the passage following an introductory attribution formula (`καὶ πάλιν Ἠσαΐας λέγει`).
 
 ---
 
@@ -116,9 +116,9 @@ From Swete's Preface (Vol. III, pp. v–xix) and Table of Manuscripts:
 - **Apparatus Entry:**
   `14 ιδου] + εγω א* (improb אc.a) A | αυτους] + μεταθεσει Z | σοφων] + αυτων Z | συνετων] + αυτου Z`
 - **Discriminating Textual Features:**
-  - *Unanimous Attestation of Verb `κρύψω`:* In the second coordinate clause (`καὶ τὴν σύνεσιν τῶν συνετῶν κρύψω`), all witnesses collated by Swete at this locus (Codex Vaticanus B, Codex Sinaiticus $\aleph$, Codex Alexandrinus A, Codex Marchalianus Q, Codex Cryptoferratensis Γ) unanimously read `κρύψω`. None of the collated witnesses reads the verb `ἀθετήσω` found in 1 Corinthians 1:19 (cf. accepted P01F-P008 `γέγραπται γάρ· Ἀπολῶ τὴν σοφίαν τῶν σοφῶν, καὶ τὴν σύνεσιν τῶν συνετῶν ἀθετήσω`).
-  - *Introductory Clause Variants:* Codex Sinaiticus original hand ($\aleph^*$) and Codex Alexandrinus (A) add `ἐγώ` after `ἰδού` (`+ εγω א* A`). The Dublin fragment (Z) adds emphatic possessive pronouns (`σοφῶν + αὐτῶν Z`, `συνετῶν + αὐτοῦ Z`).
-  - *Textual Significance:* The presence of `κρύψω` in all witnesses collated by Swete at this locus establishes that the verb `ἀθετήσω` found in Paul's citation in 1 Cor 1:19 (cf. accepted P01F-P008 `καὶ τὴν σύνεσιν τῶν συνετῶν ἀθετήσω`) is not attested among the Greek Old Testament uncials collated in this edition. Whether `ἀθετήσω` represents a distinctively Pauline adaptation or derives from an uncollated Greek variant is deferred to later cross-source and secondary-scholarship synthesis.
+  - *Absence of Variant for Verb `κρύψω`:* In the second coordinate clause (`καὶ τὴν σύνεσιν τῶν συνετῶν κρύψω`), no variant is reported against the base text verb `κρύψω` among the witnesses Swete could collate at this locus. No witness collated by Swete is reported reading the verb `ἀθετήσω` found in 1 Corinthians 1:19 (cf. accepted P01F-P008 `γέγραπται γάρ· Ἀπολῶ τὴν σοφίαν τῶν σοφῶν, καὶ τὴν σύνεσιν τῶν συνετῶν ἀθετήσω`). Negative-apparatus silence records no reported variant, rather than proven affirmative agreement across all named witnesses where coverage or decipherability (such as $\Gamma$) is unverified.
+  - *Introductory Clause Variants:* Codex Sinaiticus original hand ($\aleph^*$) and Codex Alexandrinus (A) add `ἐγώ` after `ἰδού` (`+ εγω א* A`). The Dublin fragment (Z) adds emphatic possessive pronouns (`σοφῶν + αυτων Z`, `συνετων + αυτου Z`).
+  - *Textual Significance:* The lack of any reported variant against `κρύψω` among the witnesses Swete could collate at this locus confirms that the verb `ἀθετήσω` found in Paul's citation in 1 Cor 1:19 (cf. accepted P01F-P008 `καὶ τὴν σύνεσιν τῶν συνετῶν ἀθετήσω`) is not attested in Swete's recorded data. Whether `ἀθετήσω` represents a distinctively Pauline adaptation or derives from an uncollated Greek variant is deferred to later cross-source and secondary-scholarship synthesis.
 
 ---
 
