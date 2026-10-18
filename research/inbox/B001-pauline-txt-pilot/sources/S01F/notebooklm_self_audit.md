@@ -6,9 +6,9 @@
 
 ---
 
-## Result: AUDIT IN PROGRESS (STAGED FOR RE-REVIEW)
+## Result: RESOLVED (STAGED FOR RE-REVIEW)
 
-This self-audit records the comprehensive verification of all source packet artifacts for S01F (James W. Aageson, Oxford D.Phil. thesis, 1983/1984) following the independent review findings in GitHub PR #2 (`#issuecomment-6256189064`). All 6 review findings have been resolved in full.
+This self-audit records the comprehensive verification of all source packet artifacts for S01F (James W. Aageson, Oxford D.Phil. thesis, 1983/1984) following the independent review findings in GitHub PR #2 (`#issuecomment-6256189064`). All 6 review findings have been resolved in full. Authentic, reproducible passage-level citation snippets have been re-extracted from NotebookLM CDK tooltips across Prompts 2, 3, and 4 (including Marker 28 and all 124 markers in Prompt 2).
 
 ---
 

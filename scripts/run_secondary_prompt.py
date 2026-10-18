@@ -95,6 +95,7 @@ async def verify_tab_invariants(ws):
 async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222):
     ws_url = get_page_ws_url(host=host, port=port)
     async with websockets.connect(ws_url, max_size=20*1024*1024) as ws:
+        await send_cdp(ws, 1, "Page.bringToFront")
         # Invariant 1: Verify notebook title and exactly one source loaded
         abstract_text = await verify_tab_invariants(ws)
 
@@ -260,44 +261,55 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222):
 
         citations = []
         for idx in range(marker_count):
-            click_js = f"""
+            # 1. Reset mouse away to 0,0
+            await send_cdp(ws, 1000 + idx * 10, "Input.dispatchMouseEvent", {"type": "mouseMoved", "x": 0, "y": 0})
+            await asyncio.sleep(0.05)
+
+            # 2. Scroll into view and get marker rect
+            js_rect = f"""
             (() => {{
                 const msgs = document.querySelectorAll('.to-user-message-card-content');
                 const lastMsg = msgs[msgs.length - 1];
-                const markers = Array.from(lastMsg.querySelectorAll("button.citation-marker"));
-                if (markers[{idx}]) {{
-                    markers[{idx}].scrollIntoView({{ block: 'center' }});
-                    markers[{idx}].click();
-                    return markers[{idx}].innerText.trim();
-                }}
-                return null;
+                const markers = Array.from(lastMsg.querySelectorAll('button.citation-marker'));
+                const btn = markers[{idx}];
+                btn.scrollIntoView({{ block: 'center', inline: 'center', behavior: 'instant' }});
+                const r = btn.getBoundingClientRect();
+                return {{
+                    x: r.x + r.width/2,
+                    y: r.y + r.height/2,
+                    label: btn.innerText.trim()
+                }};
             }})()
             """
-            m_label = await evaluate(ws, 100 + idx * 2, click_js)
-            await asyncio.sleep(0.6)
+            pos = await evaluate(ws, 1000 + idx * 10 + 1, js_rect)
+            if not pos:
+                raise RuntimeError(f"Extraction invariant violated: marker {idx} rect could not be evaluated")
+            x, y = pos["x"], pos["y"]
+            m_label = pos["label"]
 
-            # Query strictly the active CDK overlay pane containing citation tooltip
-            # Exclude .source-panel, persistent sidebars, and unrelated dialogs
-            snippet_js = """
-            (() => {
-                const panels = Array.from(document.querySelectorAll(
-                    ".cdk-overlay-container .cdk-overlay-pane.citation-tooltip-panel, " +
-                    ".cdk-overlay-container .cdk-overlay-pane:has(.citation-tooltip)"
-                ));
-                for (let i = panels.length - 1; i >= 0; i--) {
-                    const p = panels[i];
-                    const rect = p.getBoundingClientRect();
-                    if (rect.width > 0 && rect.height > 0) {
-                        const t = p.innerText.trim();
-                        if (t.length > 10 && !t.includes("Recently used") && !t.includes("Search your sources")) {
-                            return t;
-                        }
-                    }
-                }
-                return "";
-            })()
-            """
-            snippet = await evaluate(ws, 100 + idx * 2 + 1, snippet_js)
+            # 3. Move mouse over marker to trigger tooltip
+            await send_cdp(ws, 1000 + idx * 10 + 2, "Input.dispatchMouseEvent", {"type": "mouseMoved", "x": x, "y": y})
+
+            # 4. Poll active CDK overlay tooltip text
+            snippet = ""
+            for attempt in range(8):
+                await asyncio.sleep(0.12)
+                snippet_js = """
+                (() => {
+                    const tt = document.querySelector('.cdk-overlay-container .citation-tooltip');
+                    return tt ? tt.innerText : "";
+                })()
+                """
+                raw_text = await evaluate(ws, 1000 + idx * 10 + 3 + attempt, snippet_js) or ""
+                if len(raw_text.strip()) > 10:
+                    clean = raw_text.replace("aageson_1984_pauls_use_of_scripture.pdf\n", "").replace("\nView source", "").replace("\n", " ").strip()
+                    if "ABSTRACT" not in clean:
+                        snippet = clean
+                        break
+
+            if not snippet:
+                raise RuntimeError(f"Fail-closed: could not extract valid tooltip for marker {idx} (label {m_label})")
+
             citations.append({
                 "index": idx,
                 "label": m_label,
