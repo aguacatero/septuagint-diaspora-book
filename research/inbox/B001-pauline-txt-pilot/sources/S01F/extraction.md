@@ -60,13 +60,13 @@
 - **B001 Passage ID:** `B001-2`
 - **Author's Claim:** Paul deliberately substitutes καλέσω for ἐρῶ in Hosea 2:23 (LXX 2:25) to forge a verbal catchword connection with κληθήσονται in Hosea 1:10 (LXX 2:1) and the overarching theme of divine calling in Romans 9:6–24.
 - **Short Quotation:** "The substitution of καλέσω for ἐρῶ in the citation from Hosea 2:25 LXX, has resulted in a verbal connection in Paul's text between the two Hosea passages"
-- **Printed Page Number:** p. 79
-- **Source Locator:** Chapter III (Omission, Addition, and Substitution), p. 79; cf. p. 178 (PDF p. 89, 188)
+- **Printed Page Number:** p. 178
+- **Source Locator:** Chapter VI (Romans 9:19–29), p. 178; cf. Chapter III, p. 81 (PDF pp. 188, 91)
 - **NotebookLM Citation:** Prompt 2 / Citation Marker 5
 - **Textual Evidence Invoked:** Lexical substitution of καλέσω (Rom 9:25) for ἐρῶ (LXX Hos 2:25), creating an alignment with κληθήσονται (LXX Hos 2:1 / Rom 9:26) and ἐκάλεσεν (Rom 9:24).
 - **Claim Type:** Literary
 - **Qualifications / Conditions:** Framed as the probable motivation explaining the text modification.
-- **Verification Status:** `VERIFIED` (Visibly verified against thesis p. 79 / PDF p. 89).
+- **Verification Status:** `VERIFIED` (Visibly verified against thesis p. 178; cf. p. 81 / PDF pp. 188, 91).
 - **Extraction Confidence:** HIGH
 
 ---
@@ -79,12 +79,12 @@
 - **Author's Claim:** Paul's wording in Romans 9:26 exhibits direct textual agreement with Codex Alexandrinus (LXX-A) in its reading of Hosea 1:10 (LXX 2:1).
 - **Short Quotation:** "Rom. 9:26-Hos. 1:10 (2:1) (LXX-A)"
 - **Printed Page Number:** p. 69
-- **Source Locator:** Chapter III (Septuagint, Textual Tradition), p. 69 n. 19 (PDF p. 79)
+- **Source Locator:** Chapter III (Septuagint, Textual Tradition), pp. 69–70 n. 19 (PDF pp. 79–80)
 - **NotebookLM Citation:** Prompt 2 / Citation Marker 4
 - **Textual Evidence Invoked:** Inclusion of ἐκεῖ and omission of καὶ αὐτοί in Codex Alexandrinus (LXX-A) matching Romans 9:26 verbatim against LXX-B.
 - **Claim Type:** Textual-critical
 - **Qualifications / Conditions:** None stated.
-- **Verification Status:** `VERIFIED` (Visibly verified against thesis p. 69 n. 19 / PDF p. 79).
+- **Verification Status:** `VERIFIED` (Visibly verified against thesis pp. 69–70 n. 19 / PDF pp. 79–80).
 - **Extraction Confidence:** HIGH
 
 ### S01F-E006
@@ -125,12 +125,12 @@
 - **Author's Claim:** Paul probably inserted πᾶς into his second quotation of Isaiah 28:16 in Romans 10:11 due to the catchword influence and association of πᾶς in Joel 2:32 (Rom 10:13).
 - **Short Quotation:** "In the second of these references, he inserts the word πᾶς. This addition probably came about as a result of the association of Isaiah 28:16 with Joel"
 - **Printed Page Number:** p. 83
-- **Source Locator:** Chapter III (Double Citations), p. 83; cf. p. 183 (PDF p. 93, 193)
+- **Source Locator:** Chapter III (Double Citations), p. 83; cf. Chapter VI, p. 183 (PDF pp. 93, 193)
 - **NotebookLM Citation:** Prompt 2 / Citation Marker 9
 - **Textual Evidence Invoked:** Addition of πᾶς in Rom 10:11 (Πᾶς ὁ πιστεύων...) relative to Rom 9:33 (ὁ πιστεύων...) and LXX Isa 28:16, corresponding to Πᾶς in Rom 10:13 / Joel 2:32.
 - **Claim Type:** Exegetical
 - **Qualifications / Conditions:** Framed as a probable explanation illustrating Paul's willingness to modify text via verbal association.
-- **Verification Status:** `VERIFIED` (Visibly verified against thesis p. 83 / PDF p. 93).
+- **Verification Status:** `VERIFIED` (Visibly verified against thesis p. 83; cf. p. 183 / PDF pp. 93, 193).
 - **Extraction Confidence:** HIGH
 
 ---
@@ -226,29 +226,29 @@
 ### S01F-E014
 - **Proposed Evidence ID:** `S01F-E014`
 - **B001 Passage ID:** `B001-9`
-- **Author's Claim:** The sole difference between Paul's double citation of Genesis 2:24 in 1 Corinthians 6:16 and Ephesians 5:31 is the parenthetical insertion of the introductory formula γάρ, φησίν in 1 Corinthians for syntactical integration.
+- **Author's Claim:** Within the shared core quotation of Genesis 2:24 (ἔσονται οἱ δύο εἰς σάρκα μίαν), the sole difference between 1 Corinthians 6:16 and Ephesians 5:31 is the parenthetical insertion of the introductory formula γάρ, φησίν in 1 Corinthians for syntactical integration. Ephesians 5:31 functions as an outside-primary-corpus comparator per PROJECT_CONSTITUTION.md.
 - **Short Quotation:** "the only difference between the two references is that the introductory formula, γάρ, φησίν, has been included for syntactical reasons"
-- **Printed Page Number:** p. 83
-- **Source Locator:** Chapter III (Double Citations), p. 83 (PDF p. 93)
+- **Printed Page Number:** pp. 82–83
+- **Source Locator:** Chapter III (Double Citations), pp. 82–83 (PDF pp. 92–93)
 - **NotebookLM Citation:** Prompt 2 / Citation Marker 21
 - **Textual Evidence Invoked:** Text of Gen 2:24 in 1 Cor 6:16 (Ἔσονται γάρ, φησίν, οἱ δύο εἰς σάρκα μίαν) compared with Eph 5:31.
 - **Claim Type:** Textual-critical
-- **Qualifications / Conditions:** Minor stylistic omission of αὐτοῦ in Eph 5:31 does not affect the core structural agreement.
-- **Verification Status:** `VERIFIED` (Visibly verified against thesis p. 83 / PDF p. 93).
+- **Qualifications / Conditions:** Aageson's comparative evaluation applies strictly to the shared core clause (ἔσονται οἱ δύο εἰς σάρκα μίαν); the full citation in Ephesians 5:31 includes the introductory clause (ἀντὶ τούτου καταλείψει ἄνθρωπος τὸν πατέρα καὶ τὴν μητέρα καὶ προσκολληθήσεται πρὸς τὴν γυναῖκα αὐτοῦ) omitted in 1 Corinthians 6:16. Per PROJECT_CONSTITUTION.md, Ephesians is treated strictly as an outside-primary-corpus comparator (undisputed primary corpus vs deuteropauline comparator).
+- **Verification Status:** `VERIFIED` (Visibly verified against thesis pp. 82–83 / PDF pp. 92–93).
 - **Extraction Confidence:** HIGH
 
 ### S01F-E015
 - **Proposed Evidence ID:** `S01F-E015`
 - **B001 Passage ID:** `B001-9`
 - **Author's Claim:** Paul applies Genesis 2:24 in 1 Corinthians 6:16 as an ethical halakic command regulating sexual conduct, illustrating the application of narrative creation tradition to behavioral instruction.
-- **Short Quotation:** "In four instances, \"narrative\" passages are used in contexts which pertain to ethics; I Cor. 6:16 (Gen. 2:24)"
-- **Printed Page Number:** p. 106
-- **Source Locator:** Chapter IV (Content of Paul's Citations), p. 106 n. 85 (PDF p. 116)
+- **Short Quotation:** "In four instances, \"narrative\" passages are used in contexts which pertain to ethics; [n. 120: I Cor. 6:16 (Gen. 2:24)...]"
+- **Printed Page Number:** p. 114
+- **Source Locator:** Chapter IV (Content of Paul's Citations), p. 114 n. 120 (PDF p. 124)
 - **NotebookLM Citation:** Prompt 2 / Citation Marker 22
 - **Textual Evidence Invoked:** Citation of Gen 2:24 in 1 Cor 6:16 applied to the physical union of joining oneself to a harlot.
 - **Claim Type:** Exegetical
 - **Qualifications / Conditions:** None stated.
-- **Verification Status:** `VERIFIED` (Visibly verified against thesis p. 106 n. 85 / PDF p. 116).
+- **Verification Status:** `VERIFIED` (Visibly verified against thesis p. 114 n. 120 / PDF p. 124).
 - **Extraction Confidence:** HIGH
 
 ---
@@ -298,7 +298,7 @@
 - **Short Quotation:** "his text omits the words ὑπὸ θεοῦ... likely that they were omitted in order to avoid presenting an unacceptable image of the divine"
 - **Printed Page Number:** p. 79
 - **Source Locator:** Chapter III (Omission, Addition, and Substitution), p. 79 (PDF p. 89)
-- **NotebookLM Citation:** Prompt 2 / Citation Marker 28
+- **NotebookLM Citation:** Prompt 2 / Marker collapsed under more_horiz after Marker 27
 - **Textual Evidence Invoked:** Omission of ὑπὸ θεοῦ from LXX Deut 21:23 (κεκατηραμένος ὑπὸ θεοῦ) in Galatians 3:13 (Ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου).
 - **Claim Type:** Exegetical
 - **Qualifications / Conditions:** The author acknowledges that it cannot be definitively proven whether Paul personally initiated this omission or inherited it from prior tradition.
