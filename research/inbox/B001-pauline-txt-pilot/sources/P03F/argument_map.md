@@ -8,43 +8,62 @@
 
 ---
 
-## Methodological Finding Regarding B001 Passages
+## Descriptive Map of Attested Editorial Method in the Prophetic Books
 
-Because P03F is a manual critical edition of the Greek Old Testament rather than an exegetical monograph or New Testament commentary, it contains no explicit authorial argument or commentary on Paul's use of Scripture or the 12 B001 passage comparisons.
+Because P03F is a manual critical edition of the Greek Old Testament rather than an interpretive monograph or New Testament commentary, it contains no authorial argument, commentary, or theological exegesis regarding Paul's use of Scripture or the 12 B001 passage comparisons.
 
-The argument maps below trace the editor's explicit methodological rationale in establishing the Greek text and critical apparatus for the Prophetic books containing the B001 comparanda (Hosea, Joel, Isaiah).
-
----
-
-## Reasoning Structures: QUESTION -> EVIDENCE -> INFERENCE -> CONCLUSION
-
-### 1. Selection of Base Text in the Prophets
-- **QUESTION:** What manuscript should supply the continuous running text for the Prophetic literature in Volume III?
-- **EVIDENCE:**
-  - Codex Vaticanus (B, 4th cent.) is extant throughout the entire Prophetic corpus (unlike Genesis in Vol. I).
-  - Codex Vaticanus represents the oldest, most consistent, and least harmonized surviving uncial text of the Greek Prophets.
-  - The editorial plan of the Cambridge manual edition mandates diplomatic adherence to the best single continuous witness.
-- **INFERENCE:** Printing Codex Vaticanus as the continuous running text provides a stable, objectively verifiable foundation, avoiding the subjective eclecticism of 19th-century conflated editions.
-- **CONCLUSION:** Swete prints the text of Codex Vaticanus (B) as the base text for all prophetic books (including Hosea, Joel, and Isaiah), faithfully reproducing its uncial text, orthography, and itacisms.
+The sections below provide a descriptive map of Swete's **explicitly attested editorial method** for the Prophetic literature (containing the seven B001 comparanda in Hosea, Joel, and Isaiah), distinguishing Swete's explicit preface claims and directly observed edition typography from reviewer inferences.
 
 ---
 
-### 2. Selection and Role of Codex Marchalianus (Q) in the Prophetic Apparatus
-- **QUESTION:** How should the Hexaplaric and Patristic traditions of the Prophets be represented in a compact manual apparatus?
-- **EVIDENCE:**
-  - Codex Marchalianus (Q, 6th cent., Vat. Gr. 2125) preserves an exceptional text of the Twelve Prophets and Major Prophets, written in Egypt and annotated with extensive Hexaplaric marginal notes by an early hand.
-  - Father Antonio Ceriani published an exhaustive palaeographical monograph and collation of Codex Q in 1890.
-  - The margin of Q ($Q^{mg}$) preserves the translations of Aquila, Symmachus, and Theodotion ($\alpha', \sigma', \theta'$), as well as asterisks and obeli marking Hexaplaric additions and omissions.
-- **INFERENCE:** Collating Codex Q against Codex B provides a direct window into 6th-century Egyptian uncial readings and ancient Hexaplaric revisions without requiring an exhaustive apparatus of minuscules.
-- **CONCLUSION:** Swete collates Codex Marchalianus (Q) throughout the Prophets, explicitly citing its marginal Hexaplaric readings (as at Isaiah 28:16 and Isaiah 40:13) in the apparatus.
+### 1. Continuous Base Text Selection in the Prophets
+
+- **SWETE EXPLICIT CLAIM:**
+  - "The general principles upon which the edition is based were stated in the preface to the first volume..." (Preface, p. v).
+  - "The great Vatican MS., whose text and order we have generally followed, ends with the Prophets." (Preface, p. v).
+  - Where Codex Vaticanus fails (e.g. in the Books of Maccabees), "the text of that MS. [Codex Alexandrinus] has been adopted throughout" (Preface, p. v).
+- **EDITION-LEVEL OBSERVATION:**
+  - Codex Vaticanus (B, 4th cent.) provides the continuous running printed text throughout Hosea, Joel, and Isaiah (pp. 1–174).
+  - The printed text reproduces the uncial orthography, historical itacisms (e.g. `Σειών` for `Σιών` at Joel 2:32, p. 42; Isa 28:16, p. 149), and word forms of Codex B.
+- **REVIEWER INFERENCE:**
+  - By following a single primary uncial manuscript (Codex B) diplomatically as the continuous text rather than constructing an eclectic text, the edition provides an anchor in an ancient uncial copy while reporting divergent uncial readings in the apparatus.
 
 ---
 
-### 3. Inclusion of Codex Sinaiticus (א) and Early Palimpsest Fragments
-- **QUESTION:** What additional witnesses should be collated to establish the uncial textual tradition of the Prophets?
-- **EVIDENCE:**
-  - Codex Sinaiticus ($\aleph$, 4th cent.) is extant for major portions of the Prophets, including Joel and Isaiah.
-  - Codex Alexandrinus (A, 5th cent.) is complete throughout the Prophets.
-  - Important early palimpsest fragments survive, including Codex rescriptus Cryptoferratensis (Γ) and the Dublin fragments of Isaiah (Z/O).
-- **INFERENCE:** By collating $\aleph$, A, Q, Γ, and Z against B, the manual edition presents the testimony of virtually all premier uncial manuscripts of the Greek Prophets available to scholarship in 1894.
-- **CONCLUSION:** Swete constructs a negative critical apparatus citing $\aleph$, A, Q, Γ, and Z at the foot of each page for Hosea, Joel, and Isaiah.
+### 2. Selection and Role of Codex Marchalianus (Q) in the Prophetic Corpus
+
+- **SWETE EXPLICIT CLAIM:**
+  - "In the Prophets it has been possible to employ, in addition to the great codices B א A, the Codex Marchalianus (Q)..." (Preface, p. v).
+  - Codex Marchalianus (Vat. Gr. 2125, 6th cent.) contains 416 leaves of thin vellum written in Egypt, containing the Twelve Prophets and the Major Prophets in the order of Codex B (Preface, pp. vi–vii).
+  - "Neither breathings nor accents seem to have been added by the first hand" (Preface, p. vii).
+  - Ceriani published a heliotype and monograph on the codex in 1890, demonstrating that its margins preserve Hexaplaric signs, asterisks, obeli, and readings of Aquila, Symmachus, and Theodotion ($\alpha', \sigma', \theta'$) (Preface, p. vi).
+- **EDITION-LEVEL OBSERVATION:**
+  - Swete collates Q consistently across the Prophetic books, recording its variants against B and citing its marginal Hexaplaric readings in the apparatus (e.g. at Isa 28:16, p. 149: `οι γ' ... ου σπευσει Qmg`; at Isa 40:13, p. 174: `AQmgΓ`).
+- **REVIEWER INFERENCE:**
+  - Including Codex Q expands the critical apparatus beyond the great 4th- and 5th-century uncials (B, א, A), providing users of the manual edition with access to an early Egyptian prophetic text and patristic/Hexaplaric marginal notes without citing cursive manuscripts.
+
+---
+
+### 3. Collation Scope of Additional Uncials and Palimpsests (א, A, Γ, Z/O)
+
+- **SWETE EXPLICIT CLAIM:**
+  - The collation base in the Prophets employs Codex Sinaiticus (א), Codex Alexandrinus (A), Codex rescriptus Cryptoferratensis (Γ), and the Dublin fragments of Isaiah (O and Z) (Preface, p. v).
+  - For Codex rescriptus Cryptoferratensis (Γ), an 8th/9th-century palimpsest, Swete explicitly cautions: "it will be precarious for the reader of this edition to draw conclusions from the silence of Γ, which may be due to the impossibility of deciphering its testimony" (Preface, p. viii).
+  - For Daniel, Swete notes that the true Septuagint text survives in only one cursive MS (Chigi), whereas the church adopted Theodotion; Swete prints the Chigi LXX and Theodotion on facing pages (Preface, pp. v–vi).
+- **EDITION-LEVEL OBSERVATION:**
+  - In Hosea, Joel, and Isaiah, the apparatus functions as a negative apparatus citing uncial variants from B at the foot of each page.
+  - Variant readings in the apparatus are printed in Greek minuscules without accents or breathings (e.g. `23 αγαπησω] ελεησω AQ` on p. 3; `16 ο πιστευων] + επ αυτω א A Q` on p. 149).
+- **REVIEWER INFERENCE:**
+  - The apparatus is designed as a compact uncial collation for manual use; silence of a collated witness generally denotes agreement with Codex B, subject to Swete's explicit warning regarding decipherment gaps in fragmentary palimpsests such as Codex Γ.
+
+---
+
+### 4. Methodological Scope Regarding New Testament Citations
+
+- **SWETE EXPLICIT CLAIM:**
+  - The volume provides the text of the Old Testament in Greek and contains no discussions, excursuses, or evaluations of New Testament citations or Pauline usage.
+- **EDITION-LEVEL OBSERVATION:**
+  - The edition documents the Greek text and uncial variants at the Old Testament loci cited by Paul (Hos 1:10, 2:23; Joel 2:32; Isa 11:10, 28:16, 29:14, 40:13).
+  - Swete records witness readings without expressing judgments on whether Pauline quotations influenced Old Testament manuscripts or vice versa (e.g., the addition in א* and A at Isa 40:14 corresponding to Rom 11:35 is simply collated as an apparatus entry).
+- **REVIEWER INFERENCE:**
+  - Questions of quotation technique, direction of dependence, pre-Pauline textual forms, and Christian scribal harmonization cannot be determined from Swete's manual edition alone; such inquiries require cross-source textual comparison and secondary scholarship.

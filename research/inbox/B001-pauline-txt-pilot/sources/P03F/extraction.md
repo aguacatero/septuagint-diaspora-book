@@ -76,7 +76,7 @@ These items document the printed Greek text and textual apparatus for the seven 
 - **NotebookLM Citation:** [5]
 - **Apparatus Present:** YES
 - **Apparatus Readings & Witnesses:** `13 συμβουλος αυτου AQΓ | συμβιβα] συμβιβασει אc.a (-βασι sed rurs ras σι) AQmgΓ | 14 ... αυτω 2°] + η τις προεδωκεν αυτω και ανταποδοθησεται (-δωθ. A) αυτω א* (improb אc.a et postea) A`
-- **Textual Feature:** Codex Vaticanus (B) base text reads the word order `αὐτοῦ σύμβουλος`, while Codices Alexandrinus (A), Marchalianus (Q), and Cryptoferratensis (Γ) read `σύμβουλος αὐτοῦ`, which matches the exact word order quoted by Paul in Rom 11:34 (cf. accepted P01F-P006 `ἢ τίς σύμβουλος αὐτοῦ ἐγένετο;`). Furthermore, the apparatus documents that א* and A add the wording of Romans 11:35 into verse 14 (`+ ἢ τίς προέδωκεν αὐτῷ καὶ ἀνταποδοθήσεται αὐτῷ`), demonstrating that this Pauline-matching addition is attested in Greek OT witnesses collated by Swete (direction of dependence or causation is deferred to cross-source synthesis).
+- **Textual Feature:** Codex Vaticanus (B) base text reads the word order `αὐτοῦ σύμβουλος`, while Codices Alexandrinus (A), Marchalianus (Q), and Cryptoferratensis (Γ) read `σύμβουλος αὐτοῦ`, which matches the exact word order quoted by Paul in Rom 11:34 (cf. accepted P01F-P006 `ἢ τίς σύμβουλος αὐτοῦ ἐγένετο;`). Furthermore, the apparatus documents that Swete records an addition in א* and A at Isaiah 40:14 (`+ η τις προεδωκεν αυτω και ανταποδοθησεται [-δωθ. A] αυτω`) corresponding closely to the wording of Romans 11:35; this edition alone documents witness attestation and does not determine the origin or direction of dependence (deferred to cross-source synthesis).
 - **Limitation:** Supplies only the Greek uncial witnesses collated by Swete at this locus (B, א, A, Q, Γ); lacks Hebrew MT text of Isa 40:13 and New Testament citation context (evaluated under accepted P01F-P006).
 
 ---
@@ -109,7 +109,7 @@ These items document the printed Greek text and textual apparatus for the seven 
 
 ---
 
-## Part 2: Editorial Method & Manuscript Collation in the Prophets (`P03F-E001` to `P03F-E003`)
+## Part 2: Editorial Method & Manuscript Collation in the Prophets (`P03F-E001` to `P03F-E005`)
 
 ### P03F-E001: Primacy of Codex Vaticanus (B) in the Prophetic Books
 - **Claim:** Swete adheres strictly to the rule of printing the text of Codex Vaticanus (B, 4th cent.) as the base text wherever extant throughout the Prophets, reproducing its orthography, itacisms, and line division, and relegating variants of all other witnesses to the apparatus.
@@ -122,6 +122,14 @@ These items document the printed Greek text and textual apparatus for the seven 
 ### P03F-E003: Manual Edition Distinct from Later Comprehensive Collations
 - **Claim:** Swete’s manual edition provides a diplomatic uncial collation rather than an eclectic reconstruction of the archetype; it does not cite minuscule manuscripts, daughter versions (except in specialized notes), or later patristic citations, and is distinct from the Göttingen Septuaginta editions (Ziegler).
 - **Support:** Preface, pp. v–vi; prolegomena to manual series.
+
+### P03F-E004: Adherence to Manuscript Orthography and Incorporation of Volume I Principles
+- **Claim:** Swete explicitly incorporates by reference the general editorial principles stated in the preface to Volume I, while the printed prophetic text directly demonstrates adherence to Codex Vaticanus orthography and itacisms (e.g. `Σειών` for `Σιών` at Joel 2:32, p. 42; Isa 28:16, p. 149).
+- **Support:** Preface, p. v: "The general principles upon which the edition is based were stated in the preface to the first volume..."; confirmed by direct edition-level observation of printed pages (pp. 42, 149).
+
+### P03F-E005: Apparatus Typography Convention (Unaccented Minuscules)
+- **Claim:** The critical apparatus consistently prints variant readings in Greek minuscules without breathings or accents (e.g. `23 αγαπησω] ελεησω AQ` on p. 3; `16 ο πιστευων] + επ αυτω א A Q` on p. 149; `13 συμβουλος αυτου AQΓ` on p. 174).
+- **Support:** Directly observed edition typography across printed pages (pp. 3, 42, 122, 149, 174); distinguished as an edition-level typographic convention rather than an explicit preface claim (though Swete notes that ancient manuscripts lack breathings/accents prima manu, Preface pp. vii, x).
 
 ---
 
