@@ -89,6 +89,7 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
 
     citations = []
     seen_snippets = set()
+    seen_pane_ids = set()
     prev_binding = None
     consecutive_duplicates = 0
 
@@ -224,6 +225,11 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
                 clean = raw_text.replace(f"{expected_source}\n", "").replace("\nView source", "").replace("\n", " ").strip()
                 if "ABSTRACT" not in clean:
                     pane_id = bp.get("paneId")
+                    if not pane_id or not pane_id.strip() or pane_id == "anonymous-pane":
+                        raise RuntimeError(
+                            f"Fail-closed: overlay pane for marker {idx} has missing, blank, or anonymous paneId ('{pane_id}'). "
+                            "A verifiable nonempty pane ID is required."
+                        )
                     if pane_id in pre_hover_pane_ids:
                         raise RuntimeError(
                             f"Fail-closed: overlay pane '{pane_id}' at marker {idx} existed prior to hover activation "
@@ -234,12 +240,18 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
                             f"Fail-closed: overlay pane '{pane_id}' at marker {idx} is retained from prior marker. "
                             "Not a fresh pane activation."
                         )
+                    if pane_id in seen_pane_ids:
+                        raise RuntimeError(
+                            f"Fail-closed: overlay pane '{pane_id}' at marker {idx} was previously captured in this run. "
+                            "Run-wide unique pane activation invariant violated."
+                        )
+                    seen_pane_ids.add(pane_id)
                     snip = clean
                     tooltip_rect = bp.get("rect")
                     active_pane_id = pane_id
                     v_dist = bp.get("vDist")
                     h_overlap = bp.get("hOverlap")
-                    handshake_verified = bool(is_cleared and active_pane_id not in pre_hover_pane_ids)
+                    handshake_verified = bool(is_cleared and pane_id and pane_id not in pre_hover_pane_ids)
                     break
             elif len(bound_panes) > 1:
                 raise RuntimeError(f"Fail-closed: Multiple conflicting trigger-bound overlays detected for marker {idx}")

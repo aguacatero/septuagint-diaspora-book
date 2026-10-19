@@ -772,4 +772,90 @@ def test_verify_marker_tooltip_binding_same_pane_retention_fails_closed():
             handshake_verified=True, active_pane_id="cdk-overlay-1", prev_binding=b0
         )
 
+@pytest.mark.anyio
+async def test_collector_blank_or_anonymous_pane_id_fails_closed(tmp_path):
+    """
+    Review Round 7 Forward-Looking Hardening Regression:
+    Rejects matching pane whose paneId is missing, empty, or anonymous.
+    """
+    mock_ws = AsyncMock()
+    out_file = str(tmp_path / "out.json")
+
+    async def mock_eval(ws, expr):
+        if "more_horiz" in expr:
+            return None
+        if "markerCount" in expr:
+            return {"text": "Message with 1 marker", "markerCount": 1}
+        if "lingeringIds" in expr:
+            return {"cleared": True, "visibleCount": 0, "lingeringIds": [], "allPaneIds": []}
+        if "scrollIntoView" in expr:
+            return {
+                "x": 100, "y": 200,
+                "rect": {"left": 90, "top": 190, "right": 110, "bottom": 210, "width": 20, "height": 20},
+                "label": "1"
+            }
+        if "vDist <= 100" in expr:
+            return [{
+                "paneId": "",  # Blank pane ID!
+                "text": "Valid snippet text for marker 0",
+                "rect": {"left": 90, "top": 218, "width": 200, "height": 50, "x": 90, "y": 218},
+                "vDist": 8, "hOverlap": True
+            }]
+        return None
+
+    with patch("scripts.extract_all_messages.call_cdp", new=AsyncMock()), \
+         patch("scripts.extract_all_messages.evaluate", new=mock_eval), \
+         patch("scripts.extract_all_messages.asyncio.sleep", new=AsyncMock()):
+        with pytest.raises(RuntimeError, match=r"Fail-closed: overlay pane for marker 0 has missing, blank, or anonymous paneId"):
+            await extract_message_citations(mock_ws, 0, out_file)
+
+@pytest.mark.anyio
+async def test_collector_run_wide_duplicate_pane_id_fails_closed(tmp_path):
+    """
+    Review Round 7 Forward-Looking Hardening Regression:
+    Rejects a pane ID reused later in the run (run-wide uniqueness invariant).
+    """
+    mock_ws = AsyncMock()
+    out_file = str(tmp_path / "out.json")
+
+    marker_idx_queried = 0
+
+    async def mock_eval(ws, expr):
+        nonlocal marker_idx_queried
+        if "more_horiz" in expr:
+            return None
+        if "markerCount" in expr:
+            return {"text": "Message with 3 markers", "markerCount": 3}
+        if "lingeringIds" in expr:
+            return {"cleared": True, "visibleCount": 0, "lingeringIds": [], "allPaneIds": []}
+        if "scrollIntoView" in expr:
+            m_y = 200 + marker_idx_queried * 30
+            res = {
+                "x": 100, "y": m_y,
+                "rect": {"left": 90, "top": m_y - 10, "right": 110, "bottom": m_y + 10, "width": 20, "height": 20},
+                "label": str(marker_idx_queried + 1)
+            }
+            marker_idx_queried += 1
+            return res
+        if "vDist <= 100" in expr:
+            # Marker 0 gets cdk-overlay-1
+            # Marker 1 gets cdk-overlay-2
+            # Marker 2 illegally reuses cdk-overlay-1!
+            pane_ids = ["cdk-overlay-1", "cdk-overlay-2", "cdk-overlay-1"]
+            pid = pane_ids[marker_idx_queried - 1]
+            return [{
+                "paneId": pid,
+                "text": f"Snippet text for marker {marker_idx_queried}",
+                "rect": {"left": 90, "top": 218 + marker_idx_queried * 30, "width": 200, "height": 50, "x": 90, "y": 218 + marker_idx_queried * 30},
+                "vDist": 8, "hOverlap": True
+            }]
+        return None
+
+    with patch("scripts.extract_all_messages.call_cdp", new=AsyncMock()), \
+         patch("scripts.extract_all_messages.evaluate", new=mock_eval), \
+         patch("scripts.extract_all_messages.asyncio.sleep", new=AsyncMock()):
+        with pytest.raises(RuntimeError, match=r"Fail-closed: overlay pane 'cdk-overlay-1' at marker 2 was previously captured in this run"):
+            await extract_message_citations(mock_ws, 0, out_file)
+
+
 
