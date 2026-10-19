@@ -98,6 +98,14 @@ def verify_marker_tooltip_binding(
         prev_snip = prev_binding.get("snippet", "")
         prev_pos = prev_binding.get("marker_pos", {})
         prev_rect = prev_binding.get("tooltip_rect", {})
+        prev_pane = prev_binding.get("active_pane_id")
+
+        # Unconditional pane instance retention check
+        if active_pane_id and prev_pane and active_pane_id == prev_pane:
+            raise RuntimeError(
+                f"Fail-closed: overlay pane '{active_pane_id}' at marker {marker_idx} is retained from prior marker. "
+                "Not a fresh pane activation."
+            )
 
         if snippet == prev_snip and prev_pos and prev_rect:
             t_dist_y = abs(ty - prev_rect.get("top", prev_rect.get("y", 0)))
@@ -105,21 +113,29 @@ def verify_marker_tooltip_binding(
             m_dist_y = abs(my - prev_pos.get("y", 0))
             m_dist_x = abs(mx - prev_pos.get("x", 0))
 
-            # 1. Any marker displacement with completely static tooltip overlay
-            # Catches small displacements (e.g. 5px, 15px centered scroll variations)
-            if (m_dist_y > 2 or m_dist_x > 2) and t_dist_y < 2 and t_dist_x < 2:
-                raise RuntimeError(
-                    f"Stale retained overlay detected at marker {marker_idx}: marker moved from "
-                    f"({prev_pos.get('x')}, {prev_pos.get('y')}) to ({marker_pos.get('x')}, {marker_pos.get('y')}), "
-                    f"but tooltip overlay position remained completely static at ({tx}, {ty})."
-                )
+            is_same_pos = (t_dist_y < 2 and t_dist_x < 2)
+            has_fresh_pane_ownership = bool(
+                handshake_verified
+                and active_pane_id
+                and prev_pane
+                and active_pane_id != prev_pane
+            )
 
-            # 2. Centered-marker case (same coordinates) with identical static tooltip
-            if t_dist_y < 2 and t_dist_x < 2 and not handshake_verified:
-                raise RuntimeError(
-                    f"Stale retained overlay detected at marker {marker_idx}: centered marker retained static overlay "
-                    f"without verified dismissal handshake."
-                )
+            # If tooltip overlay position remained completely static with identical snippet:
+            if is_same_pos:
+                if not has_fresh_pane_ownership:
+                    reason = (
+                        f"overlay pane '{active_pane_id}' retained from prior marker"
+                        if active_pane_id and active_pane_id == prev_pane
+                        else "tooltip overlay position remained completely static without verified distinct pane activation"
+                    )
+                    raise RuntimeError(
+                        f"Stale retained overlay detected at marker {marker_idx}: marker moved from "
+                        f"({prev_pos.get('x')}, {prev_pos.get('y')}) to ({marker_pos.get('x')}, {marker_pos.get('y')}), "
+                        f"but {reason} at ({tx}, {ty})."
+                    )
+                # When has_fresh_pane_ownership is True (distinct active_pane_id and verified handshake),
+                # legitimate repeated excerpts at viewport-snapped positions are accepted.
 
     return {
         "marker_idx": marker_idx,
@@ -417,16 +433,23 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222, exp
             cleared_js = """
             (() => {
                 const container = document.querySelector('.cdk-overlay-container');
-                if (!container) return { cleared: true, visibleCount: 0, lingeringIds: [] };
+                if (!container) return { cleared: true, visibleCount: 0, lingeringIds: [], allPaneIds: [] };
                 const panes = Array.from(container.querySelectorAll('.cdk-overlay-pane'));
+                const allIds = panes.map(p => p.id || 'anonymous-pane');
                 const visible = panes.filter(p => {
-                    const tt = p.querySelector('.citation-tooltip');
-                    return tt && tt.innerText.trim().length > 0;
+                    const style = window.getComputedStyle(p);
+                    const isExplicitlyHidden = (
+                        style.display === 'none' ||
+                        style.visibility === 'hidden' ||
+                        (p.offsetWidth === 0 && p.offsetHeight === 0)
+                    );
+                    return !isExplicitlyHidden;
                 });
                 return {
                     cleared: visible.length === 0,
                     visibleCount: visible.length,
-                    lingeringIds: visible.map(p => p.id)
+                    lingeringIds: visible.map(p => p.id || 'anonymous-pane'),
+                    allPaneIds: allIds
                 };
             })()
             """
@@ -451,6 +474,8 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222, exp
                     f"Fail-closed: CDK overlay container failed to dismiss prior to hovering marker {idx} "
                     f"(lingering overlay pane IDs: {clear_state.get('lingeringIds', [])}). Ineffective dismissal."
                 )
+
+            pre_hover_pane_ids = list(clear_state.get("allPaneIds", []))
 
             # 2. Scroll target marker into view and obtain its bounding rect
             js_rect = f"""
@@ -532,12 +557,23 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222, exp
                     raw_text = bp.get("text", "")
                     clean = raw_text.replace(f"{expected_source}\n", "").replace("\nView source", "").replace("\n", " ").strip()
                     if "ABSTRACT" not in clean:
+                        pane_id = bp.get("paneId")
+                        if pane_id in pre_hover_pane_ids:
+                            raise RuntimeError(
+                                f"Fail-closed: overlay pane '{pane_id}' at marker {idx} existed prior to hover activation "
+                                f"(pre_hover_pane_ids={pre_hover_pane_ids}). Delayed or retained pane detected."
+                            )
+                        if prev_binding and pane_id == prev_binding.get("active_pane_id"):
+                            raise RuntimeError(
+                                f"Fail-closed: overlay pane '{pane_id}' at marker {idx} is retained from prior marker. "
+                                "Not a fresh pane activation."
+                            )
                         snippet = clean
                         tooltip_rect = bp.get("rect")
-                        active_pane_id = bp.get("paneId")
+                        active_pane_id = pane_id
                         v_dist = bp.get("vDist")
                         h_overlap = bp.get("hOverlap")
-                        handshake_verified = True
+                        handshake_verified = bool(is_cleared and active_pane_id not in pre_hover_pane_ids)
                         break
                 elif len(bound_panes) > 1:
                     raise RuntimeError(f"Fail-closed: Multiple conflicting trigger-bound overlays detected for marker {idx}")
@@ -546,6 +582,8 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222, exp
                 raise RuntimeError(
                     f"Fail-closed: could not establish fresh, trigger-bound tooltip handshake for marker {idx} (label {m_label})."
                 )
+
+            prior_pane_id = prev_binding.get("active_pane_id") if prev_binding else None
 
             # Invariant 4: Verify duplicate transition threshold BEFORE updating prev_binding
             old_snippet = prev_binding.get("snippet", "") if prev_binding else ""
@@ -566,13 +604,17 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222, exp
                 "label": m_label,
                 "snippet": snippet,
                 "audit": {
-                    "pre_hover_cleared": True,
+                    "pre_hover_cleared": is_cleared,
+                    "pre_hover_pane_ids": pre_hover_pane_ids,
                     "overlay_pane_id": active_pane_id,
+                    "prev_pane_id": prior_pane_id,
+                    "is_fresh_pane": bool(active_pane_id not in pre_hover_pane_ids and (not prior_pane_id or active_pane_id != prior_pane_id)),
                     "marker_rect": marker_rect,
                     "tooltip_rect": tooltip_rect,
                     "vertical_dist": v_dist,
-                    "trigger_bound": True,
-                    "handshake_verified": True
+                    "horizontal_overlap": h_overlap,
+                    "trigger_bound": bool(v_dist is not None and v_dist <= 100 and h_overlap),
+                    "handshake_verified": handshake_verified
                 }
             })
 

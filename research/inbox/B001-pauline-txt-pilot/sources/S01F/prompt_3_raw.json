@@ -7,7 +7,10 @@
       "snippet": "the nature of scripture. These presuppositions in turn determined how they set about to use and interpret the material before them. Ibid., pp. 1-2. Ibid., p. 3. 140 T, ., 0 141 TV ., / Ibid., p. 3. Ibid., p. 4. Ibid., p. 4. Cf. Raphael Loewe, \"The 'Plain 1 Meaning of Scripture in Early Jewish Exegesis,\" in Papers of the Institute of Jewish Studies London, vol. 1, ed. J.G. Weiss (Jerusalem: At the Magnus Press, 1964), pp. 181-84. A I f\\ The mishnah, of course, is not exegetical in the sense of being a commentary on the Bible.",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-117",
+        "prev_pane_id": null,
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 485.40625,
           "top": 429.7265625,
@@ -25,6 +28,7 @@
           "y": 459.7265625
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -35,7 +39,10 @@
       "snippet": "the LXX and the Pauline quotations. Within the five categories which have been discussed, a signifi­ cant number of variations appear to have been the result of intentional modification of the scriptural text. Although the possibility cannot be ruled out that Paul in some cases may have quoted from memory, it seems evident that many variations are the consequence -of an attempt to conform the text of scripture to the context of the epistles. As gleaned from our discussion in this chapter, these modifications may be classified",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-118",
+        "prev_pane_id": "cdk-overlay-117",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 511.40625,
           "top": 429.7265625,
@@ -53,6 +60,7 @@
           "y": 459.7265625
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -63,7 +71,10 @@
       "snippet": "the LXX and the Pauline quotations. Within the five categories which have been discussed, a signifi­ cant number of variations appear to have been the result of intentional modification of the scriptural text. Although the possibility cannot be ruled out that Paul in some cases may have quoted from memory, it seems evident that many variations are the consequence -of an attempt to conform the text of scripture to the context of the epistles. As gleaned from our discussion in this chapter, these modifications may be classified",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-119",
+        "prev_pane_id": "cdk-overlay-118",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 603.0703125,
           "top": 429.4140625,
@@ -81,6 +92,7 @@
           "y": 459.4140625
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -91,7 +103,10 @@
       "snippet": "for the scribal impulse to correct the Greek when it is thought to be in error or at variance with the Hebrew text. According to Tov's model, Paul's citations would have reflected manuscripts which had emerged from the diversity of the secondary textual traditions. Moreover, the texts which Paul used were most likely those which were available to him in the places from which he wrote his epistles. But to the extent that Paul's quotations were from memory, his citations may also bear some resemblance to the texts which were",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-203",
+        "prev_pane_id": "cdk-overlay-119",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 655.0703125,
           "top": 429.4140625,
@@ -109,6 +124,7 @@
           "y": 459.4140625
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -119,7 +135,10 @@
       "snippet": "In both of these examples, the LXX textual tradition is divided. This may indicate that the Hebrew textual tradition was also divided. If this was the case, it is also possible that there were other Greek textual traditions and that Paul's quotations reflect this. But the possibility that the parallel members have been transposed because of Paul's inaccurate quoting from memory cannot be excluded. The lack of a clear hermeneutical reason for the variations, except perhaps for emphasis, suggests that they are either the result of Paul's fidelity",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-204",
+        "prev_pane_id": "cdk-overlay-203",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 681.0703125,
           "top": 429.4140625,
@@ -137,6 +156,7 @@
           "y": 459.4140625
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -147,7 +167,10 @@
       "snippet": "the LXX and the Pauline quotations. Within the five categories which have been discussed, a signifi­ cant number of variations appear to have been the result of intentional modification of the scriptural text. Although the possibility cannot be ruled out that Paul in some cases may have quoted from memory, it seems evident that many variations are the consequence -of an attempt to conform the text of scripture to the context of the epistles. As gleaned from our discussion in this chapter, these modifications may be classified",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-120",
+        "prev_pane_id": "cdk-overlay-204",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 742.7734375,
           "top": 429.5390625,
@@ -165,6 +188,7 @@
           "y": 459.5390625
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -175,7 +199,10 @@
       "snippet": "In both of these examples, the LXX textual tradition is divided. This may indicate that the Hebrew textual tradition was also divided. If this was the case, it is also possible that there were other Greek textual traditions and that Paul's quotations reflect this. But the possibility that the parallel members have been transposed because of Paul's inaccurate quoting from memory cannot be excluded. The lack of a clear hermeneutical reason for the variations, except perhaps for emphasis, suggests that they are either the result of Paul's fidelity",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-121",
+        "prev_pane_id": "cdk-overlay-120",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 768.7734375,
           "top": 429.5390625,
@@ -193,6 +220,7 @@
           "y": 459.5390625
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -203,7 +231,10 @@
       "snippet": "Although we cannot engage in an attempt here to determine the original reading of this Pauline verse, we can assert that Paul's text resembles 0 / LXX-F in Galatians 3:12 and perhaps also in Romans 10:5. And if Romans 10:5 should be read nounaas ctuia then this is further evidence that there is a correlation between the book cited and the textual tradition reflected in Paul's quotations. Rom. 9:26-Hos. 1:10 (2:1) (LXX-A), 12:20-Prv. 25:21-22 (LXX-B), and 13:9-Lev. 19:18, (Ex. 20:13-17) Dt. 5:17 (LXX-B).",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-122",
+        "prev_pane_id": "cdk-overlay-121",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 403,
           "top": 429.3046875,
@@ -221,6 +252,7 @@
           "y": 459.3046875
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -231,7 +263,10 @@
       "snippet": "do indicate that Paul has not been entirely consistent in his quotations from scripture. The last three double citations display more significant varia­ tions. In Romans 9:33 and 10:11, Paul cites Isaiah 28:16. In the second of these references, he inserts the word nag. This addition probably came about as a result of the association of Isaiah 28:16 with Joel 3:5 72 (2:32), and it demonstrates that Paul was not restrained from modifying the scriptural text. Moreover, these two references occur within a few",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-205",
+        "prev_pane_id": "cdk-overlay-122",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 455,
           "top": 429.3046875,
@@ -249,6 +284,7 @@
           "y": 459.3046875
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -259,7 +295,10 @@
       "snippet": "text which generates the words and ideas which Paul then develops and 52 weaves into his discussion. This illustrates the instrumental role of Note the presence of euotYYe^Coyevcov (ou) in Is. 52:7 (10:15) and the use of euotYYe^L- in 10:16. 4Q *Cf. Rom. 10:14ff. 50 » The explanation is introduced by apa See above, p. 89. 52In Rom. 9:25 and 10:11 key words from the discussion or other citations have been introduced into the text of the scriptural quotations, and this confirms that the direction of influence in some cases is not only from the biblical quotation to Paul's argument but also from Paul's argument to the text of his quotation. See the section above on Paul's manner of quoting.",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-206",
+        "prev_pane_id": "cdk-overlay-205",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 481,
           "top": 429.3046875,
@@ -277,6 +316,7 @@
           "y": 459.3046875
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -287,7 +327,10 @@
       "snippet": "the LXX and the Pauline quotations. Within the five categories which have been discussed, a signifi­ cant number of variations appear to have been the result of intentional modification of the scriptural text. Although the possibility cannot be ruled out that Paul in some cases may have quoted from memory, it seems evident that many variations are the consequence -of an attempt to conform the text of scripture to the context of the epistles. As gleaned from our discussion in this chapter, these modifications may be classified",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-123",
+        "prev_pane_id": "cdk-overlay-206",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 453.5390625,
           "top": 429.4453125,
@@ -305,6 +348,7 @@
           "y": 459.4453125
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -315,7 +359,10 @@
       "snippet": "Although we cannot engage in an attempt here to determine the original reading of this Pauline verse, we can assert that Paul's text resembles 0 / LXX-F in Galatians 3:12 and perhaps also in Romans 10:5. And if Romans 10:5 should be read nounaas ctuia then this is further evidence that there is a correlation between the book cited and the textual tradition reflected in Paul's quotations. Rom. 9:26-Hos. 1:10 (2:1) (LXX-A), 12:20-Prv. 25:21-22 (LXX-B), and 13:9-Lev. 19:18, (Ex. 20:13-17) Dt. 5:17 (LXX-B).",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-124",
+        "prev_pane_id": "cdk-overlay-123",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 462.5078125,
           "top": 429.2890625,
@@ -333,6 +380,7 @@
           "y": 459.2890625
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -343,7 +391,10 @@
       "snippet": "between quotation and allusion is not always clear. Moreover, it is sometimes difficult to establish a precise correspondence between Paul's text and the extant texts of the LXX. Nevertheless, this appears to be appropriate terminology to describe those citations in which the scriptural passage has been phrased or expressed in a different way. Some of these references preserve the strict sense of the scriptural text, whereas others are more markedly paraphrastic. These variations 65Cf. Rom. 9:7, 9:12, and 9:24. See below, pp. 178-79.",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-207",
+        "prev_pane_id": "cdk-overlay-124",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 514.5078125,
           "top": 429.2890625,
@@ -361,6 +412,7 @@
           "y": 459.2890625
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -371,7 +423,10 @@
       "snippet": "and eTiLxaXeoriTaL. These verbal links indicate that the opening statement of the literary form may have been formulated in light of the scriptural passage which is used as substantiation. Hence, the interaction between Paul's manner of argumentation and his use of scripture is more subtle than the term \"proof-text\" used without qualification would tend to imply. Verbal associations provide vivid illustrations of the way scripture contributed formatively to Paul's manner of argumentation. Other references which exhibit this literary form are Rom. 2:24,",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-208",
+        "prev_pane_id": "cdk-overlay-207",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 540.5078125,
           "top": 429.2890625,
@@ -389,6 +444,7 @@
           "y": 459.2890625
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -399,7 +455,10 @@
       "snippet": "that indeed a lectionary was in use in early Judaism, and some even 38 have attempted to show how it affected the composition of the Gospels. But the evidence for the use of a fixed triennial lectionary or, for that matter, an annual lectionary during this period appears to be 37 See e.g. Lk. 4:16f.; and also Josephus, Contra Apionem, II, 175. 38Cf. the following works: A. Biichler, \"The Reading of the Law and Prophets in a Triennial Cycle,\" Jewish Quarterly Review V and VI (1893 and 1894):420-68 and 1-73; L. Crockett, \"Luke IV:16-30 and the Jewish Lectionary Cycle: A Word of Cautionj\" Journal of Jewish Studies XVII (1966):13-46; J. van Goudoever, Biblical Calendars (Leiden: E.J. Brill, 1959); J. Heinemann, \"The Triennial Lectionary Cycle,\" Journal of Jewish Studies XIX (1968):41-48; Jewish Encyclopedia, s.v. \"Triennial Cycle,\" by Joseph Jacobs; Leon Morris, The New Testament and the Jewish Lectionaries (London: Tyndale Press, 1964); J.R. Porter, \"The Pentateuch and the Triennial Lectionary Cycle: An Examination of a Recent Theory,\" in Promise and Fulfilment, ed. F.F. Bruce (Edinburgh: T. & T. Clark, 1963); H. St. John Thackeray, The Septuagint and Jewish Worship: A Study in Origins (London: Oxford University Press, 1921). The following works relate various New Testament writings to a liturgical or lectionary pattern: Philip Carrington, The Primitive Christian Calendar; A Study in the Making of the Marcan Gospel (Cambridge: Cambridge University Press, 1952); R.G. Finch, The Synagogue Lectionary and the New Testament; A Study of the Three-Year Cycle of Readings from the Law and the Prophets As a Contribution to New Testament Chronology (London: SPCK, 1939); M.D. Goulder, Midrash and Lection in Matthew (London: SPCK, 1974) and The Evangelists' Calendar; A Lectionary Explanation of the Developmen~of Scripture (London: SPCK, 1978); Aileen Guilding, The Fourth Gospel and Jewish Worship; A Study of the Relation of St. John to the Ancient Jewish Lectionary System (Oxford: Oxford University Press, 1960); G.D. Kilpatrick, The Origins of the Gospel According to St. Matthew (Oxford: Clarendon Press, 1946). More recently, Romans 9-11 has been examined in light of the lectionary hypothesis; see Rafael Vicent, \"Derash homiletico en Romanos 9-11,\" Salesianum XLII (1980):751-88 (Eng. summary). Without arguing in detail the case for the use of a triennial lectionary in Palestinian Judaism, he concludes that the sequence of readings of the synagogue, as it has been proposed in modern scholarship, can constitute the basis of the \"homiletic Derash\" of Romans 9-11.",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-125",
+        "prev_pane_id": "cdk-overlay-208",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 403,
           "top": 429.4296875,
@@ -417,6 +476,7 @@
           "y": 459.4296875
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -427,7 +487,10 @@
       "snippet": "the LXX and the Pauline quotations. Within the five categories which have been discussed, a signifi­ cant number of variations appear to have been the result of intentional modification of the scriptural text. Although the possibility cannot be ruled out that Paul in some cases may have quoted from memory, it seems evident that many variations are the consequence -of an attempt to conform the text of scripture to the context of the epistles. As gleaned from our discussion in this chapter, these modifications may be classified",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-126",
+        "prev_pane_id": "cdk-overlay-125",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 523.6015625,
           "top": 429.7109375,
@@ -445,6 +508,7 @@
           "y": 459.7109375
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -455,7 +519,10 @@
       "snippet": "19 Ellis has argued that I Cor. 1:18-31 and 2:6-16 were perhaps independent expositions originally. Thus Paul did not compose these sections himself. According to him, each of these midrashic sections is followed by an application to the Corinthian situation: 1) 1:18-31, midrash; 2) 2:1-5, application; 3) 2:6-16, midrash; 4) 3:1-17, applica­ tion; and 5) 3:18-20, concluding section. If Ellis is correct, the structural form in 1:18ff cannot be attributed to Paul. Nevertheless, in the immediate context of 1:18-31, Isaiah 29:14 functions as scriptural support. See E. Earle Ellis, \"Exegetical Patterns in I Corinthians and Romans,\" in Prophecy and Hermeneutic in Early Christianity; New Testament Essays (Grand Rapids: Eerdmans Publishing Co., 1978), pp. 213-20.",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-127",
+        "prev_pane_id": "cdk-overlay-126",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 631.7734375,
           "top": 429.6953125,
@@ -473,6 +540,7 @@
           "y": 459.6953125
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -483,7 +551,10 @@
       "snippet": "62Cf. also Rom. 9:33 and 10:11 (Is. 28:16) LXX-B. See below, p. 83. 63See Rom. 11:8 (iris afiyepov riycpas for TTJS riyepas Tauiris), I Cor. 9:9 (wnyooaeus for cpuyojaeus, cf. variants), II Cor. 8:15 (oXcyov for eXaiiov), and Gal. 3:8 (eSvri for cpuXau). Cf. also Rom. 9:17. The case of Eph. 4:8 (cf. Targum to Ps . 68:19) is an example which illustrates the difficulty involved in prematurely resorting to Pauline hermeneutics as the reason for a textual change. reading of ao<pffiv instead of dvSpumoov . The substitution of ev xupuj) for",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-128",
+        "prev_pane_id": "cdk-overlay-127",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 497.109375,
           "top": 429.4609375,
@@ -501,6 +572,7 @@
           "y": 459.4609375
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -511,7 +583,10 @@
       "snippet": "follows: \"For whatever (ooa yap) was written beforehand was written for our instruction....\" In I Corinthians 14:21, he quotes Isaiah 28: 11-12, and he introduces his exposition with waie: \"Thus, tongues are not a sign for believers but for unbelievers\". Finally, in I Corinthians 9:9-10 Paul quotes Deuteronomy 25:4; and following this citation, the expression (TI) 6u nyag is used twice as part of the application of the text: \"Does he not speak completely for our sake? It was written for 22 our sake....\" Each of these examples illustrates this second category",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-129",
+        "prev_pane_id": "cdk-overlay-128",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 523.109375,
           "top": 429.4609375,
@@ -529,6 +604,7 @@
           "y": 459.4609375
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -539,7 +615,10 @@
       "snippet": "Jellicoe, Septuagint and Modern Study, pp. 59-63 and Ellis, Paul's Use of the Old Testament, pp. 17-18. See also note 6 above. Paul E. Kahle, The Cairo Geniza, 2nd ed. (Oxford: Basil Blackwell, 1959), pp. 209ff. 12See e.g. Jellicoe, Septuagint and Modern Study, pp. 61-62; Howard, \"The Septuagint,\" pp. 55-62; Orlinsky, \"On the Present State of Proto-Septuagint Studies,\" pp. 78-109; Orlinsky, \"The Septuagint as Holy Writ,\" pp. 89-114; and Wevers, \"Proto-Septuagint Studies,\" pp. 138-57. 13Emanuel Tov, The Text-Critical Use of the Septuagint in Biblical",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-130",
+        "prev_pane_id": "cdk-overlay-129",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 640.109375,
           "top": 429.3671875,
@@ -557,6 +636,7 @@
           "y": 459.3671875
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }
@@ -567,7 +647,10 @@
       "snippet": "58 be observed in a number of examples. The omissions in Romans 11:4, 15:9, 15:12, Galatians 3:8, and 3:12 are not substantial; but in the case of Galatians 3:13, the variation is more interesting. In this passage, Paul cites Deuteronomy 21:23; and in contrast to most LXX witnesses, his text omits the words UTIO deoti. Although we cannot be certain that Paul was first responsible for the omission of these words, it is likely that they were omitted in order to avoid presenting an unacceptable image of the divine. Paul, for his part, would not have",
       "audit": {
         "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
         "overlay_pane_id": "cdk-overlay-131",
+        "prev_pane_id": "cdk-overlay-130",
+        "is_fresh_pane": true,
         "marker_rect": {
           "left": 666.109375,
           "top": 429.3671875,
@@ -585,6 +668,7 @@
           "y": 459.3671875
         },
         "vertical_dist": 8,
+        "horizontal_overlap": true,
         "trigger_bound": true,
         "handshake_verified": true
       }

@@ -340,8 +340,8 @@ def test_extraction_loop_legitimate_repeated_excerpts_and_freeze_rejection():
                 old_snippet, frozen_snippet, idx, consecutive_duplicates, max_consecutive=15
             )
             prev_binding = verify_marker_tooltip_binding(
-                idx, str(idx), {"x": 100, "y": 200}, {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80},
-                frozen_snippet, handshake_verified=True, prev_binding=prev_binding
+                idx, str(idx), {"x": 100, "y": 200 + idx * 10}, {"left": 100, "top": 220 + idx * 10, "x": 100, "y": 220 + idx * 10, "width": 200, "height": 80},
+                frozen_snippet, handshake_verified=True, active_pane_id=f"cdk-overlay-{idx}", prev_binding=prev_binding
             )
 
 
@@ -422,7 +422,7 @@ async def test_collector_unchanged_retained_overlay_fails_closed(tmp_path):
     with patch("scripts.extract_all_messages.call_cdp", new=AsyncMock()), \
          patch("scripts.extract_all_messages.evaluate", new=mock_eval), \
          patch("scripts.extract_all_messages.asyncio.sleep", new=AsyncMock()):
-        with pytest.raises(RuntimeError, match="Stale retained overlay detected at marker 1"):
+        with pytest.raises(RuntimeError, match=r"(Fail-closed: overlay pane 'cdk-overlay-0' at marker 1 is retained from prior marker|Stale retained overlay detected at marker 1)"):
             await extract_message_citations(mock_ws, 0, out_file)
 
 @pytest.mark.anyio
@@ -570,9 +570,206 @@ async def test_collector_centered_scroll_fresh_handshake_success(tmp_path):
     for c in data["citations"]:
         audit = c["audit"]
         assert audit["pre_hover_cleared"] is True
+        assert audit["pre_hover_pane_ids"] == []
+        assert audit["overlay_pane_id"].startswith("cdk-overlay-")
+        assert audit["is_fresh_pane"] is True
         assert audit["trigger_bound"] is True
         assert audit["handshake_verified"] is True
         assert audit["vertical_dist"] == 8
-        assert audit["overlay_pane_id"].startswith("cdk-overlay-")
+        assert audit["horizontal_overlap"] is True
         assert "marker_rect" in audit and "tooltip_rect" in audit
+
+@pytest.mark.anyio
+async def test_collector_old_pane_empty_text_prehover_fails_closed(tmp_path):
+    """
+    Review Round 6 R6-F1 Regression Test:
+    Old pane remains mounted with empty text at pre-hover.
+    cleared_js inspects mounted element visibility regardless of text length,
+    detects visibleCount > 0, attempts Escape dismissal, and fails closed
+    when dismissal is ineffective.
+    """
+    mock_ws = AsyncMock()
+    out_file = str(tmp_path / "out.json")
+
+    marker_idx_queried = 0
+
+    async def mock_eval(ws, expr):
+        nonlocal marker_idx_queried
+        if "more_horiz" in expr:
+            return None
+        if "markerCount" in expr:
+            return {"text": "Message with 2 markers", "markerCount": 2}
+        if "lingeringIds" in expr:
+            if marker_idx_queried == 0:
+                # Pre-hover for marker 0 is cleanly cleared
+                return {"cleared": True, "visibleCount": 0, "lingeringIds": [], "allPaneIds": []}
+            else:
+                # Pre-hover for marker 1: old pane 'cdk-overlay-0' remains mounted with empty text!
+                return {"cleared": False, "visibleCount": 1, "lingeringIds": ["cdk-overlay-0"], "allPaneIds": ["cdk-overlay-0"]}
+        if "scrollIntoView" in expr:
+            m_y = 200 if marker_idx_queried == 0 else 204
+            res = {
+                "x": 100, "y": m_y,
+                "rect": {"left": 90, "top": m_y - 10, "right": 110, "bottom": m_y + 10, "width": 20, "height": 20},
+                "label": str(marker_idx_queried + 1)
+            }
+            marker_idx_queried += 1
+            return res
+        if "vDist <= 100" in expr:
+            return [{
+                "paneId": "cdk-overlay-0",
+                "text": "Initial snippet text for marker 0",
+                "rect": {"left": 90, "top": 218, "width": 200, "height": 50, "x": 90, "y": 218},
+                "vDist": 8, "hOverlap": True
+            }]
+        return None
+
+    with patch("scripts.extract_all_messages.call_cdp", new=AsyncMock()), \
+         patch("scripts.extract_all_messages.evaluate", new=mock_eval), \
+         patch("scripts.extract_all_messages.asyncio.sleep", new=AsyncMock()):
+        with pytest.raises(RuntimeError, match=r"Fail-closed: CDK overlay container failed to dismiss prior to hovering marker 1.*lingering overlay pane IDs: \['cdk-overlay-0'\]"):
+            await extract_message_citations(mock_ws, 0, out_file)
+
+@pytest.mark.anyio
+async def test_collector_old_pane_delayed_reappearance_fails_closed(tmp_path):
+    """
+    Review Round 6 R6-F1 Regression Test:
+    Old pane was present at pre-hover (in pre_hover_pane_ids). After hover,
+    that same pane populates/reappears. The collector must detect that the pane
+    existed prior to hover activation and fail closed.
+    """
+    mock_ws = AsyncMock()
+    out_file = str(tmp_path / "out.json")
+
+    marker_idx_queried = 0
+
+    async def mock_eval(ws, expr):
+        nonlocal marker_idx_queried
+        if "more_horiz" in expr:
+            return None
+        if "markerCount" in expr:
+            return {"text": "Message with 2 markers", "markerCount": 2}
+        if "lingeringIds" in expr:
+            if marker_idx_queried == 0:
+                return {"cleared": True, "visibleCount": 0, "lingeringIds": [], "allPaneIds": []}
+            else:
+                # Pre-hover cleared, but 'cdk-overlay-0' was already in DOM (e.g. unmounted-pending or hidden)
+                return {"cleared": True, "visibleCount": 0, "lingeringIds": [], "allPaneIds": ["cdk-overlay-0"]}
+        if "scrollIntoView" in expr:
+            m_y = 200 if marker_idx_queried == 0 else 204
+            res = {
+                "x": 100, "y": m_y,
+                "rect": {"left": 90, "top": m_y - 10, "right": 110, "bottom": m_y + 10, "width": 20, "height": 20},
+                "label": str(marker_idx_queried + 1)
+            }
+            marker_idx_queried += 1
+            return res
+        if "vDist <= 100" in expr:
+            # Reappearing delayed pane from pre-hover!
+            return [{
+                "paneId": "cdk-overlay-0",
+                "text": "Delayed reappearing excerpt from marker 0",
+                "rect": {"left": 90, "top": 218, "width": 200, "height": 50, "x": 90, "y": 218},
+                "vDist": 8, "hOverlap": True
+            }]
+        return None
+
+    with patch("scripts.extract_all_messages.call_cdp", new=AsyncMock()), \
+         patch("scripts.extract_all_messages.evaluate", new=mock_eval), \
+         patch("scripts.extract_all_messages.asyncio.sleep", new=AsyncMock()):
+        with pytest.raises(RuntimeError, match=r"Fail-closed: overlay pane 'cdk-overlay-0' at marker 1 existed prior to hover activation"):
+            await extract_message_citations(mock_ws, 0, out_file)
+
+@pytest.mark.anyio
+async def test_collector_unrelated_pane_appearing_late_fails_closed(tmp_path):
+    """
+    Review Round 6 R6-F1 Regression Test:
+    Initially empty/cleared state. Hover happens on marker 0. An unrelated detached
+    pane appears late (does not match marker bounds). Collector must fail closed
+    rather than accepting an unrelated pane or hanging.
+    """
+    mock_ws = AsyncMock()
+    out_file = str(tmp_path / "out.json")
+
+    poll_attempt = 0
+
+    async def mock_eval(ws, expr):
+        nonlocal poll_attempt
+        if "more_horiz" in expr:
+            return None
+        if "markerCount" in expr:
+            return {"text": "Message with 1 marker", "markerCount": 1}
+        if "lingeringIds" in expr:
+            return {"cleared": True, "visibleCount": 0, "lingeringIds": [], "allPaneIds": []}
+        if "scrollIntoView" in expr:
+            return {
+                "x": 100, "y": 200,
+                "rect": {"left": 90, "top": 190, "right": 110, "bottom": 210, "width": 20, "height": 20},
+                "label": "1"
+            }
+        if "vDist <= 100" in expr:
+            poll_attempt += 1
+            # Even if an unrelated pane appears late in DOM, it has vDist > 100 or no hOverlap,
+            # so the trigger-bound query returns empty list.
+            return []
+        return None
+
+    with patch("scripts.extract_all_messages.call_cdp", new=AsyncMock()), \
+         patch("scripts.extract_all_messages.evaluate", new=mock_eval), \
+         patch("scripts.extract_all_messages.asyncio.sleep", new=AsyncMock()):
+        with pytest.raises(RuntimeError, match=r"Fail-closed: could not establish fresh, trigger-bound tooltip handshake for marker 0"):
+            await extract_message_citations(mock_ws, 0, out_file)
+
+def test_verify_marker_tooltip_binding_fresh_distinct_pane_same_position_success():
+    """
+    Review Round 6 R6-F2 Regression Test:
+    Adjacent markers with shared footnote excerpt snapping to identical viewport
+    coordinates. Proves that when handshake is verified and active_pane_id is a
+    fresh distinct pane (active_pane_id != prev_pane), the binding succeeds cleanly.
+    """
+    m0_pos = {"x": 100, "y": 200}
+    t0_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
+    shared_snippet = "Footnote 19 on LXX-A/B agreement in Romans 9:26"
+
+    b0 = verify_marker_tooltip_binding(
+        0, "4", m0_pos, t0_rect, shared_snippet,
+        handshake_verified=True, active_pane_id="cdk-overlay-1"
+    )
+    assert b0["marker_idx"] == 0
+    assert b0["active_pane_id"] == "cdk-overlay-1"
+
+    # Marker 1 is adjacent (y=205 vs 200), but tooltip snaps to identical screen position (y=220)
+    # due to CDK overlay viewport boundary snapping. Fresh distinct pane 'cdk-overlay-2'.
+    m1_pos = {"x": 100, "y": 205}
+    t1_rect_identical = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
+
+    b1 = verify_marker_tooltip_binding(
+        1, "5", m1_pos, t1_rect_identical, shared_snippet,
+        handshake_verified=True, active_pane_id="cdk-overlay-2", prev_binding=b0
+    )
+    assert b1["marker_idx"] == 1
+    assert b1["active_pane_id"] == "cdk-overlay-2"
+    assert b1["snippet"] == shared_snippet
+
+def test_verify_marker_tooltip_binding_same_pane_retention_fails_closed():
+    """
+    Review Round 6 R6-F2 Regression Test:
+    Verifies that retaining the same paneId across consecutive markers fails closed
+    unconditionally, even if positions move or differ.
+    """
+    m0_pos = {"x": 100, "y": 200}
+    t0_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
+    b0 = verify_marker_tooltip_binding(
+        0, "1", m0_pos, t0_rect, "Snippet text for marker 0",
+        handshake_verified=True, active_pane_id="cdk-overlay-1"
+    )
+
+    m1_pos = {"x": 100, "y": 260}
+    t1_rect = {"left": 100, "top": 280, "x": 100, "y": 280, "width": 200, "height": 80}
+    with pytest.raises(RuntimeError, match="Fail-closed: overlay pane 'cdk-overlay-1' at marker 1 is retained from prior marker"):
+        verify_marker_tooltip_binding(
+            1, "2", m1_pos, t1_rect, "Snippet text for marker 1",
+            handshake_verified=True, active_pane_id="cdk-overlay-1", prev_binding=b0
+        )
+
 

@@ -99,16 +99,23 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
         cleared_js = """
         (() => {
             const container = document.querySelector('.cdk-overlay-container');
-            if (!container) return { cleared: true, visibleCount: 0, lingeringIds: [] };
+            if (!container) return { cleared: true, visibleCount: 0, lingeringIds: [], allPaneIds: [] };
             const panes = Array.from(container.querySelectorAll('.cdk-overlay-pane'));
+            const allIds = panes.map(p => p.id || 'anonymous-pane');
             const visible = panes.filter(p => {
-                const tt = p.querySelector('.citation-tooltip');
-                return tt && tt.innerText.trim().length > 0;
+                const style = window.getComputedStyle(p);
+                const isExplicitlyHidden = (
+                    style.display === 'none' ||
+                    style.visibility === 'hidden' ||
+                    (p.offsetWidth === 0 && p.offsetHeight === 0)
+                );
+                return !isExplicitlyHidden;
             });
             return {
                 cleared: visible.length === 0,
                 visibleCount: visible.length,
-                lingeringIds: visible.map(p => p.id)
+                lingeringIds: visible.map(p => p.id || 'anonymous-pane'),
+                allPaneIds: allIds
             };
         })()
         """
@@ -133,6 +140,8 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
                 f"Fail-closed: CDK overlay container failed to dismiss prior to hovering marker {idx} "
                 f"(lingering overlay pane IDs: {clear_state.get('lingeringIds', [])}). Ineffective dismissal."
             )
+
+        pre_hover_pane_ids = list(clear_state.get("allPaneIds", []))
 
         # 2. Scroll into view and get marker rect
         js_rect = f"""
@@ -214,12 +223,23 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
                 raw_text = bp.get("text", "")
                 clean = raw_text.replace(f"{expected_source}\n", "").replace("\nView source", "").replace("\n", " ").strip()
                 if "ABSTRACT" not in clean:
+                    pane_id = bp.get("paneId")
+                    if pane_id in pre_hover_pane_ids:
+                        raise RuntimeError(
+                            f"Fail-closed: overlay pane '{pane_id}' at marker {idx} existed prior to hover activation "
+                            f"(pre_hover_pane_ids={pre_hover_pane_ids}). Delayed or retained pane detected."
+                        )
+                    if prev_binding and pane_id == prev_binding.get("active_pane_id"):
+                        raise RuntimeError(
+                            f"Fail-closed: overlay pane '{pane_id}' at marker {idx} is retained from prior marker. "
+                            "Not a fresh pane activation."
+                        )
                     snip = clean
                     tooltip_rect = bp.get("rect")
-                    active_pane_id = bp.get("paneId")
+                    active_pane_id = pane_id
                     v_dist = bp.get("vDist")
                     h_overlap = bp.get("hOverlap")
-                    handshake_verified = True
+                    handshake_verified = bool(is_cleared and active_pane_id not in pre_hover_pane_ids)
                     break
             elif len(bound_panes) > 1:
                 raise RuntimeError(f"Fail-closed: Multiple conflicting trigger-bound overlays detected for marker {idx}")
@@ -228,6 +248,8 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
             raise RuntimeError(
                 f"Fail-closed: could not establish fresh, trigger-bound tooltip handshake for marker {idx} (label {label})."
             )
+
+        prior_pane_id = prev_binding.get("active_pane_id") if prev_binding else None
 
         # Invariant 4: Verify duplicate transition threshold BEFORE updating prev_binding
         old_snippet = prev_binding.get("snippet", "") if prev_binding else ""
@@ -248,13 +270,17 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
             "label": label,
             "snippet": snip,
             "audit": {
-                "pre_hover_cleared": True,
+                "pre_hover_cleared": is_cleared,
+                "pre_hover_pane_ids": pre_hover_pane_ids,
                 "overlay_pane_id": active_pane_id,
+                "prev_pane_id": prior_pane_id,
+                "is_fresh_pane": bool(active_pane_id not in pre_hover_pane_ids and (not prior_pane_id or active_pane_id != prior_pane_id)),
                 "marker_rect": marker_rect,
                 "tooltip_rect": tooltip_rect,
                 "vertical_dist": v_dist,
-                "trigger_bound": True,
-                "handshake_verified": True
+                "horizontal_overlap": h_overlap,
+                "trigger_bound": bool(v_dist is not None and v_dist <= 100 and h_overlap),
+                "handshake_verified": handshake_verified
             }
         })
         seen_snippets.add(snip)

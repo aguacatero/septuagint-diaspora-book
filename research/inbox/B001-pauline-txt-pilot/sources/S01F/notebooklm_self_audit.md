@@ -6,9 +6,49 @@
 
 ---
 
-## Result: AUDIT IN PROGRESS (STAGED FOR RE-REVIEW — ROUND 5)
+## Result: AUDIT IN PROGRESS (STAGED FOR RE-REVIEW — ROUND 6)
 
-This self-audit records the comprehensive verification of all source packet artifacts for S01F (James W. Aageson, Oxford D.Phil. thesis, 1983/1984) across Review Round 1 (`#issuecomment-6256189064`), Review Round 2 (`#issuecomment-6257901373`), Review Round 3 (`#issuecomment-6259053713`), Review Round 4 (`#issuecomment-6259336877`), and Review Round 5 (`#issuecomment-6259908915`). All itemized findings have been addressed in code, tests, live browser extractions, and canonical ledgers.
+This self-audit records the comprehensive verification of all source packet artifacts for S01F (James W. Aageson, Oxford D.Phil. thesis, 1983/1984) across Review Round 1 (`#issuecomment-6256189064`), Review Round 2 (`#issuecomment-6257901373`), Review Round 3 (`#issuecomment-6259053713`), Review Round 4 (`#issuecomment-6259336877`), Review Round 5 (`#issuecomment-6259908915`), and Review Round 6 (`#issuecomment-6267344298`). All itemized findings have been addressed in code, tests, live browser extractions, and canonical ledgers.
+
+---
+
+### Review Round 6 Resolutions (GitHub PR #2 `#issuecomment-6267344298`)
+
+#### 1. Observable Dismissal by Mounted Visibility & Fresh Pane Activation (Finding 1 — HIGH, BLOCKING / R6-F1)
+- **Review Finding:** `cleared_js` filtered panes with `tt.innerText.trim().length > 0`, falsely certifying empty or loading mounted panes as cleared. After hover, `query_bound_pane_js` proved only geometric proximity, not fresh pane transition. If an old pane lingered with empty text at pre-hover and repopulated after hover at a centered adjacent marker, it could pass. Furthermore, audit flags were written as literal `True` rather than persisting measured evidence.
+- **Resolution:**
+  - In both `scripts/run_secondary_prompt.py` and `scripts/extract_all_messages.py`, updated `cleared_js` to inspect computed styles and box dimensions (`style.display !== 'none' && style.visibility !== 'hidden' && (p.offsetWidth > 0 || p.offsetHeight > 0)`) across all panes in `.cdk-overlay-container`, regardless of text length. Any mounted, non-hidden pane fails the cleared check and prompts Escape dismissal; persistent panes fail closed with `RuntimeError`.
+  - Captured `pre_hover_pane_ids = list(clear_state.get("allPaneIds", []))` prior to dispatching mouse hover.
+  - After hover, strictly enforce fresh pane activation:
+    - If `pane_id in pre_hover_pane_ids`: raises `RuntimeError("Fail-closed: overlay pane ... existed prior to hover activation ... Delayed or retained pane detected.")`.
+    - If `prev_binding and pane_id == prev_binding.get("active_pane_id")`: raises `RuntimeError("Fail-closed: overlay pane ... is retained from prior marker ... Not a fresh pane activation.")`.
+  - Persisted measured runtime evidence in every `audit` record:
+    `"pre_hover_cleared": is_cleared`, `"pre_hover_pane_ids": pre_hover_pane_ids`, `"overlay_pane_id": active_pane_id`, `"prev_pane_id": prior_pane_id`, `"is_fresh_pane": bool(active_pane_id not in pre_hover_pane_ids and (not prior_pane_id or active_pane_id != prior_pane_id))`, `"marker_rect": marker_rect`, `"tooltip_rect": tooltip_rect`, `"vertical_dist": v_dist`, `"horizontal_overlap": h_overlap`, `"trigger_bound": bool(v_dist is not None and v_dist <= 100 and h_overlap)`, `"handshake_verified": handshake_verified`. Zero hard-coded boolean literals.
+
+#### 2. Static-Position Stale Overlay Guard & Legitimate Shared Excerpt Handling (Finding 2 — MED / R6-F2)
+- **Review Finding:** `verify_marker_tooltip_binding` previously raised whenever snippet was unchanged and tooltip coordinates moved by <2px while marker moved >2px, falsely rejecting legitimate shared-footnote excerpts that snap to identical viewport coordinates under Angular CDK layout rules, even if fresh pane activation was established.
+- **Resolution:**
+  - Adjusted `verify_marker_tooltip_binding` to permit repeated excerpts at identical screen coordinates only when fresh pane ownership is independently proven (`handshake_verified=True`, `active_pane_id != prev_pane_id`, `active_pane_id not in pre_hover_pane_ids`).
+  - Stale retention rejection remains strictly enforced if pane ID is unchanged (`active_pane_id == prev_pane_id`) or unverified.
+
+#### 3. Mocked Collector Sequence & Invariant Unit Tests (Required Corrections 2 & 3)
+- **Review Finding:** Required regression tests for: (a) old pane remaining mounted with empty text at pre-hover and populating after hover (must reject); (b) unrelated pane appearing late; (c) fresh distinct pane at same position with same snippet (must succeed); and (d) same pane at same position (must fail).
+- **Resolution:**
+  - Added 5 new unit tests to `tests/test_run_secondary_prompt.py`:
+    1. `test_collector_old_pane_empty_text_prehover_fails_closed`: Verifies that a mounted pane with empty text fails pre-hover clearance and raises on ineffective dismissal.
+    2. `test_collector_old_pane_delayed_reappearance_fails_closed`: Verifies that a pane present at pre-hover that populates after hover is rejected.
+    3. `test_collector_unrelated_pane_appearing_late_fails_closed`: Verifies that an unrelated pane appearing late without matching trigger geometry fails closed.
+    4. `test_verify_marker_tooltip_binding_fresh_distinct_pane_same_position_success`: Verifies that adjacent markers citing the same footnote with identical viewport snapping pass when fresh distinct pane ownership is proven.
+    5. `test_verify_marker_tooltip_binding_same_pane_retention_fails_closed`: Verifies unconditional fail-closed rejection when the same pane ID is retained across consecutive markers.
+  - Added `tests/test_citation_ledger_crosswalk.py` verifying all 18 ledger entries against prompt JSONs and measured audit fields.
+  - Test suite expanded to 37 deterministic tests passing (37/37 via `pytest`).
+
+#### 4. Live Browser Re-Extraction & Ledger Consistency
+- **Live Re-Extraction:** Re-extracted all messages using `scripts/extract_all_messages.py` against live Chrome instance (port 9222, tab `SDP-B001-EXTRACT`, `aageson_1984_pauls_use_of_scripture.pdf`):
+  - Message 5 (`prompt_2_raw.json`): 131 markers, 131 unique pane IDs, 100% measured audit records.
+  - Message 6 (`prompt_3_raw.json`): 21 markers, 21 unique pane IDs, 100% measured audit records.
+  - Message 8 (`prompt_4_raw.json`): 67 markers, 67 unique pane IDs, 100% measured audit records.
+- **Ledger Verification:** All 18 evidence items in `citation_ledger.csv` and `extraction.md` point to matching prompt citations and authentic snippets. S01F remains quarantined in `research/inbox/B001-pauline-txt-pilot/sources/S01F/` pending independent review.
 
 ---
 
