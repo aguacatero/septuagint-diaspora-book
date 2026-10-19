@@ -92,21 +92,36 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
 
     for idx in range(marker_count):
         # 1. Reset mouse away to 0,0 and assert overlay is cleared
-        await call_cdp(ws, "Input.dispatchMouseEvent", {"type": "mouseMoved", "x": 0, "y": 0})
-        await asyncio.sleep(0.08)
+        # 1. Reset mouse away and click (10, 10) to dismiss any open tooltip
+        await call_cdp(ws, "Input.dispatchMouseEvent", {"type": "mouseMoved", "x": 10, "y": 10})
+        await call_cdp(ws, "Input.dispatchMouseEvent", {"type": "mousePressed", "x": 10, "y": 10, "button": "left", "clickCount": 1})
+        await call_cdp(ws, "Input.dispatchMouseEvent", {"type": "mouseReleased", "x": 10, "y": 10, "button": "left", "clickCount": 1})
 
-        # Assert clean/dismissed overlay state prior to hovering new marker
-        is_cleared = await evaluate(ws, """
-        (() => {
-            const tt = document.querySelector('.cdk-overlay-container .citation-tooltip');
-            return !tt || !tt.innerText.trim();
-        })()
-        """)
+        # Poll for clean unmount (animation takes ~200ms)
+        is_cleared = False
+        for _ in range(8):
+            await asyncio.sleep(0.04)
+            cleared = await evaluate(ws, """
+            (() => {
+                const tt = document.querySelector('.cdk-overlay-container .citation-tooltip');
+                return !tt || !tt.innerText.trim();
+            })()
+            """)
+            if cleared:
+                is_cleared = True
+                break
+
         if not is_cleared:
-            # Attempt escape dismiss if overlay lingered
             await call_cdp(ws, "Input.dispatchKeyEvent", {"type": "rawKeyDown", "key": "Escape", "code": "Escape", "windowsVirtualKeyCode": 27})
             await call_cdp(ws, "Input.dispatchKeyEvent", {"type": "keyUp", "key": "Escape", "code": "Escape", "windowsVirtualKeyCode": 27})
             await asyncio.sleep(0.1)
+            is_cleared = await evaluate(ws, """
+            (() => {
+                const tt = document.querySelector('.cdk-overlay-container .citation-tooltip');
+                return !tt || !tt.innerText.trim();
+            })()
+            """)
+        handshake_verified = bool(is_cleared)
 
         # 2. Scroll into view and get marker rect
         js_rect = f"""
@@ -170,7 +185,7 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
 
         # Invariant 5: Positive marker-to-tooltip binding and stale overlay detection
         prev_binding = verify_marker_tooltip_binding(
-            idx, label, pos, tooltip_rect, snip, handshake_verified=True, prev_binding=prev_binding
+            idx, label, pos, tooltip_rect, snip, handshake_verified=handshake_verified, prev_binding=prev_binding
         )
 
         citations.append({

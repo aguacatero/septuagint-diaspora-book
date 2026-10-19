@@ -233,23 +233,30 @@ def test_verify_marker_tooltip_binding_missing_geometry_fails_closed():
         verify_marker_tooltip_binding(0, "1", {"x": 100, "y": 200}, None, "Valid snippet text here...")
 
 def test_verify_marker_tooltip_binding_centered_scroll_counterexample():
-    # Deterministic counterexample where scrollIntoView({block:'center'}) brings adjacent markers
-    # to nearly identical coordinates (m0=(100,200), m1=(100,205))
+    # Deterministic counterexample from review Finding 3:
+    # scrollIntoView({block:'center'}) brings adjacent markers to nearly identical coordinates
+    # marker0=(100,200), tooltip=(100,220); marker1=(100,205), same frozen tooltip=(100,220)
     m0_pos = {"x": 100, "y": 200}
     t0_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
     snippet0 = "Footnote 19 on LXX-A/B agreement in Rom 9:26"
     b0 = verify_marker_tooltip_binding(0, "4", m0_pos, t0_rect, snippet0, handshake_verified=True)
 
-    # Next marker hovered: fresh handshake verified (overlay cleanly unmounted and remounted)
+    # 1. Counterexample: marker moved slightly (y=205 vs 200), but tooltip overlay remained statically retained at y=220.
+    # Must fail closed immediately rather than passing as legitimate!
     m1_pos = {"x": 100, "y": 205}
-    t1_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
-    b1 = verify_marker_tooltip_binding(1, "5", m1_pos, t1_rect, snippet0, handshake_verified=True, prev_binding=b0)
+    t1_rect_frozen = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
+    with pytest.raises(RuntimeError, match="Stale retained overlay detected at marker 1"):
+        verify_marker_tooltip_binding(1, "5", m1_pos, t1_rect_frozen, snippet0, handshake_verified=True, prev_binding=b0)
+
+    # 2. Legitimate shared excerpt: tooltip properly repositions with marker (y=225)
+    t1_rect_repositioned = {"left": 100, "top": 225, "x": 100, "y": 225, "width": 200, "height": 80}
+    b1 = verify_marker_tooltip_binding(1, "5", m1_pos, t1_rect_repositioned, snippet0, handshake_verified=True, prev_binding=b0)
     assert b1["marker_idx"] == 1
     assert b1["snippet"] == snippet0
 
-    # If handshake was NOT verified (stale retention without unmount), fail closed
+    # 3. If handshake was NOT verified (stale retention without unmount), fail closed
     with pytest.raises(RuntimeError, match="Observable marker-to-tooltip handshake failed"):
-        verify_marker_tooltip_binding(2, "6", m1_pos, t1_rect, snippet0, handshake_verified=False, prev_binding=b1)
+        verify_marker_tooltip_binding(2, "6", m1_pos, t1_rect_repositioned, snippet0, handshake_verified=False, prev_binding=b1)
 
 def test_extraction_loop_transition_sequence_success_25_markers():
     """

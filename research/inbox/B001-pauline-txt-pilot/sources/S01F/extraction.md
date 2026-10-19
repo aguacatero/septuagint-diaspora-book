@@ -244,7 +244,7 @@
 - **Short Quotation:** "In four instances, \"narrative\" passages are used in contexts which pertain to ethics; [n. 120: I Cor. 6:16 (Gen. 2:24)...]"
 - **Printed Page Number:** p. 114
 - **Source Locator:** Chapter IV (Content of Paul's Citations), p. 114 n. 120 (PDF p. 124)
-- **NotebookLM Citation:** Prompt 2 / citations[index=89], label=21
+- **NotebookLM Citation:** Prompt 2 / citations[index=94], label=22
 - **Textual Evidence Invoked:** Citation of Gen 2:24 in 1 Cor 6:16 applied to the physical union of joining oneself to a harlot.
 - **Claim Type:** Exegetical
 - **Qualifications / Conditions:** None stated.
