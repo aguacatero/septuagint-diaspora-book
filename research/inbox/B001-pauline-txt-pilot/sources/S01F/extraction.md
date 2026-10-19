@@ -94,7 +94,7 @@
 - **Short Quotation:** "The verbal link is between υἱοὶ θεοῦ ζῶντος in 9:26 and υἱῶν Ἰσραήλ in 9:27"
 - **Printed Page Number:** p. 179
 - **Source Locator:** Chapter VI (Romans 9:19–29), p. 179 (PDF p. 189)
-- **NotebookLM Citation:** Prompt 2 / citations[index=18], label=5
+- **NotebookLM Citation:** Prompt 2 / citations[index=31], label=7
 - **Textual Evidence Invoked:** Transition from υἱοὶ θεοῦ ζῶντος (Rom 9:26 / Hos 1:10) to υἱῶν Ἰσραήλ (Rom 9:27 / Isa 10:22), where Paul chooses υἱῶν over Isaiah's λαός.
 - **Claim Type:** Literary
 - **Qualifications / Conditions:** None stated.

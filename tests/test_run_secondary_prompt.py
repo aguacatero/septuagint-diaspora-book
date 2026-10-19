@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, patch
 
 from scripts.run_secondary_prompt import (
     validate_notebook_state,
+    verify_marker_tooltip_binding,
     verify_tooltip_transition,
     validate_citations,
     verify_tab_invariants,
@@ -157,3 +158,61 @@ def test_verify_tab_invariants_failure_on_wrong_source():
                 await verify_tab_invariants(mock_ws)
 
     asyncio.run(_test())
+
+def test_verify_marker_tooltip_binding_success_dynamic_movement():
+    # Marker 0
+    m0_pos = {"x": 100, "y": 200}
+    t0_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
+    b0 = verify_marker_tooltip_binding(0, "1", m0_pos, t0_rect, "Snippet text for marker 0")
+    assert b0["marker_idx"] == 0
+    assert b0["snippet"] == "Snippet text for marker 0"
+
+    # Marker 1 (distinct position, distinct snippet)
+    m1_pos = {"x": 100, "y": 400}
+    t1_rect = {"left": 100, "top": 420, "x": 100, "y": 420, "width": 200, "height": 80}
+    b1 = verify_marker_tooltip_binding(1, "2", m1_pos, t1_rect, "Snippet text for marker 1", prev_binding=b0)
+    assert b1["marker_idx"] == 1
+    assert b1["snippet"] == "Snippet text for marker 1"
+
+def test_verify_marker_tooltip_binding_legitimate_shared_excerpt():
+    # Two markers citing the same excerpt (e.g. Footnote 19), with tooltip properly repositioning with marker
+    m0_pos = {"x": 100, "y": 200}
+    t0_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
+    shared_snippet = "Paul and LXX-B have forms of agapan, whereas LXX-A uses forms of eleein (Footnote 19)"
+    b0 = verify_marker_tooltip_binding(0, "4", m0_pos, t0_rect, shared_snippet)
+
+    # Next marker moved down by 60px, and tooltip also repositioned down by 60px
+    m1_pos = {"x": 100, "y": 260}
+    t1_rect = {"left": 100, "top": 280, "x": 100, "y": 280, "width": 200, "height": 80}
+    b1 = verify_marker_tooltip_binding(1, "5", m1_pos, t1_rect, shared_snippet, prev_binding=b0)
+    assert b1["marker_idx"] == 1
+    assert b1["snippet"] == shared_snippet
+
+def test_verify_marker_tooltip_binding_stale_retained_overlay_failure():
+    # Marker moved from (100, 200) to (100, 300), but tooltip overlay remained statically retained at (100, 220)
+    m0_pos = {"x": 100, "y": 200}
+    t0_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
+    stale_snippet = "Snippet from marker 0 that failed to unmount or update"
+    b0 = verify_marker_tooltip_binding(0, "1", m0_pos, t0_rect, stale_snippet)
+
+    m1_pos = {"x": 100, "y": 300}
+    # Tooltip has identical position (t_dist_y < 2, t_dist_x < 2) despite marker movement (m_dist_y = 100)
+    t1_rect_stale = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
+    with pytest.raises(RuntimeError, match="Stale retained overlay detected at marker 1"):
+        verify_marker_tooltip_binding(1, "2", m1_pos, t1_rect_stale, stale_snippet, prev_binding=b0)
+
+def test_verify_marker_tooltip_binding_detached_geometric_proximity_failure():
+    # Tooltip rendered far away (> 300px vertical distance) from marker
+    m_pos = {"x": 100, "y": 100}
+    t_rect_far = {"left": 100, "top": 600, "x": 100, "y": 600, "width": 200, "height": 80}
+    with pytest.raises(RuntimeError, match="Positive anchor binding failed at marker 0"):
+        verify_marker_tooltip_binding(0, "1", m_pos, t_rect_far, "Snippet text that is detached from marker")
+
+def test_verify_marker_tooltip_binding_empty_snippet_rejection():
+    m_pos = {"x": 100, "y": 200}
+    t_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
+    with pytest.raises(RuntimeError, match="Tooltip binding invariant violated at marker 0: snippet is empty or too short"):
+        verify_marker_tooltip_binding(0, "1", m_pos, t_rect, "")
+
+    with pytest.raises(RuntimeError, match="Tooltip binding invariant violated at marker 0: snippet is empty or too short"):
+        verify_marker_tooltip_binding(0, "1", m_pos, t_rect, "short")

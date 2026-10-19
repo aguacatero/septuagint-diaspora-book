@@ -6,6 +6,7 @@ import websockets
 
 from scripts.run_secondary_prompt import (
     validate_notebook_state,
+    verify_marker_tooltip_binding,
     verify_tooltip_transition,
     EXPECTED_DEFAULT_SOURCE,
 )
@@ -69,7 +70,7 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
 
     citations = []
     seen_snippets = set()
-    last_snippet = ""
+    prev_binding = None
     consecutive_duplicates = 0
 
     for idx in range(marker_count):
@@ -102,31 +103,43 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
         # 3. Move mouse over marker to trigger tooltip
         await call_cdp(ws, "Input.dispatchMouseEvent", {"type": "mouseMoved", "x": x, "y": y})
 
-        # 4. Poll for tooltip
+        # 4. Poll for tooltip and its bounding rect
         snip = ""
+        tooltip_rect = None
         for attempt in range(8):
             await asyncio.sleep(0.12)
             js_snip = """
             (() => {
                 const tt = document.querySelector('.cdk-overlay-container .citation-tooltip');
-                return tt ? tt.innerText : "";
+                if (!tt) return null;
+                const r = tt.getBoundingClientRect();
+                return {
+                    text: tt.innerText,
+                    rect: { left: r.left, top: r.top, width: r.width, height: r.height, x: r.x, y: r.y }
+                };
             })()
             """
-            raw_text = await evaluate(ws, js_snip) or ""
+            tt_data = await evaluate(ws, js_snip) or {}
+            raw_text = tt_data.get("text", "")
             if len(raw_text.strip()) > 10:
                 clean = raw_text.replace(f"{expected_source}\n", "").replace("\nView source", "").replace("\n", " ").strip()
                 if "ABSTRACT" not in clean:
                     snip = clean
+                    tooltip_rect = tt_data.get("rect")
                     break
 
         if not snip:
             raise RuntimeError(f"Fail-closed: could not extract valid tooltip for marker {idx} (label {label})")
 
-        # Invariant: check for stale/frozen tooltip
-        consecutive_duplicates = verify_tooltip_transition(
-            last_snippet, snip, idx, consecutive_duplicates, max_consecutive=15
+        # Invariant: positive marker-to-tooltip binding and stale overlay detection
+        prev_binding = verify_marker_tooltip_binding(
+            idx, label, pos, tooltip_rect, snip, prev_binding=prev_binding
         )
-        last_snippet = snip
+
+        # Invariant: check for prolonged duplicate freezes
+        consecutive_duplicates = verify_tooltip_transition(
+            prev_binding.get("snippet", ""), snip, idx, consecutive_duplicates, max_consecutive=15
+        )
 
         citations.append({
             "index": idx,
