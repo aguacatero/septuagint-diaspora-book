@@ -1,6 +1,10 @@
 import pytest
 import asyncio
+import sys
+from pathlib import Path
 from unittest.mock import AsyncMock, patch
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scripts.run_secondary_prompt import (
     validate_notebook_state,
@@ -160,55 +164,60 @@ def test_verify_tab_invariants_failure_on_wrong_source():
     asyncio.run(_test())
 
 def test_verify_marker_tooltip_binding_success_dynamic_movement():
+    # [Simulated helper unit test]
     # Marker 0
     m0_pos = {"x": 100, "y": 200}
     t0_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
-    b0 = verify_marker_tooltip_binding(0, "1", m0_pos, t0_rect, "Snippet text for marker 0")
+    b0 = verify_marker_tooltip_binding(0, "1", m0_pos, t0_rect, "Snippet text for marker 0", handshake_verified=True)
     assert b0["marker_idx"] == 0
     assert b0["snippet"] == "Snippet text for marker 0"
 
     # Marker 1 (distinct position, distinct snippet)
     m1_pos = {"x": 100, "y": 400}
     t1_rect = {"left": 100, "top": 420, "x": 100, "y": 420, "width": 200, "height": 80}
-    b1 = verify_marker_tooltip_binding(1, "2", m1_pos, t1_rect, "Snippet text for marker 1", prev_binding=b0)
+    b1 = verify_marker_tooltip_binding(1, "2", m1_pos, t1_rect, "Snippet text for marker 1", handshake_verified=True, prev_binding=b0)
     assert b1["marker_idx"] == 1
     assert b1["snippet"] == "Snippet text for marker 1"
 
 def test_verify_marker_tooltip_binding_legitimate_shared_excerpt():
+    # [Simulated helper unit test]
     # Two markers citing the same excerpt (e.g. Footnote 19), with tooltip properly repositioning with marker
     m0_pos = {"x": 100, "y": 200}
     t0_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
     shared_snippet = "Paul and LXX-B have forms of agapan, whereas LXX-A uses forms of eleein (Footnote 19)"
-    b0 = verify_marker_tooltip_binding(0, "4", m0_pos, t0_rect, shared_snippet)
+    b0 = verify_marker_tooltip_binding(0, "4", m0_pos, t0_rect, shared_snippet, handshake_verified=True)
 
     # Next marker moved down by 60px, and tooltip also repositioned down by 60px
     m1_pos = {"x": 100, "y": 260}
     t1_rect = {"left": 100, "top": 280, "x": 100, "y": 280, "width": 200, "height": 80}
-    b1 = verify_marker_tooltip_binding(1, "5", m1_pos, t1_rect, shared_snippet, prev_binding=b0)
+    b1 = verify_marker_tooltip_binding(1, "5", m1_pos, t1_rect, shared_snippet, handshake_verified=True, prev_binding=b0)
     assert b1["marker_idx"] == 1
     assert b1["snippet"] == shared_snippet
 
 def test_verify_marker_tooltip_binding_stale_retained_overlay_failure():
+    # [Simulated helper unit test]
     # Marker moved from (100, 200) to (100, 300), but tooltip overlay remained statically retained at (100, 220)
     m0_pos = {"x": 100, "y": 200}
     t0_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
     stale_snippet = "Snippet from marker 0 that failed to unmount or update"
-    b0 = verify_marker_tooltip_binding(0, "1", m0_pos, t0_rect, stale_snippet)
+    b0 = verify_marker_tooltip_binding(0, "1", m0_pos, t0_rect, stale_snippet, handshake_verified=True)
 
     m1_pos = {"x": 100, "y": 300}
     # Tooltip has identical position (t_dist_y < 2, t_dist_x < 2) despite marker movement (m_dist_y = 100)
     t1_rect_stale = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
     with pytest.raises(RuntimeError, match="Stale retained overlay detected at marker 1"):
-        verify_marker_tooltip_binding(1, "2", m1_pos, t1_rect_stale, stale_snippet, prev_binding=b0)
+        verify_marker_tooltip_binding(1, "2", m1_pos, t1_rect_stale, stale_snippet, handshake_verified=True, prev_binding=b0)
 
 def test_verify_marker_tooltip_binding_detached_geometric_proximity_failure():
+    # [Simulated helper unit test]
     # Tooltip rendered far away (> 300px vertical distance) from marker
     m_pos = {"x": 100, "y": 100}
     t_rect_far = {"left": 100, "top": 600, "x": 100, "y": 600, "width": 200, "height": 80}
     with pytest.raises(RuntimeError, match="Positive anchor binding failed at marker 0"):
-        verify_marker_tooltip_binding(0, "1", m_pos, t_rect_far, "Snippet text that is detached from marker")
+        verify_marker_tooltip_binding(0, "1", m_pos, t_rect_far, "Snippet text that is detached from marker", handshake_verified=True)
 
 def test_verify_marker_tooltip_binding_empty_snippet_rejection():
+    # [Simulated helper unit test]
     m_pos = {"x": 100, "y": 200}
     t_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
     with pytest.raises(RuntimeError, match="Tooltip binding invariant violated at marker 0: snippet is empty or too short"):
@@ -218,6 +227,7 @@ def test_verify_marker_tooltip_binding_empty_snippet_rejection():
         verify_marker_tooltip_binding(0, "1", m_pos, t_rect, "short")
 
 def test_verify_marker_tooltip_binding_handshake_failure():
+    # [Simulated helper unit test]
     # If the pre-hover overlay clear handshake fails (retained from prior marker without clean dismiss), fail closed
     m_pos = {"x": 100, "y": 200}
     t_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
@@ -225,12 +235,13 @@ def test_verify_marker_tooltip_binding_handshake_failure():
         verify_marker_tooltip_binding(0, "1", m_pos, t_rect, "Valid snippet text here...", handshake_verified=False)
 
 def test_verify_marker_tooltip_binding_missing_geometry_fails_closed():
+    # [Simulated helper unit test]
     # If marker_pos or tooltip_rect metadata is missing, fail closed immediately
     with pytest.raises(RuntimeError, match="missing geometric rect metadata"):
-        verify_marker_tooltip_binding(0, "1", None, {"left": 100, "top": 220}, "Valid snippet text here...")
+        verify_marker_tooltip_binding(0, "1", None, {"left": 100, "top": 220}, "Valid snippet text here...", handshake_verified=True)
 
     with pytest.raises(RuntimeError, match="missing geometric rect metadata"):
-        verify_marker_tooltip_binding(0, "1", {"x": 100, "y": 200}, None, "Valid snippet text here...")
+        verify_marker_tooltip_binding(0, "1", {"x": 100, "y": 200}, None, "Valid snippet text here...", handshake_verified=True)
 
 def test_verify_marker_tooltip_binding_centered_scroll_counterexample():
     # Deterministic counterexample from review Finding 3:
@@ -332,3 +343,236 @@ def test_extraction_loop_legitimate_repeated_excerpts_and_freeze_rejection():
                 idx, str(idx), {"x": 100, "y": 200}, {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80},
                 frozen_snippet, handshake_verified=True, prev_binding=prev_binding
             )
+
+
+# ==============================================================================
+# Mocked CDP/DOM Collector Sequence Unit Tests (Review Round 5 Finding 4)
+# ==============================================================================
+from scripts.extract_all_messages import extract_message_citations
+
+@pytest.mark.anyio
+async def test_collector_ineffective_escape_fails_closed(tmp_path):
+    """
+    Mocked CDP/DOM collector sequence test:
+    Exercises pre-hover overlay dismissal where mouse is moved to (0, 0),
+    overlay remains visible, Escape key is dispatched, but overlay still
+    lingers. Collector must fail closed with RuntimeError rather than proceeding.
+    """
+    mock_ws = AsyncMock()
+    out_file = str(tmp_path / "out.json")
+
+    async def mock_eval(ws, expr):
+        if "more_horiz" in expr:
+            return None
+        if "markerCount" in expr:
+            return {"text": "Message content", "markerCount": 1}
+        if "lingeringIds" in expr:
+            # Persistent stuck overlay that never dismisses even after Escape
+            return {"cleared": False, "visibleCount": 1, "lingeringIds": ["cdk-overlay-99"]}
+        return None
+
+    with patch("scripts.extract_all_messages.call_cdp", new=AsyncMock()), \
+         patch("scripts.extract_all_messages.evaluate", new=mock_eval), \
+         patch("scripts.extract_all_messages.asyncio.sleep", new=AsyncMock()):
+        with pytest.raises(RuntimeError, match=r"Fail-closed: CDK overlay container failed to dismiss prior to hovering marker 0.*lingering overlay pane IDs: \['cdk-overlay-99'\]"):
+            await extract_message_citations(mock_ws, 0, out_file)
+
+@pytest.mark.anyio
+async def test_collector_unchanged_retained_overlay_fails_closed(tmp_path):
+    """
+    Mocked CDP/DOM collector sequence test:
+    Exercises consecutive markers where marker 1 moves, but the DOM returns
+    an unchanged retained overlay with identical position and snippet from marker 0.
+    Collector must fail closed with stale retained overlay detection.
+    """
+    mock_ws = AsyncMock()
+    out_file = str(tmp_path / "out.json")
+
+    marker_idx_queried = 0
+
+    async def mock_eval(ws, expr):
+        nonlocal marker_idx_queried
+        if "more_horiz" in expr:
+            return None
+        if "markerCount" in expr:
+            return {"text": "Message content with two markers", "markerCount": 2}
+        if "lingeringIds" in expr:
+            return {"cleared": True, "visibleCount": 0, "lingeringIds": []}
+        if "scrollIntoView" in expr:
+            # Marker 0 at y=200, Marker 1 displaced to y=300
+            m_y = 200 if marker_idx_queried == 0 else 300
+            res = {
+                "x": 100, "y": m_y,
+                "rect": {"left": 90, "top": m_y - 10, "right": 110, "bottom": m_y + 10, "width": 20, "height": 20},
+                "label": str(marker_idx_queried + 1)
+            }
+            marker_idx_queried += 1
+            return res
+        if "vDist <= 100" in expr:
+            # Tooltip remains statically frozen at y=220 for both markers!
+            return [{
+                "paneId": "cdk-overlay-0",
+                "text": "Statically retained snippet text from marker 0 that never unmounted",
+                "rect": {"left": 90, "top": 220, "width": 200, "height": 50, "x": 90, "y": 220},
+                "vDist": 10,
+                "hOverlap": True
+            }]
+        return None
+
+    with patch("scripts.extract_all_messages.call_cdp", new=AsyncMock()), \
+         patch("scripts.extract_all_messages.evaluate", new=mock_eval), \
+         patch("scripts.extract_all_messages.asyncio.sleep", new=AsyncMock()):
+        with pytest.raises(RuntimeError, match="Stale retained overlay detected at marker 1"):
+            await extract_message_citations(mock_ws, 0, out_file)
+
+@pytest.mark.anyio
+async def test_collector_unrelated_visible_panel_fails_closed(tmp_path):
+    """
+    Mocked CDP/DOM collector sequence test:
+    Exercises trigger-bound query when an unrelated detached panel exists in CDK
+    overlay container, so no pane matches vDist <= 100 && hOverlap.
+    Collector must fail closed rather than binding to the detached panel.
+    """
+    mock_ws = AsyncMock()
+    out_file = str(tmp_path / "out.json")
+
+    async def mock_eval(ws, expr):
+        if "more_horiz" in expr:
+            return None
+        if "markerCount" in expr:
+            return {"text": "Message content", "markerCount": 1}
+        if "lingeringIds" in expr:
+            return {"cleared": True, "visibleCount": 0, "lingeringIds": []}
+        if "scrollIntoView" in expr:
+            return {
+                "x": 100, "y": 200,
+                "rect": {"left": 90, "top": 190, "right": 110, "bottom": 210, "width": 20, "height": 20},
+                "label": "1"
+            }
+        if "vDist <= 100" in expr:
+            # Query returned empty because only unrelated panels (> 100px away or disconnected) exist
+            return []
+        return None
+
+    with patch("scripts.extract_all_messages.call_cdp", new=AsyncMock()), \
+         patch("scripts.extract_all_messages.evaluate", new=mock_eval), \
+         patch("scripts.extract_all_messages.asyncio.sleep", new=AsyncMock()):
+        with pytest.raises(RuntimeError, match=r"Fail-closed: could not establish fresh, trigger-bound tooltip handshake for marker 0 \(label 1\)"):
+            await extract_message_citations(mock_ws, 0, out_file)
+
+@pytest.mark.anyio
+async def test_collector_multiple_conflicting_panels_fails_closed(tmp_path):
+    """
+    Mocked CDP/DOM collector sequence test:
+    Exercises trigger-bound query when multiple conflicting overlay panes match
+    vDist <= 100 && hOverlap. Collector must fail closed immediately.
+    """
+    mock_ws = AsyncMock()
+    out_file = str(tmp_path / "out.json")
+
+    async def mock_eval(ws, expr):
+        if "more_horiz" in expr:
+            return None
+        if "markerCount" in expr:
+            return {"text": "Message content", "markerCount": 1}
+        if "lingeringIds" in expr:
+            return {"cleared": True, "visibleCount": 0, "lingeringIds": []}
+        if "scrollIntoView" in expr:
+            return {
+                "x": 100, "y": 200,
+                "rect": {"left": 90, "top": 190, "right": 110, "bottom": 210, "width": 20, "height": 20},
+                "label": "1"
+            }
+        if "vDist <= 100" in expr:
+            # 2 conflicting panes matching trigger bounds
+            return [
+                {
+                    "paneId": "cdk-overlay-1",
+                    "text": "First conflicting tooltip text on passage A",
+                    "rect": {"left": 90, "top": 218, "width": 200, "height": 50, "x": 90, "y": 218},
+                    "vDist": 8, "hOverlap": True
+                },
+                {
+                    "paneId": "cdk-overlay-2",
+                    "text": "Second conflicting tooltip text on passage B",
+                    "rect": {"left": 90, "top": 220, "width": 200, "height": 50, "x": 90, "y": 220},
+                    "vDist": 10, "hOverlap": True
+                }
+            ]
+        return None
+
+    with patch("scripts.extract_all_messages.call_cdp", new=AsyncMock()), \
+         patch("scripts.extract_all_messages.evaluate", new=mock_eval), \
+         patch("scripts.extract_all_messages.asyncio.sleep", new=AsyncMock()):
+        with pytest.raises(RuntimeError, match="Fail-closed: Multiple conflicting trigger-bound overlays detected for marker 0"):
+            await extract_message_citations(mock_ws, 0, out_file)
+
+@pytest.mark.anyio
+async def test_collector_centered_scroll_fresh_handshake_success(tmp_path):
+    """
+    Mocked CDP/DOM collector sequence test:
+    Exercises successive markers where scrollIntoView({block: 'center'}) places
+    markers at near-identical coordinates (y=200 vs y=204).
+    Verifies that pre-hover cleared verification + fresh trigger-bound overlay
+    tracking (unique paneId and shifted rect) passes cleanly and produces
+    complete replayable audit records.
+    """
+    mock_ws = AsyncMock()
+    out_file = str(tmp_path / "out.json")
+
+    marker_idx_queried = 0
+
+    async def mock_eval(ws, expr):
+        nonlocal marker_idx_queried
+        if "more_horiz" in expr:
+            return None
+        if "markerCount" in expr:
+            return {"text": "Message text with centered markers", "markerCount": 2}
+        if "lingeringIds" in expr:
+            return {"cleared": True, "visibleCount": 0, "lingeringIds": []}
+        if "scrollIntoView" in expr:
+            m_y = 200 if marker_idx_queried == 0 else 204
+            res = {
+                "x": 100, "y": m_y,
+                "rect": {"left": 90, "top": m_y - 10, "right": 110, "bottom": m_y + 10, "width": 20, "height": 20},
+                "label": str(marker_idx_queried + 1)
+            }
+            marker_idx_queried += 1
+            return res
+        if "vDist <= 100" in expr:
+            if marker_idx_queried == 1:
+                return [{
+                    "paneId": "cdk-overlay-1",
+                    "text": "First passage excerpt on Romans 9:25 from printed page 69",
+                    "rect": {"left": 90, "top": 218, "width": 200, "height": 50, "x": 90, "y": 218},
+                    "vDist": 8, "hOverlap": True
+                }]
+            else:
+                return [{
+                    "paneId": "cdk-overlay-2",
+                    "text": "Second distinct passage excerpt on Romans 9:26 from page 70",
+                    "rect": {"left": 90, "top": 222, "width": 200, "height": 50, "x": 90, "y": 222},
+                    "vDist": 8, "hOverlap": True
+                }]
+        return None
+
+    with patch("scripts.extract_all_messages.call_cdp", new=AsyncMock()), \
+         patch("scripts.extract_all_messages.evaluate", new=mock_eval), \
+         patch("scripts.extract_all_messages.asyncio.sleep", new=AsyncMock()):
+        await extract_message_citations(mock_ws, 0, out_file)
+
+    # Verify output file and audit records
+    import json
+    with open(out_file) as f:
+        data = json.load(f)
+
+    assert len(data["citations"]) == 2
+    for c in data["citations"]:
+        audit = c["audit"]
+        assert audit["pre_hover_cleared"] is True
+        assert audit["trigger_bound"] is True
+        assert audit["handshake_verified"] is True
+        assert audit["vertical_dist"] == 8
+        assert audit["overlay_pane_id"].startswith("cdk-overlay-")
+        assert "marker_rect" in audit and "tooltip_rect" in audit
+

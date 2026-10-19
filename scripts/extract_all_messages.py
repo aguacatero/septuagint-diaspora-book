@@ -85,43 +85,54 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
     marker_count = msg_info["markerCount"]
     print(f"Total numeric citation markers in message {msg_idx}: {marker_count}", flush=True)
 
+    await call_cdp(ws, "Page.bringToFront", {})
+
     citations = []
     seen_snippets = set()
     prev_binding = None
     consecutive_duplicates = 0
 
     for idx in range(marker_count):
-        # 1. Reset mouse away to 0,0 and assert overlay is cleared
-        # 1. Reset mouse away and click (10, 10) to dismiss any open tooltip
-        await call_cdp(ws, "Input.dispatchMouseEvent", {"type": "mouseMoved", "x": 10, "y": 10})
-        await call_cdp(ws, "Input.dispatchMouseEvent", {"type": "mousePressed", "x": 10, "y": 10, "button": "left", "clickCount": 1})
-        await call_cdp(ws, "Input.dispatchMouseEvent", {"type": "mouseReleased", "x": 10, "y": 10, "button": "left", "clickCount": 1})
+        # 1. Reset mouse away to (0, 0) and assert overlay is cleared
+        await call_cdp(ws, "Input.dispatchMouseEvent", {"type": "mouseMoved", "x": 0, "y": 0})
 
-        # Poll for clean unmount (animation takes ~200ms)
+        cleared_js = """
+        (() => {
+            const container = document.querySelector('.cdk-overlay-container');
+            if (!container) return { cleared: true, visibleCount: 0, lingeringIds: [] };
+            const panes = Array.from(container.querySelectorAll('.cdk-overlay-pane'));
+            const visible = panes.filter(p => {
+                const tt = p.querySelector('.citation-tooltip');
+                return tt && tt.innerText.trim().length > 0;
+            });
+            return {
+                cleared: visible.length === 0,
+                visibleCount: visible.length,
+                lingeringIds: visible.map(p => p.id)
+            };
+        })()
+        """
         is_cleared = False
-        for _ in range(8):
-            await asyncio.sleep(0.04)
-            cleared = await evaluate(ws, """
-            (() => {
-                const tt = document.querySelector('.cdk-overlay-container .citation-tooltip');
-                return !tt || !tt.innerText.trim();
-            })()
-            """)
-            if cleared:
+        clear_state = {}
+        for _ in range(10):
+            await asyncio.sleep(0.05)
+            clear_state = await evaluate(ws, cleared_js) or {}
+            if clear_state.get("cleared", False):
                 is_cleared = True
                 break
 
         if not is_cleared:
             await call_cdp(ws, "Input.dispatchKeyEvent", {"type": "rawKeyDown", "key": "Escape", "code": "Escape", "windowsVirtualKeyCode": 27})
             await call_cdp(ws, "Input.dispatchKeyEvent", {"type": "keyUp", "key": "Escape", "code": "Escape", "windowsVirtualKeyCode": 27})
-            await asyncio.sleep(0.1)
-            is_cleared = await evaluate(ws, """
-            (() => {
-                const tt = document.querySelector('.cdk-overlay-container .citation-tooltip');
-                return !tt || !tt.innerText.trim();
-            })()
-            """)
-        handshake_verified = bool(is_cleared)
+            await asyncio.sleep(0.15)
+            clear_state = await evaluate(ws, cleared_js) or {}
+            is_cleared = clear_state.get("cleared", False)
+
+        if not is_cleared:
+            raise RuntimeError(
+                f"Fail-closed: CDK overlay container failed to dismiss prior to hovering marker {idx} "
+                f"(lingering overlay pane IDs: {clear_state.get('lingeringIds', [])}). Ineffective dismissal."
+            )
 
         # 2. Scroll into view and get marker rect
         js_rect = f"""
@@ -131,51 +142,92 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
             const allBtns = Array.from(m.querySelectorAll('button.citation-marker'));
             const citationBtns = allBtns.filter(b => b.innerText.trim().match(/^\\d+$/));
             const btn = citationBtns[{idx}];
+            if (!btn) return null;
             btn.scrollIntoView({{ block: 'center', inline: 'center', behavior: 'instant' }});
             const r = btn.getBoundingClientRect();
             return {{
-                x: r.x + r.width/2,
-                y: r.y + r.height/2,
+                x: r.x + r.width / 2,
+                y: r.y + r.height / 2,
+                rect: {{ left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height }},
                 label: btn.innerText.trim()
             }};
         }})()
         """
         pos = await evaluate(ws, js_rect)
-        if not pos:
-            raise RuntimeError(f"Failed to find rect for marker {idx}")
+        if not pos or not pos.get("rect") or pos["rect"].get("width", 0) <= 0:
+            raise RuntimeError(f"Extraction invariant violated: marker {idx} rect could not be evaluated or has zero size")
+
+        marker_rect = pos["rect"]
         x, y = pos["x"], pos["y"]
         label = pos["label"]
 
         # 3. Move mouse over marker to trigger tooltip
         await call_cdp(ws, "Input.dispatchMouseEvent", {"type": "mouseMoved", "x": x, "y": y})
 
-        # 4. Poll for tooltip and its bounding rect
+        # 4. Poll for the specific CDK overlay pane that is trigger-bound to this marker
         snip = ""
         tooltip_rect = None
+        active_pane_id = None
+        v_dist = None
+        h_overlap = None
+        handshake_verified = False
+
         for attempt in range(8):
             await asyncio.sleep(0.12)
-            js_snip = """
-            (() => {
-                const tt = document.querySelector('.cdk-overlay-container .citation-tooltip');
-                if (!tt) return null;
-                const r = tt.getBoundingClientRect();
-                return {
-                    text: tt.innerText,
-                    rect: { left: r.left, top: r.top, width: r.width, height: r.height, x: r.x, y: r.y }
-                };
-            })()
+            query_bound_pane_js = f"""
+            (() => {{
+                const container = document.querySelector('.cdk-overlay-container');
+                if (!container) return [];
+                const btnRect = {json.dumps(marker_rect)};
+                const panes = Array.from(container.querySelectorAll('.cdk-overlay-pane'));
+                
+                const matches = [];
+                for (const p of panes) {{
+                    const tt = p.querySelector('.citation-tooltip');
+                    if (!tt) continue;
+                    const text = tt.innerText.trim();
+                    if (text.length < 10) continue;
+                    const r = tt.getBoundingClientRect();
+                    
+                    const vDist = Math.min(
+                        Math.abs(r.top - btnRect.bottom),
+                        Math.abs(btnRect.top - r.bottom)
+                    );
+                    const hOverlap = !(r.right < btnRect.left - 50 || r.left > btnRect.right + 50);
+                    
+                    if (vDist <= 100 && hOverlap) {{
+                        matches.push({{
+                            paneId: p.id,
+                            text: tt.innerText,
+                            rect: {{ left: r.left, top: r.top, width: r.width, height: r.height, x: r.x, y: r.y }},
+                            vDist: vDist,
+                            hOverlap: hOverlap
+                        }});
+                    }}
+                }}
+                return matches;
+            }})()
             """
-            tt_data = await evaluate(ws, js_snip) or {}
-            raw_text = tt_data.get("text", "")
-            if len(raw_text.strip()) > 10:
+            bound_panes = await evaluate(ws, query_bound_pane_js) or []
+            if len(bound_panes) == 1:
+                bp = bound_panes[0]
+                raw_text = bp.get("text", "")
                 clean = raw_text.replace(f"{expected_source}\n", "").replace("\nView source", "").replace("\n", " ").strip()
                 if "ABSTRACT" not in clean:
                     snip = clean
-                    tooltip_rect = tt_data.get("rect")
+                    tooltip_rect = bp.get("rect")
+                    active_pane_id = bp.get("paneId")
+                    v_dist = bp.get("vDist")
+                    h_overlap = bp.get("hOverlap")
+                    handshake_verified = True
                     break
+            elif len(bound_panes) > 1:
+                raise RuntimeError(f"Fail-closed: Multiple conflicting trigger-bound overlays detected for marker {idx}")
 
-        if not snip:
-            raise RuntimeError(f"Fail-closed: could not extract valid tooltip for marker {idx} (label {label})")
+        if not handshake_verified or not snip or not tooltip_rect:
+            raise RuntimeError(
+                f"Fail-closed: could not establish fresh, trigger-bound tooltip handshake for marker {idx} (label {label})."
+            )
 
         # Invariant 4: Verify duplicate transition threshold BEFORE updating prev_binding
         old_snippet = prev_binding.get("snippet", "") if prev_binding else ""
@@ -185,13 +237,25 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
 
         # Invariant 5: Positive marker-to-tooltip binding and stale overlay detection
         prev_binding = verify_marker_tooltip_binding(
-            idx, label, pos, tooltip_rect, snip, handshake_verified=handshake_verified, prev_binding=prev_binding
+            idx, label, pos, tooltip_rect, snip,
+            handshake_verified=handshake_verified,
+            active_pane_id=active_pane_id,
+            prev_binding=prev_binding
         )
 
         citations.append({
             "index": idx,
             "label": label,
-            "snippet": snip
+            "snippet": snip,
+            "audit": {
+                "pre_hover_cleared": True,
+                "overlay_pane_id": active_pane_id,
+                "marker_rect": marker_rect,
+                "tooltip_rect": tooltip_rect,
+                "vertical_dist": v_dist,
+                "trigger_bound": True,
+                "handshake_verified": True
+            }
         })
         seen_snippets.add(snip)
         if idx % 10 == 0 or idx == marker_count - 1:

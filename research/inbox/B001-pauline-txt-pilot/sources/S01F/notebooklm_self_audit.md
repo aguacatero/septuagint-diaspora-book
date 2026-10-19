@@ -6,9 +6,48 @@
 
 ---
 
-## Result: AUDIT IN PROGRESS (STAGED FOR RE-REVIEW — ROUND 4)
+## Result: AUDIT IN PROGRESS (STAGED FOR RE-REVIEW — ROUND 5)
 
-This self-audit records the comprehensive verification of all source packet artifacts for S01F (James W. Aageson, Oxford D.Phil. thesis, 1983/1984) across Review Round 1 (`#issuecomment-6256189064`), Review Round 2 (`#issuecomment-6257901373`), Review Round 3 (`#issuecomment-6259053713`), and Review Round 4 (`#issuecomment-6259336877`). All itemized findings have been addressed in code, tests, live browser extractions, and canonical ledgers.
+This self-audit records the comprehensive verification of all source packet artifacts for S01F (James W. Aageson, Oxford D.Phil. thesis, 1983/1984) across Review Round 1 (`#issuecomment-6256189064`), Review Round 2 (`#issuecomment-6257901373`), Review Round 3 (`#issuecomment-6259053713`), Review Round 4 (`#issuecomment-6259336877`), and Review Round 5 (`#issuecomment-6259908915`). All itemized findings have been addressed in code, tests, live browser extractions, and canonical ledgers.
+
+---
+
+### Review Round 5 Resolutions (GitHub PR #2 `#issuecomment-6259908915`)
+
+#### 1. Fail-Closed Pre-Hover Dismissal & Trigger-Bound Overlays (Finding 1 — HIGH)
+- **Review Finding:** Pre-hover overlay dismissal was fail-open (only asserted after Escape, and evaluated empty overlays rather than unmount/visibility); hover queries used naive `document.querySelector('.cdk-overlay-container .citation-tooltip')` capturing arbitrary lingering overlays; and `handshake_verified=True` was hard-coded in the runner loop rather than dynamically verified.
+- **Resolution:**
+  - Implemented fail-closed dismissal in both `scripts/run_secondary_prompt.py` and `scripts/extract_all_messages.py`: mouse is dispatched to `(0, 0)`, and `.cdk-overlay-container` is asserted to have zero visible tooltip panes (`visible.length === 0`). The collector polls up to 10 iterations (50ms each); if an overlay lingers, an Escape key event is dispatched with recheck; if it still lingers, fails closed with `RuntimeError` (`"CDK overlay container failed to dismiss prior to hovering marker... Ineffective dismissal"`).
+  - Implemented trigger-bound overlay querying: dynamically iterates `.cdk-overlay-container .cdk-overlay-pane`, checking geometric proximity (`vDist <= 100` and horizontal overlap with marker button). Rejects detached panels, fails closed if multiple conflicting panes appear, and dynamically confirms `handshake_verified = True` (never hard-coded; default `False` in verification helpers).
+
+#### 2. S01F-E015 Provenance Rebinding & Partial-Support Qualification (Finding 2 — MED)
+- **Review Finding:** S01F-E015 was bound to `Prompt 2 / citations[index=89], label=21` (footnote 68 on p. 82) rather than footnote 120 on p. 114.
+- **Resolution:**
+  - Verified authentic capture for S01F-E015 rebound to `Prompt 2 / citations[index=94], label=22` (p. 114 n. 120: `"12°I Cor. 6:16 (Gen. 2:24), 10:7 (Ex. 32:6), II Cor. 6:18 (II Sam. 7:14), and Eph. 5:31 (Gen. 2:24)..."`).
+  - Preserved `PARTIAL CONTEXTUAL MATCH` classification across all canonical artifacts, explicitly documenting that footnote 120's catalog of narrative citations and Daube reference are captured verbatim while the lead-in main body thesis sentence precedes the tooltip boundary.
+  - Aligned across `citation_ledger.csv`, `extraction.md`, and `notebooklm_self_audit.md`.
+
+#### 3. Replayable Per-Marker Audit Metadata in Raw Evidence (Finding 3 — MED)
+- **Review Finding:** Raw JSON files (`prompt_2_raw.json`, `prompt_3_raw.json`, `prompt_4_raw.json`) did not record trigger geometry or pane identities, preventing independent replayability of overlay ownership.
+- **Resolution:**
+  - Enhanced extraction pipeline to record an authentic `audit` object for every marker:
+    `"audit": { "pre_hover_cleared": true, "overlay_pane_id": "...", "marker_rect": {...}, "tooltip_rect": {...}, "vertical_dist": ..., "trigger_bound": true, "handshake_verified": true }`.
+  - Re-extracted live browser data across all 3 messages against live Chrome instance (port 9222, tab `SDP-B001-EXTRACT`):
+    - Message 5 (`prompt_2_raw.json`): 131 markers, 30 unique snippets, 100% audit records verified.
+    - Message 6 (`prompt_3_raw.json`): 21 markers, 15 unique snippets, 100% audit records verified.
+    - Message 8 (`prompt_4_raw.json`): 67 markers, 5 unique snippets, 100% audit records verified.
+
+#### 4. Mocked CDP/DOM Collector Sequence Unit Tests (Finding 4 — MED)
+- **Review Finding:** Existing unit tests exercised simulated helper functions in isolation rather than the asynchronous collector loop sequence, leaving dismissal failure and conflicting overlay handling unverified at the collector level.
+- **Resolution:**
+  - Clearly labeled all simulated helper unit tests in `tests/test_run_secondary_prompt.py`.
+  - Added 5 mocked CDP/DOM collector sequence unit tests exercising real async collector execution:
+    1. `test_collector_ineffective_escape_fails_closed`: Verifies that persistent overlays surviving Escape fail closed.
+    2. `test_collector_unchanged_retained_overlay_fails_closed`: Verifies that retained static overlays fail closed upon marker movement.
+    3. `test_collector_unrelated_visible_panel_fails_closed`: Verifies that detached unrelated panels fail closed.
+    4. `test_collector_multiple_conflicting_panels_fails_closed`: Verifies that multiple trigger-bound panels fail closed immediately.
+    5. `test_collector_centered_scroll_fresh_handshake_success`: Verifies that successive centered markers with clean unmount and fresh pane activation succeed and generate complete audit records.
+  - Test suite expanded to 31 deterministic tests passing (31/31 via `pytest`).
 
 ---
 

@@ -241,14 +241,14 @@
 - **Proposed Evidence ID:** `S01F-E015`
 - **B001 Passage ID:** `B001-9`
 - **Author's Claim:** Paul applies Gen 2:24 in 1 Cor 6:16 halakically to govern sexual ethics, deriving behavioral instruction from narrative.
-- **Short Quotation:** "In four instances, \"narrative\" passages are used in contexts which pertain to ethics; [n. 120: I Cor. 6:16 (Gen. 2:24)...]"
+- **Short Quotation:** "12°I Cor. 6:16 (Gen. 2:24), 10:7 (Ex. 32:6)..."
 - **Printed Page Number:** p. 114
 - **Source Locator:** Chapter IV (Content of Paul's Citations), p. 114 n. 120 (PDF p. 124)
 - **NotebookLM Citation:** Prompt 2 / citations[index=94], label=22
 - **Textual Evidence Invoked:** Citation of Gen 2:24 in 1 Cor 6:16 applied to the physical union of joining oneself to a harlot.
 - **Claim Type:** Exegetical
-- **Qualifications / Conditions:** None stated.
-- **Verification Status:** `VERIFIED` (Visibly verified against thesis p. 114 n. 120 / PDF p. 124).
+- **Qualifications / Conditions:** Saved tooltip snippet captures footnote 120 catalog ([12°I Cor. 6:16 (Gen. 2:24), 10:7 (Ex. 32:6)...]); main-body thesis sentence on p. 114 ('In four instances, "narrative" passages are used in contexts which pertain to ethics') precedes tooltip boundary. Verified as partial contextual support.
+- **Verification Status:** `VERIFIED` (Visibly verified against thesis p. 114 n. 120 / PDF p. 124; partial contextual match in NotebookLM tooltip capture).
 - **Extraction Confidence:** HIGH
 
 ---
