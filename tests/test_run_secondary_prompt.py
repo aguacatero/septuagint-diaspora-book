@@ -216,3 +216,112 @@ def test_verify_marker_tooltip_binding_empty_snippet_rejection():
 
     with pytest.raises(RuntimeError, match="Tooltip binding invariant violated at marker 0: snippet is empty or too short"):
         verify_marker_tooltip_binding(0, "1", m_pos, t_rect, "short")
+
+def test_verify_marker_tooltip_binding_handshake_failure():
+    # If the pre-hover overlay clear handshake fails (retained from prior marker without clean dismiss), fail closed
+    m_pos = {"x": 100, "y": 200}
+    t_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
+    with pytest.raises(RuntimeError, match="Observable marker-to-tooltip handshake failed at marker 0"):
+        verify_marker_tooltip_binding(0, "1", m_pos, t_rect, "Valid snippet text here...", handshake_verified=False)
+
+def test_verify_marker_tooltip_binding_missing_geometry_fails_closed():
+    # If marker_pos or tooltip_rect metadata is missing, fail closed immediately
+    with pytest.raises(RuntimeError, match="missing geometric rect metadata"):
+        verify_marker_tooltip_binding(0, "1", None, {"left": 100, "top": 220}, "Valid snippet text here...")
+
+    with pytest.raises(RuntimeError, match="missing geometric rect metadata"):
+        verify_marker_tooltip_binding(0, "1", {"x": 100, "y": 200}, None, "Valid snippet text here...")
+
+def test_verify_marker_tooltip_binding_centered_scroll_counterexample():
+    # Deterministic counterexample where scrollIntoView({block:'center'}) brings adjacent markers
+    # to nearly identical coordinates (m0=(100,200), m1=(100,205))
+    m0_pos = {"x": 100, "y": 200}
+    t0_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
+    snippet0 = "Footnote 19 on LXX-A/B agreement in Rom 9:26"
+    b0 = verify_marker_tooltip_binding(0, "4", m0_pos, t0_rect, snippet0, handshake_verified=True)
+
+    # Next marker hovered: fresh handshake verified (overlay cleanly unmounted and remounted)
+    m1_pos = {"x": 100, "y": 205}
+    t1_rect = {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80}
+    b1 = verify_marker_tooltip_binding(1, "5", m1_pos, t1_rect, snippet0, handshake_verified=True, prev_binding=b0)
+    assert b1["marker_idx"] == 1
+    assert b1["snippet"] == snippet0
+
+    # If handshake was NOT verified (stale retention without unmount), fail closed
+    with pytest.raises(RuntimeError, match="Observable marker-to-tooltip handshake failed"):
+        verify_marker_tooltip_binding(2, "6", m1_pos, t1_rect, snippet0, handshake_verified=False, prev_binding=b1)
+
+def test_extraction_loop_transition_sequence_success_25_markers():
+    """
+    Loop-level integration test: simulates 25 successive markers with distinct excerpts.
+    Verifies that preserving old_snippet before updating prev_binding completes cleanly
+    with consecutive_duplicates == 1 throughout, avoiding false freeze detection.
+    """
+    prev_binding = None
+    consecutive_duplicates = 0
+
+    for idx in range(25):
+        snippet = f"Distinct passage excerpt text for marker index {idx} in thesis Chapter {idx % 5 + 1}."
+        m_label = str(idx + 1)
+        pos = {"x": 100, "y": 200 + (idx % 5) * 40}
+        t_rect = {"left": 100, "top": 220 + (idx % 5) * 40, "x": 100, "y": 220 + (idx % 5) * 40, "width": 250, "height": 70}
+
+        # Invariant 4: Check transition against old_snippet
+        old_snippet = prev_binding.get("snippet", "") if prev_binding else ""
+        consecutive_duplicates = verify_tooltip_transition(
+            old_snippet, snippet, idx, consecutive_duplicates, max_consecutive=15
+        )
+        assert consecutive_duplicates == 1, f"Expected duplicate count 1 for distinct marker {idx}, got {consecutive_duplicates}"
+
+        # Invariant 5: Update prev_binding with handshake
+        prev_binding = verify_marker_tooltip_binding(
+            idx, m_label, pos, t_rect, snippet, handshake_verified=True, prev_binding=prev_binding
+        )
+        assert prev_binding["snippet"] == snippet
+
+def test_extraction_loop_legitimate_repeated_excerpts_and_freeze_rejection():
+    """
+    Loop-level test: validates legitimate clusters of repeated snippets (e.g. 5 identical from same footnote),
+    followed by distinct snippets, and verifies that an actual prolonged freeze (> 15 identical) fails closed.
+    """
+    prev_binding = None
+    consecutive_duplicates = 0
+
+    # First 5 markers cite the same footnote
+    shared_footnote = "Footnote 19 on Codex Alexandrinus and Vaticanus variants in Romans 9-11"
+    for idx in range(5):
+        m_label = str(idx + 1)
+        pos = {"x": 100, "y": 200 + idx * 10}
+        t_rect = {"left": 100, "top": 220 + idx * 10, "x": 100, "y": 220 + idx * 10, "width": 250, "height": 70}
+
+        old_snippet = prev_binding.get("snippet", "") if prev_binding else ""
+        consecutive_duplicates = verify_tooltip_transition(
+            old_snippet, shared_footnote, idx, consecutive_duplicates, max_consecutive=15
+        )
+        prev_binding = verify_marker_tooltip_binding(
+            idx, m_label, pos, t_rect, shared_footnote, handshake_verified=True, prev_binding=prev_binding
+        )
+    assert consecutive_duplicates == 5
+
+    # Marker 5 switches to a new distinct snippet
+    new_snippet = "Different text from Chapter V on Deuteronomic law"
+    old_snippet = prev_binding.get("snippet", "")
+    consecutive_duplicates = verify_tooltip_transition(
+        old_snippet, new_snippet, 5, consecutive_duplicates, max_consecutive=15
+    )
+    assert consecutive_duplicates == 1  # Successfully reset!
+
+    # Now simulate a true frozen overlay persisting for 16 consecutive markers
+    frozen_snippet = "Frozen overlay that never changes"
+    consecutive_duplicates = 0
+    prev_binding = None
+    with pytest.raises(RuntimeError, match="Stale tooltip detected at marker 15"):
+        for idx in range(20):
+            old_snippet = prev_binding.get("snippet", "") if prev_binding else ""
+            consecutive_duplicates = verify_tooltip_transition(
+                old_snippet, frozen_snippet, idx, consecutive_duplicates, max_consecutive=15
+            )
+            prev_binding = verify_marker_tooltip_binding(
+                idx, str(idx), {"x": 100, "y": 200}, {"left": 100, "top": 220, "x": 100, "y": 220, "width": 200, "height": 80},
+                frozen_snippet, handshake_verified=True, prev_binding=prev_binding
+            )

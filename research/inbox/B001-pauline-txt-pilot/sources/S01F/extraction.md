@@ -80,7 +80,7 @@
 - **Short Quotation:** "Rom. 9:26-Hos. 1:10 (2:1) (LXX-A)"
 - **Printed Page Number:** p. 69
 - **Source Locator:** Chapter III (Septuagint, Textual Tradition), pp. 69–70 n. 19 (PDF pp. 79–80)
-- **NotebookLM Citation:** Prompt 2 / citations[index=12], label=4
+- **NotebookLM Citation:** Prompt 3 / citations[index=7], label=5
 - **Textual Evidence Invoked:** Inclusion of ἐκεῖ and omission of καὶ αὐτοί in Codex Alexandrinus (LXX-A) matching Romans 9:26 verbatim against LXX-B.
 - **Claim Type:** Textual-critical
 - **Qualifications / Conditions:** None stated.
@@ -194,7 +194,7 @@
 - **Short Quotation:** "Note the verbal connection between the scriptural passages and the opening statement centring on the word ἔθνη"
 - **Printed Page Number:** p. 91
 - **Source Locator:** Chapter IV (Epistolary Context: Structure), p. 91 n. 16 (PDF p. 101)
-- **NotebookLM Citation:** Prompt 2 / citations[index=74], label=15
+- **NotebookLM Citation:** Prompt 2 / citations[index=75], label=15
 - **Textual Evidence Invoked:** Catchword ἔθνη appearing in Ps 17:50 LXX, Deut 32:43 LXX, Ps 116:1 LXX, and Isa 11:10 across Rom 15:9–12.
 - **Claim Type:** Exegetical
 - **Qualifications / Conditions:** Omission of ἐν τῇ ἡμέρᾳ ἐκείνῃ from Isa 11:10 in Rom 15:12 is categorized as a minor, non-substantial stylistic omission (pp. 74–76).
@@ -212,7 +212,7 @@
 - **Short Quotation:** "the scriptural citation is related not only to the opening statement but also contributes thematically and verbally to the discussion that follows"
 - **Printed Page Number:** p. 92
 - **Source Locator:** Chapter IV (Epistolary Context: Structure), p. 92 (PDF p. 102)
-- **NotebookLM Citation:** Prompt 2 / citations[index=83], label=18
+- **NotebookLM Citation:** Prompt 2 / citations[index=85], label=19
 - **Textual Evidence Invoked:** Citation of Isa 29:14 in 1 Cor 1:19 followed by thematic elaboration in 1 Cor 1:20–25 using σοφία and σοφῶν.
 - **Claim Type:** Literary
 - **Qualifications / Conditions:** The author acknowledges E. Earle Ellis's thesis that 1 Cor 1:18–31 may derive from an earlier Jewish midrashic unit adopted by Paul.
@@ -230,7 +230,7 @@
 - **Short Quotation:** "the only difference between the two references is that the introductory formula, γάρ, φησίν, has been included for syntactical reasons"
 - **Printed Page Number:** pp. 82–83
 - **Source Locator:** Chapter III (Double Citations), pp. 82–83 (PDF pp. 92–93)
-- **NotebookLM Citation:** Prompt 2 / citations[index=87], label=21
+- **NotebookLM Citation:** Prompt 2 / citations[index=89], label=21
 - **Textual Evidence Invoked:** Text of Gen 2:24 in 1 Cor 6:16 (Ἔσονται γάρ, φησίν, οἱ δύο εἰς σάρκα μίαν) compared with Eph 5:31.
 - **Claim Type:** Textual-critical
 - **Qualifications / Conditions:** Aageson's comparative evaluation applies strictly to shared core clause (ἔσονται οἱ δύο εἰς σάρκα μίαν); full citation in Eph 5:31 includes preceding clause omitted in 1 Cor 6:16. Per PROJECT_CONSTITUTION.md, Ephesians is categorized strictly as an outside-primary-corpus comparator.
@@ -244,7 +244,7 @@
 - **Short Quotation:** "In four instances, \"narrative\" passages are used in contexts which pertain to ethics; [n. 120: I Cor. 6:16 (Gen. 2:24)...]"
 - **Printed Page Number:** p. 114
 - **Source Locator:** Chapter IV (Content of Paul's Citations), p. 114 n. 120 (PDF p. 124)
-- **NotebookLM Citation:** Prompt 2 / citations[index=92], label=22
+- **NotebookLM Citation:** Prompt 2 / citations[index=89], label=21
 - **Textual Evidence Invoked:** Citation of Gen 2:24 in 1 Cor 6:16 applied to the physical union of joining oneself to a harlot.
 - **Claim Type:** Exegetical
 - **Qualifications / Conditions:** None stated.
@@ -262,7 +262,7 @@
 - **Short Quotation:** "The context of this statement in I Corinthians concerns Paul's apostolic right to receive material support, and it is to this situation that Paul has applied the scriptural citation"
 - **Printed Page Number:** p. 148
 - **Source Locator:** Chapter V (Application and Interpretation), p. 148 (PDF p. 158)
-- **NotebookLM Citation:** Prompt 2 / citations[index=99], label=25
+- **NotebookLM Citation:** Prompt 2 / citations[index=102], label=25
 - **Textual Evidence Invoked:** Citation of Deut 25:4 in 1 Cor 9:9 followed by the double application διʼ ἡμᾶς in 1 Cor 9:10.
 - **Claim Type:** Exegetical
 - **Qualifications / Conditions:** The author notes that κημώσεις versus φιμώσεις is a recognized manuscript variant in Greek textual transmission (p. 68 n. 15).
@@ -280,7 +280,7 @@
 - **Short Quotation:** "the use of τύπος and τυπικῶς in the sense of 'warning' or 'example' in I Corinthians 10:6-13 provides little support for the view that Paul's use of scripture is fundamentally typological"
 - **Printed Page Number:** p. 154
 - **Source Locator:** Chapter V (Typology and Correspondence), p. 154 (PDF p. 164)
-- **NotebookLM Citation:** Prompt 2 / citations[index=108], label=26
+- **NotebookLM Citation:** Prompt 2 / citations[index=113], label=26
 - **Textual Evidence Invoked:** Citation of Exod 32:6 ("the people sat down to eat and drink and rose up to play") in 1 Cor 10:7 framed by τυπικῶς and νουθεσία in 1 Cor 10:6, 11.
 - **Claim Type:** Exegetical
 - **Qualifications / Conditions:** The author acknowledges possible sacramental typology in 1 Cor 10:1–4, but maintains that 10:6–13 is primarily ethical and parenetic.
@@ -298,7 +298,7 @@
 - **Short Quotation:** "his text omits the words ὑπὸ θεοῦ... likely that they were omitted in order to avoid presenting an unacceptable image of the divine"
 - **Printed Page Number:** p. 79
 - **Source Locator:** Chapter III (Omission, Addition, and Substitution), p. 79 (PDF p. 89)
-- **NotebookLM Citation:** Prompt 2 / citations[index=116], label=28
+- **NotebookLM Citation:** Prompt 2 / citations[index=121], label=28
 - **Textual Evidence Invoked:** Omission of ὑπὸ θεοῦ from LXX Deut 21:23 (κεκατηραμένος ὑπὸ θεοῦ) in Galatians 3:13 (Ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου).
 - **Claim Type:** Exegetical
 - **Qualifications / Conditions:** The author acknowledges that it cannot be definitively proven whether Paul personally initiated this omission or inherited it from prior tradition.

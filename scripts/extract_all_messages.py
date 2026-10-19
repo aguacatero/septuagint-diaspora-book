@@ -48,16 +48,33 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
     # Bring to front to ensure input events are dispatched immediately
     await call_cdp(ws, "Page.bringToFront")
 
-    # Get message info
+    # Expand all collapsed citations first
+    await evaluate(ws, f"""
+    (() => {{
+        const msgs = document.querySelectorAll('.to-user-message-card-content');
+        if (!msgs[{msg_idx}]) return;
+        const m = msgs[{msg_idx}];
+        const moreBtns = Array.from(m.querySelectorAll('button.citation-marker')).filter(
+            b => b.innerText.includes('more_horiz') || b.querySelector('mat-icon')?.innerText.includes('more_horiz')
+        );
+        for (const b of moreBtns) {{
+            b.click();
+        }}
+    }})()
+    """)
+    await asyncio.sleep(0.4)
+
+    # Get message info and numeric citation marker count
     msg_info = await evaluate(ws, f"""
     (() => {{
         const msgs = document.querySelectorAll('.to-user-message-card-content');
         if (!msgs[{msg_idx}]) return null;
         const m = msgs[{msg_idx}];
-        const markers = Array.from(m.querySelectorAll('button.citation-marker'));
+        const allBtns = Array.from(m.querySelectorAll('button.citation-marker'));
+        const citationBtns = allBtns.filter(b => b.innerText.trim().match(/^\\d+$/));
         return {{
             text: m.innerText,
-            markerCount: markers.length
+            markerCount: citationBtns.length
         }};
     }})()
     """)
@@ -66,7 +83,7 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
 
     text = msg_info["text"]
     marker_count = msg_info["markerCount"]
-    print(f"Total markers in message {msg_idx}: {marker_count}", flush=True)
+    print(f"Total numeric citation markers in message {msg_idx}: {marker_count}", flush=True)
 
     citations = []
     seen_snippets = set()
@@ -74,17 +91,31 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
     consecutive_duplicates = 0
 
     for idx in range(marker_count):
-        # 1. Reset mouse away to 0,0
+        # 1. Reset mouse away to 0,0 and assert overlay is cleared
         await call_cdp(ws, "Input.dispatchMouseEvent", {"type": "mouseMoved", "x": 0, "y": 0})
-        await asyncio.sleep(0.05)
+        await asyncio.sleep(0.08)
+
+        # Assert clean/dismissed overlay state prior to hovering new marker
+        is_cleared = await evaluate(ws, """
+        (() => {
+            const tt = document.querySelector('.cdk-overlay-container .citation-tooltip');
+            return !tt || !tt.innerText.trim();
+        })()
+        """)
+        if not is_cleared:
+            # Attempt escape dismiss if overlay lingered
+            await call_cdp(ws, "Input.dispatchKeyEvent", {"type": "rawKeyDown", "key": "Escape", "code": "Escape", "windowsVirtualKeyCode": 27})
+            await call_cdp(ws, "Input.dispatchKeyEvent", {"type": "keyUp", "key": "Escape", "code": "Escape", "windowsVirtualKeyCode": 27})
+            await asyncio.sleep(0.1)
 
         # 2. Scroll into view and get marker rect
         js_rect = f"""
         (() => {{
             const msgs = document.querySelectorAll('.to-user-message-card-content');
             const m = msgs[{msg_idx}];
-            const markers = Array.from(m.querySelectorAll('button.citation-marker'));
-            const btn = markers[{idx}];
+            const allBtns = Array.from(m.querySelectorAll('button.citation-marker'));
+            const citationBtns = allBtns.filter(b => b.innerText.trim().match(/^\\d+$/));
+            const btn = citationBtns[{idx}];
             btn.scrollIntoView({{ block: 'center', inline: 'center', behavior: 'instant' }});
             const r = btn.getBoundingClientRect();
             return {{
@@ -131,14 +162,15 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
         if not snip:
             raise RuntimeError(f"Fail-closed: could not extract valid tooltip for marker {idx} (label {label})")
 
-        # Invariant: positive marker-to-tooltip binding and stale overlay detection
-        prev_binding = verify_marker_tooltip_binding(
-            idx, label, pos, tooltip_rect, snip, prev_binding=prev_binding
+        # Invariant 4: Verify duplicate transition threshold BEFORE updating prev_binding
+        old_snippet = prev_binding.get("snippet", "") if prev_binding else ""
+        consecutive_duplicates = verify_tooltip_transition(
+            old_snippet, snip, idx, consecutive_duplicates, max_consecutive=15
         )
 
-        # Invariant: check for prolonged duplicate freezes
-        consecutive_duplicates = verify_tooltip_transition(
-            prev_binding.get("snippet", ""), snip, idx, consecutive_duplicates, max_consecutive=15
+        # Invariant 5: Positive marker-to-tooltip binding and stale overlay detection
+        prev_binding = verify_marker_tooltip_binding(
+            idx, label, pos, tooltip_rect, snip, handshake_verified=True, prev_binding=prev_binding
         )
 
         citations.append({

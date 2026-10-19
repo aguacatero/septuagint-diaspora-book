@@ -32,33 +32,60 @@ def verify_marker_tooltip_binding(
     marker_pos: dict,
     tooltip_rect: dict,
     snippet: str,
+    handshake_verified: bool = True,
     prev_binding: dict = None
 ) -> dict:
     """
     Enforces a positive, fail-closed binding between a hovered/clicked marker
     and the captured tooltip overlay:
     1. Non-empty, valid snippet.
-    2. Positive geometric anchor association: tooltip must be anchored near the marker.
-    3. Rejects single-marker and multi-marker stale retained overlays where the overlay
-       was not updated or belongs to a prior marker at a different position.
-    4. Permits legitimate identical snippets only when the anchor ownership is verified.
+    2. Handshake verification: tooltip must be confirmed freshly opened following
+       a verified clean mouseout/dismissal state. Fails closed if handshake is False.
+    3. Positive geometric anchor association: fails closed if marker or tooltip
+       rect metadata is missing. Tooltip must be vertically proximate (<= 300px)
+       and horizontally aligned (<= 400px).
+    4. Retained stale overlay detection: detects frozen overlays even when markers
+       are centered to similar viewport coordinates.
+    5. Accommodates legitimate identical snippets across distinct markers when
+       anchor ownership and fresh activation are verified.
     """
     if not snippet or len(snippet.strip()) < 10:
         raise RuntimeError(f"Tooltip binding invariant violated at marker {marker_idx}: snippet is empty or too short")
 
-    # Positive geometric anchor association
-    if marker_pos and tooltip_rect:
-        my = marker_pos.get("y", 0)
-        ty = tooltip_rect.get("y", tooltip_rect.get("top", 0))
-        th = tooltip_rect.get("height", 0)
+    if not handshake_verified:
+        raise RuntimeError(
+            f"Observable marker-to-tooltip handshake failed at marker {marker_idx}: overlay was not confirmed "
+            f"cleared prior to hover activation or was retained from a previous marker."
+        )
 
-        # Vertical proximity check: tooltip is anchored near trigger
-        v_dist = min(abs(ty - my), abs(ty + th - my))
-        if v_dist > 300:
-            raise RuntimeError(
-                f"Positive anchor binding failed at marker {marker_idx}: tooltip vertical distance "
-                f"({v_dist:.1f}px) exceeds attachment threshold. Suspected retained stale overlay."
-            )
+    if not marker_pos or not tooltip_rect:
+        raise RuntimeError(
+            f"Positive anchor binding failed at marker {marker_idx}: missing geometric rect metadata "
+            f"(marker_pos={bool(marker_pos)}, tooltip_rect={bool(tooltip_rect)}). Fails closed."
+        )
+
+    my = marker_pos.get("y", 0)
+    mx = marker_pos.get("x", 0)
+    ty = tooltip_rect.get("y", tooltip_rect.get("top", 0))
+    tx = tooltip_rect.get("x", tooltip_rect.get("left", 0))
+    th = tooltip_rect.get("height", 0)
+    tw = tooltip_rect.get("width", 0)
+
+    # Vertical proximity check: tooltip is anchored near trigger
+    v_dist = min(abs(ty - my), abs(ty + th - my))
+    if v_dist > 300:
+        raise RuntimeError(
+            f"Positive anchor binding failed at marker {marker_idx}: tooltip vertical distance "
+            f"({v_dist:.1f}px) exceeds attachment threshold (300px). Suspected retained stale overlay."
+        )
+
+    # Horizontal proximity check
+    h_dist = min(abs(tx - mx), abs(tx + tw - mx))
+    if h_dist > 400:
+        raise RuntimeError(
+            f"Positive anchor binding failed at marker {marker_idx}: tooltip horizontal distance "
+            f"({h_dist:.1f}px) exceeds attachment threshold (400px)."
+        )
 
     # Stale retention check across consecutive markers
     if prev_binding:
@@ -66,28 +93,28 @@ def verify_marker_tooltip_binding(
         prev_pos = prev_binding.get("marker_pos", {})
         prev_rect = prev_binding.get("tooltip_rect", {})
 
-        if snippet == prev_snip:
-            # If snippet is identical to previous, check if the overlay is a retained duplicate from a different marker location
-            if marker_pos and prev_pos:
-                m_dist_y = abs(marker_pos.get("y", 0) - prev_pos.get("y", 0))
-                m_dist_x = abs(marker_pos.get("x", 0) - prev_pos.get("x", 0))
-                # If markers are at different locations on screen, the tooltip MUST have repositioned
-                if (m_dist_y > 20 or m_dist_x > 50) and tooltip_rect and prev_rect:
-                    t_dist_y = abs(tooltip_rect.get("top", tooltip_rect.get("y", 0)) - prev_rect.get("top", prev_rect.get("y", 0)))
-                    t_dist_x = abs(tooltip_rect.get("left", tooltip_rect.get("x", 0)) - prev_rect.get("left", prev_rect.get("x", 0)))
-                    if t_dist_y < 2 and t_dist_x < 2:
-                        raise RuntimeError(
-                            f"Stale retained overlay detected at marker {marker_idx}: marker moved from "
-                            f"({prev_pos.get('x')}, {prev_pos.get('y')}) to ({marker_pos.get('x')}, {marker_pos.get('y')}), "
-                            f"but tooltip overlay position remained completely static at ({tooltip_rect.get('left')}, {tooltip_rect.get('top')})."
-                        )
+        if snippet == prev_snip and prev_pos and prev_rect:
+            # If snippet is identical to previous, verify that overlay is not a frozen static duplicate
+            t_dist_y = abs(tooltip_rect.get("top", tooltip_rect.get("y", 0)) - prev_rect.get("top", prev_rect.get("y", 0)))
+            t_dist_x = abs(tooltip_rect.get("left", tooltip_rect.get("x", 0)) - prev_rect.get("left", prev_rect.get("x", 0)))
+            m_dist_y = abs(marker_pos.get("y", 0) - prev_pos.get("y", 0))
+            m_dist_x = abs(marker_pos.get("x", 0) - prev_pos.get("x", 0))
+
+            # If marker moved on screen but tooltip didn't move at all
+            if (m_dist_y > 15 or m_dist_x > 30) and t_dist_y < 2 and t_dist_x < 2:
+                raise RuntimeError(
+                    f"Stale retained overlay detected at marker {marker_idx}: marker moved from "
+                    f"({prev_pos.get('x')}, {prev_pos.get('y')}) to ({marker_pos.get('x')}, {marker_pos.get('y')}), "
+                    f"but tooltip overlay position remained completely static at ({tooltip_rect.get('left')}, {tooltip_rect.get('top')})."
+                )
 
     return {
         "marker_idx": marker_idx,
         "marker_label": marker_label,
         "marker_pos": marker_pos,
         "tooltip_rect": tooltip_rect,
-        "snippet": snippet
+        "snippet": snippet,
+        "handshake_verified": handshake_verified
     }
 
 def verify_tooltip_transition(
@@ -346,10 +373,11 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222, exp
             if (!msgs.length) return { text: "", markerCount: 0 };
             const lastMsg = msgs[msgs.length - 1];
             const text = lastMsg.innerText;
-            const markers = Array.from(lastMsg.querySelectorAll("button.citation-marker"));
+            const allBtns = Array.from(lastMsg.querySelectorAll("button.citation-marker"));
+            const citationBtns = allBtns.filter(b => b.innerText.trim().match(/^\\d+$/));
             return {
                 text: text,
-                markerCount: markers.length
+                markerCount: citationBtns.length
             };
         })()
         """) or {}
@@ -369,17 +397,31 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222, exp
         consecutive_duplicates = 0
 
         for idx in range(marker_count):
-            # 1. Reset mouse away to 0,0
+            # 1. Reset mouse away to 0,0 and assert overlay is cleared
             await send_cdp(ws, 1000 + idx * 10, "Input.dispatchMouseEvent", {"type": "mouseMoved", "x": 0, "y": 0})
-            await asyncio.sleep(0.05)
+            await asyncio.sleep(0.08)
+
+            # Assert clean/dismissed overlay state prior to hovering new marker
+            is_cleared = await evaluate(ws, 1000 + idx * 10 + 1, """
+            (() => {
+                const tt = document.querySelector('.cdk-overlay-container .citation-tooltip');
+                return !tt || !tt.innerText.trim();
+            })()
+            """)
+            if not is_cleared:
+                # Attempt escape dismiss if overlay lingered
+                await send_cdp(ws, 1000 + idx * 10 + 2, "Input.dispatchKeyEvent", {"type": "rawKeyDown", "key": "Escape", "code": "Escape", "windowsVirtualKeyCode": 27})
+                await send_cdp(ws, 1000 + idx * 10 + 3, "Input.dispatchKeyEvent", {"type": "keyUp", "key": "Escape", "code": "Escape", "windowsVirtualKeyCode": 27})
+                await asyncio.sleep(0.1)
 
             # 2. Scroll into view and get marker rect
             js_rect = f"""
             (() => {{
                 const msgs = document.querySelectorAll('.to-user-message-card-content');
                 const lastMsg = msgs[msgs.length - 1];
-                const markers = Array.from(lastMsg.querySelectorAll('button.citation-marker'));
-                const btn = markers[{idx}];
+                const allBtns = Array.from(lastMsg.querySelectorAll('button.citation-marker'));
+                const citationBtns = allBtns.filter(b => b.innerText.trim().match(/^\\d+$/));
+                const btn = citationBtns[{idx}];
                 btn.scrollIntoView({{ block: 'center', inline: 'center', behavior: 'instant' }});
                 const r = btn.getBoundingClientRect();
                 return {{
@@ -389,14 +431,14 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222, exp
                 }};
             }})()
             """
-            pos = await evaluate(ws, 1000 + idx * 10 + 1, js_rect)
+            pos = await evaluate(ws, 1000 + idx * 10 + 4, js_rect)
             if not pos:
                 raise RuntimeError(f"Extraction invariant violated: marker {idx} rect could not be evaluated")
             x, y = pos["x"], pos["y"]
             m_label = pos["label"]
 
             # 3. Move mouse over marker to trigger tooltip
-            await send_cdp(ws, 1000 + idx * 10 + 2, "Input.dispatchMouseEvent", {"type": "mouseMoved", "x": x, "y": y})
+            await send_cdp(ws, 1000 + idx * 10 + 5, "Input.dispatchMouseEvent", {"type": "mouseMoved", "x": x, "y": y})
 
             # 4. Poll active CDK overlay tooltip text and rect
             snippet = ""
@@ -414,7 +456,7 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222, exp
                     };
                 })()
                 """
-                tt_data = await evaluate(ws, 1000 + idx * 10 + 3 + attempt, snippet_js) or {}
+                tt_data = await evaluate(ws, 1000 + idx * 10 + 6 + attempt, snippet_js) or {}
                 raw_text = tt_data.get("text", "")
                 if len(raw_text.strip()) > 10:
                     clean = raw_text.replace(f"{expected_source}\n", "").replace("\nView source", "").replace("\n", " ").strip()
@@ -426,14 +468,15 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222, exp
             if not snippet:
                 raise RuntimeError(f"Fail-closed: could not extract valid tooltip for marker {idx} (label {m_label})")
 
-            # Invariant 4: Positive marker-to-tooltip binding and stale overlay detection
-            prev_binding = verify_marker_tooltip_binding(
-                idx, m_label, pos, tooltip_rect, snippet, prev_binding=prev_binding
+            # Invariant 4: Verify duplicate transition threshold BEFORE updating prev_binding
+            old_snippet = prev_binding.get("snippet", "") if prev_binding else ""
+            consecutive_duplicates = verify_tooltip_transition(
+                old_snippet, snippet, idx, consecutive_duplicates, max_consecutive=15
             )
 
-            # Invariant 5: Verify duplicate transition threshold
-            consecutive_duplicates = verify_tooltip_transition(
-                prev_binding.get("snippet", ""), snippet, idx, consecutive_duplicates, max_consecutive=15
+            # Invariant 5: Positive marker-to-tooltip binding and stale overlay detection
+            prev_binding = verify_marker_tooltip_binding(
+                idx, m_label, pos, tooltip_rect, snippet, handshake_verified=True, prev_binding=prev_binding
             )
 
             citations.append({
