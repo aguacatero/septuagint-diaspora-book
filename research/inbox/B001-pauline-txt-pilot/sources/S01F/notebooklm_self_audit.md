@@ -6,71 +6,56 @@
 
 ---
 
-## Result: RESOLVED (STAGED FOR RE-REVIEW)
+## Result: AUDIT IN PROGRESS (STAGED FOR RE-REVIEW)
 
-This self-audit records the comprehensive verification of all source packet artifacts for S01F (James W. Aageson, Oxford D.Phil. thesis, 1983/1984) following the independent review findings in GitHub PR #2 (`#issuecomment-6256189064`). All 6 review findings have been resolved in full. Authentic, reproducible passage-level citation snippets have been re-extracted from NotebookLM CDK tooltips across Prompts 2, 3, and 4 (including Marker 28 and all 124 markers in Prompt 2).
+This self-audit records the comprehensive verification of all source packet artifacts for S01F (James W. Aageson, Oxford D.Phil. thesis, 1983/1984) across Review Round 1 (`#issuecomment-6256189064`) and Review Round 2 (`#issuecomment-6257901373`). All itemized findings have been addressed in code, tests, and canonical ledgers.
 
 ---
 
-### Itemized Review Findings and Resolutions
+### Review Round 2 Resolutions (GitHub PR #2 `#issuecomment-6257901373`)
 
-#### Finding 1: Browser Automation Scoping & Raw Extraction Fixes
-- **Root Cause Identified:** In `scripts/run_secondary_prompt.py`, citation overlay queries included `.source-panel`, which matched the persistent left sidebar displaying the thesis abstract ("Title: Paul's Use of Scripture..."). This caused duplicate abstract captures across markers in initial raw outputs.
+#### 1. S01F-E014 Author Claim Scope Clarification (Finding 2 — MED)
+- **Review Finding:** `citation_ledger.csv` `author_claim` previously stated an unqualified "sole difference in Gen 2:24 between 1 Cor 6:16 and Eph 5:31," creating an internal contradiction with the row's `qualification` (which properly restricted the claim to the shared core clause).
 - **Resolution:**
-  1. Scoped citation snippet extraction strictly to the active Angular CDK overlay container (`.cdk-overlay-container .cdk-overlay-pane.citation-tooltip-panel` and `.cdk-overlay-pane:has(.citation-tooltip)`), completely excluding persistent source panels, sidebars, and search tools.
-  2. Implemented handling for collapsed/grouped citation markers (`button.citation-marker` containing `mat-icon: more_horiz` with `aria-label="Show additional citations"`), expanding and processing grouped citations.
-  3. Added fail-closed validation (`validate_citations`) that raises `RuntimeError` if extracted snippets are identical across distinct markers or match the general abstract text.
+  - Updated `author_claim` in `citation_ledger.csv` to state the clause-scope limitation directly:
+    *"Within the shared core quotation (ἔσονται οἱ δύο εἰς σάρκα μίαν), Paul's only difference in Gen 2:24 between 1 Cor 6:16 and Eph 5:31 is the introductory formula γάρ, φησίν added for syntax; Eph 5:31 serves as an outside-primary-corpus comparator."*
+  - Aligned `Author's Claim` in `extraction.md` word-for-word.
+  - Distinguishes Aageson's authorial claim from the broader manuscript reality that Eph 5:31 quotes the preceding clause omitted in 1 Cor 6:16, while preserving the deuteropauline boundary per `PROJECT_CONSTITUTION.md`.
 
-#### Finding 2: Direct Physical Page Verification (S01F-E001 through S01F-E018)
-- **Methodology:** Direct verification of all 18 evidence items against the complete physical Oxford D.Phil. thesis PDF (`aageson_1984_pauls_use_of_scripture.pdf`, 325 total PDF pages, 315 numbered thesis pages, preliminary pages i–iv; text offset $N_{pdf} = N_{thesis} + 10$).
-- **Verified Page Alignments & Corrections:**
-  - `S01F-E001` (Rom 4:3 / Gen 15:6): Printed **p. 83** (PDF p. 93) — transposition of ἐπίστευσεν and Ἀβραάμ without altering semantic sense.
-  - `S01F-E002` (Rom 4:3 / Gen 15:6): Printed **p. 131** (PDF p. 141) — narrative sequence of Genesis prioritized prior to circumcision.
-  - `S01F-E003` (Rom 9:25 / Hos 2:23): Printed **p. 69 n. 19** (PDF p. 79) — LXX-B alignment on forms of ἀγαπᾶν against LXX-A ἐλεεῖν.
-  - `S01F-E004` (Rom 9:25 / Hos 2:23): Printed **p. 178; cf. p. 81** (PDF pp. 188, 91) — **Corrected from p. 79 to p. 178**. Direct quote ("The substitution of καλέσω for ἐρῶ in the citation from Hosea 2:25 LXX, has resulted in a verbal connection...") is on p. 178; foundational note on p. 81.
-  - `S01F-E005` (Rom 9:26 / Hos 1:10): Printed **pp. 69–70 n. 19** (PDF pp. 79–80) — LXX-A verbatim agreement prefixing ἐκεῖ and omitting καὶ αὐτοί.
-  - `S01F-E006` (Rom 9:26 / Hos 1:10): Printed **p. 179** (PDF p. 189) — verbal catchword link between υἱοὶ θεοῦ ζῶντος (9:26) and υἱῶν Ἰσραήλ (9:27).
-  - `S01F-E007` (Rom 10:11 / Isa 28:16): Printed **p. 69 n. 19** (PDF p. 79) — LXX-A alignment including ἐπʼ αὐτῷ against LXX-B.
-  - `S01F-E008` (Rom 10:11 / Isa 28:16): Printed **p. 83; cf. p. 183** (PDF pp. 93, 193) — insertion of πᾶς motivated by catchword association with Joel 3:5.
-  - `S01F-E009` (Rom 10:13 / Joel 2:32): Printed **p. 126** (PDF p. 136) — key catchwords πᾶς and ἐπικαλέσασθαι grounding universal Jew/Greek salvation.
-  - `S01F-E010` (Rom 11:34 / Isa 40:13): Printed **p. 69 n. 19** (PDF p. 79) — LXX-A word order σύμβουλος αὐτοῦ against LXX-B transposition.
-  - `S01F-E011` (Rom 11:34 / Isa 40:13): Printed **p. 84** (PDF p. 94) — citation of distinct clauses of Isa 40:13 in Rom 11:34 and 1 Cor 2:16 for epistolary context.
-  - `S01F-E012` (Rom 15:12 / Isa 11:10): Printed **p. 91 n. 16** (PDF p. 101) — catena verbal connection centering on ἔθνη; stylistic omission of temporal phrase (pp. 74–76).
-  - `S01F-E013` (1 Cor 1:19 / Isa 29:14): Printed **p. 92** (PDF p. 102) — citation as thematic and verbal catalyst for subsequent cross wisdom exposition.
-  - `S01F-E014` (1 Cor 6:16 / Gen 2:24): Printed **pp. 82–83** (PDF pp. 92–93) — parenthetical introductory formula γάρ, φησίν added for syntactical integration within shared core quotation.
-  - `S01F-E015` (1 Cor 6:16 / Gen 2:24): Printed **p. 114 n. 120** (PDF p. 124) — **Corrected from p. 106 n. 85 to p. 114 n. 120**. Direct quote ("In four instances, 'narrative' passages are used in contexts which pertain to ethics; [n. 120: I Cor. 6:16 (Gen. 2:24)...]") verified on p. 114.
-  - `S01F-E016` (1 Cor 9:9 / Deut 25:4): Printed **p. 148** (PDF p. 158) — application of Deut 25:4 to apostolic right of material support; textual variant κημώσεις noted on p. 68 n. 15.
-  - `S01F-E017` (1 Cor 10:7 / Exod 32:6): Printed **p. 154** (PDF p. 164) — use of τύπος and τυπικῶς as parenetic warning rather than formal typology.
-  - `S01F-E018` (Gal 3:13 / Deut 21:23): Printed **p. 79** (PDF p. 89) — theological omission of ὑπὸ θεοῦ to safeguard divine image; raw prompt marker identified following Marker 27 under collapsed `more_horiz`.
-
-#### Finding 3: Argument Map Tripartite Restructuring
-- **Resolution:** Reorganized all 12 sections of `argument_map.md` into 3 strict, unambiguous headers:
-  1. `### AAGESON EXPLICIT STATEMENT (Source-Grounded)`: Author's direct claims, citations, explicit assumptions, and author-considered alternatives (e.g. Goppelt, Ellis, memory lapse) with exact page references.
-  2. `### REVIEWER STRUCTURAL PARAPHRASE`: Rigorous 4-element analytical reconstruction (QUESTION, EVIDENCE, INFERENCE, CONCLUSION).
-  3. `### REVIEWER-GENERATED ALTERNATIVES & FALSIFICATION TESTS`: Distinctly labeled researcher counterfactuals and falsification criteria, strictly separated from authorial claims.
-
-#### Finding 4: Reconciled S01F-E014 Clause Scope & Corpus Boundary
+#### 2. Exact Expected Source Identity Invariant (Finding 3 — MED)
+- **Review Finding:** `validate_notebook_state` previously only checked that notebook title contained `SDP-B001-EXTRACT` and `len(sources) == 1`, but did not check *which* source was loaded, allowing arbitrary single PDFs (e.g. `thesis.pdf` or `unrelated.pdf`) to pass.
 - **Resolution:**
-  - Clarified that Aageson's statement ("the only difference between the two references is that the introductory formula, γάρ, φησίν, has been included for syntactical reasons as part of the reference in I Corinthians") applies strictly to the shared core quotation (`ἔσονται οἱ δύο εἰς σάρκα μίαν`).
-  - Explicitly noted that Ephesians 5:31 quotes the preceding clause (`ἀντὶ τούτου καταλείψει ἄνθρωπος...`), which is absent from 1 Corinthians 6:16.
-  - Classified Ephesians 5:31 as an outside-primary-corpus comparator in compliance with `PROJECT_CONSTITUTION.md` (distinguishing the undisputed primary Pauline corpus from deuteropauline comparators).
+  - Upgraded `validate_notebook_state` in `scripts/run_secondary_prompt.py` and `scripts/extract_all_messages.py` to require exact match with `expected_source` (default `aageson_1984_pauls_use_of_scripture.pdf`).
+  - Added fail-closed checks rejecting mismatches, wrong single sources, multiple sources, or empty source lists.
+  - Added regression unit tests in `tests/test_run_secondary_prompt.py`:
+    - `test_validate_notebook_state_wrong_single_source_rejection` (rejects `thesis.pdf`, `unrelated_document.pdf`, `aageson_1984.pdf`).
+    - `test_validate_notebook_state_configurable_expected_source` (verifies per-run configurable source identity).
+    - `test_verify_tab_invariants_failure_on_wrong_source` (evaluates CDP mock rejecting wrong loaded source).
 
-#### Finding 5: Automation Invariants & Deterministic Test Suite
+#### 3. Deterministic Machine-Readable Citation Pointers (Finding 4 — LOW)
+- **Review Finding:** S01F-E018 cited descriptive text ("Prompt 2 / Marker collapsed under more_horiz after Marker 27") rather than the exact index in committed `prompt_2_raw.json`.
 - **Resolution:**
-  - Implemented fail-closed invariants in `scripts/run_secondary_prompt.py`:
-    - `validate_notebook_state`: Ensures connected tab matches `SDP-B001-EXTRACT` and contains exactly 1 loaded source.
-    - `validate_citations`: Fails closed against empty snippets, duplicate captures, or thesis abstract text pollution.
-    - Submit retry loop with `RuntimeError` on failure.
-    - Generation stabilization loop with `TimeoutError` on timeout.
-  - Added deterministic unit test suite in `tests/test_run_secondary_prompt.py` covering all invariant functions and integration mocks (10/10 tests passing via `pytest`).
+  - Verified exact passage-bearing capture for S01F-E018 at `citations[index=116], label=28` in `prompt_2_raw.json` (containing Deuteronomy 21:23 omission discussion).
+  - Adopted a uniform, deterministic, machine-readable locator convention across all 18 rows in `citation_ledger.csv` and `extraction.md`: `Prompt 2 / citations[index=X], label=Y`.
 
-#### Finding 6: Thesis Pagination Normalization
-- **Resolution:** Reconciled pagination across `metadata.md`, `notebooklm_self_audit.md`, `citation_ledger.csv`, and `extraction.md`:
-  - Front matter: Roman numerals pp. i–iv (4 pages)
-  - Main text (Chapters I–VI and Conclusion): pp. 1–280 (280 pages)
-  - Appendix: pp. 281–284 (4 pages)
-  - Bibliography: pp. 285–315 (31 pages)
-  - Total Numbered Pages: 315 pages (325 total physical PDF pages; constant PDF offset $N_{pdf} = N_{thesis} + 10$).
+#### 4. Hover-Tooltip Association & Stale-Tooltip Invariants (Finding 5 — LOW)
+- **Review Finding:** Tooltip polling did not verify whether a tooltip was newly spawned or updated versus a retained tooltip from a previous marker.
+- **Resolution:**
+  - Added `verify_tooltip_transition` invariant tracking consecutive duplicate captures across marker iterations.
+  - While legitimate repeated excerpts representing shared source locations (e.g., identical footnote captures across adjacent citations) are explicitly permitted, runs exceeding `max_consecutive=15` are rejected with `RuntimeError` as stuck/stale overlays.
+  - Added unit test fixtures in `tests/test_run_secondary_prompt.py` (`test_verify_tooltip_transition_success`, `test_verify_tooltip_transition_stale_tooltip_rejection`, `test_verify_tooltip_transition_empty_snippet_rejection`).
+  - Test suite now has 16 deterministic tests passing (16/16 via `pytest`).
+
+---
+
+### Review Round 1 Itemized Summary (GitHub PR #2 `#issuecomment-6256189064`)
+
+- **Finding 1 (Tooltip Scoping):** Citation tooltips scoped strictly to Angular CDK overlay container (`.cdk-overlay-container .cdk-overlay-pane.citation-tooltip-panel`), eliminating sidebar abstract capture. Authentic snippets re-extracted across Prompts 2, 3, and 4.
+- **Finding 2 (Page Provenance):** Directly verified all 18 evidence items against physical Oxford D.Phil. thesis PDF (`aageson_1984_pauls_use_of_scripture.pdf`). S01F-E004 corrected to p. 178 (cf. p. 81); S01F-E015 corrected to p. 114 n. 120.
+- **Finding 3 (Argument Map Restructuring):** Reorganized all 12 sections of `argument_map.md` into 3 strict headers separating author statements, structural paraphrases, and researcher falsification tests.
+- **Finding 4 (Ephesians Scope):** Addressed in Round 1 and completed in Round 2 CSV `author_claim`.
+- **Finding 5 (Automation Invariants):** Connection, submission, generation stabilization, and extraction invariants implemented.
+- **Finding 6 (Pagination Normalization):** Normalized pagination to 315 numbered thesis pages (pp. 1–280 text, 281–284 appendix, 285–315 bibliography, plus front matter i–iv; 325 total PDF pages).
 
 ---
 

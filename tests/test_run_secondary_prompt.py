@@ -4,22 +4,41 @@ from unittest.mock import AsyncMock, patch
 
 from scripts.run_secondary_prompt import (
     validate_notebook_state,
+    verify_tooltip_transition,
     validate_citations,
     verify_tab_invariants,
+    EXPECTED_DEFAULT_SOURCE,
 )
 
 def test_validate_notebook_state_success():
-    # Valid title and single source
+    # Valid title and exact expected sole source
     validate_notebook_state("SDP-B001-EXTRACT", ["aageson_1984_pauls_use_of_scripture.pdf"])
-    validate_notebook_state("Notebook: SDP-B001-EXTRACT (Staging)", ["thesis.pdf"])
+    validate_notebook_state("Notebook: SDP-B001-EXTRACT (Staging)", ["aageson_1984_pauls_use_of_scripture.pdf"])
+
+def test_validate_notebook_state_wrong_single_source_rejection():
+    # Correct notebook title and single source, but WRONG document identity
+    with pytest.raises(RuntimeError, match="Source identity invariant violated: expected sole source"):
+        validate_notebook_state("SDP-B001-EXTRACT", ["thesis.pdf"])
+
+    with pytest.raises(RuntimeError, match="Source identity invariant violated: expected sole source"):
+        validate_notebook_state("SDP-B001-EXTRACT", ["unrelated_document.pdf"])
+
+    with pytest.raises(RuntimeError, match="Source identity invariant violated: expected sole source"):
+        validate_notebook_state("SDP-B001-EXTRACT", ["aageson_1984.pdf"])
+
+def test_validate_notebook_state_configurable_expected_source():
+    # Custom expected source
+    validate_notebook_state("SDP-B001-EXTRACT", ["custom_source.pdf"], expected_source="custom_source.pdf")
+    with pytest.raises(RuntimeError, match="Source identity invariant violated"):
+        validate_notebook_state("SDP-B001-EXTRACT", ["wrong_source.pdf"], expected_source="custom_source.pdf")
 
 def test_validate_notebook_state_invalid_title():
     # Wrong notebook title
     with pytest.raises(RuntimeError, match="does not match expected 'SDP-B001-EXTRACT'"):
-        validate_notebook_state("SDP-01 Paul", ["aageson_1984.pdf"])
+        validate_notebook_state("SDP-01 Paul", ["aageson_1984_pauls_use_of_scripture.pdf"])
     
     with pytest.raises(RuntimeError, match="does not match expected 'SDP-B001-EXTRACT'"):
-        validate_notebook_state("", ["aageson_1984.pdf"])
+        validate_notebook_state("", ["aageson_1984_pauls_use_of_scripture.pdf"])
 
 def test_validate_notebook_state_invalid_source_count():
     # 0 sources
@@ -28,7 +47,30 @@ def test_validate_notebook_state_invalid_source_count():
 
     # Multiple sources
     with pytest.raises(RuntimeError, match="Expected exactly 1 source in SDP-B001-EXTRACT, found 2"):
-        validate_notebook_state("SDP-B001-EXTRACT", ["source1.pdf", "source2.pdf"])
+        validate_notebook_state("SDP-B001-EXTRACT", ["aageson_1984_pauls_use_of_scripture.pdf", "other.pdf"])
+
+def test_verify_tooltip_transition_success():
+    # Dynamic update between different snippets
+    count = verify_tooltip_transition("Initial snippet text...", "New distinct snippet text...", 1, 1)
+    assert count == 1
+
+    # Legitimate repeated excerpts across a few markers (e.g. same footnote)
+    count = verify_tooltip_transition("Footnote 19 on LXX-A/B", "Footnote 19 on LXX-A/B", 2, 1, max_consecutive=15)
+    assert count == 2
+    count = verify_tooltip_transition("Footnote 19 on LXX-A/B", "Footnote 19 on LXX-A/B", 3, 2, max_consecutive=15)
+    assert count == 3
+
+def test_verify_tooltip_transition_stale_tooltip_rejection():
+    # Tooltip that fails to update across more than max_consecutive markers (stuck overlay)
+    with pytest.raises(RuntimeError, match="Stale tooltip detected at marker 16"):
+        verify_tooltip_transition("Frozen overlay text...", "Frozen overlay text...", 16, 15, max_consecutive=15)
+
+def test_verify_tooltip_transition_empty_snippet_rejection():
+    with pytest.raises(RuntimeError, match="Stale/invalid tooltip invariant violated"):
+        verify_tooltip_transition("Valid text...", "", 2, 1)
+
+    with pytest.raises(RuntimeError, match="Stale/invalid tooltip invariant violated"):
+        verify_tooltip_transition("Valid text...", "short", 2, 1)
 
 def test_validate_citations_success():
     citations = [
@@ -98,6 +140,20 @@ def test_verify_tab_invariants_failure_on_wrong_notebook():
         }
         with patch("scripts.run_secondary_prompt.evaluate", new=AsyncMock(return_value=state)):
             with pytest.raises(RuntimeError, match="Connected notebook title 'SDP-01 Paul' does not match"):
+                await verify_tab_invariants(mock_ws)
+
+    asyncio.run(_test())
+
+def test_verify_tab_invariants_failure_on_wrong_source():
+    async def _test():
+        mock_ws = AsyncMock()
+        state = {
+            "title": "SDP-B001-EXTRACT",
+            "sources": ["wrong_source.pdf"],
+            "abstract": ""
+        }
+        with patch("scripts.run_secondary_prompt.evaluate", new=AsyncMock(return_value=state)):
+            with pytest.raises(RuntimeError, match="Source identity invariant violated"):
                 await verify_tab_invariants(mock_ws)
 
     asyncio.run(_test())

@@ -4,6 +4,12 @@ import time
 import urllib.request
 import websockets
 
+from scripts.run_secondary_prompt import (
+    validate_notebook_state,
+    verify_tooltip_transition,
+    EXPECTED_DEFAULT_SOURCE,
+)
+
 _msg_id = 0
 
 async def call_cdp(ws, method, params=None, timeout=10.0):
@@ -33,7 +39,7 @@ async def evaluate(ws, expr):
         return res["result"]["result"].get("value")
     return None
 
-async def extract_message_citations(ws, msg_idx, output_path):
+async def extract_message_citations(ws, msg_idx, output_path, expected_source=EXPECTED_DEFAULT_SOURCE):
     print(f"\n==========================================", flush=True)
     print(f"Extracting Message Index {msg_idx} -> {output_path}", flush=True)
     print(f"==========================================", flush=True)
@@ -63,6 +69,8 @@ async def extract_message_citations(ws, msg_idx, output_path):
 
     citations = []
     seen_snippets = set()
+    last_snippet = ""
+    consecutive_duplicates = 0
 
     for idx in range(marker_count):
         # 1. Reset mouse away to 0,0
@@ -106,13 +114,19 @@ async def extract_message_citations(ws, msg_idx, output_path):
             """
             raw_text = await evaluate(ws, js_snip) or ""
             if len(raw_text.strip()) > 10:
-                clean = raw_text.replace("aageson_1984_pauls_use_of_scripture.pdf\n", "").replace("\nView source", "").replace("\n", " ").strip()
+                clean = raw_text.replace(f"{expected_source}\n", "").replace("\nView source", "").replace("\n", " ").strip()
                 if "ABSTRACT" not in clean:
                     snip = clean
                     break
 
         if not snip:
             raise RuntimeError(f"Fail-closed: could not extract valid tooltip for marker {idx} (label {label})")
+
+        # Invariant: check for stale/frozen tooltip
+        consecutive_duplicates = verify_tooltip_transition(
+            last_snippet, snip, idx, consecutive_duplicates, max_consecutive=15
+        )
+        last_snippet = snip
 
         citations.append({
             "index": idx,
@@ -140,18 +154,23 @@ async def main():
     tabs = json.loads(urllib.request.urlopen("http://127.0.0.1:9222/json").read())
     t = [x for x in tabs if "b3cd453a" in x.get("url", "")][0]
     async with websockets.connect(t["webSocketDebuggerUrl"], max_size=20*1024*1024) as ws:
-        # Validate single active source
-        source_info = await evaluate(ws, """
+        # Validate exact single active source
+        state = await evaluate(ws, """
         (() => {
+            const titleInput = document.querySelector('input.title-input');
+            const title = titleInput ? titleInput.value : document.title;
             const sources = Array.from(document.querySelectorAll('.source-title, .source-title-container, [aria-label*="source"]'));
             const sourceTexts = sources.map(s => s.innerText.trim()).filter(t => t.endsWith('.pdf'));
             const unique = Array.from(new Set(sourceTexts));
-            return { count: unique.length, sources: unique };
+            return { title: title, count: unique.length, sources: unique };
         })()
         """)
-        print(f"Source validation: {source_info}", flush=True)
-        if source_info["count"] != 1:
-            raise RuntimeError(f"Expected exactly 1 source, found {source_info['count']}")
+        print(f"Source validation state: {state}", flush=True)
+        validate_notebook_state(
+            state.get("title", ""),
+            state.get("sources", []),
+            expected_source=EXPECTED_DEFAULT_SOURCE
+        )
 
         # Msg 5 -> Prompt 2
         await extract_message_citations(

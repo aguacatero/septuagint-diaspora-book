@@ -5,15 +5,55 @@ import time
 import urllib.request
 import websockets
 
-def validate_notebook_state(title: str, sources: list):
+EXPECTED_DEFAULT_SOURCE = "aageson_1984_pauls_use_of_scripture.pdf"
+
+def validate_notebook_state(title: str, sources: list, expected_source: str = EXPECTED_DEFAULT_SOURCE):
     """
-    Validates that the connected notebook tab matches SDP-B001-EXTRACT
-    and contains exactly one source loaded.
+    Validates that:
+    1. Connected notebook title matches SDP-B001-EXTRACT.
+    2. Exactly one source is loaded in the staging notebook.
+    3. The loaded source matches expected_source exactly (rejecting wrong single sources,
+       mismatches, duplicates, or ambiguous titles).
     """
     if not title or "SDP-B001-EXTRACT" not in title:
         raise RuntimeError(f"Connected notebook title '{title}' does not match expected 'SDP-B001-EXTRACT'")
     if len(sources) != 1:
         raise RuntimeError(f"Expected exactly 1 source in SDP-B001-EXTRACT, found {len(sources)}: {sources}")
+    actual_source = sources[0].strip()
+    if actual_source != expected_source:
+        raise RuntimeError(
+            f"Source identity invariant violated: expected sole source '{expected_source}', "
+            f"but found '{actual_source}'"
+        )
+
+def verify_tooltip_transition(
+    prev_snippet: str,
+    current_snippet: str,
+    marker_idx: int,
+    consecutive_duplicate_count: int,
+    max_consecutive: int = 15
+) -> int:
+    """
+    Verifies that tooltips update dynamically between marker inspections.
+    While repeated excerpts can legitimately represent shared source locations (e.g., adjacent citations
+    citing the same textual-critical footnote or thesis discussion), an indefinite run of identical snippets
+    indicates a stuck or stale tooltip overlay.
+    Returns the updated consecutive duplicate count.
+    """
+    if not current_snippet or len(current_snippet.strip()) < 10:
+        raise RuntimeError(f"Stale/invalid tooltip invariant violated at marker {marker_idx}: snippet is empty or too short")
+
+    if prev_snippet and current_snippet == prev_snippet:
+        consecutive_duplicate_count += 1
+        if consecutive_duplicate_count > max_consecutive:
+            raise RuntimeError(
+                f"Stale tooltip detected at marker {marker_idx}: snippet has remained unchanged across "
+                f"{consecutive_duplicate_count} consecutive markers. Suspected retained/stuck overlay panel."
+            )
+    else:
+        consecutive_duplicate_count = 1
+
+    return consecutive_duplicate_count
 
 def validate_citations(citations: list, abstract_sample: str = ""):
     """
@@ -75,29 +115,31 @@ async def evaluate(ws, msg_id, expr):
         return res["result"]["result"].get("value")
     return None
 
-async def verify_tab_invariants(ws):
+async def verify_tab_invariants(ws, expected_source: str = EXPECTED_DEFAULT_SOURCE):
     state = await evaluate(ws, 9000, """
     (() => {
         const titleInput = document.querySelector('input.title-input');
         const title = titleInput ? titleInput.value : document.title;
-        const sources = Array.from(document.querySelectorAll('.source-panel .source-title')).map(e => e.innerText.trim()).filter(Boolean);
+        const sources = Array.from(document.querySelectorAll('.source-panel .source-title, .source-title, [aria-label*="source"]'))
+            .map(e => e.innerText.trim())
+            .filter(t => t.endsWith('.pdf'));
+        const unique = Array.from(new Set(sources));
         const abstractEl = document.querySelector('.source-panel .source-guide-container, .source-panel');
         return {
             title: title,
-            sources: sources,
+            sources: unique,
             abstract: abstractEl ? abstractEl.innerText : ""
         };
     })()
     """) or {}
-    validate_notebook_state(state.get("title", ""), state.get("sources", []))
+    validate_notebook_state(state.get("title", ""), state.get("sources", []), expected_source=expected_source)
     return state.get("abstract", "")
 
-async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222):
+async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222, expected_source: str = EXPECTED_DEFAULT_SOURCE):
     ws_url = get_page_ws_url(host=host, port=port)
     async with websockets.connect(ws_url, max_size=20*1024*1024) as ws:
-        await send_cdp(ws, 1, "Page.bringToFront")
-        # Invariant 1: Verify notebook title and exactly one source loaded
-        abstract_text = await verify_tab_invariants(ws)
+        # Invariant 1: Verify notebook title and exact single source loaded
+        abstract_text = await verify_tab_invariants(ws, expected_source=expected_source)
 
         # Get current count of model messages
         init_count = await evaluate(ws, 1, """
@@ -259,7 +301,13 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222):
         if marker_count == 0:
             raise RuntimeError("Extraction invariant violated: no citation markers found in message")
 
+        # Focus page to receive hover input
+        await send_cdp(ws, 999, "Page.bringToFront")
+
         citations = []
+        last_snippet = ""
+        consecutive_duplicates = 0
+
         for idx in range(marker_count):
             # 1. Reset mouse away to 0,0
             await send_cdp(ws, 1000 + idx * 10, "Input.dispatchMouseEvent", {"type": "mouseMoved", "x": 0, "y": 0})
@@ -302,7 +350,7 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222):
                 """
                 raw_text = await evaluate(ws, 1000 + idx * 10 + 3 + attempt, snippet_js) or ""
                 if len(raw_text.strip()) > 10:
-                    clean = raw_text.replace("aageson_1984_pauls_use_of_scripture.pdf\n", "").replace("\nView source", "").replace("\n", " ").strip()
+                    clean = raw_text.replace(f"{expected_source}\n", "").replace("\nView source", "").replace("\n", " ").strip()
                     if "ABSTRACT" not in clean:
                         snippet = clean
                         break
@@ -310,13 +358,19 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222):
             if not snippet:
                 raise RuntimeError(f"Fail-closed: could not extract valid tooltip for marker {idx} (label {m_label})")
 
+            # Invariant 4: Check for stale/frozen tooltip
+            consecutive_duplicates = verify_tooltip_transition(
+                last_snippet, snippet, idx, consecutive_duplicates, max_consecutive=15
+            )
+            last_snippet = snippet
+
             citations.append({
                 "index": idx,
                 "label": m_label,
                 "snippet": snippet
             })
 
-        # Invariant 3: Validate extracted citations
+        # Invariant 5: Validate extracted citations
         sample = "Early Palestinian Judaism" if "Early Palestinian Judaism" in abstract_text else ""
         validate_citations(citations, abstract_sample=sample)
 
