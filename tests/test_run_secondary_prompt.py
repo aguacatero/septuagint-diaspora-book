@@ -16,9 +16,12 @@ from scripts.run_secondary_prompt import (
 )
 
 def test_validate_notebook_state_success():
-    # Valid title and exact expected sole source
-    validate_notebook_state("SDP-B001-EXTRACT", ["aageson_1984_pauls_use_of_scripture.pdf"])
-    validate_notebook_state("Notebook: SDP-B001-EXTRACT (Staging)", ["aageson_1984_pauls_use_of_scripture.pdf"])
+    # Valid title and exact expected sole source (dynamically derived from active queue record)
+    validate_notebook_state("SDP-B001-EXTRACT", [EXPECTED_DEFAULT_SOURCE])
+    validate_notebook_state("Notebook: SDP-B001-EXTRACT (Staging)", [EXPECTED_DEFAULT_SOURCE])
+    # Explicit source override for S01F
+    validate_notebook_state("SDP-B001-EXTRACT", ["aageson_1984_pauls_use_of_scripture.pdf"], expected_source="aageson_1984_pauls_use_of_scripture.pdf")
+
 
 def test_validate_notebook_state_wrong_single_source_rejection():
     # Correct notebook title and single source, but WRONG document identity
@@ -126,12 +129,22 @@ def test_verify_tab_invariants_integration():
         mock_ws = AsyncMock()
         state = {
             "title": "SDP-B001-EXTRACT",
-            "sources": ["aageson_1984_pauls_use_of_scripture.pdf"],
-            "abstract": "Source guide ABSTRACT: Paul's Use of Scripture"
+            "sources": [EXPECTED_DEFAULT_SOURCE],
+            "abstract": "Source guide ABSTRACT: Commentary on the Epistle to the Romans"
         }
         with patch("scripts.run_secondary_prompt.evaluate", new=AsyncMock(return_value=state)):
             abstract = await verify_tab_invariants(mock_ws)
             assert abstract == state["abstract"]
+
+        # Also verify explicit source override for S01F
+        state_s01f = {
+            "title": "SDP-B001-EXTRACT",
+            "sources": ["aageson_1984_pauls_use_of_scripture.pdf"],
+            "abstract": "Source guide ABSTRACT: Paul's Use of Scripture"
+        }
+        with patch("scripts.run_secondary_prompt.evaluate", new=AsyncMock(return_value=state_s01f)):
+            abstract_s01f = await verify_tab_invariants(mock_ws, expected_source="aageson_1984_pauls_use_of_scripture.pdf")
+            assert abstract_s01f == state_s01f["abstract"]
 
     asyncio.run(_test())
 
@@ -856,6 +869,181 @@ async def test_collector_run_wide_duplicate_pane_id_fails_closed(tmp_path):
          patch("scripts.extract_all_messages.asyncio.sleep", new=AsyncMock()):
         with pytest.raises(RuntimeError, match=r"Fail-closed: overlay pane 'cdk-overlay-1' at marker 2 was previously captured in this run"):
             await extract_message_citations(mock_ws, 0, out_file)
+
+
+@pytest.mark.anyio
+async def test_source_switch_s01f_to_s02f_fails_closed_without_overwriting_s01f(tmp_path):
+    """
+    S02F-PRE-01 Regression Test:
+    Switches from S01F to S02F via queue/state context and verifies:
+    1. S01F and S02F metadata, expected filenames, and output directories are derived dynamically.
+    2. When active source is S02F, a residual Aageson-only notebook or ambiguous/wrong filename fails closed.
+    3. Attempting to write S02F captures into S01F paths fails closed immediately via validate_output_path_isolation.
+    4. S01F committed artifacts remain 100% unmodified (identical SHA-256 digests).
+    5. Correct S02F source and S02F output directory succeed with full pane-ID safety checks intact.
+    """
+    import hashlib
+    from scripts.queue_context import get_source_context, validate_output_path_isolation
+    from scripts.extract_all_messages import extract_message_citations
+
+    repo_root = Path(__file__).resolve().parent.parent
+    s01f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S01F"
+    s01f_p2 = s01f_dir / "prompt_2_raw.json"
+    s01f_ledger = s01f_dir / "citation_ledger.csv"
+
+    # Record initial SHA-256 digests of S01F artifacts
+    hash_p2_before = hashlib.sha256(s01f_p2.read_bytes()).hexdigest()
+    hash_ledger_before = hashlib.sha256(s01f_ledger.read_bytes()).hexdigest()
+
+    # 1. Verify S01F vs S02F context derivation
+    ctx_s01f = get_source_context(source_id="S01F")
+    assert ctx_s01f["source_id"] == "S01F"
+    assert ctx_s01f["expected_filename"] == "aageson_1984_pauls_use_of_scripture.pdf"
+    assert ctx_s01f["output_dir"].endswith("/sources/S01F")
+
+    ctx_s02f = get_source_context(source_id="S02F")
+    assert ctx_s02f["source_id"] == "S02F"
+    assert ctx_s02f["expected_filename"] == "sanday_headlam_1895_romans_icc.pdf"
+    assert ctx_s02f["author_or_editor"] == "William Sanday and Arthur C. Headlam"
+    assert ctx_s02f["year"] == "1895"
+    assert ctx_s02f["output_dir"].endswith("/sources/S02F")
+    assert ctx_s02f["output_dir"] != ctx_s01f["output_dir"]
+
+    # Active queue context (now S02F)
+    ctx_active = get_source_context()
+    assert ctx_active["source_id"] == "S02F"
+    assert ctx_active["expected_filename"] == "sanday_headlam_1895_romans_icc.pdf"
+
+    # 2. Residual Aageson-only notebook or wrong/ambiguous source fails closed under S02F
+    with pytest.raises(RuntimeError, match="Source identity invariant violated: expected sole source 'sanday_headlam_1895_romans_icc.pdf', but found 'aageson_1984_pauls_use_of_scripture.pdf'"):
+        validate_notebook_state(
+            "SDP-B001-EXTRACT",
+            ["aageson_1984_pauls_use_of_scripture.pdf"],
+            expected_source=ctx_s02f["expected_filename"],
+        )
+
+    with pytest.raises(RuntimeError, match="Expected exactly 1 source in SDP-B001-EXTRACT, found 2"):
+        validate_notebook_state(
+            "SDP-B001-EXTRACT",
+            ["aageson_1984_pauls_use_of_scripture.pdf", "sanday_headlam_1895_romans_icc.pdf"],
+            expected_source=ctx_s02f["expected_filename"],
+        )
+
+    # 3. Cross-source overwrite guard blocks S02F from writing into S01F directory
+    with pytest.raises(RuntimeError, match="Fail-closed: cross-source artifact overwrite blocked. Active source is 'S02F', but target output path points to source 'S01F'"):
+        validate_output_path_isolation(str(s01f_p2), "S02F")
+
+    mock_ws = AsyncMock()
+    with pytest.raises(RuntimeError, match="Fail-closed: cross-source artifact overwrite blocked"):
+        await extract_message_citations(
+            mock_ws,
+            0,
+            str(s01f_p2),
+            expected_source=ctx_s02f["expected_filename"],
+            source_id="S02F",
+        )
+
+    # 4. Verify S01F artifacts were NOT modified or overwritten
+    assert hashlib.sha256(s01f_p2.read_bytes()).hexdigest() == hash_p2_before
+    assert hashlib.sha256(s01f_ledger.read_bytes()).hexdigest() == hash_ledger_before
+
+    # 5. Correct S02F source and S02F output folder succeed with pane-ID safety checks
+    s02f_tmp_out = tmp_path / "sources" / "S02F" / "prompt_2_raw.json"
+    validate_notebook_state(
+        "SDP-B001-EXTRACT",
+        ["sanday_headlam_1895_romans_icc.pdf"],
+        expected_source=ctx_s02f["expected_filename"],
+    )
+
+    async def mock_s02f_eval(ws, expr):
+        if "more_horiz" in expr:
+            return None
+        if "markerCount" in expr:
+            return {
+                "text": "Sanday and Headlam (1895, p. 99) discuss Romans 4:3 and Genesis 15:6.",
+                "markerCount": 1,
+            }
+        if "lingeringIds" in expr:
+            return {"cleared": True, "visibleCount": 0, "lingeringIds": [], "allPaneIds": []}
+        if "scrollIntoView" in expr:
+            return {
+                "x": 120, "y": 240,
+                "rect": {"left": 110, "top": 230, "right": 130, "bottom": 250, "width": 20, "height": 20},
+                "label": "1",
+            }
+        if "vDist <= 100" in expr:
+            return [{
+                "paneId": "cdk-overlay-s02f-1",
+                "text": "sanday_headlam_1895_romans_icc.pdf\n3. ἐπίστευσεν δὲ Ἀβραάμ: from Gen. xv. 6 (LXX and Heb. substantially).",
+                "rect": {"left": 110, "top": 258, "width": 260, "height": 60, "x": 110, "y": 258},
+                "vDist": 8,
+                "hOverlap": True,
+            }]
+        return None
+
+    with patch("scripts.extract_all_messages.call_cdp", new=AsyncMock()), \
+         patch("scripts.extract_all_messages.evaluate", new=mock_s02f_eval), \
+         patch("scripts.extract_all_messages.asyncio.sleep", new=AsyncMock()):
+        res = await extract_message_citations(
+            mock_ws,
+            0,
+            str(s02f_tmp_out),
+            expected_source=ctx_s02f["expected_filename"],
+            source_id="S02F",
+        )
+        assert res["source_id"] == "S02F"
+        assert res["expected_filename"] == "sanday_headlam_1895_romans_icc.pdf"
+        assert len(res["citations"]) == 1
+        assert res["citations"][0]["audit"]["overlay_pane_id"] == "cdk-overlay-s02f-1"
+        assert res["citations"][0]["audit"]["is_fresh_pane"] is True
+
+
+@pytest.mark.anyio
+async def test_collector_residual_s01f_message_provenance_fails_closed(tmp_path):
+    """
+    S02F-PRE-01 Regression Test:
+    Rejects a message containing residual S01F ('James W. Aageson') content when extracting for S02F.
+    """
+    from scripts.extract_all_messages import extract_message_citations
+
+    mock_ws = AsyncMock()
+    s02f_tmp_out = tmp_path / "sources" / "S02F" / "prompt_2_raw.json"
+
+    async def mock_stale_msg_eval(ws, expr):
+        if "more_horiz" in expr:
+            return None
+        if "markerCount" in expr:
+            return {
+                "text": "Here is the structured extraction of James W. Aageson's distinct positions...",
+                "markerCount": 5,
+            }
+        return None
+
+    with patch("scripts.extract_all_messages.call_cdp", new=AsyncMock()), \
+         patch("scripts.extract_all_messages.evaluate", new=mock_stale_msg_eval), \
+         patch("scripts.extract_all_messages.asyncio.sleep", new=AsyncMock()):
+        with pytest.raises(RuntimeError, match="Fail-closed: Message text contains residual S01F \\('Aageson'\\) content incompatible with active source 'S02F'"):
+            await extract_message_citations(
+                mock_ws,
+                5,
+                str(s02f_tmp_out),
+                source_id="S02F",
+            )
+    assert not s02f_tmp_out.exists()
+
+
+@pytest.mark.anyio
+async def test_extract_all_messages_main_rejects_implicit_indices():
+    """
+    S02F-PRE-01 Regression Test:
+    Ensures extract_all_messages.main() refuses to run without an explicit prompt_map,
+    preventing silent reuse of fixed S01F message indices.
+    """
+    from scripts.extract_all_messages import main as extract_main
+
+    with pytest.raises(ValueError, match="Explicit prompt_map required for source 'S02F'"):
+        await extract_main(source_id="S02F", prompt_map=None)
+
 
 
 

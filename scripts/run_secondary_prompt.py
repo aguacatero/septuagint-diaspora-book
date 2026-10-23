@@ -3,11 +3,17 @@ import json
 import sys
 import time
 import urllib.request
+from pathlib import Path
 import websockets
 
-EXPECTED_DEFAULT_SOURCE = "aageson_1984_pauls_use_of_scripture.pdf"
+from scripts.queue_context import get_source_context, validate_output_path_isolation
 
-def validate_notebook_state(title: str, sources: list, expected_source: str = EXPECTED_DEFAULT_SOURCE):
+def get_default_expected_source() -> str:
+    return get_source_context()["expected_filename"]
+
+EXPECTED_DEFAULT_SOURCE = get_default_expected_source()
+
+def validate_notebook_state(title: str, sources: list, expected_source: str = None):
     """
     Validates that:
     1. Connected notebook title matches SDP-B001-EXTRACT.
@@ -15,6 +21,8 @@ def validate_notebook_state(title: str, sources: list, expected_source: str = EX
     3. The loaded source matches expected_source exactly (rejecting wrong single sources,
        mismatches, duplicates, or ambiguous titles).
     """
+    if expected_source is None:
+        expected_source = get_default_expected_source()
     if not title or "SDP-B001-EXTRACT" not in title:
         raise RuntimeError(f"Connected notebook title '{title}' does not match expected 'SDP-B001-EXTRACT'")
     if len(sources) != 1:
@@ -232,7 +240,9 @@ async def evaluate(ws, msg_id, expr):
         return res["result"]["result"].get("value")
     return None
 
-async def verify_tab_invariants(ws, expected_source: str = EXPECTED_DEFAULT_SOURCE):
+async def verify_tab_invariants(ws, expected_source: str = None):
+    if expected_source is None:
+        expected_source = get_default_expected_source()
     state = await evaluate(ws, 9000, """
     (() => {
         const titleInput = document.querySelector('input.title-input');
@@ -252,7 +262,21 @@ async def verify_tab_invariants(ws, expected_source: str = EXPECTED_DEFAULT_SOUR
     validate_notebook_state(state.get("title", ""), state.get("sources", []), expected_source=expected_source)
     return state.get("abstract", "")
 
-async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222, expected_source: str = EXPECTED_DEFAULT_SOURCE):
+async def run_prompt(
+    prompt_text,
+    max_wait=150,
+    host="127.0.0.1",
+    port=9222,
+    expected_source: str = None,
+    source_id: str = None,
+    output_file: str = None,
+):
+    ctx = get_source_context(source_id=source_id)
+    if expected_source is None:
+        expected_source = ctx["expected_filename"]
+    if output_file:
+        validate_output_path_isolation(output_file, ctx["source_id"])
+
     ws_url = get_page_ws_url(host=host, port=port)
     async with websockets.connect(ws_url, max_size=20*1024*1024) as ws:
         # Invariant 1: Verify notebook title and exact single source loaded
@@ -631,19 +655,37 @@ async def run_prompt(prompt_text, max_wait=150, host="127.0.0.1", port=9222, exp
             })
 
         # Invariant 6: Validate extracted citations
-        sample = "Early Palestinian Judaism" if "Early Palestinian Judaism" in abstract_text else ""
+        sample = ""
+        if abstract_text:
+            lines = [l.strip() for l in abstract_text.splitlines() if len(l.strip()) > 25]
+            if lines:
+                sample = lines[0][:40]
         validate_citations(citations, abstract_sample=sample)
 
         return {
+            "source_id": ctx["source_id"],
+            "expected_filename": expected_source,
             "text": text,
             "citations": citations
         }
 
 if __name__ == "__main__":
+    ctx = get_source_context()
     prompt = sys.argv[1] if len(sys.argv) > 1 else "Hello"
-    output_file = sys.argv[2] if len(sys.argv) > 2 else "scripts/last_response.json"
-    res = asyncio.run(run_prompt(prompt))
-    print(f"=== RESPONSE SAVED TO {output_file} ===")
+    default_out = str(Path(ctx["output_dir"]) / "last_response.json")
+    output_file = sys.argv[2] if len(sys.argv) > 2 else default_out
+    validate_output_path_isolation(output_file, ctx["source_id"])
+    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
+    res = asyncio.run(
+        run_prompt(
+            prompt,
+            expected_source=ctx["expected_filename"],
+            source_id=ctx["source_id"],
+            output_file=output_file,
+        )
+    )
+    print(f"=== RESPONSE SAVED TO {output_file} (source={ctx['source_id']}, file={ctx['expected_filename']}) ===")
     print(f"Text length: {len(res['text'])}, Citations: {len(res['citations'])}")
-    with open(output_file, "w") as f:
-        json.dump(res, f, indent=2)
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(res, f, indent=2, ensure_ascii=False)
+

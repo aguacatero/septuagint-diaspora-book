@@ -1,13 +1,17 @@
 import asyncio
 import json
+import sys
 import time
 import urllib.request
+from pathlib import Path
 import websockets
 
+from scripts.queue_context import get_source_context, validate_output_path_isolation
 from scripts.run_secondary_prompt import (
     validate_notebook_state,
     verify_marker_tooltip_binding,
     verify_tooltip_transition,
+    get_default_expected_source,
     EXPECTED_DEFAULT_SOURCE,
 )
 
@@ -40,9 +44,26 @@ async def evaluate(ws, expr):
         return res["result"]["result"].get("value")
     return None
 
-async def extract_message_citations(ws, msg_idx, output_path, expected_source=EXPECTED_DEFAULT_SOURCE):
+def validate_message_provenance(text: str, source_ctx: dict) -> None:
+    """
+    Fail-closed check ensuring an extracted message does not contain residual responses
+    belonging to a previously processed source (e.g. Aageson S01F when extracting S02F).
+    """
+    active_id = source_ctx.get("source_id", "")
+    if active_id != "S01F" and ("James W. Aageson" in text or "Aageson’s doctoral" in text or "Aageson's doctoral" in text):
+        raise RuntimeError(
+            f"Fail-closed: Message text contains residual S01F ('Aageson') content incompatible "
+            f"with active source '{active_id}'."
+        )
+
+async def extract_message_citations(ws, msg_idx, output_path, expected_source=None, source_id=None):
+    ctx = get_source_context(source_id=source_id)
+    if expected_source is None:
+        expected_source = ctx["expected_filename"]
+    validate_output_path_isolation(output_path, ctx["source_id"])
+
     print(f"\n==========================================", flush=True)
-    print(f"Extracting Message Index {msg_idx} -> {output_path}", flush=True)
+    print(f"Extracting Message Index {msg_idx} -> {output_path} (source={ctx['source_id']}, expected={expected_source})", flush=True)
     print(f"==========================================", flush=True)
 
     # Bring to front to ensure input events are dispatched immediately
@@ -82,6 +103,7 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
         raise RuntimeError(f"Message index {msg_idx} not found")
 
     text = msg_info["text"]
+    validate_message_provenance(text, ctx)
     marker_count = msg_info["markerCount"]
     print(f"Total numeric citation markers in message {msg_idx}: {marker_count}", flush=True)
 
@@ -304,19 +326,43 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=EX
         raise RuntimeError(f"Fail-closed: All citations were identical ({len(seen_snippets)} unique)")
 
     out_data = {
+        "source_id": ctx["source_id"],
+        "expected_filename": expected_source,
         "text": text,
         "citations": citations
     }
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(out_data, f, indent=2, ensure_ascii=False)
     print(f"Saved: {output_path}\n", flush=True)
     return out_data
 
-async def main():
+def parse_prompt_map(map_str: str) -> dict:
+    """
+    Parses a CLI prompt-to-message index map such as '2:10,3:11,4:12' into {2: 10, 3: 11, 4: 12}.
+    """
+    if not map_str or not map_str.strip():
+        raise ValueError("Explicit prompt-to-message index map required (e.g. '2:10,3:11,4:12')")
+    result = {}
+    for pair in map_str.split(","):
+        parts = pair.strip().split(":")
+        if len(parts) != 2:
+            raise ValueError(f"Invalid prompt map entry '{pair}'; expected 'prompt_num:msg_idx'")
+        result[int(parts[0])] = int(parts[1])
+    return result
+
+async def main(source_id: str = None, prompt_map: dict = None):
+    ctx = get_source_context(source_id=source_id)
+    if not prompt_map:
+        raise ValueError(
+            f"Explicit prompt_map required for source '{ctx['source_id']}'. "
+            "Fixed S01F message indices may not be reused implicitly."
+        )
+
     tabs = json.loads(urllib.request.urlopen("http://127.0.0.1:9222/json").read())
     t = [x for x in tabs if "b3cd453a" in x.get("url", "")][0]
     async with websockets.connect(t["webSocketDebuggerUrl"], max_size=20*1024*1024) as ws:
-        # Validate exact single active source
+        # Validate exact single active source matching ctx["expected_filename"]
         state = await evaluate(ws, """
         (() => {
             const titleInput = document.querySelector('input.title-input');
@@ -327,32 +373,32 @@ async def main():
             return { title: title, count: unique.length, sources: unique };
         })()
         """)
-        print(f"Source validation state: {state}", flush=True)
+        print(f"Source validation state for {ctx['source_id']}: {state}", flush=True)
         validate_notebook_state(
             state.get("title", ""),
             state.get("sources", []),
-            expected_source=EXPECTED_DEFAULT_SOURCE
+            expected_source=ctx["expected_filename"]
         )
 
-        # Msg 5 -> Prompt 2
-        await extract_message_citations(
-            ws, 5,
-            "research/inbox/B001-pauline-txt-pilot/sources/S01F/prompt_2_raw.json"
-        )
+        for p_num, msg_idx in sorted(prompt_map.items()):
+            prompt_key = f"prompt_{p_num}"
+            out_path = ctx["raw_json_paths"].get(prompt_key)
+            if not out_path:
+                out_path = str(Path(ctx["output_dir"]) / f"prompt_{p_num}_raw.json")
+            await extract_message_citations(
+                ws,
+                msg_idx,
+                out_path,
+                expected_source=ctx["expected_filename"],
+                source_id=ctx["source_id"],
+            )
 
-        # Msg 6 -> Prompt 3
-        await extract_message_citations(
-            ws, 6,
-            "research/inbox/B001-pauline-txt-pilot/sources/S01F/prompt_3_raw.json"
-        )
-
-        # Msg 8 -> Prompt 4
-        await extract_message_citations(
-            ws, 8,
-            "research/inbox/B001-pauline-txt-pilot/sources/S01F/prompt_4_raw.json"
-        )
-
-        print("ALL PROMPTS EXTRACTED SUCCESSFULLY WITH AUTHENTIC SNIPPETS!", flush=True)
+        print(f"ALL REQUESTED PROMPTS FOR {ctx['source_id']} EXTRACTED SUCCESSFULLY WITH AUTHENTIC SNIPPETS!", flush=True)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    # Usage: python3 -m scripts.extract_all_messages 2:0,3:1,4:2 [SOURCE_ID]
+    map_arg = sys.argv[1] if len(sys.argv) > 1 else ""
+    src_arg = sys.argv[2] if len(sys.argv) > 2 else None
+    p_map = parse_prompt_map(map_arg)
+    asyncio.run(main(source_id=src_arg, prompt_map=p_map))
+
