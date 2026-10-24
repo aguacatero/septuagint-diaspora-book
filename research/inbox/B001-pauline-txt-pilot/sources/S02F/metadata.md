@@ -57,6 +57,18 @@ unfold_less
 11
 .
 SOURCE-BOUND MODE CONFIRMED.
+
+---
+
+## File Provenance & Technical Metadata
+
+- **Public Repository Locator:** Internet Archive: [epistlecommentar00sanduoft](https://archive.org/details/epistlecommentar00sanduoft) (University of Toronto / Victoria University copy; New York: Charles Scribner's Sons, 1895 [first edition]; preface signed Midsummer, 1895).
+- **Raw Volume Scan:** `sanday_headlam_1895_romans_icc_ia_raw.pdf` (586 pages, 47,318,528 bytes, SHA-256: `4a6369a0595550c8c1b92b71613a73182fe4a82aa02cfc989633e6c4dc0b80af`).
+- **Ingested Derivative Section:** `sanday_headlam_1895_romans_icc.pdf` (40 pages, 4,187,334 bytes, SHA-256: `4be4cad08705963505f13a38a12b8737040e531a6146b1fa4400c936cc37cf4c`).
+- **Full Volume Search Log:** `full_volume_search_log.md` (reproducible search record for non-Romans loci B001-8 through B001-12 via `scripts/verify_s02f_negative_search.py`).
+- **Provenance Manifest:** `provenance_manifest.json`.
+- **Text Layer Normalization Note:** OCR text extraction normalizes line-end hyphenations (e.g. `Ara- maic` -> `Aramaic`, `in- dependent` -> `independent`) for analytical readability; quotations are verified for semantic and textual faithfulness against the printed plates rather than representing literal plate-by-plate facsimile typography.
+
 keep_pin
 copy
 thumb_up

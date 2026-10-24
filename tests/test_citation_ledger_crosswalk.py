@@ -129,5 +129,66 @@ def test_s02f_provenance_and_hash_integrity():
     assert "1895" in req_text
     assert "acriticalandexe00headgoog" not in req_text
 
-    # Target PDF hash
+    # Target PDF hash and reconciled byte size
     assert "4be4cad08705963505f13a38a12b8737040e531a6146b1fa4400c936cc37cf4c" in req_text
+    assert "4,187,334 bytes" in req_text
+    assert "4,183,892 bytes" not in req_text
+
+    # Diagnostic byte match
+    diag_path = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S02F/ingestion_diagnostic.md"
+    with open(diag_path, encoding="utf-8") as f:
+        diag_text = f.read()
+    assert "4,187,334 bytes" in diag_text
+
+    # Provenance manifest match
+    prov_path = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S02F/provenance_manifest.json"
+    assert prov_path.is_file(), "Missing provenance_manifest.json"
+    with open(prov_path, encoding="utf-8") as f:
+        prov = json.load(f)
+    assert prov["raw_volume_scan"]["size_bytes"] == 47318528
+    assert prov["raw_volume_scan"]["sha256"] == "4a6369a0595550c8c1b92b71613a73182fe4a82aa02cfc989633e6c4dc0b80af"
+    assert prov["ingested_derivative_section"]["size_bytes"] == 4187334
+    assert prov["ingested_derivative_section"]["sha256"] == "4be4cad08705963505f13a38a12b8737040e531a6146b1fa4400c936cc37cf4c"
+
+    # If physical files exist in local environment, verify actual file stats directly
+    local_deriv = Path("/Users/chrisrodriguez/Downloads/sanday_headlam_1895_romans_icc.pdf")
+    if local_deriv.is_file():
+        import os
+        import hashlib
+        assert os.path.getsize(local_deriv) == 4187334
+        h = hashlib.sha256(local_deriv.read_bytes()).hexdigest()
+        assert h == "4be4cad08705963505f13a38a12b8737040e531a6146b1fa4400c936cc37cf4c"
+
+def test_s02f_negative_search_evidence_discipline():
+    repo_root = Path(__file__).resolve().parent.parent
+    s02f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S02F"
+
+    # Search script and reproducible log existence
+    script_path = repo_root / "scripts/verify_s02f_negative_search.py"
+    log_path = s02f_dir / "full_volume_search_log.md"
+    assert script_path.is_file(), "Missing verify_s02f_negative_search.py"
+    assert log_path.is_file(), "Missing full_volume_search_log.md"
+
+    with open(log_path, encoding="utf-8") as f:
+        log_text = f.read()
+
+    # Log must cover all 5 non-Romans loci with NO MATCH FOUND status
+    for locus in ["B001-8", "B001-9", "B001-10", "B001-11", "B001-12"]:
+        assert locus in log_text
+    assert "NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH" in log_text
+
+    # Discipline in narrative files: must use standard negative-search phrasing
+    for fname in ["relevance_scan.md", "extraction.md", "counterevidence.md"]:
+        fpath = s02f_dir / fname
+        with open(fpath, encoding="utf-8") as f:
+            content = f.read()
+        assert "NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH" in content, (
+            f"{fname} lacks standard documented negative search phrasing"
+        )
+        assert "full_volume_search_log.md" in content
+
+    # Review request file must also reflect this standard
+    req_path = repo_root / "research-queue/B001_CHATGPT_REVIEW_REQUEST.md"
+    with open(req_path, encoding="utf-8") as f:
+        req_text = f.read()
+    assert "NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH" in req_text

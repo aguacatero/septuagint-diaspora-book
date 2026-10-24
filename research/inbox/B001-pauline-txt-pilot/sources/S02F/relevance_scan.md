@@ -123,7 +123,7 @@ N/A
 	
 N/A
 	
-NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 1:19, Isa 29:14, or related citation wording anywhere in the book.
+NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md` and `scripts/verify_s02f_negative_search.py`). Zero occurrences of 1 Cor 1:19, Isa 29:14, Greek lemmas (ἀπολῶ τὴν σοφίαν, ἀθετήσω), or related translation phrases in the 586-page text layer of `sanday_headlam_1895_romans_icc_ia_raw.pdf`.
 
 
 9. 1 Corinthians 6:16 / Genesis 2:24
@@ -134,7 +134,7 @@ N/A
 	
 N/A
 	
-NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 6:16, Gen 2:24, or related citation wording anywhere in the book.
+NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md` and `scripts/verify_s02f_negative_search.py`). Zero occurrences of 1 Cor 6:16, Gen 2:24, Greek lemmas (σάρκα μίαν), or related translation phrases in the 586-page text layer of `sanday_headlam_1895_romans_icc_ia_raw.pdf`.
 
 
 10. 1 Corinthians 9:9 / Deuteronomy 25:4
@@ -145,7 +145,7 @@ N/A
 	
 N/A
 	
-NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 9:9, Deut 25:4, or related citation wording anywhere in the book.
+NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md` and `scripts/verify_s02f_negative_search.py`). Zero occurrences of 1 Cor 9:9, Deut 25:4, Greek lemmas (φιμώσεις/κημώσεις βοῦν), or related translation phrases in the 586-page text layer of `sanday_headlam_1895_romans_icc_ia_raw.pdf`.
 
 
 11. 1 Corinthians 10:7 / Exodus 32:6
@@ -156,7 +156,7 @@ N/A
 	
 N/A
 	
-NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 10:7, Exod 32:6, or related citation wording anywhere in the book.
+NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md` and `scripts/verify_s02f_negative_search.py`). Zero occurrences of 1 Cor 10:7, Exod 32:6, Greek lemmas (φαγεῖν καὶ πεῖν, ἀνέστησαν παίζειν), or related translation phrases in the 586-page text layer of `sanday_headlam_1895_romans_icc_ia_raw.pdf`.
 
 
 12. Galatians 3:13 / Deuteronomy 21:23
@@ -167,7 +167,7 @@ N/A
 	
 N/A
 	
-NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of Gal 3:13, Deut 21:23, or related citation wording anywhere in the book.
+NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md` and `scripts/verify_s02f_negative_search.py`). Zero occurrences of Gal 3:13, Deut 21:23, Greek lemmas (ἐπικατάρατος πᾶς, κρεμάμενος ἐπὶ ξύλου), or related translation phrases in the 586-page text layer of `sanday_headlam_1895_romans_icc_ia_raw.pdf`.
 
 *(Note on Methodological Scope: While the five specific non-Romans B001 passage comparisons do not appear in this Romans commentary, the Excursus on 'St. Paul's Use of the Old Testament' [pp. 302–307] does examine cross-Pauline quotation practice generally, citing Kautzsch's classification of all 84 Pauline citations and specifically discussing 1 Cor 3:19 / Job 5:13 alongside Rom 11:35 / Job 41:11 as the only two independent renderings in the corpus. These cross-Pauline methodological findings are catalogued in `citation_ledger.csv` under S02F-E010 through S02F-E014).*
 💡 Next Steps:

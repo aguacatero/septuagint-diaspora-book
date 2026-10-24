@@ -196,15 +196,15 @@ Extraction Confidence: HIGH
 
 ### Non-Romans Loci: Full-Volume Negative-Search Verification
 
-An exhaustive regex search across the complete 586-page text of the original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) was conducted for the five non-Romans B001 comparisons:
+A documented text search across the complete 586-page text layer of the original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`, 47,318,528 bytes; Poppler pdftotext -layout 23.03.0) was conducted using `scripts/verify_s02f_negative_search.py` (documented in `full_volume_search_log.md`):
 
-- **B001-8 (1 Cor 1:19 / Isa 29:14):** NOT DISCUSSED. Zero occurrences of 1 Cor 1:19, Isa 29:14, or Greek/English quotation wording anywhere in the 586-page volume.
-- **B001-9 (1 Cor 6:16 / Gen 2:24):** NOT DISCUSSED. Zero occurrences of 1 Cor 6:16, Gen 2:24, or "one flesh" / σάρκα μίαν anywhere in the 586-page volume.
-- **B001-10 (1 Cor 9:9 / Deut 25:4):** NOT DISCUSSED. Zero occurrences of 1 Cor 9:9, Deut 25:4, or "muzzle the ox" / φιμώσεις/κημώσεις anywhere in the 586-page volume.
-- **B001-11 (1 Cor 10:7 / Exod 32:6):** NOT DISCUSSED. Zero occurrences of 1 Cor 10:7, Exod 32:6, or "eat and drink / play" anywhere in the 586-page volume.
-- **B001-12 (Gal 3:13 / Deut 21:23):** NOT DISCUSSED. Zero occurrences of Gal 3:13, Deut 21:23, or "cursed is everyone that hangeth" anywhere in the 586-page volume.
+- **B001-8 (1 Cor 1:19 / Isa 29:14):** NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md`). Zero occurrences of 1 Cor 1:19, Isa 29:14, Greek lemmas (ἀπολῶ τὴν σοφίαν, ἀθετήσω), or English translation phrases across the 586-page text layer.
+- **B001-9 (1 Cor 6:16 / Gen 2:24):** NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md`). Zero occurrences of 1 Cor 6:16, Gen 2:24, Greek lemmas (σάρκα μίαν), or English translation phrases across the 586-page text layer.
+- **B001-10 (1 Cor 9:9 / Deut 25:4):** NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md`). Zero occurrences of 1 Cor 9:9, Deut 25:4, Greek lemmas (φιμώσεις/κημώσεις βοῦν), or English translation phrases across the 586-page text layer.
+- **B001-11 (1 Cor 10:7 / Exod 32:6):** NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md`). Zero occurrences of 1 Cor 10:7, Exod 32:6, Greek lemmas (φαγεῖν καὶ πεῖν, ἀνέστησαν παίζειν), or English translation phrases across the 586-page text layer.
+- **B001-12 (Gal 3:13 / Deut 21:23):** NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md`). Zero occurrences of Gal 3:13, Deut 21:23, Greek lemmas (ἐπικατάρατος πᾶς, κρεμάμενος ἐπὶ ξύλου), or English translation phrases across the 586-page text layer.
 
-*(Note: The Excursus on pp. 302–307 does discuss Pauline quotation practice across the Pauline corpus generally, including Kautzsch's 84-quotation count and 1 Cor 3:19 / Job 5:13, which are captured under S02F-E010 through S02F-E014 above).*
+*(Note: The Excursus on pp. 302–307 does discuss Pauline quotation practice across the Pauline corpus generally, including Kautzsch's 84-quotation count and 1 Cor 3:19 / Job 5:13, which are captured under S02F-E010 through S02F-E014 above. Note also that quoted extracts normalize line-end hyphenation [e.g. Ara- maic -> Aramaic, in- dependent -> independent] for readability, and are not a literal typographical facsimile of the printed plate).*
 💡 Next Steps:
 Would you like to map Sanday and Headlam's underlying reasoning structure (Question -> Evidence -> Inference -> Conclusion) for any of these seven Romans passages?
 I can also generate a summary report comparing Sanday and Headlam's 1895 findings against Aageson's 1983 thesis findings for all overlapping B001 items.

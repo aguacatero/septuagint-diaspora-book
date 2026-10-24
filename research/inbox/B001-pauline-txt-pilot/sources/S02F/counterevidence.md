@@ -110,7 +110,7 @@ Quotation from Memory vs. Reference (p. 302):
 
 Acknowledges Non-Historical Exegesis & Opposite-Sense Applications (pp. 303–304):
 - Authors state Paul's exegesis is "quite clearly not 'historical' in the modern sense of the word. The passages are quoted without regard to their context or to the circumstances under which they were written."
-- Opposite-sense use: "The most striking instances of this are those cases in which the words of the O. T. are used in an exactly opposite sense to that which they originally possessed" (citing Rom 9:25–26 applying words of the ten tribes to Gentiles; Rom 10:6–8 applying words on the Law to the Gospel against the Law).
+- Opposite-sense use: "The most striking instances of this are those cases in which the words of the O. T. are used in an exactly opposite sense to that which they originally possessed" (citing Rom 9:25–26 applying words of the ten tribes to Gentiles; Rom 10:6–8 applying words on the Law to the Gospel against the Law). *Note on B001 Multi-Locus Coverage: This evidence item S02F-E013 directly addresses both B001-2 (Rom 9:25) and B001-3 (Rom 9:26).*
 - But rejects allegorical label: Paul's method is broadly literal in verbal meaning, avoiding typical rabbinic allegorizing (Gal 4:22 ff. noted as a rare exception).
 
 Hermeneutical Tension: Historically Incorrect Exegesis vs. Spiritual Insight (pp. 304–307):
@@ -122,25 +122,27 @@ Hermeneutical Tension: Historically Incorrect Exegesis vs. Spiritual Insight (pp
 
 ### Non-Romans Loci: Full-Volume Negative-Search Verification
 
+A documented text search across the complete 586-page text layer of the original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`, 47,318,528 bytes; Poppler pdftotext -layout 23.03.0) was conducted using `scripts/verify_s02f_negative_search.py` (documented in `full_volume_search_log.md`):
+
 9. B001-8: 1 Corinthians 1:19 / Isaiah 29:14
 Locator / Citation: N/A.
-Result: NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 1:19, Isa 29:14, or related citation wording anywhere in the book.
+Result: NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md`). Zero occurrences of 1 Cor 1:19, Isa 29:14, Greek lemmas (ἀπολῶ τὴν σοφίαν, ἀθετήσω), or English translation phrases across the 586-page text layer.
 
 10. B001-9: 1 Corinthians 6:16 / Genesis 2:24
 Locator / Citation: N/A.
-Result: NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 6:16, Gen 2:24, or related citation wording anywhere in the book.
+Result: NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md`). Zero occurrences of 1 Cor 6:16, Gen 2:24, Greek lemmas (σάρκα μίαν), or English translation phrases across the 586-page text layer.
 
 11. B001-10: 1 Corinthians 9:9 / Deuteronomy 25:4
 Locator / Citation: N/A.
-Result: NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 9:9, Deut 25:4, or related citation wording anywhere in the book.
+Result: NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md`). Zero occurrences of 1 Cor 9:9, Deut 25:4, Greek lemmas (φιμώσεις/κημώσεις βοῦν), or English translation phrases across the 586-page text layer.
 
 12. B001-11: 1 Corinthians 10:7 / Exodus 32:6
 Locator / Citation: N/A.
-Result: NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 10:7, Exod 32:6, or related citation wording anywhere in the book.
+Result: NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md`). Zero occurrences of 1 Cor 10:7, Exod 32:6, Greek lemmas (φαγεῖν καὶ πεῖν, ἀνέστησαν παίζειν), or English translation phrases across the 586-page text layer.
 
 13. B001-12: Galatians 3:13 / Deuteronomy 21:23
 Locator / Citation: N/A.
-Result: NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of Gal 3:13, Deut 21:23, or related citation wording anywhere in the book.
+Result: NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md`). Zero occurrences of Gal 3:13, Deut 21:23, Greek lemmas (ἐπικατάρατος πᾶς, κρεμάμενος ἐπὶ ξύλου), or English translation phrases across the 586-page text layer.
 💡 Next Steps:
 Would you like a comparative report contrasting Sanday and Headlam's 1895 findings against James W. Aageson's 1983 thesis findings for all overlapping B001 items?
 I can also compile these findings into an exportable study guide or tailored report in your Studio panel.
