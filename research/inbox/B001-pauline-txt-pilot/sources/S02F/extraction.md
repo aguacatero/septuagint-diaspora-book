@@ -34,28 +34,28 @@ B001-2: Romans 9:25 / Hosea 2:23 [LXX 2:25]
 S02F-E003
 Proposed Evidence ID: S02F-E003
 B001 Passage ID: B001-2
-Author's Claim: Paul utilized an Old Greek manuscript tradition of Hosea 2:23 reflecting the reading of Codex Vaticanus (ἀγαπήσω τὴν οὐκ ἠγαπημένην) rather than the majority Septuagint reading (ἐλεήσω τὴν οὐκ ἠλεημένην).
-Supporting Quotation: "In the second clause St. Paul seems to have used a text containing the reading of the Vatican MS."
+Author's Claim: In Romans 9:25 (second clause), Paul seems to have used a Septuagint text containing the reading of Codex Vaticanus (B, ἀγαπήσω τὴν οὐκ ἠγαπημένην) rather than the majority LXX reading (ἐλεήσω τὴν οὐκ ἠλεημένην).
+Supporting Quotation: "In the second clause St. Paul seems to have used a text containing the reading of the Vatican MS., for the latter can hardly have been altered to harmonize with him."
 Printed Page Number: Page 264
 3
 NotebookLM Citation:
 3
 Textual Evidence Invoked: Presence of ἀγαπήσω in Codex Vaticanus (B) versus ἐλεήσω in the majority of LXX manuscripts and 1 Peter 2:10.
 Claim Type: Textual-critical
-Qualifications / Conditions: The authors observe that Codex Vaticanus can hardly have been altered retrospectively to harmonize with Paul.
+Qualifications / Conditions: Sanday & Headlam frame this as a probable textual inference ("seems to have used"), observing that Codex Vaticanus can hardly have been retrospectively altered to harmonize with Paul. Secondary commentary hypothesis on textual transmission. (Self-audit correction incorporated: preserves author's explicit hedging).
 Extraction Confidence: HIGH
 S02F-E004
 Proposed Evidence ID: S02F-E004
 B001 Passage ID: B001-2
-Author's Claim: Paul inverted the clause order of Hosea 2:23 and substituted καλέσω for ἐρῶ under the verbal influence of ἐκάλεσεν in Romans 9:24 to emphasize the divine calling of the Gentiles.
-Supporting Quotation: "St. Paul inverts the order of the clauses ... and for ἐρῶ substitutes καλέσω which naturally crept in from the ἐκάλεσεν of the previous verse"
+Author's Claim: In Romans 9:25, Paul inverts the order of the Hosea 2:23 clauses so that the reference to τὸν οὐ λαόν μου comes first; the verb καλέσω naturally crept in from ἐκάλεσεν in v. 24 (changing the construction to a double accusative meaning 'I will name'), rather than representing deliberate theological substitution.
+Supporting Quotation: "St. Paul inverts the order of the clauses ... and for ἐρῶ substitutes καλέσω which naturally crept in from the ἐκάλεσεν of the previous verse, and changes the construction of the clause to suit the new word."
 Printed Page Number: Page 264
 3
 NotebookLM Citation:
 3
 Textual Evidence Invoked: Inversion of parallel clauses and substitution of καλέσω in Romans 9:25 compared with LXX Hosea 2:23.
 Claim Type: Literary
-Qualifications / Conditions: None.
+Qualifications / Conditions: Authors describe καλέσω as naturally creeping in via verbal assimilation from v. 24, requiring a double accusative construction meaning 'I will name'. Secondary stylistic/catchword judgment. (Self-audit correction incorporated: captures exact observed mechanism).
 Extraction Confidence: HIGH
 B001-3: Romans 9:26 / Hosea 1:10 [LXX 2:1]
 S02F-E005
@@ -89,15 +89,15 @@ B001-5: Romans 10:13 / Joel 2:32 [LXX 3:5]
 S02F-E007
 Proposed Evidence ID: S02F-E007
 B001 Passage ID: B001-5
-Author's Claim: Paul quotes Joel 2:32 verbatim in Romans 10:13 to clinch his argument, applying the divine Old Testament name Κύριος directly to Jesus Christ.
+Author's Claim: In Romans 10:13, Paul's quotation of Joel 2:32 (LXX 3:5) agrees with both the LXX and the Hebrew texts in wording and meaning as assessed by the authors, with the divine name Κύριος applied christologically to Jesus Christ.
 Supporting Quotation: "the quotation agrees with both the LXX and the Hebrew texts ... The term Κύριος is applied to Christ by St. Paul in this connection."
 Printed Page Number: Page 291
 5
 NotebookLM Citation:
 5
-Textual Evidence Invoked: Verbatim agreement between Romans 10:13, LXX Joel 3:5, and MT Joel 2:32; christological context of Κύριος in Romans 10:9, 12.
+Textual Evidence Invoked: Agreement between Romans 10:13, LXX Joel 3:5, and MT Joel 2:32; christological context of Κύριος in Romans 10:9, 12.
 Claim Type: Exegetical
-Qualifications / Conditions: The original Old Testament context refers to Jehovah in the eschatological "day of the Lord," which Paul interprets as the spiritual fulfillment of Messianic salvation.
+Qualifications / Conditions: The original Old Testament context refers to Jehovah in the eschatological "day of the Lord," which Paul interprets as the spiritual fulfillment of Messianic salvation. Wording follows authors' assessment ('agrees with both') avoiding cross-language verbatim claim.
 Extraction Confidence: HIGH
 B001-6: Romans 11:34 / Isaiah 40:13
 S02F-E008
@@ -127,6 +127,84 @@ Textual Evidence Invoked: LXX Isaiah 11:10 (ὁ ἀνιστάμενος ἄρχ�
 Claim Type: Textual-critical
 Qualifications / Conditions: None.
 Extraction Confidence: HIGH
+
+---
+
+### Excursus: "St. Paul's Use of the Old Testament" (Printed pp. 302–307)
+
+#### S02F-E010
+- **Proposed Evidence ID:** S02F-E010
+- **B001 Passage ID:** B001-GENERAL
+- **Author's Claim:** Sanday and Headlam report Emil Kautzsch's (1869) statistical classification of 84 Pauline quotations: ~70 are taken directly from or closely match the LXX, 12 vary considerably but show affinity, and only two (both from Job: Rom 11:35 and 1 Cor 3:19) are definitely independent of the LXX.
+- **Supporting Quotation:** "out of eighty-four passages in which St. Paul cites the O. T. about seventy are taken directly from the LXX or do not vary from it appreciably, twelve vary considerably, but still show signs of affinity, and two only... are definitely independent and derived either from the Hebrew text or some quite distinct version"
+- **Printed Page Number:** Page 302
+- **NotebookLM Citation:** Prompt 7 / citations[index=0], label=1
+- **Textual Evidence Invoked:** Kautzsch's 1869 treatise (*De Veteris Testamenti locis a Paulo Apostolo allegatis*); 84 Pauline citation count; Rom 11:35 (= Job 41:3/11) and 1 Cor 3:19 (= Job 5:13).
+- **Claim Type:** Textual-critical
+- **Qualifications / Conditions:** Nineteenth-century statistical taxonomy reported from Kautzsch (1869); historical scholarly classification, not established modern textual consensus.
+- **Extraction Confidence:** HIGH
+
+#### S02F-E011
+- **Proposed Evidence ID:** S02F-E011
+- **B001 Passage ID:** B001-GENERAL
+- **Author's Claim:** Where Pauline quotations derived from the Septuagint show points of resemblance to the Hebrew text against the LXX (e.g. Rom 10:15), Sanday and Headlam judge that evidence is insufficient to decide between Hebrew memory (conscious or unconscious), an Aramaic Targum, or an earlier form of the LXX text.
+- **Supporting Quotation:** "We have probably not sufficient evidence to say whether this arises from a reminiscence of the Hebrew text (conscious or unconscious), or from an Aramaic Targum, or from the use of an earlier form of a LXX text."
+- **Printed Page Number:** Page 302
+- **NotebookLM Citation:** Prompt 7 / citations[index=6], label=1
+- **Textual Evidence Invoked:** Agreement with Hebrew against LXX in Rom 10:15; agreement with late LXX MSS against uncials in Rom 3:4, 15 ff.
+- **Claim Type:** Textual-critical
+- **Qualifications / Conditions:** Explicit recognition of explanatory uncertainty and textual limits in 1895 scholarship.
+- **Extraction Confidence:** HIGH
+
+#### S02F-E012
+- **Proposed Evidence ID:** S02F-E012
+- **B001 Passage ID:** B001-GENERAL
+- **Author's Claim:** Sanday and Headlam judge that the majority of Paul's Old Testament quotations are made from memory rather than transcribed by reference, citing their brevity and frequent inexactness in marked contrast to the literary citations in Hebrews.
+- **Supporting Quotation:** "it may be safely said that the majority of the quotations are from memory; for many of them are somewhat inexact, and those which are correct are for the most part short and from well-known books. There is a very marked distinction between these and the long literary quotations of the Epistle to the Hebrews."
+- **Printed Page Number:** Page 302
+- **NotebookLM Citation:** Prompt 7 / citations[index=10], label=1
+- **Textual Evidence Invoked:** Frequency of inexactness and shortness of quotations; contrast with Hebrews.
+- **Claim Type:** Literary
+- **Qualifications / Conditions:** Authors' compositional hypothesis contrasting Pauline habit with the Epistle to the Hebrews.
+- **Extraction Confidence:** HIGH
+
+#### S02F-E013
+- **Proposed Evidence ID:** S02F-E013
+- **B001 Passage ID:** B001-2 (cf. B001-3, B001-GENERAL)
+- **Author's Claim:** Sanday and Headlam state that Paul's exegesis is not 'historical' in the modern sense because passages are quoted without regard to original context or circumstances, including instances where Old Testament words are applied in an opposite sense (e.g. Rom 9:25–26 applying words spoken of the ten tribes to the Gentiles).
+- **Supporting Quotation:** "In the first place it is quite clearly not 'historical' in the modern sense of the word. The passages are quoted without regard to their context or to the circumstances under which they were written. The most striking instances of this are those cases in which the words of the O. T. are used in an exactly opposite sense to that which they originally possessed."
+- **Printed Page Number:** Page 303
+- **NotebookLM Citation:** Prompt 7 / citations[index=15], label=2
+- **Textual Evidence Invoked:** Rom 9:25–26 (Hosea 1:10, 2:23); Rom 10:6–8 (Deut 30:12–14).
+- **Claim Type:** Exegetical
+- **Qualifications / Conditions:** Distinguishes non-contextual application from rabbinic allegory; notes Paul's method remains broadly literal in verbal meaning rather than allegorical.
+- **Extraction Confidence:** HIGH
+
+#### S02F-E014
+- **Proposed Evidence ID:** S02F-E014
+- **B001 Passage ID:** B001-GENERAL
+- **Author's Claim:** Sanday and Headlam distinguish Paul's theological insight into the spiritual and Messianic meaning of the Old Testament from his historical exegesis, holding that modern scholars are not bound by historically incorrect exegesis of particular passages while affirming the reality of the universal Messianic idea.
+- **Supporting Quotation:** "We are not bound, and it would be wrong to bind ourselves, by the incorrect exegesis of particular passages; but the reality and truth of the Messianic idea and the universal character of the Messianic kingdom... remain one of the most real and impressive facts in religious history."
+- **Printed Page Number:** Page 306
+- **NotebookLM Citation:** Prompt 7 / citations[index=28], label=5
+- **Textual Evidence Invoked:** Hermeneutical tension between historical-critical exegesis and apostolic authority; cites C. H. Toy (*Quotations in the New Testament*, 1884), B. Jowett (*Contrasts of Prophecy*), E. Kautzsch (1869), A. Clemen (1891), and D. M. Turpie (1868).
+- **Claim Type:** Theological
+- **Qualifications / Conditions:** Authors' theological-hermeneutical judgment reconciling apostolic authority with modern historical-critical methods.
+- **Extraction Confidence:** HIGH
+
+---
+
+### Non-Romans Loci: Full-Volume Negative-Search Verification
+
+An exhaustive regex search across the complete 586-page text of the original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) was conducted for the five non-Romans B001 comparisons:
+
+- **B001-8 (1 Cor 1:19 / Isa 29:14):** NOT DISCUSSED. Zero occurrences of 1 Cor 1:19, Isa 29:14, or Greek/English quotation wording anywhere in the 586-page volume.
+- **B001-9 (1 Cor 6:16 / Gen 2:24):** NOT DISCUSSED. Zero occurrences of 1 Cor 6:16, Gen 2:24, or "one flesh" / σάρκα μίαν anywhere in the 586-page volume.
+- **B001-10 (1 Cor 9:9 / Deut 25:4):** NOT DISCUSSED. Zero occurrences of 1 Cor 9:9, Deut 25:4, or "muzzle the ox" / φιμώσεις/κημώσεις anywhere in the 586-page volume.
+- **B001-11 (1 Cor 10:7 / Exod 32:6):** NOT DISCUSSED. Zero occurrences of 1 Cor 10:7, Exod 32:6, or "eat and drink / play" anywhere in the 586-page volume.
+- **B001-12 (Gal 3:13 / Deut 21:23):** NOT DISCUSSED. Zero occurrences of Gal 3:13, Deut 21:23, or "cursed is everyone that hangeth" anywhere in the 586-page volume.
+
+*(Note: The Excursus on pp. 302–307 does discuss Pauline quotation practice across the Pauline corpus generally, including Kautzsch's 84-quotation count and 1 Cor 3:19 / Job 5:13, which are captured under S02F-E010 through S02F-E014 above).*
 💡 Next Steps:
 Would you like to map Sanday and Headlam's underlying reasoning structure (Question -> Evidence -> Inference -> Conclusion) for any of these seven Romans passages?
 I can also generate a summary report comparing Sanday and Headlam's 1895 findings against Aageson's 1983 thesis findings for all overlapping B001 items.

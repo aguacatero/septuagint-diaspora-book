@@ -62,7 +62,7 @@ Allows Authorial Adaptation: The authors observe that Paul re-quotes Isaiah 28:1
 Locator / Citation: Page 291
 6
 .
-Notes Hebrew / Greek Agreement: The authors note that Paul's quotation agrees verbatim with both the Septuagint and the Hebrew texts
+Notes Hebrew / Greek Agreement: The authors note that Paul's quotation agrees with both the Septuagint and the Hebrew texts in wording and meaning as assessed by the authors (avoiding cross-language verbatim claims)
 6
 .
 Allows Re-application / Transfer of Old Testament Title: The authors state that the OT formula for calling on Jehovah (ἐπικαλεῖσθαι τὸ ὄνομα Κυρίου) is transferred christologically by Paul to Jesus Christ (Κύριος), converting a prophetic description of the "day of the Lord" into a designation for Christian worshippers
@@ -93,21 +93,54 @@ Disagrees with Another Scholar: The authors refute F. C. Baur's objection to the
 . They argue that Jewish priority and the fulfillment of covenant promises are fundamental to Paul's theology throughout Romans
 8
 .
-8. B001-8: 1 Corinthians 1:19 / Isaiah 29:14
+8. Excursus: St. Paul's Use of the Old Testament (Printed pp. 302–307)
+Locator / Citation: Pages 302–307 (Excursus; cf. Prompt 7 / prompt_7_raw.json citations 1–6).
+
+Discusses Textual Source & Classification (p. 302):
+- Authors report Emil Kautzsch's 1869 classification (*De Veteris Testamenti locis a Paulo Apostolo allegatis*): of 84 citations, ~70 are from LXX or do not vary appreciably, 12 vary considerably but show affinity, and only 2 (Rom 11:35 = Job 41:3/11; 1 Cor 3:19 = Job 5:13) are definitely independent.
+- Methodological limitation: This is a nineteenth-century statistical taxonomy reported from Kautzsch, representing historical scholarship rather than established modern critical consensus.
+
+Expresses Textual Uncertainty on Hebrew Resemblance (p. 302):
+- Where quotations derived from the LXX show points of agreement with the Hebrew text against the LXX (e.g. Rom 10:15), the authors explicitly state: "We have probably not sufficient evidence to say whether this arises from a reminiscence of the Hebrew text (conscious or unconscious), or from an Aramaic Targum, or from the use of an earlier form of a LXX text."
+- Textual observation: Paul's quotations also sometimes agree with late LXX manuscripts against the great uncials (Rom 3:4, 15 ff.).
+
+Quotation from Memory vs. Reference (p. 302):
+- Authors judge that "it may be safely said that the majority of the quotations are from memory; for many of them are somewhat inexact, and those which are correct are for the most part short and from well-known books."
+- Contrasting precedent: They explicitly contrast Paul's practice with the long, literary quotations of the Epistle to the Hebrews.
+
+Acknowledges Non-Historical Exegesis & Opposite-Sense Applications (pp. 303–304):
+- Authors state Paul's exegesis is "quite clearly not 'historical' in the modern sense of the word. The passages are quoted without regard to their context or to the circumstances under which they were written."
+- Opposite-sense use: "The most striking instances of this are those cases in which the words of the O. T. are used in an exactly opposite sense to that which they originally possessed" (citing Rom 9:25–26 applying words of the ten tribes to Gentiles; Rom 10:6–8 applying words on the Law to the Gospel against the Law).
+- But rejects allegorical label: Paul's method is broadly literal in verbal meaning, avoiding typical rabbinic allegorizing (Gal 4:22 ff. noted as a rare exception).
+
+Hermeneutical Tension: Historically Incorrect Exegesis vs. Spiritual Insight (pp. 304–307):
+- Authors address the tension between modern historical-critical analysis and apostolic authority: "We are not bound, and it would be wrong to bind ourselves, by the incorrect exegesis of particular passages; but the reality and truth of the Messianic idea and the universal character of the Messianic kingdom... remain one of the most real and impressive facts in religious history."
+- "The value of St. Paul's exegesis therefore lies not in his true interpretation of individual passages, but in his insight into the spiritual meaning of the O. T."
+- Scholarly literature reported: C. H. Toy (*Quotations in the New Testament*, 1884), B. Jowett (*Contrasts of Prophecy*), E. Kautzsch (1869), A. Clemen (1891), D. M. Turpie (1868).
+
+---
+
+### Non-Romans Loci: Full-Volume Negative-Search Verification
+
+9. B001-8: 1 Corinthians 1:19 / Isaiah 29:14
 Locator / Citation: N/A.
-Result: NONE FOUND IN THIS SOURCE. (This commentary covers only the Epistle to the Romans).
-9. B001-9: 1 Corinthians 6:16 / Genesis 2:24
+Result: NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 1:19, Isa 29:14, or related citation wording anywhere in the book.
+
+10. B001-9: 1 Corinthians 6:16 / Genesis 2:24
 Locator / Citation: N/A.
-Result: NONE FOUND IN THIS SOURCE. (This commentary covers only the Epistle to the Romans).
-10. B001-10: 1 Corinthians 9:9 / Deuteronomy 25:4
+Result: NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 6:16, Gen 2:24, or related citation wording anywhere in the book.
+
+11. B001-10: 1 Corinthians 9:9 / Deuteronomy 25:4
 Locator / Citation: N/A.
-Result: NONE FOUND IN THIS SOURCE. (This commentary covers only the Epistle to the Romans).
-11. B001-11: 1 Corinthians 10:7 / Exodus 32:6
+Result: NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 9:9, Deut 25:4, or related citation wording anywhere in the book.
+
+12. B001-11: 1 Corinthians 10:7 / Exodus 32:6
 Locator / Citation: N/A.
-Result: NONE FOUND IN THIS SOURCE. (This commentary covers only the Epistle to the Romans).
-12. B001-12: Galatians 3:13 / Deuteronomy 21:23
+Result: NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 10:7, Exod 32:6, or related citation wording anywhere in the book.
+
+13. B001-12: Galatians 3:13 / Deuteronomy 21:23
 Locator / Citation: N/A.
-Result: NONE FOUND IN THIS SOURCE. (This commentary covers only the Epistle to the Romans).
+Result: NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of Gal 3:13, Deut 21:23, or related citation wording anywhere in the book.
 💡 Next Steps:
 Would you like a comparative report contrasting Sanday and Headlam's 1895 findings against James W. Aageson's 1983 thesis findings for all overlapping B001 items?
 I can also compile these findings into an exportable study guide or tailored report in your Studio panel.

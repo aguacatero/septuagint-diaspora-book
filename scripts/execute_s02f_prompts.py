@@ -109,6 +109,20 @@ PROMPTS = {
         "prompt_6_raw.json",
         "notebooklm_self_audit.md",
         False  # require_citations
+    ),
+    7: (
+        "Work only from this source. From the Excursus on 'St. Paul's Use of the Old Testament' (printed pages 302–307), "
+        "extract the authors' explicit positions, claims, and citations regarding:\n"
+        "1. Kautzsch's classification of the 84 Pauline quotations and their relation to the LXX and Hebrew.\n"
+        "2. The live explanations for resemblance to the Hebrew text as against the LXX (Hebrew memory, Aramaic Targum, earlier LXX form).\n"
+        "3. Whether Paul quotes from memory or by reference, and the distinction from Hebrews.\n"
+        "4. Non-historical exegesis, quoting without regard to original context, and opposite-sense applications (e.g. Rom 9:25-26).\n"
+        "5. The distinction between historically incorrect exegesis of particular passages and spiritual insight into the Messianic idea, "
+        "including other scholars cited (Kautzsch, Toy, Jowett, Clemen, Turpie).\n\n"
+        "Provide direct short quotations and exact printed page numbers for each point.",
+        "prompt_7_raw.json",
+        "excursus_extraction.md",
+        True  # require_citations
     )
 }
 

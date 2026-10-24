@@ -123,7 +123,7 @@ N/A
 	
 N/A
 	
-NOT DISCUSSED
+NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 1:19, Isa 29:14, or related citation wording anywhere in the book.
 
 
 9. 1 Corinthians 6:16 / Genesis 2:24
@@ -134,7 +134,7 @@ N/A
 	
 N/A
 	
-NOT DISCUSSED
+NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 6:16, Gen 2:24, or related citation wording anywhere in the book.
 
 
 10. 1 Corinthians 9:9 / Deuteronomy 25:4
@@ -145,7 +145,7 @@ N/A
 	
 N/A
 	
-NOT DISCUSSED
+NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 9:9, Deut 25:4, or related citation wording anywhere in the book.
 
 
 11. 1 Corinthians 10:7 / Exodus 32:6
@@ -156,7 +156,7 @@ N/A
 	
 N/A
 	
-NOT DISCUSSED
+NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of 1 Cor 10:7, Exod 32:6, or related citation wording anywhere in the book.
 
 
 12. Galatians 3:13 / Deuteronomy 21:23
@@ -167,7 +167,9 @@ N/A
 	
 N/A
 	
-NOT DISCUSSED
+NOT DISCUSSED. An exhaustive negative search across the complete 586-page original volume (`sanday_headlam_1895_romans_icc_ia_raw.pdf`, SHA-256: `4a6369a0...`) confirmed zero occurrences of Gal 3:13, Deut 21:23, or related citation wording anywhere in the book.
+
+*(Note on Methodological Scope: While the five specific non-Romans B001 passage comparisons do not appear in this Romans commentary, the Excursus on 'St. Paul's Use of the Old Testament' [pp. 302–307] does examine cross-Pauline quotation practice generally, citing Kautzsch's classification of all 84 Pauline citations and specifically discussing 1 Cor 3:19 / Job 5:13 alongside Rom 11:35 / Job 41:11 as the only two independent renderings in the corpus. These cross-Pauline methodological findings are catalogued in `citation_ledger.csv` under S02F-E010 through S02F-E014).*
 💡 Next Steps:
 Would you like a detailed breakdown of Sanday and Headlam's text-critical notes on any of the seven Romans passages (e.g. their collation of uncial manuscript variants for Rom 9:25 or Rom 10:11)?
 keep_pin

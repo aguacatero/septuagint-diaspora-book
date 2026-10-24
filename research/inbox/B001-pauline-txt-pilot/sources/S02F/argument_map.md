@@ -68,10 +68,10 @@ Paul writes καλέσω τὸν οὐ λαόν μου... καὶ τὴν οὐ�
 4
 .
 INFERENCE:
-Structural Paraphrase: Paul utilized a Septuagint manuscript tradition containing the reading of Codex Vaticanus (ἀγαπήσω)
+Structural Paraphrase: Paul seems to have used a Septuagint manuscript tradition containing the reading of Codex Vaticanus (ἀγαπήσω), as the latter can hardly have been altered retrospectively to harmonize with him
 4
 .
-Explicit Source Statement: Paul inverted the clauses so that the reference to τὸν οὐ λαόν μου (which suited Gentiles best) came first, and substituted καλέσω because it "naturally crept in from the ἐκάλεσεν of the previous verse"
+Explicit Source Statement: Paul inverted the clauses so that the reference to τὸν οὐ λαόν μου (which suited Gentiles best) came first; the verb καλέσω "naturally crept in from the ἐκάλεσεν of the previous verse, and changes the construction of the clause to suit the new word" (a double accusative meaning 'I will name')
 4
 .
 CONCLUSION: Paul applies the underlying principle of Hosea 2:23—that God can take into His covenant those previously cut off—to justify the divine calling of the Gentiles
@@ -260,6 +260,31 @@ F. C. Baur's Interpolation Theory: Baur claimed Romans 15:1–13 was un-Pauline 
 .
 Alternative Explanations Not Addressed: That Paul re-translated the Hebrew text independently.
 Falsifying / Weakening Evidence: None explicitly stated in the source text.
+
+---
+
+### 8. Excursus: St. Paul's Use of the Old Testament (Printed pp. 302–307)
+
+#### Reasoning Map: Methodological & Text-Critical Taxonomy
+- **QUESTION:** What was the textual provenance of Paul's quotations, and how did he cite and interpret Old Testament scripture?
+- **EVIDENCE:**
+  - Emil Kautzsch's 1869 collation: out of 84 Pauline citations, ~70 are taken directly from or closely match the LXX, 12 vary considerably but show affinity, and only two (Rom 11:35 = Job 41:3/11; 1 Cor 3:19 = Job 5:13) are definitely independent.
+  - Where quotations resemble the Hebrew against the LXX (e.g. Rom 10:15), evidence does not allow deciding between Hebrew memory, an Aramaic Targum, or an earlier form of the LXX text.
+  - Paul's quotations are mostly short, somewhat inexact, and from well-known books, in marked contrast to the long literary citations in Hebrews.
+  - Paul quotes passages without regard to original historical context, sometimes in an opposite sense (Rom 9:25–26 applying words spoken of the ten tribes to the Gentiles; Rom 10:6–8 applying Deuteronomy's words on the Law to the Gospel against the Law).
+- **INFERENCE:**
+  - Structural Paraphrase: Paul's primary textual base was the Septuagint; his citations were predominantly made from memory rather than transcription; his exegetical method was Rabbinic in education and formal introduction but literal rather than allegorical in verbal sense, though non-historical in context application.
+  - Explicit Source Statement: "We are not bound, and it would be wrong to bind ourselves, by the incorrect exegesis of particular passages; but the reality and truth of the Messianic idea and the universal character of the Messianic kingdom... remain one of the most real and impressive facts in religious history."
+- **CONCLUSION:**
+  - The value of Paul's exegesis lies not in his true modern historical interpretation of individual passages, but in his spiritual insight into the overarching Messianic trajectory of the Old Testament.
+- **Analytical Breakdown:**
+  - *Assumptions Explicitly Acknowledged:* Modern historical-critical standards must not be retrojected onto first-century writers; "As expounders of religion, they belong to the whole world and to all time; as logicians, they belong to the first century" (quoting C. H. Toy).
+  - *Alternative Explanations Considered:*
+    - Pure Septuagintal dependence vs Hebrew/Targumic influence (left open due to insufficient evidence).
+    - Transcription by reference vs citation from memory (resolved in favor of memory).
+    - Allegorical exegesis (rejected: Paul's interpretations are broadly literal, not typical rabbinic allegorizing).
+  - *Scholarly Literature Cited:* E. Kautzsch (1869), C. H. Toy (1884), B. Jowett, A. Clemen (1891), D. M. Turpie (1868).
+  - *Falsifying / Countervailing Evidence:* If modern historical criticism proves that a cited passage originally possessed an incompatible meaning, modern scholarship must recognize the historical incorrectness of the exegesis while distinguishing it from the theological validity of the spiritual idea.
 💡 Next Steps:
 Would you like me to create a side-by-side comparative report matching these findings against James W. Aageson's 1983 thesis analysis?
 I can also compile this reasoning map into a study guide or summary report in your Studio panel.
