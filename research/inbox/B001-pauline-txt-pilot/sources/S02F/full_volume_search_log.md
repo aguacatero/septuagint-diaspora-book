@@ -14,19 +14,35 @@
 
 **Extracted Text Layer:** `/tmp/sanday_headlam_full_text.txt` (31,081 lines, 298,622 words)
 
-**Extraction Method:** `pdftotext -layout` (Poppler 23.03.0)
+**Extracted Text SHA-256:** `c426418d349f4c6836ef59170a488351e18fb917abbcae58fd492ec53a0a2bb1`
+
+**Extraction Tool:** Poppler `pdftotext -layout` 23.03.0
+
+---
+
+## Positive-Control Validation (19th-Century Citation Typography)
+
+Before executing negative target queries, the regex engine was validated against authentic citation strings appearing in this volume to ensure that period-plus-space formatting, Roman chapter numerals, and abbreviation styles are accurately detected:
+
+| Positive Control Passage | Target Regular Expression | Measured Matches | Validation Status |
+|---|---|---|---|
+| 1 Cor 3:19 (Excursus p. 302, Note p. 340) | `\b(?:1|I|First)\s*Cor(?:\.|inthians)?\s*(?:3|iii)[\.:,]?\s*(?:19|xix)\b` | 2 matches | **PASS (Detected)** |
+| Gen 15:6 (Rom 4:3 commentary, pp. 100, 102) | `\b(?:Gen|Genesis)(?:\.|\b)\s*(?:15|xv)[\.:,]?\s*(?:6|vi)\b` | 10 matches | **PASS (Detected)** |
+| Isa 40:13 (Rom 11:34 note, p. 340) | `\b(?:Isa|Is|Isaiah)(?:\.|\b)\s*(?:40|xl)[\.:,]?\s*(?:13|xiii)\b` | 1 matches | **PASS (Detected)** |
+| Joel 2:32 (Rom 10:13 note, p. 291) | `\b(?:Joel)(?:\.|\b)\s*(?:2|ii)[\.:,]?\s*(?:32|xxxii)\b` | 1 matches | **PASS (Detected)** |
+| Gal 4:22 (Excursus p. 303) | `\b(?:Gal|Galatians)(?:\.|\b)\s*(?:4|iv)[\.:,]?\s*(?:22|xxii)\b` | 1 matches | **PASS (Detected)** |
 
 ---
 
 ## Executive Summary of Results
 
-| Locus ID | B001 Target Passage | NT / OT Citation Patterns | Greek & English Lemmas | Result Status |
+| Locus ID | B001 Target Passage | NT / OT Citation Matches | Greek & English Lemma Matches | Result Status |
 |---|---|---|---|---|
 | `B001-8` | 1 Corinthians 1:19 / Isaiah 29:14 | 0 matches | 0 matches | **NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH** |
 | `B001-9` | 1 Corinthians 6:16 / Genesis 2:24 | 0 matches | 0 matches | **NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH** |
 | `B001-10` | 1 Corinthians 9:9 / Deuteronomy 25:4 | 0 matches | 0 matches | **NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH** |
 | `B001-11` | 1 Corinthians 10:7 / Exodus 32:6 | 0 matches | 0 matches | **NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH** |
-| `B001-12` | Galatians 3:13 / Deuteronomy 21:23 | 0 matches | 0 matches | **NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH** |
+| `B001-12` | Galatians 3:13 / Deuteronomy 21:23 | 1 matches | 0 matches | **1 NT CITATION MATCH (Deut 21:23 & B001-12 Text Not Discussed)** |
 
 ---
 
@@ -35,102 +51,99 @@
 ### B001-8: 1 Corinthians 1:19 / Isaiah 29:14
 
 - **Target Loci:** NT `1 Cor 1:19` | OT `Isa 29:14`
-- **Total Matches Detected Across Full 586 Pages:** `0`
+- **Citation Matches:** `0` | **Lemma Matches:** `0`
 - **Outcome Classification:** `NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH`
 
-| Pattern Description | Regular Expression | Flag | Matches |
-|---|---|---|---|
-| NT citation (Arabic) | `(?:1|I)\s*Cor(?:\.|\b)\s*1[\.:]19\b` | `re.IGNORECASE` | 0 |
-| NT citation (Roman) | `(?:1|I)\s*Cor(?:\.|\b)\s*i[\.:]19\b` | `re.IGNORECASE` | 0 |
-| OT citation (Arabic) | `(?:Isa|Is|Isaiah)(?:\.|\b)\s*29[\.:]14\b` | `re.IGNORECASE` | 0 |
-| OT citation (Roman) | `(?:Isa|Is|Isaiah)(?:\.|\b)\s*xxix[\.:]14\b` | `re.IGNORECASE` | 0 |
-| Greek lemma / phrase | `ἀπολῶ\s+τὴν\s+σοφίαν` | `re.IGNORECASE` | 0 |
-| Greek unaccented | `απολω\s+την\s+σοφιαν` | `re.IGNORECASE` | 0 |
-| Greek keyword (ἀθετήσω) | `\bἀθετήσω\b` | `re.IGNORECASE` | 0 |
-| English key phrase | `destroy\s+the\s+wisdom\s+of\s+the\s+wise` | `re.IGNORECASE` | 0 |
+| Pattern Description | Category | Regular Expression | Flag | Matches |
+|---|---|---|---|---|
+| NT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:1|I|First)\s*Cor(?:\.|inthians)?\s*(?:1|i)[\.:,]?\s*(?:19|xix)\b` | `re.IGNORECASE` | 0 |
+| OT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:Isa|Is|Isaiah)(?:\.|\b)\s*(?:29|xxix)[\.:,]?\s*(?:14|xiv)\b` | `re.IGNORECASE` | 0 |
+| Greek lemma / phrase | lemma | `ἀπολῶ\s+τὴν\s+σοφίαν` | `re.IGNORECASE` | 0 |
+| Greek unaccented | lemma | `απολω\s+την\s+σοφιαν` | `re.IGNORECASE` | 0 |
+| Greek keyword (ἀθετήσω) | lemma | `\bἀθετήσω\b` | `re.IGNORECASE` | 0 |
+| English key phrase | lemma | `destroy\s+the\s+wisdom\s+of\s+the\s+wise` | `re.IGNORECASE` | 0 |
 
 ### B001-9: 1 Corinthians 6:16 / Genesis 2:24
 
 - **Target Loci:** NT `1 Cor 6:16` | OT `Gen 2:24`
-- **Total Matches Detected Across Full 586 Pages:** `0`
+- **Citation Matches:** `0` | **Lemma Matches:** `0`
 - **Outcome Classification:** `NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH`
 
-| Pattern Description | Regular Expression | Flag | Matches |
-|---|---|---|---|
-| NT citation (Arabic) | `(?:1|I)\s*Cor(?:\.|\b)\s*6[\.:]16\b` | `re.IGNORECASE` | 0 |
-| NT citation (Roman) | `(?:1|I)\s*Cor(?:\.|\b)\s*vi[\.:]16\b` | `re.IGNORECASE` | 0 |
-| OT citation (Arabic) | `(?:Gen|Genesis)(?:\.|\b)\s*2[\.:]24\b` | `re.IGNORECASE` | 0 |
-| OT citation (Roman) | `(?:Gen|Genesis)(?:\.|\b)\s*ii[\.:]24\b` | `re.IGNORECASE` | 0 |
-| Greek lemma / phrase | `σάρκα\s+μίαν` | `re.IGNORECASE` | 0 |
-| Greek unaccented | `σαρκα\s+μιαν` | `re.IGNORECASE` | 0 |
-| English key phrase | `two\s+shall\s+be\s+one\s+flesh` | `re.IGNORECASE` | 0 |
+| Pattern Description | Category | Regular Expression | Flag | Matches |
+|---|---|---|---|---|
+| NT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:1|I|First)\s*Cor(?:\.|inthians)?\s*(?:6|vi)[\.:,]?\s*(?:16|xvi)\b` | `re.IGNORECASE` | 0 |
+| OT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:Gen|Genesis)(?:\.|\b)\s*(?:2|ii)[\.:,]?\s*(?:24|xxiv)\b` | `re.IGNORECASE` | 0 |
+| Greek lemma / phrase | lemma | `σάρκα\s+μίαν` | `re.IGNORECASE` | 0 |
+| Greek unaccented | lemma | `σαρκα\s+μιαν` | `re.IGNORECASE` | 0 |
+| English key phrase | lemma | `two\s+shall\s+be\s+one\s+flesh` | `re.IGNORECASE` | 0 |
 
 ### B001-10: 1 Corinthians 9:9 / Deuteronomy 25:4
 
 - **Target Loci:** NT `1 Cor 9:9` | OT `Deut 25:4`
-- **Total Matches Detected Across Full 586 Pages:** `0`
+- **Citation Matches:** `0` | **Lemma Matches:** `0`
 - **Outcome Classification:** `NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH`
 
-| Pattern Description | Regular Expression | Flag | Matches |
-|---|---|---|---|
-| NT citation (Arabic) | `(?:1|I)\s*Cor(?:\.|\b)\s*9[\.:]9\b` | `re.IGNORECASE` | 0 |
-| NT citation (Roman) | `(?:1|I)\s*Cor(?:\.|\b)\s*ix[\.:]9\b` | `re.IGNORECASE` | 0 |
-| OT citation (Arabic) | `(?:Deut|Dt|Deuteronomy)(?:\.|\b)\s*25[\.:]4\b` | `re.IGNORECASE` | 0 |
-| OT citation (Roman) | `(?:Deut|Dt|Deuteronomy)(?:\.|\b)\s*xxv[\.:]4\b` | `re.IGNORECASE` | 0 |
-| Greek lemma / verb 1 | `φιμώσεις\s+βοῦν` | `re.IGNORECASE` | 0 |
-| Greek lemma / verb 2 | `κημώσεις\s+βοῦν` | `re.IGNORECASE` | 0 |
-| Greek root (unaccented) | `(?:φιμωσ|κημωσ)` | `re.IGNORECASE` | 0 |
-| English key phrase | `muzzle\s+the\s+ox` | `re.IGNORECASE` | 0 |
+| Pattern Description | Category | Regular Expression | Flag | Matches |
+|---|---|---|---|---|
+| NT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:1|I|First)\s*Cor(?:\.|inthians)?\s*(?:9|ix)[\.:,]?\s*(?:9|ix)\b` | `re.IGNORECASE` | 0 |
+| OT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:Deut|Dt|Deuteronomy)(?:\.|\b)\s*(?:25|xxv)[\.:,]?\s*(?:4|iv)\b` | `re.IGNORECASE` | 0 |
+| Greek lemma / verb 1 | lemma | `φιμώσεις\s+βοῦν` | `re.IGNORECASE` | 0 |
+| Greek lemma / verb 2 | lemma | `κημώσεις\s+βοῦν` | `re.IGNORECASE` | 0 |
+| Greek root (unaccented) | lemma | `(?:φιμωσ|κημωσ)` | `re.IGNORECASE` | 0 |
+| English key phrase | lemma | `muzzle\s+the\s+ox` | `re.IGNORECASE` | 0 |
 
 ### B001-11: 1 Corinthians 10:7 / Exodus 32:6
 
 - **Target Loci:** NT `1 Cor 10:7` | OT `Exod 32:6`
-- **Total Matches Detected Across Full 586 Pages:** `0`
+- **Citation Matches:** `0` | **Lemma Matches:** `0`
 - **Outcome Classification:** `NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH`
 
-| Pattern Description | Regular Expression | Flag | Matches |
-|---|---|---|---|
-| NT citation (Arabic) | `(?:1|I)\s*Cor(?:\.|\b)\s*10[\.:]7\b` | `re.IGNORECASE` | 0 |
-| NT citation (Roman) | `(?:1|I)\s*Cor(?:\.|\b)\s*x[\.:]7\b` | `re.IGNORECASE` | 0 |
-| OT citation (Arabic) | `(?:Exod|Ex|Exodus)(?:\.|\b)\s*32[\.:]6\b` | `re.IGNORECASE` | 0 |
-| OT citation (Roman) | `(?:Exod|Ex|Exodus)(?:\.|\b)\s*xxxii[\.:]6\b` | `re.IGNORECASE` | 0 |
-| Greek lemma / phrase | `φαγεῖν\s+καὶ\s+πεῖν` | `re.IGNORECASE` | 0 |
-| Greek unaccented | `φαγειν\s+και\s+πειν` | `re.IGNORECASE` | 0 |
-| Greek play verb | `ἀνέστησαν\s+παίζειν` | `re.IGNORECASE` | 0 |
-| English key phrase | `rose\s+up\s+to\s+play` | `re.IGNORECASE` | 0 |
+| Pattern Description | Category | Regular Expression | Flag | Matches |
+|---|---|---|---|---|
+| NT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:1|I|First)\s*Cor(?:\.|inthians)?\s*(?:10|x)[\.:,]?\s*(?:7|vii)\b` | `re.IGNORECASE` | 0 |
+| OT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:Exod|Ex|Exodus)(?:\.|\b)\s*(?:32|xxxii)[\.:,]?\s*(?:6|vi)\b` | `re.IGNORECASE` | 0 |
+| Greek lemma / phrase | lemma | `φαγεῖν\s+καὶ\s+πεῖν` | `re.IGNORECASE` | 0 |
+| Greek unaccented | lemma | `φαγειν\s+και\s+πειν` | `re.IGNORECASE` | 0 |
+| Greek play verb | lemma | `ἀνέστησαν\s+παίζειν` | `re.IGNORECASE` | 0 |
+| English key phrase | lemma | `rose\s+up\s+to\s+play` | `re.IGNORECASE` | 0 |
 
 ### B001-12: Galatians 3:13 / Deuteronomy 21:23
 
 - **Target Loci:** NT `Gal 3:13` | OT `Deut 21:23`
-- **Total Matches Detected Across Full 586 Pages:** `0`
-- **Outcome Classification:** `NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH`
+- **Citation Matches:** `1` | **Lemma Matches:** `0`
+- **Outcome Classification:** `PARENTICAL NT CITATION DETECTED ON P. 118 (Deut 21:23 and B001-12 Text-Critical Analysis Not Discussed)`
 
-| Pattern Description | Regular Expression | Flag | Matches |
-|---|---|---|---|
-| NT citation (Arabic) | `Gal(?:\.|\b)\s*3[\.:]13\b` | `re.IGNORECASE` | 0 |
-| NT citation (Roman) | `Gal(?:\.|\b)\s*iii[\.:]13\b` | `re.IGNORECASE` | 0 |
-| OT citation (Arabic) | `(?:Deut|Dt|Deuteronomy)(?:\.|\b)\s*21[\.:]23\b` | `re.IGNORECASE` | 0 |
-| OT citation (Roman) | `(?:Deut|Dt|Deuteronomy)(?:\.|\b)\s*xxi[\.:]23\b` | `re.IGNORECASE` | 0 |
-| Greek lemma / phrase | `ἐπικατάρατος\s+πᾶς` | `re.IGNORECASE` | 0 |
-| Greek unaccented | `επικαταρατος\s+πας` | `re.IGNORECASE` | 0 |
-| Greek hang on tree | `κρεμάμενος\s+ἐπὶ\s+ξύλου` | `re.IGNORECASE` | 0 |
-| English key phrase | `cursed\s+is\s+every(?:one)?\s+that\s+hangeth` | `re.IGNORECASE` | 0 |
+| Pattern Description | Category | Regular Expression | Flag | Matches |
+|---|---|---|---|---|
+| NT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:Gal|Galatians)(?:\.|\b)\s*(?:3|iii)[\.:,]?\s*(?:13|xiii)\b` | `re.IGNORECASE` | 1 |
+| OT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:Deut|Dt|Deuteronomy)(?:\.|\b)\s*(?:21|xxi)[\.:,]?\s*(?:23|xxiii)\b` | `re.IGNORECASE` | 0 |
+| Greek lemma / phrase | lemma | `ἐπικατάρατος\s+πᾶς` | `re.IGNORECASE` | 0 |
+| Greek unaccented | lemma | `επικαταρατος\s+πας` | `re.IGNORECASE` | 0 |
+| Greek hang on tree | lemma | `κρεμάμενος\s+ἐπὶ\s+ξύλου` | `re.IGNORECASE` | 0 |
+| English key phrase | lemma | `cursed\s+is\s+every(?:one)?\s+that\s+hangeth` | `re.IGNORECASE` | 0 |
+
+#### Match Context Snippets & Evaluation:
+- *Snippet (offset 774582):* `...and endures the Wrath of God in his       stead (Gal. iii, 13; 2 Cor. v. 21). The Resurrection is proof that th...`
+
+- *Contextual Evaluation:* The single match for Gal 3:13 (`Gal. iii, 13`) occurs on printed page 118 in a theological note on Rom 4:25 summarizing E. Schäder's 1893 monograph (*Die Bedeutung des lebendigen Christus für die Rechtfertigung nach Paulus*), where Paul's phrase is cited parenthetically alongside 2 Cor 5:21 as a dogmatic proof text for Christ enduring divine wrath. The Old Testament passage (Deut 21:23) is nowhere cited or indexed, the Greek quotation wording (ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου) is absent, and the B001-12 textual relationship is entirely outside the commentary's analytical scope.
 
 ---
 
-## Index of Old Testament Passages Corroboration
+## Automated Audit of the Authorial Index to the Notes
 
-The 1895 volume contains an authorial **Index to the Notes** (printed pp. 437–450) and a comprehensive survey of Old Testament citations in the text. An audit of the index entries for Genesis, Exodus, Deuteronomy, and Isaiah confirms:
-- **Genesis:** Gen 15:6 is indexed at p. 100 ff. Gen 2:24 does not appear.
-- **Exodus:** Exod 9:16 (Rom 9:17) and Exod 33:19 (Rom 9:15) are indexed. Exod 32:6 does not appear.
-- **Deuteronomy:** Deut 30:12–14 (Rom 10:6–8) and Deut 32 (Rom 10:19; 12:19; 15:10) are indexed. Deut 21:23 and Deut 25:4 do not appear.
-- **Isaiah:** Isa 11:10 (Rom 15:12), Isa 28:16 (Rom 9:33; 10:11), and Isa 40:13 (Rom 11:34) are indexed. Isa 29:14 does not appear.
+The volume contains an authorial **Index to the Notes** (printed pp. 437–450). Programmatic verification of the index text layer (detected=True) yielded:
+- **Gen 2:24:** `0 matches` in the Index to the Notes.
+- **Exod 32:6:** `0 matches` in the Index to the Notes.
+- **Deut 21:23:** `0 matches` in the Index to the Notes.
+- **Deut 25:4:** `0 matches` in the Index to the Notes.
+- **Isa 29:14:** `0 matches` in the Index to the Notes.
+- **Total Non-Romans Target Citations in Authorial Index:** `0`
 
 ---
 
 ## Methodological & Technical Limitations
 
-1. **Digital Text Layer Scope:** The search was executed across the 30,495-line text layer extracted from `sanday_headlam_1895_romans_icc_ia_raw.pdf` via Poppler `pdftotext -layout`.
+1. **Digital Text Layer Scope:** The search was executed across the 31,081-line text layer extracted from `sanday_headlam_1895_romans_icc_ia_raw.pdf` via Poppler `pdftotext -layout 23.03.0`.
 2. **OCR and Typographical Quality:** Nineteenth-century Greek typography, accented characters, font ligatures, line breaks, hyphenations, or scan artifacts could hypothetically cause a regex pattern to miss an irregular typographical instance. Stripping accents and testing truncated stems (e.g. `φιμωσ`, `κημωσ`) mitigates this limitation.
 3. **Epistemological Constraint:** While a negative OCR/regex search proves that no matching citation strings or diagnostic Greek/English phrases exist in the machine-readable digital text layer, it constitutes empirical negative text-search evidence rather than a metaphysical proof of non-existence in the authors' unexpressed thoughts.
-4. **Scope Preservation:** While the five specific non-Romans passage comparisons do not appear in this Romans commentary, the Excursus on 'St. Paul's Use of the Old Testament' (printed pp. 302–307) addresses cross-Pauline quotation practice globally, including Emil Kautzsch's (1869) 84-quotation taxonomy and 1 Cor 3:19 / Job 5:13. These cross-Pauline findings are preserved in `citation_ledger.csv` under `S02F-E010` through `S02F-E014`.
+4. **Scope Preservation:** While the five specific non-Romans B001 passage comparisons (and their Old Testament Vorlagen) are not analyzed in this Romans commentary (with Gal 3:13 appearing only once as an incidental parenthetical proof text on p. 118), the Excursus on 'St. Paul's Use of the Old Testament' (printed pp. 302–307) addresses cross-Pauline quotation practice globally, including Emil Kautzsch's (1869) 84-quotation taxonomy and 1 Cor 3:19 / Job 5:13. These cross-Pauline findings are preserved in `citation_ledger.csv` under `S02F-E010` through `S02F-E014`.

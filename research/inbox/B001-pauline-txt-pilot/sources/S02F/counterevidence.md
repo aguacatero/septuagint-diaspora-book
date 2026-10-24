@@ -141,8 +141,8 @@ Locator / Citation: N/A.
 Result: NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md`). Zero occurrences of 1 Cor 10:7, Exod 32:6, Greek lemmas (φαγεῖν καὶ πεῖν, ἀνέστησαν παίζειν), or English translation phrases across the 586-page text layer.
 
 13. B001-12: Galatians 3:13 / Deuteronomy 21:23
-Locator / Citation: N/A.
-Result: NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md`). Zero occurrences of Gal 3:13, Deut 21:23, Greek lemmas (ἐπικατάρατος πᾶς, κρεμάμενος ἐπὶ ξύλου), or English translation phrases across the 586-page text layer.
+Locator / Citation: Page 118 (incidental NT parenthetical citation only; Deut 21:23 absent).
+Result: NO MATCH FOR B001-12 TEXT-CRITICAL COMPARISON / DEUT 21:23 (with documented OCR and pattern limitations; see `full_volume_search_log.md`). Documented text search detected a single parenthetical citation to `Gal. iii, 13` on printed p. 118 in a theological note on Rom 4:25 citing E. Schäder (1893) on Christ's vicarious endurance of divine wrath. The Old Testament passage (Deut 21:23) is nowhere cited or indexed, Greek quotation wording (ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου) is absent, and the B001-12 textual divergence is not discussed.
 💡 Next Steps:
 Would you like a comparative report contrasting Sanday and Headlam's 1895 findings against James W. Aageson's 1983 thesis findings for all overlapping B001 items?
 I can also compile these findings into an exportable study guide or tailored report in your Studio panel.

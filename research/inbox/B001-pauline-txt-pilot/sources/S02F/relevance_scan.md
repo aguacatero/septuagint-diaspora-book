@@ -2,7 +2,7 @@
 
 Thoughts
 expand_more
-Based on William Sanday and Arthur C. Headlam's A Critical and Exegetical Commentary on the Epistle to the Romans (1895), the seven Romans passages among the B001 targets are directly addressed in the commentary, whereas the five non-Romans passages (from 1 Corinthians and Galatians) are NOT DISCUSSED in this commentary.
+Based on William Sanday and Arthur C. Headlam's A Critical and Exegetical Commentary on the Epistle to the Romans (1895), the seven Romans passages among the B001 targets are directly addressed in the commentary, whereas for the five non-Romans passages (from 1 Corinthians and Galatians), no text-critical discussion of the B001 passage comparisons exists in this commentary: full-volume text search yielded NO MATCH FOUND for B001-8 through B001-11, while Gal 3:13 appears only once as an incidental parenthetical theological proof text on p. 118 with Deut 21:23 and the quotation text not discussed.
 B001 Discussion Analysis Table
 B001 ID
 	
@@ -161,15 +161,15 @@ NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pa
 
 12. Galatians 3:13 / Deuteronomy 21:23
 	
-NO
+NO (Locus comparison & Deut 21:23 absent; incidental parenthetical NT citation on p. 118)
+	
+Page 118 (incidental NT ref only)
 	
 N/A
 	
-N/A
-	
-NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH (with documented OCR and pattern limitations; see `full_volume_search_log.md` and `scripts/verify_s02f_negative_search.py`). Zero occurrences of Gal 3:13, Deut 21:23, Greek lemmas (ἐπικατάρατος πᾶς, κρεμάμενος ἐπὶ ξύλου), or related translation phrases in the 586-page text layer of `sanday_headlam_1895_romans_icc_ia_raw.pdf`.
+NO MATCH FOR B001-12 TEXT-CRITICAL COMPARISON / DEUT 21:23 (with documented OCR and pattern limitations; see `full_volume_search_log.md` and `scripts/verify_s02f_negative_search.py`). Documented text search detected a single parenthetical citation to `Gal. iii, 13` on printed p. 118 in a theological note on Rom 4:25 citing E. Schäder (1893) on Christ's vicarious endurance of divine wrath. The Old Testament passage (Deut 21:23) is nowhere cited or indexed, Greek quotation wording (ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου) is absent, and the B001-12 textual divergence is not discussed.
 
-*(Note on Methodological Scope: While the five specific non-Romans B001 passage comparisons do not appear in this Romans commentary, the Excursus on 'St. Paul's Use of the Old Testament' [pp. 302–307] does examine cross-Pauline quotation practice generally, citing Kautzsch's classification of all 84 Pauline citations and specifically discussing 1 Cor 3:19 / Job 5:13 alongside Rom 11:35 / Job 41:11 as the only two independent renderings in the corpus. These cross-Pauline methodological findings are catalogued in `citation_ledger.csv` under S02F-E010 through S02F-E014).*
+*(Note on Methodological Scope: While the five specific non-Romans B001 passage comparisons [and their Old Testament Vorlagen] are not analyzed in this Romans commentary [with Gal 3:13 appearing only once as an incidental parenthetical proof text on p. 118], the Excursus on 'St. Paul's Use of the Old Testament' [pp. 302–307] does examine cross-Pauline quotation practice generally, citing Kautzsch's classification of all 84 Pauline citations and specifically discussing 1 Cor 3:19 / Job 5:13 alongside Rom 11:35 / Job 41:11 as the only two independent renderings in the corpus. These cross-Pauline methodological findings are catalogued in `citation_ledger.csv` under S02F-E010 through S02F-E014).*
 💡 Next Steps:
 Would you like a detailed breakdown of Sanday and Headlam's text-critical notes on any of the seven Romans passages (e.g. their collation of uncial manuscript variants for Rom 9:25 or Rom 10:11)?
 keep_pin

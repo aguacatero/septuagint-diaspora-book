@@ -172,10 +172,22 @@ def test_s02f_negative_search_evidence_discipline():
     with open(log_path, encoding="utf-8") as f:
         log_text = f.read()
 
-    # Log must cover all 5 non-Romans loci with NO MATCH FOUND status
+    # Log must cover all 5 non-Romans loci
     for locus in ["B001-8", "B001-9", "B001-10", "B001-11", "B001-12"]:
         assert locus in log_text
+
+    # Positive control section verified
+    assert "## Positive-Control Validation (19th-Century Citation Typography)" in log_text
+    assert "**PASS (Detected)**" in log_text
+
+    # B001-8 to B001-11 must be NO MATCH FOUND
+    for locus in ["B001-8", "B001-9", "B001-10", "B001-11"]:
+        assert f"| `{locus}` |" in log_text
     assert "NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH" in log_text
+
+    # B001-12 documents the parenthetical citation on p. 118 with Deut 21:23 absent
+    assert "Gal. iii, 13" in log_text
+    assert "118" in log_text
 
     # Discipline in narrative files: must use standard negative-search phrasing
     for fname in ["relevance_scan.md", "extraction.md", "counterevidence.md"]:
@@ -192,3 +204,53 @@ def test_s02f_negative_search_evidence_discipline():
     with open(req_path, encoding="utf-8") as f:
         req_text = f.read()
     assert "NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH" in req_text
+    assert "Gal. iii, 13" in req_text
+
+def test_s02f_negative_search_script_fail_closed_and_controls(tmp_path):
+    repo_root = Path(__file__).resolve().parent.parent
+    import subprocess
+    import sys
+
+    script = repo_root / "scripts/verify_s02f_negative_search.py"
+
+    # Test 1: Nonexistent PDF fails closed (exit code 1)
+    fake_pdf = tmp_path / "nonexistent.pdf"
+    res = subprocess.run([sys.executable, str(script), "--pdf", str(fake_pdf)], capture_output=True, text=True)
+    assert res.returncode == 1, f"Expected exit code 1 for missing PDF, got {res.returncode}: {res.stderr}"
+    assert "Fail closed" in res.stderr
+
+    # Test 2: Dummy PDF with wrong byte size fails closed (exit code 2)
+    dummy_pdf = tmp_path / "corrupt.pdf"
+    dummy_pdf.write_bytes(b"not a valid 47mb pdf")
+    res = subprocess.run([sys.executable, str(script), "--pdf", str(dummy_pdf)], capture_output=True, text=True)
+    assert res.returncode == 2, f"Expected exit code 2 for size mismatch, got {res.returncode}: {res.stderr}"
+    assert "size mismatch" in res.stderr
+
+    # Test 3: Positive and negative regex control strings in 19th-century typography
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s02f_negative_search as vns
+
+    # Authentic 19th-century typography variants with period-plus-space, commas, and Roman numerals
+    typography_samples = [
+        ("1 Cor. iii. 19", True),
+        ("I Cor. vi. 16", True),
+        ("Gen. ii. 24", True),
+        ("Deut. xxv. 4", True),
+        ("Ex. xxxii. 6", True),
+        ("Gal. iii, 13", True),
+    ]
+    # Check that our target pattern definitions detect these formats
+    # 1 Cor 6:16 pattern
+    pat_cor_6_16 = [p[1] for p in vns.TARGET_QUERIES[1]["patterns"] if "NT citation" in p[0]][0]
+    import re
+    assert re.search(pat_cor_6_16, "cited in I Cor. vi. 16 by Paul", re.IGNORECASE) is not None
+    assert re.search(pat_cor_6_16, "1 Cor. 6:16", re.IGNORECASE) is not None
+
+    # Gal 3:13 pattern
+    pat_gal_3_13 = [p[1] for p in vns.TARGET_QUERIES[4]["patterns"] if "NT citation" in p[0]][0]
+    assert re.search(pat_gal_3_13, "stead (Gal. iii, 13; 2 Cor. v. 21)", re.IGNORECASE) is not None
+    assert re.search(pat_gal_3_13, "Gal. 3:13", re.IGNORECASE) is not None
+
+    # Negative controls (must not match)
+    assert re.search(pat_cor_6_16, "Rom. vi. 16", re.IGNORECASE) is None
+    assert re.search(pat_gal_3_13, "Gal. iv. 22", re.IGNORECASE) is None
