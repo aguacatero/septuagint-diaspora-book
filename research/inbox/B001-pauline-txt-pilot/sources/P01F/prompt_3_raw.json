@@ -1,0 +1,260 @@
+{
+  "text": "Thoughts\nexpand_more\nBecause this source is a critical edition (The Greek New Testament: SBL Edition, edited by Michael W. Holmes) rather than a theological or exegetical commentary, it contains no substantive discussion of Old Testament intertextuality or the B001 passage comparisons (e.g., Romans 4:3 / Genesis 15:6, Romans 9:25\u201326 / Hosea 1\u20132, Galatians 3:13 / Deuteronomy 21:23)\n1\nmore_horiz\n.\nThe editor's reasoning is articulated regarding the establishment of the New Testament text and its application to the Pauline corpus. Below is the structured mapping of the editorial methodology, followed by the explicit assumptions, considered alternatives, unaddressed factors visible from the presentation, and stated falsification/verification conditions.\nMapping the Editorial Reasoning\n(Note: The QUESTION -> EVIDENCE -> INFERENCE -> CONCLUSION frameworks represent a structural paraphrase of the editor's procedure; exact wording from the source is marked with quotation marks and cited directly.)\n1. Macro-Method: Establishing the Pauline and NT Text\nQUESTION: How should an editor establish a reliable, modern critical text representing the earliest form of the New Testament?\nEVIDENCE:\nFour primary printed editions representing distinct textual approaches: Westcott\u2013Hort (WH), Samuel Tregelles (Treg), the Greek text behind the NIV (Goodrich\u2013Lukaszewski), and Robinson\u2013Pierpont's Byzantine textform (RP)\n4\nmore_horiz\n.\n6,928 recorded variation units across the New Testament\n9\n10\n.\nINFERENCE: Where all four independent editions agree, their consensus provides a probable baseline; where they disagree, the point of variation must be critically evaluated to determine which reading best represents the text's earliest circulating form\n8\n9\n.\nCONCLUSION:\nExplicit source statement: The editor adopted WH as a modified starting point, collated it against Treg, NIV, and RP, tentatively accepted four-way agreements, and systematically evaluated all points of disagreement\u2014as well as agreements\u2014to choose the most probable variant, occasionally choosing readings outside all four\n8\n10\n.\n2. Delimitation of Doubtful Readings and Use of Brackets (e.g., Ephesians 1:1; Colossians 1:20)\nQUESTION: How should editorial doubt and uncertain words in the Pauline corpus be signaled to readers?\nEVIDENCE:\nFrequent usage of brackets in contemporary editions (such as Nestle-Aland/UBS)\n11\n.\nSBLGNT variation units in Paul where inclusion is disputed, specifically [\u1f10\u03bd \u1f18\u03c6\u03ad\u03c3\u1ff3] in Ephesians 1:1 and [\u03b4\u03b9\u02bc \u03b1\u1f50\u03c4\u03bf\u1fe6] in Colossians 1:20\n11\n.\nINFERENCE:\nOverusing brackets allows editors to avoid making difficult choices\n11\n.\nBrackets introduce an inherent methodological bias toward inclusion, because \"one can bracket an included word about which one has some degree of doubt... but one cannot bracket the omission of a word about which one has an equal degree of doubt\"\n11\n.\nCONCLUSION:\nExplicit source statement: Single brackets are restricted to only six instances across the entire New Testament (including Ephesians 1:1 and Colossians 1:20 in Paul), obligating the editor to make definitive textual decisions in virtually all variation units\n11\n.\n3. Departures from Universal Consensus (e.g., 1 Corinthians 12:10)\nQUESTION: Should a reading be adopted if all four primary reference editions agree against it?\nEVIDENCE: In 1 Corinthians 12:10, WH, Treg, NIV, and RP all read the conjunction + \u03b4\u1f72 across multiple clauses, whereas external and internal witnesses preserve an asyndetic construction (\u1f04\u03bb\u03bb\u1ff3)\n12\n13\n.\nINFERENCE: Unanimous agreement among modern printed editions does not preclude scribal smoothing or harmonizing additions in the transmission history\n8\nmore_horiz\n.\nCONCLUSION:\nExplicit source statement: Holmes rejected the reading of all four primary editions in 1 Corinthians 12:10, printing the asyndetic reading \u1f04\u03bb\u03bb\u1ff3 (one of 56 instances across the NT where the editor adopted an alternative variant)\n8\nmore_horiz\n.\n4. Orthography, Breathings, and Punctuation (e.g., Philippians 3:21; Colossians 2:16)\nQUESTION: How should orthographical and orthotypographical details be regulated across the epistles?\nEVIDENCE:\nThe standard lexicon BDAG\n15\n16\n.\nAmbiguity regarding whether breathings on pronouns are lexical or exegetical (citing Bruce Metzger's discussion of Philippians 3:21)\n15\n.\nINFERENCE: Standardizing orthography to a recognized lexicon eliminates arbitrary inconsistencies, but breathing marks sometimes reflect interpretive decisions regarding reflexive meaning rather than mere spelling\n15\n16\n.\nCONCLUSION:\nExplicit source statement: Standardize text and apparatus to BDAG (except rare instances such as \u03bd\u03bf\u03c5\u03bc\u03b7\u03bd\u03af\u03b1\u03c2 in Colossians 2:16), follow WH for elision/crasis, and print rough breathings on forms of \u03b1\u1f50\u03c4\u03cc\u03c2 in Pauline passages where exegetically warranted\n15\nmore_horiz\n.\nExplicit Assumptions Acknowledged by the Editor\nThe textual-critical task is unfinished: The editor explicitly rejects the assumption that the standard text (Nestle-Aland/UBS) represents a \"final text to be passively accepted rather than a 'working' text subject to verification and improvement\"\n14\n.\nDefinition of the target text: The goal of the edition is defined specifically as recovering the variant that \"most likely represents the form in which the text first began to be copied and to circulate\"\n9\n.\nDual purpose of textual criticism: Text-critical study must both identify the earliest text and examine variant readings for the historical light they shed on how communities used and altered texts\n18\n.\nHistorical bias in 19th-century editions: Holmes explicitly notes that major 19th-century editors displayed a tendency toward preoccupation with the latest \"big discovery\" (e.g., Westcott and Hort with Codex Vaticanus/03), which justifies balancing WH against Tregelles\n19\n.\nSubjectivity in layout and formatting: Holmes acknowledges that decisions regarding proper noun capitalization offer \"numerous opportunities for differences of opinion\"\n20\n.\nAlternative Explanations and Readings Considered\nReadings of the Four Primary Editions: Across 6,928 variation units, the editor continually weighed the alternative readings of WH, Treg, NIV, and RP\n9\nmore_horiz\n.\nMarginal Variants of Major Editions: In 38 of the 56 instances where Holmes rejected all four primary texts, he adopted readings preserved in the margins of Westcott\u2013Hort (WHmarg), Tregelles (Tregmarg), or Nestle-Aland (NA)\n10\n.\nThe Byzantine Textform: By including Robinson\u2013Pierpont (RP), the editor systematically considered the readings of the Byzantine tradition alongside the Alexandrian/critical texts\n7\nmore_horiz\n.\nSyntactical Punctuation vs. Modern Paragraphing: In passages like Philippians 1:18 and 2:14, the editor explicitly weighed the syntactic punctuation of WH against the paragraph structures of the NRSV, choosing between them on a case-by-case basis\n20\n22\n.\nAlternative Explanations Not Addressed (Visible from Presentation)\nSecondary Collation vs. Fresh Manuscript Collation: The text is established primarily by collating four existing printed editions rather than undertaking a fresh collation of primary papyri, majuscules, and minuscules across every Pauline verse\n4\n8\n. Any reading not present in the four editions (or noted in margins) depends entirely on secondary selection\n8\n10\n.\nThe Ambiguity of the \"Circulating Archetype\": Defining the goal as the text when it \"first began to be copied and to circulate\"\n9\n leaves open whether this represents Paul's dictated draft, the letter sent to the destination church, or the initial compiled corpus of the Pauline epistles\u2014a distinction not discussed in the introduction.\nIntertextual Assimilation in Citations: While the Greek text prints Paul's quotations of the Old Testament, the editor does not provide methodological discussion on how scribal harmonization to the Septuagint (LXX) was evaluated when weighing variants in quotation formulas or citation bodies.\nConditions that Weaken or Falsify Conclusions\nWhile the source does not frame its methodology in formal falsification terms, it explicitly identifies conditions under which its textual conclusions are subject to reconsideration:\nStatus as a \"Working Text\": The editor explicitly views the text as open to \"verification and improvement\" rather than being final, acknowledging that further examination of variant readings may overturn specific decisions\n14\n18\n.\nEditorial Risk in Hard Cases: In discussing the deliberate avoidance of brackets, Holmes concedes that making definitive choices in difficult cases is done \"for better or worse\", acknowledging David C. Parker's preference for \"wise reticence\" as a viable competing posture that challenges forced decisions\n11\n22\n.\nEmergence of Comprehensive Manuscript Databases: In the Appendix comparing SBLGNT to the Editio Critica Maior (ECM), Holmes records 39 differences in the Catholic Letters, acknowledging that the exhaustive manuscript documentation and genealogical analysis of ECM provides a standard against which earlier critical judgments can be re-evaluated\n23\nmore_horiz\n.\n\ud83d\udd0d Would you like to inspect any specific Pauline passages where Holmes adopted a reading outside all four primary reference editions, or examine the apparatus for a specific chapter in Romans or 1 Corinthians?",
+  "citations": [
+    {
+      "index": 0,
+      "label": "1",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 1,
+      "label": "more_horiz",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 2,
+      "label": "2",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 3,
+      "label": "3",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 4,
+      "label": "4",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 5,
+      "label": "more_horiz",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 6,
+      "label": "5",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 7,
+      "label": "6",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 8,
+      "label": "7",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 9,
+      "label": "8",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 10,
+      "label": "9",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 11,
+      "label": "10",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 12,
+      "label": "8",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 13,
+      "label": "9",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 14,
+      "label": "8",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 15,
+      "label": "10",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 16,
+      "label": "11",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 17,
+      "label": "11",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 18,
+      "label": "11",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 19,
+      "label": "11",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 20,
+      "label": "11",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 21,
+      "label": "12",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 22,
+      "label": "13",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 23,
+      "label": "8",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 24,
+      "label": "more_horiz",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 25,
+      "label": "12",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 26,
+      "label": "14",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 27,
+      "label": "8",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 28,
+      "label": "more_horiz",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 29,
+      "label": "10",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 30,
+      "label": "12",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 31,
+      "label": "15",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 32,
+      "label": "16",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 33,
+      "label": "15",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 34,
+      "label": "15",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 35,
+      "label": "16",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 36,
+      "label": "15",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 37,
+      "label": "more_horiz",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 38,
+      "label": "16",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 39,
+      "label": "17",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 40,
+      "label": "14",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 41,
+      "label": "9",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 42,
+      "label": "18",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 43,
+      "label": "19",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 44,
+      "label": "20",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 45,
+      "label": "9",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 46,
+      "label": "more_horiz",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 47,
+      "label": "10",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 48,
+      "label": "21",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 49,
+      "label": "10",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    },
+    {
+      "index": 50,
+      "label": "7",
+      "snippet": "Search results\n              \n            \n        \n        \n        No emoji found\n      \n     \n      \n        \n              Recently used\n              \n            \n        \n        \n      \n    \n             \n            \n              \n            \n            Loading"
+    }
+  ]
+}

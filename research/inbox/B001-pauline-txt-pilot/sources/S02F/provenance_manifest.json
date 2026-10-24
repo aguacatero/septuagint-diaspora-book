@@ -1,0 +1,37 @@
+{
+  "source_id": "S02F",
+  "work": {
+    "authors": ["William Sanday", "Arthur C. Headlam"],
+    "title": "A Critical and Exegetical Commentary on the Epistle to the Romans",
+    "series": "International Critical Commentary",
+    "edition": "1895 first edition",
+    "imprint": "New York: Charles Scribner's Sons, 1895",
+    "preface_signed": "Midsummer, 1895",
+    "ia_item_url": "https://archive.org/details/epistlecommentar00sanduoft"
+  },
+  "raw_volume_scan": {
+    "filename": "sanday_headlam_1895_romans_icc_ia_raw.pdf",
+    "local_path": "/Users/chrisrodriguez/Downloads/sanday_headlam_1895_romans_icc_ia_raw.pdf",
+    "pages": 586,
+    "size_bytes": 47318528,
+    "sha256": "4a6369a0595550c8c1b92b71613a73182fe4a82aa02cfc989633e6c4dc0b80af",
+    "verification_command": "stat -f '%z' /Users/chrisrodriguez/Downloads/sanday_headlam_1895_romans_icc_ia_raw.pdf && shasum -a 256 /Users/chrisrodriguez/Downloads/sanday_headlam_1895_romans_icc_ia_raw.pdf"
+  },
+  "ingested_derivative_section": {
+    "filename": "sanday_headlam_1895_romans_icc.pdf",
+    "local_path": "/Users/chrisrodriguez/Downloads/sanday_headlam_1895_romans_icc.pdf",
+    "pages": 40,
+    "size_bytes": 4187334,
+    "sha256": "4be4cad08705963505f13a38a12b8737040e531a6146b1fa4400c936cc37cf4c",
+    "verification_command": "stat -f '%z' /Users/chrisrodriguez/Downloads/sanday_headlam_1895_romans_icc.pdf && shasum -a 256 /Users/chrisrodriguez/Downloads/sanday_headlam_1895_romans_icc.pdf",
+    "generator": "Poppler pdfseparate/pdfunite + GPL Ghostscript 9.56.1 (-dPDFSETTINGS=/ebook)"
+  },
+  "reconciliation_audit": {
+    "r2_finding": "S02F-R2-F1",
+    "resolved_byte_count": 4187334,
+    "corrected_file": "research-queue/B001_CHATGPT_REVIEW_REQUEST.md",
+    "previous_incorrect_request_value": 4183892,
+    "diagnostic_match": "research/inbox/B001-pauline-txt-pilot/sources/S02F/ingestion_diagnostic.md: 4,187,334 bytes",
+    "verified_on_disk": true
+  }
+}
