@@ -254,3 +254,99 @@ def test_s02f_negative_search_script_fail_closed_and_controls(tmp_path):
     # Negative controls (must not match)
     assert re.search(pat_cor_6_16, "Rom. vi. 16", re.IGNORECASE) is None
     assert re.search(pat_gal_3_13, "Gal. iv. 22", re.IGNORECASE) is None
+
+def test_s02f_synthetic_report_generation_and_index_validation():
+    repo_root = Path(__file__).resolve().parent.parent
+    import sys
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s02f_negative_search as vns
+
+    dummy_pdf = Path("test_volume.pdf")
+    dummy_text = Path("test_volume.txt")
+
+    dummy_positive_results = [
+        {"name": "1 Cor 3:19", "pattern": "pat1", "count": 1, "expected_min": 1, "passed": True},
+    ]
+    dummy_index_results = {
+        "index_present": True,
+        "index_offset": 100,
+        "has_subjects_section": True,
+        "has_latin_section": True,
+        "has_greek_section": True,
+        "positive_controls": {"Abraham": True, "Adam": True, "Old Testament, Use of the": True},
+        "has_scripture_index": False,
+        "passed": True,
+    }
+
+    # Scenario A: Synthetic NT-only hit for B001-12
+    text_nt = "Incidental cross-reference to Gal. iii, 13 in dogmatic note."
+    res_nt = vns.run_search(text_nt)
+    b12_nt = [r for r in res_nt if r["id"] == "B001-12"][0]
+    assert b12_nt["nt_matches"] == 1
+    assert b12_nt["ot_matches"] == 0
+    assert b12_nt["lemma_matches"] == 0
+    report_nt = vns.build_markdown_report(res_nt, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha", dummy_text, "sha_txt", 50, 100)
+    assert "MATCH DETECTED (1 hit(s): 1 NT, 0 OT, 0 lemma)" in report_nt
+
+    # Scenario B: Synthetic OT-positive hit for B001-12 (Deut 21:23)
+    text_ot = "Paul's citation of Deut. xxi. 23 examined critically."
+    res_ot = vns.run_search(text_ot)
+    b12_ot = [r for r in res_ot if r["id"] == "B001-12"][0]
+    assert b12_ot["nt_matches"] == 0
+    assert b12_ot["ot_matches"] == 1
+    assert b12_ot["lemma_matches"] == 0
+    report_ot = vns.build_markdown_report(res_ot, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha", dummy_text, "sha_txt", 50, 100)
+    assert "MATCH DETECTED (1 hit(s): 0 NT, 1 OT, 0 lemma)" in report_ot
+    # CRITICAL INVARIANT: When OT matches, no statement asserting Deut is absent may exist!
+    assert "Deut 21:23 is not cited" not in report_ot
+    assert "Deut 21:23 is nowhere cited" not in report_ot
+
+    # Scenario C: Synthetic lemma-positive hit for B001-12
+    text_lemma = "Quoting ἐπικατάρατος πᾶς as Greek text."
+    res_lemma = vns.run_search(text_lemma)
+    b12_lemma = [r for r in res_lemma if r["id"] == "B001-12"][0]
+    assert b12_lemma["nt_matches"] == 0
+    assert b12_lemma["ot_matches"] == 0
+    # Matches both accented and unaccented lemma patterns
+    assert b12_lemma["lemma_matches"] == 2
+    report_lemma = vns.build_markdown_report(res_lemma, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha", dummy_text, "sha_txt", 50, 100)
+    assert "MATCH DETECTED (2 hit(s): 0 NT, 0 OT, 2 lemma)" in report_lemma
+
+    # Scenario D: Synthetic combined hit
+    text_combined = "Gal. iii, 13 citing Deut. xxi. 23 with ἐπικατάρατος πᾶς."
+    res_combined = vns.run_search(text_combined)
+    b12_combined = [r for r in res_combined if r["id"] == "B001-12"][0]
+    assert b12_combined["nt_matches"] == 1
+    assert b12_combined["ot_matches"] == 1
+    assert b12_combined["lemma_matches"] == 2
+    assert b12_combined["total_matches"] == 4
+    report_combined = vns.build_markdown_report(res_combined, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha", dummy_text, "sha_txt", 50, 100)
+    assert "MATCH DETECTED (4 hit(s): 1 NT, 1 OT, 2 lemma)" in report_combined
+
+    # Scenario E: Synthetic zero-match text
+    text_zero = "General discourse mentioning no targets."
+    res_zero = vns.run_search(text_zero)
+    for r in res_zero:
+        assert r["total_matches"] == 0
+    report_zero = vns.build_markdown_report(res_zero, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha", dummy_text, "sha_txt", 50, 100)
+    assert report_zero.count("NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH") >= 5
+
+    # Index structure validation tests
+    # Missing index fails
+    bad_index = vns.verify_index_structure("A text with no index at all.")
+    assert bad_index["passed"] is False
+    assert bad_index["index_present"] is False
+
+    # Valid index succeeds
+    good_index_text = (
+        "Main text...\nINDEX              TO THE                NOTES\n"
+        "I. SUBJECTS\nAbraham, Righteousness of, p. 100 ff.\nAdam, p. 130 ff.\n"
+        "Old Testament, Use of the, pp. 77; 302-307.\n"
+        "II. LATIN WORDS\nIII. GREEK WORDS\n"
+    )
+    good_index = vns.verify_index_structure(good_index_text)
+    assert good_index["passed"] is True
+    assert good_index["has_subjects_section"] is True
+    assert good_index["has_latin_section"] is True
+    assert good_index["has_greek_section"] is True
+    assert good_index["has_scripture_index"] is False

@@ -36,13 +36,13 @@ Before executing negative target queries, the regex engine was validated against
 
 ## Executive Summary of Results
 
-| Locus ID | B001 Target Passage | NT / OT Citation Matches | Greek & English Lemma Matches | Result Status |
-|---|---|---|---|---|
-| `B001-8` | 1 Corinthians 1:19 / Isaiah 29:14 | 0 matches | 0 matches | **NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH** |
-| `B001-9` | 1 Corinthians 6:16 / Genesis 2:24 | 0 matches | 0 matches | **NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH** |
-| `B001-10` | 1 Corinthians 9:9 / Deuteronomy 25:4 | 0 matches | 0 matches | **NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH** |
-| `B001-11` | 1 Corinthians 10:7 / Exodus 32:6 | 0 matches | 0 matches | **NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH** |
-| `B001-12` | Galatians 3:13 / Deuteronomy 21:23 | 1 matches | 0 matches | **1 NT CITATION MATCH (Deut 21:23 & B001-12 Text Not Discussed)** |
+| Locus ID | B001 Target Passage | NT Citation Matches | OT Citation Matches | Lemma Matches | Result Status |
+|---|---|---|---|---|---|
+| `B001-8` | 1 Corinthians 1:19 / Isaiah 29:14 | 0 matches | 0 matches | 0 matches | **NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH** |
+| `B001-9` | 1 Corinthians 6:16 / Genesis 2:24 | 0 matches | 0 matches | 0 matches | **NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH** |
+| `B001-10` | 1 Corinthians 9:9 / Deuteronomy 25:4 | 0 matches | 0 matches | 0 matches | **NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH** |
+| `B001-11` | 1 Corinthians 10:7 / Exodus 32:6 | 0 matches | 0 matches | 0 matches | **NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH** |
+| `B001-12` | Galatians 3:13 / Deuteronomy 21:23 | 1 matches | 0 matches | 0 matches | **MATCH DETECTED (1 hit(s): 1 NT, 0 OT, 0 lemma)** |
 
 ---
 
@@ -51,13 +51,13 @@ Before executing negative target queries, the regex engine was validated against
 ### B001-8: 1 Corinthians 1:19 / Isaiah 29:14
 
 - **Target Loci:** NT `1 Cor 1:19` | OT `Isa 29:14`
-- **Citation Matches:** `0` | **Lemma Matches:** `0`
+- **Measured Counts:** NT: `0` | OT: `0` | Lemma: `0` (Total: `0`)
 - **Outcome Classification:** `NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH`
 
 | Pattern Description | Category | Regular Expression | Flag | Matches |
 |---|---|---|---|---|
-| NT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:1|I|First)\s*Cor(?:\.|inthians)?\s*(?:1|i)[\.:,]?\s*(?:19|xix)\b` | `re.IGNORECASE` | 0 |
-| OT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:Isa|Is|Isaiah)(?:\.|\b)\s*(?:29|xxix)[\.:,]?\s*(?:14|xiv)\b` | `re.IGNORECASE` | 0 |
+| NT citation (Arabic/Roman, whitespace-tolerant) | NT | `\b(?:1|I|First)\s*Cor(?:\.|inthians)?\s*(?:1|i)[\.:,]?\s*(?:19|xix)\b` | `re.IGNORECASE` | 0 |
+| OT citation (Arabic/Roman, whitespace-tolerant) | OT | `\b(?:Isa|Is|Isaiah)(?:\.|\b)\s*(?:29|xxix)[\.:,]?\s*(?:14|xiv)\b` | `re.IGNORECASE` | 0 |
 | Greek lemma / phrase | lemma | `ἀπολῶ\s+τὴν\s+σοφίαν` | `re.IGNORECASE` | 0 |
 | Greek unaccented | lemma | `απολω\s+την\s+σοφιαν` | `re.IGNORECASE` | 0 |
 | Greek keyword (ἀθετήσω) | lemma | `\bἀθετήσω\b` | `re.IGNORECASE` | 0 |
@@ -66,13 +66,13 @@ Before executing negative target queries, the regex engine was validated against
 ### B001-9: 1 Corinthians 6:16 / Genesis 2:24
 
 - **Target Loci:** NT `1 Cor 6:16` | OT `Gen 2:24`
-- **Citation Matches:** `0` | **Lemma Matches:** `0`
+- **Measured Counts:** NT: `0` | OT: `0` | Lemma: `0` (Total: `0`)
 - **Outcome Classification:** `NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH`
 
 | Pattern Description | Category | Regular Expression | Flag | Matches |
 |---|---|---|---|---|
-| NT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:1|I|First)\s*Cor(?:\.|inthians)?\s*(?:6|vi)[\.:,]?\s*(?:16|xvi)\b` | `re.IGNORECASE` | 0 |
-| OT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:Gen|Genesis)(?:\.|\b)\s*(?:2|ii)[\.:,]?\s*(?:24|xxiv)\b` | `re.IGNORECASE` | 0 |
+| NT citation (Arabic/Roman, whitespace-tolerant) | NT | `\b(?:1|I|First)\s*Cor(?:\.|inthians)?\s*(?:6|vi)[\.:,]?\s*(?:16|xvi)\b` | `re.IGNORECASE` | 0 |
+| OT citation (Arabic/Roman, whitespace-tolerant) | OT | `\b(?:Gen|Genesis)(?:\.|\b)\s*(?:2|ii)[\.:,]?\s*(?:24|xxiv)\b` | `re.IGNORECASE` | 0 |
 | Greek lemma / phrase | lemma | `σάρκα\s+μίαν` | `re.IGNORECASE` | 0 |
 | Greek unaccented | lemma | `σαρκα\s+μιαν` | `re.IGNORECASE` | 0 |
 | English key phrase | lemma | `two\s+shall\s+be\s+one\s+flesh` | `re.IGNORECASE` | 0 |
@@ -80,13 +80,13 @@ Before executing negative target queries, the regex engine was validated against
 ### B001-10: 1 Corinthians 9:9 / Deuteronomy 25:4
 
 - **Target Loci:** NT `1 Cor 9:9` | OT `Deut 25:4`
-- **Citation Matches:** `0` | **Lemma Matches:** `0`
+- **Measured Counts:** NT: `0` | OT: `0` | Lemma: `0` (Total: `0`)
 - **Outcome Classification:** `NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH`
 
 | Pattern Description | Category | Regular Expression | Flag | Matches |
 |---|---|---|---|---|
-| NT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:1|I|First)\s*Cor(?:\.|inthians)?\s*(?:9|ix)[\.:,]?\s*(?:9|ix)\b` | `re.IGNORECASE` | 0 |
-| OT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:Deut|Dt|Deuteronomy)(?:\.|\b)\s*(?:25|xxv)[\.:,]?\s*(?:4|iv)\b` | `re.IGNORECASE` | 0 |
+| NT citation (Arabic/Roman, whitespace-tolerant) | NT | `\b(?:1|I|First)\s*Cor(?:\.|inthians)?\s*(?:9|ix)[\.:,]?\s*(?:9|ix)\b` | `re.IGNORECASE` | 0 |
+| OT citation (Arabic/Roman, whitespace-tolerant) | OT | `\b(?:Deut|Dt|Deuteronomy)(?:\.|\b)\s*(?:25|xxv)[\.:,]?\s*(?:4|iv)\b` | `re.IGNORECASE` | 0 |
 | Greek lemma / verb 1 | lemma | `φιμώσεις\s+βοῦν` | `re.IGNORECASE` | 0 |
 | Greek lemma / verb 2 | lemma | `κημώσεις\s+βοῦν` | `re.IGNORECASE` | 0 |
 | Greek root (unaccented) | lemma | `(?:φιμωσ|κημωσ)` | `re.IGNORECASE` | 0 |
@@ -95,13 +95,13 @@ Before executing negative target queries, the regex engine was validated against
 ### B001-11: 1 Corinthians 10:7 / Exodus 32:6
 
 - **Target Loci:** NT `1 Cor 10:7` | OT `Exod 32:6`
-- **Citation Matches:** `0` | **Lemma Matches:** `0`
+- **Measured Counts:** NT: `0` | OT: `0` | Lemma: `0` (Total: `0`)
 - **Outcome Classification:** `NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH`
 
 | Pattern Description | Category | Regular Expression | Flag | Matches |
 |---|---|---|---|---|
-| NT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:1|I|First)\s*Cor(?:\.|inthians)?\s*(?:10|x)[\.:,]?\s*(?:7|vii)\b` | `re.IGNORECASE` | 0 |
-| OT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:Exod|Ex|Exodus)(?:\.|\b)\s*(?:32|xxxii)[\.:,]?\s*(?:6|vi)\b` | `re.IGNORECASE` | 0 |
+| NT citation (Arabic/Roman, whitespace-tolerant) | NT | `\b(?:1|I|First)\s*Cor(?:\.|inthians)?\s*(?:10|x)[\.:,]?\s*(?:7|vii)\b` | `re.IGNORECASE` | 0 |
+| OT citation (Arabic/Roman, whitespace-tolerant) | OT | `\b(?:Exod|Ex|Exodus)(?:\.|\b)\s*(?:32|xxxii)[\.:,]?\s*(?:6|vi)\b` | `re.IGNORECASE` | 0 |
 | Greek lemma / phrase | lemma | `φαγεῖν\s+καὶ\s+πεῖν` | `re.IGNORECASE` | 0 |
 | Greek unaccented | lemma | `φαγειν\s+και\s+πειν` | `re.IGNORECASE` | 0 |
 | Greek play verb | lemma | `ἀνέστησαν\s+παίζειν` | `re.IGNORECASE` | 0 |
@@ -110,34 +110,45 @@ Before executing negative target queries, the regex engine was validated against
 ### B001-12: Galatians 3:13 / Deuteronomy 21:23
 
 - **Target Loci:** NT `Gal 3:13` | OT `Deut 21:23`
-- **Citation Matches:** `1` | **Lemma Matches:** `0`
-- **Outcome Classification:** `PARENTICAL NT CITATION DETECTED ON P. 118 (Deut 21:23 and B001-12 Text-Critical Analysis Not Discussed)`
+- **Measured Counts:** NT: `1` | OT: `0` | Lemma: `0` (Total: `1`)
+- **Outcome Classification:** `MATCH DETECTED (1 hit(s): 1 NT, 0 OT, 0 lemma)`
 
 | Pattern Description | Category | Regular Expression | Flag | Matches |
 |---|---|---|---|---|
-| NT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:Gal|Galatians)(?:\.|\b)\s*(?:3|iii)[\.:,]?\s*(?:13|xiii)\b` | `re.IGNORECASE` | 1 |
-| OT citation (Arabic/Roman, whitespace-tolerant) | citation | `\b(?:Deut|Dt|Deuteronomy)(?:\.|\b)\s*(?:21|xxi)[\.:,]?\s*(?:23|xxiii)\b` | `re.IGNORECASE` | 0 |
+| NT citation (Arabic/Roman, whitespace-tolerant) | NT | `\b(?:Gal|Galatians)(?:\.|\b)\s*(?:3|iii)[\.:,]?\s*(?:13|xiii)\b` | `re.IGNORECASE` | 1 |
+| OT citation (Arabic/Roman, whitespace-tolerant) | OT | `\b(?:Deut|Dt|Deuteronomy)(?:\.|\b)\s*(?:21|xxi)[\.:,]?\s*(?:23|xxiii)\b` | `re.IGNORECASE` | 0 |
 | Greek lemma / phrase | lemma | `ἐπικατάρατος\s+πᾶς` | `re.IGNORECASE` | 0 |
 | Greek unaccented | lemma | `επικαταρατος\s+πας` | `re.IGNORECASE` | 0 |
 | Greek hang on tree | lemma | `κρεμάμενος\s+ἐπὶ\s+ξύλου` | `re.IGNORECASE` | 0 |
 | English key phrase | lemma | `cursed\s+is\s+every(?:one)?\s+that\s+hangeth` | `re.IGNORECASE` | 0 |
 
-#### Match Context Snippets & Evaluation:
+#### Measured Match Snippets:
 - *Snippet (offset 774582):* `...and endures the Wrath of God in his       stead (Gal. iii, 13; 2 Cor. v. 21). The Resurrection is proof that th...`
-
-- *Contextual Evaluation:* The single match for Gal 3:13 (`Gal. iii, 13`) occurs on printed page 118 in a theological note on Rom 4:25 summarizing E. Schäder's 1893 monograph (*Die Bedeutung des lebendigen Christus für die Rechtfertigung nach Paulus*), where Paul's phrase is cited parenthetically alongside 2 Cor 5:21 as a dogmatic proof text for Christ enduring divine wrath. The Old Testament passage (Deut 21:23) is nowhere cited or indexed, the Greek quotation wording (ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου) is absent, and the B001-12 textual relationship is entirely outside the commentary's analytical scope.
 
 ---
 
-## Automated Audit of the Authorial Index to the Notes
+## Bibliographic Structure of the Authorial Index
 
-The volume contains an authorial **Index to the Notes** (printed pp. 437–450). Programmatic verification of the index text layer (detected=True) yielded:
-- **Gen 2:24:** `0 matches` in the Index to the Notes.
-- **Exod 32:6:** `0 matches` in the Index to the Notes.
-- **Deut 21:23:** `0 matches` in the Index to the Notes.
-- **Deut 25:4:** `0 matches` in the Index to the Notes.
-- **Isa 29:14:** `0 matches` in the Index to the Notes.
-- **Total Non-Romans Target Citations in Authorial Index:** `0`
+Programmatic inspection of the authorial **Index to the Notes** (printed pp. 437–450) established the following bibliographic facts:
+- **Index Present:** `True` (starting at text offset 1850437)
+- **Section I. Subjects (pp. 437–442):** Present (`True`)
+- **Section II. Latin Words (pp. 443–444):** Present (`True`)
+- **Section III. Greek Words (pp. 445–450):** Present (`True`)
+- **Dedicated Scripture Passage Index (Index Locorum):** None (`has_scripture_index=False`). Sanday & Headlam's 1895 commentary contains no systematic Scripture index of Old or New Testament citations.
+- **Subject Index Positive Controls:**
+  - Entry `Abraham`: `True`
+  - Entry `Adam`: `True`
+  - Entry `Old Testament, Use of the`: `True`
+
+---
+
+## Scholarly Qualitative Assessment of Detected Hits
+
+### Assessment for B001-12 (Galatians 3:13 / Deuteronomy 21:23)
+
+- **Pattern Breakdown:** `1` NT citation match(es), `0` OT citation match(es), `0` lemma match(es).
+- **Contextual Analysis:** The single NT citation (`Gal. iii, 13`) occurs on printed page 118 in a theological note on Rom 4:25 summarizing E. Schäder's 1893 monograph (*Die Bedeutung des lebendigen Christus für die Rechtfertigung nach Paulus*). It is cited parenthetically alongside 2 Cor 5:21 as a dogmatic proof text for Christ enduring divine wrath.
+- **Absence of Text-Critical Analysis:** The Old Testament Vorlage (Deut 21:23) is not cited (`0 matches`), Greek quotation wording (`ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου`) is not present (`0 matches`), and the textual divergence between Gal 3:13 and Deut 21:23 is not analyzed.
 
 ---
 
