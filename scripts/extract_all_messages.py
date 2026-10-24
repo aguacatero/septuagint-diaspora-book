@@ -287,8 +287,10 @@ async def extract_message_citations(ws, msg_idx, output_path, expected_source=No
 
         # Invariant 4: Verify duplicate transition threshold BEFORE updating prev_binding
         old_snippet = prev_binding.get("snippet", "") if prev_binding else ""
+        old_label = prev_binding.get("marker_label", "") if prev_binding else None
         consecutive_duplicates = verify_tooltip_transition(
-            old_snippet, snip, idx, consecutive_duplicates, max_consecutive=15
+            old_snippet, snip, idx, consecutive_duplicates, max_consecutive=15,
+            prev_label=old_label, current_label=label
         )
 
         # Invariant 5: Positive marker-to-tooltip binding and stale overlay detection

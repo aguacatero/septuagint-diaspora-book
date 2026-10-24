@@ -160,7 +160,9 @@ def verify_tooltip_transition(
     current_snippet: str,
     marker_idx: int,
     consecutive_duplicate_count: int,
-    max_consecutive: int = 15
+    max_consecutive: int = 15,
+    prev_label: str = None,
+    current_label: str = None
 ) -> int:
     """
     Tracks duplicate count across successive citations.
@@ -169,12 +171,13 @@ def verify_tooltip_transition(
         raise RuntimeError(f"Stale/invalid tooltip invariant violated at marker {marker_idx}: snippet is empty or too short")
 
     if prev_snippet and current_snippet == prev_snippet:
-        consecutive_duplicate_count += 1
-        if consecutive_duplicate_count > max_consecutive:
-            raise RuntimeError(
-                f"Stale tooltip detected at marker {marker_idx}: snippet has remained unchanged across "
-                f"{consecutive_duplicate_count} consecutive markers. Suspected retained/stuck overlay panel."
-            )
+        if prev_label is None or current_label is None or prev_label != current_label:
+            consecutive_duplicate_count += 1
+            if consecutive_duplicate_count > max_consecutive:
+                raise RuntimeError(
+                    f"Stale tooltip detected at marker {marker_idx}: snippet has remained unchanged across "
+                    f"{consecutive_duplicate_count} consecutive markers. Suspected retained/stuck overlay panel."
+                )
     else:
         consecutive_duplicate_count = 1
 
@@ -270,6 +273,8 @@ async def run_prompt(
     expected_source: str = None,
     source_id: str = None,
     output_file: str = None,
+    require_citations: bool = True,
+    skip_submission: bool = False,
 ):
     ctx = get_source_context(source_id=source_id)
     if expected_source is None:
@@ -288,121 +293,127 @@ async def run_prompt(
         """) or 0
         print(f"Initial model message count: {init_count}", flush=True)
 
-        # Ensure interface is idle before submitting
-        idle = False
-        for _ in range(20):
-            is_idle = await evaluate(ws, 1000, """
-                (() => {
-                    const stopBtn = document.querySelector('button[aria-label="Stop response"], button[aria-label*="Stop"]');
-                    return !stopBtn;
-                })()
-            """)
-            if is_idle:
-                idle = True
-                break
-            await asyncio.sleep(2)
-        if not idle:
-            raise RuntimeError("Submission invariant violated: interface is busy (stop response active)")
-
-        escaped_prompt = json.dumps(prompt_text)
-        submit_js = f"""
-        (() => {{
-            const ta = document.querySelector('textarea[aria-label="Query box"], textarea[placeholder*="Ask"]');
-            if (!ta) return "NO_TA";
-            ta.focus();
-            ta.value = {escaped_prompt};
-            ta.dispatchEvent(new Event('input', {{ bubbles: true }}));
-            ta.dispatchEvent(new Event('change', {{ bubbles: true }}));
-            const btn = document.querySelector('button[aria-label="Submit"]');
-            if (btn && !btn.disabled) {{
-                btn.click();
-                return "SUBMITTED_CLICK";
-            }}
-            return "BTN_DISABLED";
-        }})()
-        """
-        submit_res = await evaluate(ws, 2, submit_js)
-        print("Initial submit status:", submit_res, flush=True)
-
-        # If button was disabled or not clicked, wait and retry click
-        submitted = (submit_res == "SUBMITTED_CLICK")
-        if not submitted:
-            for retry in range(15):
-                await asyncio.sleep(2)
-                retry_res = await evaluate(ws, 20 + retry, """
-                (() => {
-                    const btn = document.querySelector('button[aria-label="Submit"]');
-                    if (btn && !btn.disabled) {
-                        btn.click();
-                        return "CLICKED_RETRY";
-                    }
-                    return "STILL_DISABLED";
-                })()
-                """)
-                print(f"Retry submit {retry}: {retry_res}", flush=True)
-                if retry_res == "CLICKED_RETRY":
-                    submitted = True
-                    break
-
-        if not submitted:
-            raise RuntimeError("Submission invariant violated: Submit button remained disabled or unavailable")
-
         start_time = time.time()
         last_text = ""
         stable_count = 0
         stabilized = False
         cur_count = init_count
 
-        # Invariant 2: Wait for new message to appear and stabilize
-        while time.time() - start_time < max_wait:
-            await asyncio.sleep(3)
-            cur_count = await evaluate(ws, 3, """
-                document.querySelectorAll('.to-user-message-card-content').length
-            """) or 0
-
-            if cur_count > init_count:
-                cur_text = await evaluate(ws, 4, """
-                    (() => {
-                        const msgs = document.querySelectorAll('.to-user-message-card-content');
-                        if (!msgs.length) return "";
-                        return msgs[msgs.length - 1].innerText;
-                    })()
-                """) or ""
-
-                # Check if still thinking / generating
-                is_generating = await evaluate(ws, 5, """
+        if not skip_submission:
+            # Ensure interface is idle before submitting
+            idle = False
+            for _ in range(20):
+                is_idle = await evaluate(ws, 1000, """
                     (() => {
                         const stopBtn = document.querySelector('button[aria-label="Stop response"], button[aria-label*="Stop"]');
-                        if (stopBtn && !stopBtn.disabled) return true;
-                        const spinner = document.querySelector('.to-user-message-card-content:last-child mat-progress-spinner, .to-user-message-card-content:last-child .loading-indicator');
-                        if (spinner) return true;
-                        return false;
+                        return !stopBtn;
                     })()
                 """)
+                if is_idle:
+                    idle = True
+                    break
+                await asyncio.sleep(2)
+            if not idle:
+                raise RuntimeError("Submission invariant violated: interface is busy (stop response active)")
 
-                print(f"[{int(time.time() - start_time)}s] count={cur_count} (init={init_count}), text_len={len(cur_text)}, generating={is_generating}", flush=True)
+            escaped_prompt = json.dumps(prompt_text)
+            submit_js = f"""
+            (() => {{
+                const ta = document.querySelector('textarea[aria-label="Query box"], textarea[placeholder*="Ask"]');
+                if (!ta) return "NO_TA";
+                ta.focus();
+                ta.value = {escaped_prompt};
+                ta.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                ta.dispatchEvent(new Event('change', {{ bubbles: true }}));
+                const container = ta.closest('.query-box-container') || ta.parentElement.parentElement;
+                const btn = container ? container.querySelector('button[aria-label="Submit"]') : document.querySelector('button[aria-label="Submit"]');
+                if (btn && !btn.disabled) {{
+                    btn.click();
+                    return "SUBMITTED_CLICK";
+                }}
+                return "BTN_DISABLED";
+            }})()
+            """
+            submit_res = await evaluate(ws, 2, submit_js)
+            print("Initial submit status:", submit_res, flush=True)
 
-                if not is_generating and len(cur_text) > 50:
-                    if cur_text == last_text:
-                        stable_count += 1
-                        if stable_count >= 3:
-                            print("Response completed and stable!", flush=True)
-                            stabilized = True
-                            break
+            # If button was disabled or not clicked, wait and retry click
+            submitted = (submit_res == "SUBMITTED_CLICK")
+            if not submitted:
+                for retry in range(15):
+                    await asyncio.sleep(2)
+                    retry_res = await evaluate(ws, 20 + retry, """
+                    (() => {
+                        const ta = document.querySelector('textarea[aria-label="Query box"], textarea[placeholder*="Ask"]');
+                        const container = ta ? (ta.closest('.query-box-container') || ta.parentElement.parentElement) : null;
+                        const btn = container ? container.querySelector('button[aria-label="Submit"]') : document.querySelector('button[aria-label="Submit"]');
+                        if (btn && !btn.disabled) {
+                            btn.click();
+                            return "CLICKED_RETRY";
+                        }
+                        return "STILL_DISABLED";
+                    })()
+                    """)
+                    print(f"Retry submit {retry}: {retry_res}", flush=True)
+                    if retry_res == "CLICKED_RETRY":
+                        submitted = True
+                        break
+
+            if not submitted:
+                raise RuntimeError("Submission invariant violated: Submit button remained disabled or unavailable")
+
+            # Invariant 2: Wait for new message to appear and stabilize
+            while time.time() - start_time < max_wait:
+                await asyncio.sleep(3)
+                cur_count = await evaluate(ws, 3, """
+                    document.querySelectorAll('.to-user-message-card-content').length
+                """) or 0
+
+                if cur_count > init_count:
+                    cur_text = await evaluate(ws, 4, """
+                        (() => {
+                            const msgs = document.querySelectorAll('.to-user-message-card-content');
+                            if (!msgs.length) return "";
+                            return msgs[msgs.length - 1].innerText;
+                        })()
+                    """) or ""
+
+                    # Check if still thinking / generating
+                    is_generating = await evaluate(ws, 5, """
+                        (() => {
+                            const stopBtn = document.querySelector('button[aria-label="Stop response"], button[aria-label*="Stop"]');
+                            if (stopBtn && !stopBtn.disabled) return true;
+                            const spinner = document.querySelector('.to-user-message-card-content:last-child mat-progress-spinner, .to-user-message-card-content:last-child .loading-indicator');
+                            if (spinner) return true;
+                            return false;
+                        })()
+                    """)
+
+                    print(f"[{int(time.time() - start_time)}s] count={cur_count} (init={init_count}), text_len={len(cur_text)}, generating={is_generating}", flush=True)
+
+                    if not is_generating and len(cur_text) > 50:
+                        if cur_text == last_text:
+                            stable_count += 1
+                            if stable_count >= 3:
+                                print("Response completed and stable!", flush=True)
+                                stabilized = True
+                                break
+                        else:
+                            stable_count = 0
+                            last_text = cur_text
                     else:
                         stable_count = 0
                         last_text = cur_text
                 else:
-                    stable_count = 0
-                    last_text = cur_text
-            else:
-                print(f"[{int(time.time() - start_time)}s] waiting for new message... cur_count={cur_count}, init={init_count}", flush=True)
+                    print(f"[{int(time.time() - start_time)}s] waiting for new message... cur_count={cur_count}, init={init_count}", flush=True)
 
-        if not stabilized:
-            raise TimeoutError(
-                f"Generation invariant violated: response did not stabilize within {max_wait}s "
-                f"(init_count={init_count}, cur_count={cur_count}, stable_count={stable_count})"
-            )
+            if not stabilized:
+                raise TimeoutError(
+                    f"Generation invariant violated: response did not stabilize within {max_wait}s "
+                    f"(init_count={init_count}, cur_count={cur_count}, stable_count={stable_count})"
+                )
+        else:
+            print("Skip submission mode active: extracting from already completed last message.", flush=True)
 
         # Handle collapsed markers if any exist
         await evaluate(ws, 99, """
@@ -441,7 +452,15 @@ async def run_prompt(
         print(f"Extracting {marker_count} citations...", flush=True)
 
         if marker_count == 0:
-            raise RuntimeError("Extraction invariant violated: no citation markers found in message")
+            if require_citations:
+                raise RuntimeError("Extraction invariant violated: no citation markers found in message")
+            print("No citation markers found (permitted for this prompt). Returning text only.", flush=True)
+            return {
+                "source_id": ctx["source_id"],
+                "expected_filename": expected_source,
+                "text": text,
+                "citations": []
+            }
 
         # Focus page to receive hover input
         await send_cdp(ws, 999, "Page.bringToFront")
@@ -623,8 +642,10 @@ async def run_prompt(
 
             # Invariant 4: Verify duplicate transition threshold BEFORE updating prev_binding
             old_snippet = prev_binding.get("snippet", "") if prev_binding else ""
+            old_label = prev_binding.get("marker_label", "") if prev_binding else None
             consecutive_duplicates = verify_tooltip_transition(
-                old_snippet, snippet, idx, consecutive_duplicates, max_consecutive=15
+                old_snippet, snippet, idx, consecutive_duplicates, max_consecutive=15,
+                prev_label=old_label, current_label=m_label
             )
 
             # Invariant 5: Positive marker-to-tooltip binding and stale overlay detection

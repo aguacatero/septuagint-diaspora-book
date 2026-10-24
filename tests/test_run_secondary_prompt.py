@@ -357,6 +357,40 @@ def test_extraction_loop_legitimate_repeated_excerpts_and_freeze_rejection():
                 frozen_snippet, handshake_verified=True, active_pane_id=f"cdk-overlay-{idx}", prev_binding=prev_binding
             )
 
+def test_verify_tooltip_transition_same_label_repeated_allowed():
+    """
+    Verifies that when multiple markers share the exact same citation label (e.g. 20 consecutive markers citing [4]),
+    identical snippets are permitted without triggering a false-positive freeze detection.
+    """
+    shared_snip = "Passage excerpt corresponding to citation number 4 across a long argument paragraph"
+    consecutive_duplicates = 0
+    prev_snippet = None
+
+    for idx in range(25):
+        consecutive_duplicates = verify_tooltip_transition(
+            prev_snippet, shared_snip, idx, consecutive_duplicates, max_consecutive=15,
+            prev_label="4", current_label="4"
+        )
+        prev_snippet = shared_snip
+        assert consecutive_duplicates == 1
+
+def test_verify_tooltip_transition_distinct_labels_repeated_fails_closed():
+    """
+    Verifies that when consecutive markers have distinct citation labels (e.g. "1", "2", ...),
+    an unchanged snippet across > 15 markers fails closed as a genuine stuck overlay.
+    """
+    frozen_snip = "Overlay text stuck across distinct citation labels"
+    consecutive_duplicates = 0
+    prev_snippet = None
+
+    with pytest.raises(RuntimeError, match="Stale tooltip detected at marker 15"):
+        for idx in range(20):
+            consecutive_duplicates = verify_tooltip_transition(
+                prev_snippet, frozen_snip, idx, consecutive_duplicates, max_consecutive=15,
+                prev_label=str(idx - 1) if idx > 0 else None, current_label=str(idx)
+            )
+            prev_snippet = frozen_snip
+
 
 # ==============================================================================
 # Mocked CDP/DOM Collector Sequence Unit Tests (Review Round 5 Finding 4)
