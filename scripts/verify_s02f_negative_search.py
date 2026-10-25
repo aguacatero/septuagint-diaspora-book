@@ -36,6 +36,16 @@ DEFAULT_TEXT_PATH = Path("/tmp/sanday_headlam_full_text.txt")
 DEFAULT_OUT_PATH = Path("research/inbox/B001-pauline-txt-pilot/sources/S02F/full_volume_search_log.md")
 
 
+INDEX_END_PATTERNS = [
+    r"The\s+International\s+Theological\s+Library",
+    r"EDITORS['’]?\s+PREFACE",
+    r"An\s+Introduction\s+to\s+the\s+Literature\s+of\s+the\s+Old\s+Testament",
+    r"\bEND\s+OF\s+(?:THE\s+)?INDEX\b",
+    r"<!--\s*END\s+OF\s+INDEX\s*-->",
+    r"\bFINIS\b",
+]
+
+
 def strip_accents(s: str) -> str:
     """Normalize and strip diacritical marks for fault-tolerant Greek/Latin matching."""
     nfkd = unicodedata.normalize("NFKD", s)
@@ -221,6 +231,55 @@ def run_search(full_text: str) -> list[dict]:
     return results
 
 
+def decolumnize(text_block: str) -> list[str]:
+    """Convert multi-column or single-column layout text into a sequential line stream."""
+    pages = text_block.split("\x0c")
+    all_stream = []
+    for page in pages:
+        p_lines = page.splitlines()
+        p_col1 = []
+        p_col2 = []
+        p_has_cols = False
+        for line in p_lines:
+            m = re.search(r"^(.{15,50}?)\s{3,}(\S.*)$", line)
+            if m:
+                p_has_cols = True
+                p_col1.append(m.group(1).rstrip())
+                p_col2.append(m.group(2).rstrip())
+            else:
+                p_col1.append(line.rstrip())
+        if p_has_cols:
+            all_stream.extend(p_col1)
+            all_stream.extend(p_col2)
+        else:
+            all_stream.extend(p_lines)
+    return all_stream
+
+
+def extract_entry(lines: list[str], headword_pattern: str) -> str:
+    """Extract a single index entry block (main line plus wrapped/indented sub-lines).
+
+    Stops immediately when the next unindented main entry begins.
+    """
+    entry_lines = []
+    in_entry = False
+    for line in lines:
+        sline = line.strip()
+        if not sline:
+            continue
+        is_indented = line.startswith(" ") or line.startswith("\t")
+        if not in_entry:
+            if not is_indented and re.search(headword_pattern, sline, re.IGNORECASE):
+                in_entry = True
+                entry_lines.append(sline)
+        else:
+            if is_indented:
+                entry_lines.append(sline)
+            else:
+                break
+    return " ".join(entry_lines)
+
+
 def verify_index_structure(full_text: str) -> dict:
     """Programmatically verify bounded, ordered index structure and positive controls."""
     # Find start heading
@@ -228,6 +287,7 @@ def verify_index_structure(full_text: str) -> dict:
     if not m_start:
         return {
             "index_present": False,
+            "has_end_marker": False,
             "error": "Index to the Notes heading not found in full text",
             "has_scripture_index": False,
             "passed": False,
@@ -235,10 +295,26 @@ def verify_index_structure(full_text: str) -> dict:
 
     idx_start = m_start.start()
 
-    # Find end boundary (publisher catalog or EOF)
-    m_end = re.search(r"An\s+Introduction\s+to\s+the\s+Literature\s+of\s+the\s+Old\s+Testament", full_text[idx_start:], re.IGNORECASE)
-    idx_end = idx_start + m_end.start() if m_end else len(full_text)
+    # Find authentic independent end boundary delimiter (fail closed if missing)
+    earliest_end_rel = None
+    for p in INDEX_END_PATTERNS:
+        match = re.search(p, full_text[idx_start:], re.IGNORECASE)
+        if match:
+            if earliest_end_rel is None or match.start() < earliest_end_rel:
+                earliest_end_rel = match.start()
 
+    if earliest_end_rel is None:
+        return {
+            "index_present": True,
+            "index_offset": idx_start,
+            "index_end_offset": None,
+            "has_end_marker": False,
+            "has_scripture_index": False,
+            "error": "Authentic independent index end delimiter not found after index start",
+            "passed": False,
+        }
+
+    idx_end = idx_start + earliest_end_rel
     bounded_index_text = full_text[idx_start:idx_end]
 
     # Find ordered section positions within bounded text
@@ -262,6 +338,7 @@ def verify_index_structure(full_text: str) -> dict:
             "index_present": True,
             "index_offset": idx_start,
             "index_end_offset": idx_end,
+            "has_end_marker": True,
             "has_subjects_section": has_subjects,
             "has_latin_section": has_latin,
             "has_greek_section": has_greek,
@@ -273,11 +350,17 @@ def verify_index_structure(full_text: str) -> dict:
 
     # Bounded subjects text
     subjects_text = bounded_index_text[m_sub.start():m_lat.start()]
+    stream_lines = decolumnize(subjects_text)
 
-    # Positive controls strictly bounded inside subjects section
-    has_abraham = re.search(r"\bAbraham\b.*?\b100\b", subjects_text, re.DOTALL | re.IGNORECASE) is not None
-    has_adam = re.search(r"\bAdam\b.*?\b130\b", subjects_text, re.DOTALL | re.IGNORECASE) is not None
-    has_ot_use = re.search(r"Old\s+Testament,\s*Use\s+of\s+the\b.*?\b302\b", subjects_text, re.DOTALL | re.IGNORECASE) is not None
+    # Positive controls strictly constrained to their own index entry blocks
+    abraham_entry = extract_entry(stream_lines, r"^Abraham\b")
+    has_abraham = re.search(r"\b100\b", abraham_entry) is not None
+
+    adam_entry = extract_entry(stream_lines, r"^Adam\b")
+    has_adam = re.search(r"\b130\b", adam_entry) is not None
+
+    ot_entry = extract_entry(stream_lines, r"^Old\s+Testament,\s*Use\s+of\s+the\b")
+    has_ot_use = re.search(r"\b302\b", ot_entry) is not None
 
     positive_controls_passed = has_abraham and has_adam and has_ot_use
 
@@ -305,6 +388,7 @@ def verify_index_structure(full_text: str) -> dict:
         "index_present": True,
         "index_offset": idx_start,
         "index_end_offset": idx_end,
+        "has_end_marker": True,
         "has_subjects_section": has_subjects,
         "has_latin_section": has_latin,
         "has_greek_section": has_greek,
@@ -318,6 +402,24 @@ def verify_index_structure(full_text: str) -> dict:
         "detected_scripture_pattern": detected_scripture_pattern,
         "passed": passed,
     }
+
+
+def validate_p118_context(raw_text: str, text_sha256: str, match_pos: int) -> bool:
+    """Strictly validate that the Gal. iii, 13 match is bound to the verified 1895 volume digest
+
+    AND occurs within the authentic p. 118 Rom 4:25 note citing Schäder.
+    """
+    if text_sha256 != EXPECTED_TEXT_SHA256:
+        return False
+    if not raw_text or match_pos < 0 or match_pos >= len(raw_text):
+        return False
+    window_start = max(0, match_pos - 1500)
+    window_end = min(len(raw_text), match_pos + 1500)
+    window = raw_text[window_start:window_end]
+    has_schader = ("Schader" in window) or ("Schäder" in window)
+    has_lebendigen = "lebendigen Christus" in window
+    has_theological_context = ("Wrath of God" in window) or ("Rom. iv. 25" in window) or ("sinner" in window)
+    return bool(has_schader and has_lebendigen and has_theological_context)
 
 
 def build_markdown_report(
@@ -412,7 +514,9 @@ def build_markdown_report(
     md.append("## Bibliographic Structure of the Authorial Index")
     md.append("")
     md.append("Programmatic inspection of the authorial **Index to the Notes** (printed pp. 437–450) established the following bibliographic facts:")
-    md.append(f"- **Index Present:** `{index_results.get('index_present', False)}` (bounds: offset {index_results.get('index_offset', 'N/A')} to {index_results.get('index_end_offset', 'N/A')})")
+    end_offset_str = f"offset {index_results['index_end_offset']}" if index_results.get("index_end_offset") is not None else "None (delimiter absent)"
+    md.append(f"- **Index Present:** `{index_results.get('index_present', False)}` (bounds: offset {index_results.get('index_offset', 'N/A')} to {end_offset_str})")
+    md.append(f"- **End Delimiter Verified:** `{index_results.get('has_end_marker', False)}`")
     md.append(f"- **Section I. Subjects (pp. 437–442):** Present (`{index_results.get('has_subjects_section', False)}`)")
     md.append(f"- **Section II. Latin Words (pp. 443–444):** Present (`{index_results.get('has_latin_section', False)}`)")
     md.append(f"- **Section III. Greek Words (pp. 445–450):** Present (`{index_results.get('has_greek_section', False)}`)")
@@ -434,12 +538,6 @@ def build_markdown_report(
     md.append("## Scholarly Qualitative Assessment of Detected Hits")
     md.append("")
 
-    # Source-and-text-hash-bound check for genuine 1895 volume context
-    is_authentic_volume = (
-        text_sha256 == EXPECTED_TEXT_SHA256
-        and "Schader" in raw_text or "Sch\u00e4der" in raw_text or "lebendigen Christus" in raw_text
-    )
-
     has_any_hits = any(r["total_matches"] > 0 for r in results)
     if not has_any_hits:
         md.append("No matches detected across any of the five non-Romans loci.")
@@ -449,8 +547,18 @@ def build_markdown_report(
                 md.append(f"### Assessment for {r['id']} ({r['name']})")
                 md.append("")
                 md.append(f"- **Pattern Breakdown:** `{r['nt_matches']}` NT citation match(es), `{r['ot_matches']}` OT citation match(es), `{r['lemma_matches']}` lemma match(es).")
+
                 # Genuine p. 118 historical context emitted ONLY when hash-bound and context-verified
-                if r["id"] == "B001-12" and is_authentic_volume and r["nt_matches"] == 1 and r["ot_matches"] == 0 and r["lemma_matches"] == 0:
+                p118_verified = False
+                if r["id"] == "B001-12" and r["nt_matches"] == 1 and r["ot_matches"] == 0 and r["lemma_matches"] == 0:
+                    match_pos = -1
+                    for p in r["patterns"]:
+                        if p["category"] == "NT" and p["snippets"]:
+                            match_pos = p["snippets"][0]["pos"]
+                            break
+                    p118_verified = validate_p118_context(raw_text, text_sha256, match_pos)
+
+                if p118_verified:
                     md.append("- **Verified Source Context (Printed p. 118):** The single NT citation (`Gal. iii, 13`) occurs on printed page 118 in a theological note on Rom 4:25 summarizing E. Schäder's 1893 monograph (*Die Bedeutung des lebendigen Christus für die Rechtfertigung nach Paulus*). It is cited parenthetically alongside 2 Cor 5:21 as a dogmatic proof text for Christ enduring divine wrath.")
                     md.append("- **Absence of Text-Critical Analysis:** The Old Testament Vorlage (Deut 21:23) is not cited (`0 matches`), Greek quotation wording (`ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου`) is not present (`0 matches`), and the textual divergence between Gal 3:13 and Deut 21:23 is not analyzed.")
                 else:
@@ -468,9 +576,20 @@ def build_markdown_report(
     # Scope preservation: dynamic, non-contradictory summary based on actual results
     zero_loci = [r["id"] for r in results if r["total_matches"] == 0]
     matched_loci = [r["id"] for r in results if r["total_matches"] > 0]
+    b12_p118_verified = False
+    if "B001-12" in matched_loci:
+        b12_r = [r for r in results if r["id"] == "B001-12"][0]
+        if b12_r["nt_matches"] == 1 and b12_r["ot_matches"] == 0 and b12_r["lemma_matches"] == 0:
+            match_pos = -1
+            for p in b12_r["patterns"]:
+                if p["category"] == "NT" and p["snippets"]:
+                    match_pos = p["snippets"][0]["pos"]
+                    break
+            b12_p118_verified = validate_p118_context(raw_text, text_sha256, match_pos)
+
     if len(zero_loci) == len(results):
         md.append("4. **Scope Preservation:** No discussion of any of the five non-Romans B001 passage comparisons was found in the documented full-volume text search.")
-    elif is_authentic_volume and zero_loci == ["B001-8", "B001-9", "B001-10", "B001-11"] and matched_loci == ["B001-12"]:
+    elif b12_p118_verified and zero_loci == ["B001-8", "B001-9", "B001-10", "B001-11"] and matched_loci == ["B001-12"]:
         md.append("4. **Scope Preservation:** While the five specific non-Romans B001 passage comparisons (and their Old Testament Vorlagen) are not analyzed in this Romans commentary (with Gal 3:13 appearing only once as an incidental parenthetical proof text on p. 118), the Excursus on 'St. Paul's Use of the Old Testament' (printed pp. 302–307) addresses cross-Pauline quotation practice globally, including Emil Kautzsch's (1869) 84-quotation taxonomy and 1 Cor 3:19 / Job 5:13. These cross-Pauline findings are preserved in `citation_ledger.csv` under `S02F-E010` through `S02F-E014`.")
     else:
         md.append(f"4. **Scope Preservation:** Measured matches detected for {', '.join(matched_loci)}; no matches detected for {', '.join(zero_loci)}. Cross-Pauline excursus evidence preserved in citation ledger.")

@@ -130,7 +130,8 @@ Before executing negative target queries, the regex engine was validated against
 ## Bibliographic Structure of the Authorial Index
 
 Programmatic inspection of the authorial **Index to the Notes** (printed pp. 437–450) established the following bibliographic facts:
-- **Index Present:** `True` (bounds: offset 1850437 to 1907238)
+- **Index Present:** `True` (bounds: offset 1850437 to offset 1904030)
+- **End Delimiter Verified:** `True`
 - **Section I. Subjects (pp. 437–442):** Present (`True`)
 - **Section II. Latin Words (pp. 443–444):** Present (`True`)
 - **Section III. Greek Words (pp. 445–450):** Present (`True`)

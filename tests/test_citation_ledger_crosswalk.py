@@ -339,61 +339,181 @@ def test_s02f_synthetic_report_generation_and_index_validation():
     assert report_zero.count("NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH") >= 5
     assert "No discussion of any of the five non-Romans B001 passage comparisons was found" in report_zero
 
+    # Scenario F: R6-F1 Boolean Precedence Regression Tests (Wrong hash + keywords)
+    # Even if raw text contains Gal 3:13 AND keywords, a wrong text hash MUST NEVER emit p. 118 historical interpretation
+    text_fake_schader = "Appendix note: Gal. iii, 13." + " " * 100 + "Unrelated note mentioning Herr Schäder."
+    res_fake_schader = vns.run_search(text_fake_schader)
+    b12_fs = [r for r in res_fake_schader if r["id"] == "B001-12"][0]
+    assert b12_fs["nt_matches"] == 1
+    report_fake_schader = vns.build_markdown_report(
+        res_fake_schader, dummy_positive_results, dummy_index_results, dummy_pdf, 1000,
+        "dummy_pdf_sha", dummy_text, "WRONG_TEXT_HASH_12345", 50, 100, raw_text=text_fake_schader
+    )
+    assert "Verified Source Context (Printed p. 118)" not in report_fake_schader
+    assert "E. Schäder's 1893 monograph" not in report_fake_schader
+    assert "theological note on Rom 4:25" not in report_fake_schader
+    assert "Die Bedeutung des lebendigen Christus" not in report_fake_schader
+    assert "Contextual interpretation unverified" in report_fake_schader
+
+    text_fake_lebendigen = "Incidental Gal. iii, 13." + " " * 100 + "Unrelated line mentioning lebendigen Christus elsewhere."
+    res_fake_lebendigen = vns.run_search(text_fake_lebendigen)
+    report_fake_lebendigen = vns.build_markdown_report(
+        res_fake_lebendigen, dummy_positive_results, dummy_index_results, dummy_pdf, 1000,
+        "dummy_pdf_sha", dummy_text, "WRONG_TEXT_HASH_67890", 50, 100, raw_text=text_fake_lebendigen
+    )
+    assert "Verified Source Context (Printed p. 118)" not in report_fake_lebendigen
+    assert "E. Schäder's 1893 monograph" not in report_fake_lebendigen
+    assert "theological note on Rom 4:25" not in report_fake_lebendigen
+    assert "Die Bedeutung des lebendigen Christus" not in report_fake_lebendigen
+    assert "Contextual interpretation unverified" in report_fake_lebendigen
+
+    text_fake_both = "Gal. iii, 13." + " " * 100 + "Schäder monograph on lebendigen Christus."
+    res_fake_both = vns.run_search(text_fake_both)
+    report_fake_both = vns.build_markdown_report(
+        res_fake_both, dummy_positive_results, dummy_index_results, dummy_pdf, 1000,
+        "dummy_pdf_sha", dummy_text, "WRONG_TEXT_HASH_ABCDEF", 50, 100, raw_text=text_fake_both
+    )
+    assert "Verified Source Context (Printed p. 118)" not in report_fake_both
+    assert "E. Schäder's 1893 monograph" not in report_fake_both
+    assert "theological note on Rom 4:25" not in report_fake_both
+    assert "Die Bedeutung des lebendigen Christus" not in report_fake_both
+    assert "Contextual interpretation unverified" in report_fake_both
+
+    # Direct validation helper test (verifies that validate_p118_context fails closed on wrong hash)
+    assert vns.validate_p118_context(text_fake_both, "WRONG_HASH", 0) is False
+    assert vns.validate_p118_context(text_fake_schader, "WRONG_HASH", 0) is False
+    assert vns.validate_p118_context(text_fake_lebendigen, "WRONG_HASH", 0) is False
+
     # Index structure validation tests
     # Missing index fails
     bad_index = vns.verify_index_structure("A text with no index at all.")
     assert bad_index["passed"] is False
     assert bad_index["index_present"] is False
 
-    # Valid index succeeds
+    # Valid index with authentic end delimiter succeeds
     good_index_text = (
         "Main text...\nINDEX              TO THE                NOTES\n"
         "I. SUBJECTS\nAbraham, Righteousness of, p. 100 ff.\nAdam, p. 130 ff.\n"
         "Old Testament, Use of the, pp. 77; 302-307.\n"
         "II. LATIN WORDS\nIII. GREEK WORDS\n"
+        "The International Theological Library\n"
     )
     good_index = vns.verify_index_structure(good_index_text)
     assert good_index["passed"] is True
+    assert good_index["has_end_marker"] is True
     assert good_index["has_subjects_section"] is True
     assert good_index["has_latin_section"] is True
     assert good_index["has_greek_section"] is True
     assert good_index["ordered"] is True
     assert good_index["has_scripture_index"] is False
 
-    # Adversarial index test 1: Unexpected Scripture index detected
-    scrip_index_text = (
+    # Adversarial index test 1: Missing end marker fails closed
+    no_end_text = (
+        "Main text...\nINDEX              TO THE                NOTES\n"
+        "I. SUBJECTS\nAbraham, Righteousness of, p. 100 ff.\nAdam, p. 130 ff.\n"
+        "Old Testament, Use of the, pp. 77; 302-307.\n"
+        "II. LATIN WORDS\nIII. GREEK WORDS\n"
+    )
+    no_end_index = vns.verify_index_structure(no_end_text)
+    assert no_end_index["passed"] is False
+    assert no_end_index["has_end_marker"] is False
+    assert "end delimiter not found" in no_end_index["error"]
+
+    # Adversarial index test 2: Unrelated trailing Scripture index heading AFTER end delimiter
+    # (Must NOT fail the bounded index because it occurs outside index boundaries in publisher ads)
+    trailing_scrip_text = (
+        "Main text...\nINDEX              TO THE                NOTES\n"
+        "I. SUBJECTS\nAbraham, Righteousness of, p. 100 ff.\nAdam, p. 130 ff.\n"
+        "Old Testament, Use of the, pp. 77; 302-307.\n"
+        "II. LATIN WORDS\nIII. GREEK WORDS\n"
+        "The International Theological Library\n"
+        "Publisher ad mentioning IV. PASSAGES OF SCRIPTURE in Driver's volume.\n"
+    )
+    trailing_index = vns.verify_index_structure(trailing_scrip_text)
+    assert trailing_index["passed"] is True
+    assert trailing_index["has_scripture_index"] is False
+
+    # Adversarial index test 3: Scripture index heading INSIDE the index (before end delimiter)
+    inside_scrip_text = (
         "Main text...\nINDEX              TO THE                NOTES\n"
         "I. SUBJECTS\nAbraham, Righteousness of, p. 100 ff.\nAdam, p. 130 ff.\n"
         "Old Testament, Use of the, pp. 77; 302-307.\n"
         "II. LATIN WORDS\nIII. GREEK WORDS\nIV. PASSAGES OF SCRIPTURE\n"
+        "The International Theological Library\n"
     )
-    scrip_index = vns.verify_index_structure(scrip_index_text)
+    scrip_index = vns.verify_index_structure(inside_scrip_text)
     assert scrip_index["has_scripture_index"] is True
     assert scrip_index["passed"] is False
-    scrip_report = vns.build_markdown_report(res_zero, dummy_positive_results, scrip_index, dummy_pdf, 1000, "sha", dummy_text, "sha_txt", 50, 100, raw_text=scrip_index_text)
-    # MUST NOT print None when scripture index exists
+    scrip_report = vns.build_markdown_report(res_zero, dummy_positive_results, scrip_index, dummy_pdf, 1000, "sha", dummy_text, "sha_txt", 50, 100, raw_text=inside_scrip_text)
     assert "Dedicated Scripture Passage Index (Index Locorum): None" not in scrip_report
     assert "PRESENT (detected pattern" in scrip_report
 
-    # Adversarial index test 2: Out-of-order sections fail
+    # Adversarial index test 4: Out-of-order sections fail
     out_of_order_text = (
         "Main text...\nINDEX              TO THE                NOTES\n"
         "III. GREEK WORDS\nI. SUBJECTS\nAbraham, Righteousness of, p. 100 ff.\n"
-        "II. LATIN WORDS\n"
+        "II. LATIN WORDS\nThe International Theological Library\n"
     )
     ooo_index = vns.verify_index_structure(out_of_order_text)
     assert ooo_index["passed"] is False
     assert ooo_index["ordered"] is False
 
-    # Adversarial index test 3: Positive control out-of-bounds (e.g. Abraham after Latin section) fails
+    # Adversarial index test 5: Positive control out-of-bounds (e.g. Abraham after Latin section) fails
     oob_text = (
         "Main text...\nINDEX              TO THE                NOTES\n"
         "I. SUBJECTS\nAdam, p. 130 ff.\nOld Testament, Use of the, pp. 77; 302-307.\n"
         "II. LATIN WORDS\nAbraham, Righteousness of, p. 100 ff.\nIII. GREEK WORDS\n"
+        "The International Theological Library\n"
     )
     oob_index = vns.verify_index_structure(oob_text)
     assert oob_index["passed"] is False
     assert oob_index["positive_controls"]["Abraham"] is False
+
+    # Adversarial index test 6: Cross-entry borrowing of page numbers
+    # Abraham lacks 100, but subsequent unrelated entry Absalom has 100 -> MUST FAIL
+    cross_entry_abraham_text = (
+        "Main text...\nINDEX              TO THE                NOTES\n"
+        "I. SUBJECTS\n"
+        "Abraham, Faith of, p. 97 ff.\n"
+        "Absalom, rebellion of, p. 100 ff.\n"
+        "Adam, p. 130 ff.\n"
+        "Old Testament, Use of the, pp. 77; 302-307.\n"
+        "II. LATIN WORDS\nIII. GREEK WORDS\n"
+        "The International Theological Library\n"
+    )
+    cross_abraham_idx = vns.verify_index_structure(cross_entry_abraham_text)
+    assert cross_abraham_idx["passed"] is False
+    assert cross_abraham_idx["positive_controls"]["Abraham"] is False
+
+    # Adam lacks 130, but subsequent unrelated entry Adrian has 130 -> MUST FAIL
+    cross_entry_adam_text = (
+        "Main text...\nINDEX              TO THE                NOTES\n"
+        "I. SUBJECTS\n"
+        "Abraham, Righteousness of, p. 100 ff.\n"
+        "Adam, Fall of, p. 136 ff.\n"
+        "Adrian, Emperor, p. 130.\n"
+        "Old Testament, Use of the, pp. 77; 302-307.\n"
+        "II. LATIN WORDS\nIII. GREEK WORDS\n"
+        "The International Theological Library\n"
+    )
+    cross_adam_idx = vns.verify_index_structure(cross_entry_adam_text)
+    assert cross_adam_idx["passed"] is False
+    assert cross_adam_idx["positive_controls"]["Adam"] is False
+
+    # Old Testament lacks 302, but subsequent unrelated entry Oltramare has 302 -> MUST FAIL
+    cross_entry_ot_text = (
+        "Main text...\nINDEX              TO THE                NOTES\n"
+        "I. SUBJECTS\n"
+        "Abraham, Righteousness of, p. 100 ff.\n"
+        "Adam, p. 130 ff.\n"
+        "Old Testament, Use of the, pp. 77; 264.\n"
+        "Oltramare, Hugues, p. 302.\n"
+        "II. LATIN WORDS\nIII. GREEK WORDS\n"
+        "The International Theological Library\n"
+    )
+    cross_ot_idx = vns.verify_index_structure(cross_entry_ot_text)
+    assert cross_ot_idx["passed"] is False
+    assert cross_ot_idx["positive_controls"]["Old Testament, Use of the"] is False
 
 def test_s02f_self_audit_consistency_with_search_log():
     repo_root = Path(__file__).resolve().parent.parent
@@ -411,3 +531,61 @@ def test_s02f_self_audit_consistency_with_search_log():
     assert "B001-12" in audit_text
     assert "Gal. iii, 13" in audit_text
     assert "0 occurrences across all 5 loci" not in audit_text
+
+
+def test_s02f_text_digest_mismatch_exit_code_8_and_override(tmp_path, monkeypatch):
+    """Test that main() fails closed with exit code 8 on text digest mismatch,
+
+    and that --allow-text-digest-mismatch explicitly permits continued execution.
+    """
+    repo_root = Path(__file__).resolve().parent.parent
+    import sys
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s02f_negative_search as vns
+
+    fake_pdf = tmp_path / "fake_romans.pdf"
+    fake_pdf.write_bytes(b"0" * vns.EXPECTED_RAW_PDF_BYTES)
+    fake_text = tmp_path / "fake_extracted.txt"
+    fake_out = tmp_path / "out_log.md"
+
+    # Mock get_sha256 for the fake PDF to match EXPECTED_RAW_PDF_SHA256
+    orig_get_sha256 = vns.get_sha256
+    def mock_get_sha256(p):
+        if Path(p) == fake_pdf:
+            return vns.EXPECTED_RAW_PDF_SHA256
+        return orig_get_sha256(p)
+
+    monkeypatch.setattr(vns, "get_sha256", mock_get_sha256)
+
+    # Mock subprocess.run for pdftotext to write text with a non-matching digest
+    def mock_subprocess_run(cmd, check=False):
+        out_txt = Path(cmd[3])
+        out_txt.write_text("Dummy extracted text line\n" * 2000, encoding="utf-8")
+        class SubprocessResult:
+            returncode = 0
+        return SubprocessResult()
+
+    monkeypatch.setattr("subprocess.run", mock_subprocess_run)
+
+    # 1. Without --allow-text-digest-mismatch -> MUST exit 8
+    test_args_strict = [
+        "verify_s02f_negative_search.py",
+        "--pdf", str(fake_pdf),
+        "--text", str(fake_text),
+        "--out", str(fake_out),
+    ]
+    monkeypatch.setattr(sys, "argv", test_args_strict)
+    ret_strict = vns.main()
+    assert ret_strict == 8, f"Expected exit code 8 on digest mismatch, got {ret_strict}"
+
+    # 2. With --allow-text-digest-mismatch -> MUST bypass exit 8
+    test_args_override = [
+        "verify_s02f_negative_search.py",
+        "--pdf", str(fake_pdf),
+        "--text", str(fake_text),
+        "--out", str(fake_out),
+        "--allow-text-digest-mismatch",
+    ]
+    monkeypatch.setattr(sys, "argv", test_args_override)
+    ret_override = vns.main()
+    assert ret_override != 8, f"Expected override to bypass exit code 8, got {ret_override}"
