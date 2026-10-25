@@ -3,8 +3,8 @@
 
 Fails closed on missing or corrupted input PDF, binds extracted text cryptographically
 to the source volume, runs positive-control validation against genuine 19th-century
-citation typography, and executes whitespace-tolerant regex searches for the five
-non-Romans B001 passage comparisons:
+citation typography, validates bounded and ordered authorial index structure, and executes
+whitespace-tolerant regex searches for the five non-Romans B001 passage comparisons:
   - B001-8:  1 Cor 1:19 / Isa 29:14
   - B001-9:  1 Cor 6:16 / Gen 2:24
   - B001-10: 1 Cor 9:9 / Deut 25:4
@@ -222,48 +222,100 @@ def run_search(full_text: str) -> list[dict]:
 
 
 def verify_index_structure(full_text: str) -> dict:
-    """Programmatically verify the authorial index structure and positive index entries."""
-    idx_start = full_text.find("INDEX              TO THE                NOTES")
-    if idx_start == -1:
-        idx_start = full_text.find("INDEX TO THE NOTES")
-
-    if idx_start == -1:
+    """Programmatically verify bounded, ordered index structure and positive controls."""
+    # Find start heading
+    m_start = re.search(r"INDEX\s+TO\s+THE\s+NOTES", full_text, re.IGNORECASE)
+    if not m_start:
         return {
             "index_present": False,
-            "error": "Index to the Notes not found in full text",
+            "error": "Index to the Notes heading not found in full text",
+            "has_scripture_index": False,
             "passed": False,
         }
 
-    index_text = full_text[idx_start:]
+    idx_start = m_start.start()
 
-    # Check the three authentic index divisions in the 1895 volume
-    has_subjects = "I. SUBJECTS" in index_text
-    has_latin = "II. LATIN" in index_text or "II.    LATIN" in index_text
-    has_greek = "III. GREEK" in index_text or "III.   GREEK" in index_text
+    # Find end boundary (publisher catalog or EOF)
+    m_end = re.search(r"An\s+Introduction\s+to\s+the\s+Literature\s+of\s+the\s+Old\s+Testament", full_text[idx_start:], re.IGNORECASE)
+    idx_end = idx_start + m_end.start() if m_end else len(full_text)
 
-    # Positive controls within the index: known subject entries
-    has_abraham = re.search(r"Abraham.*Righteousness.*100", index_text, re.DOTALL) is not None or "Abraham" in index_text
-    has_adam = "Adam" in index_text
-    has_ot_use = "Old Testament, Use of the" in index_text
+    bounded_index_text = full_text[idx_start:idx_end]
 
-    # Crucial bibliographic finding: the volume contains NO Scripture passage index (Index Locorum)
-    # Confirm that there is no 'IV. PASSAGES OF SCRIPTURE' or separate Bible index
-    has_scripture_index = "IV. PASSAGES" in index_text or "INDEX OF PASSAGES" in index_text
+    # Find ordered section positions within bounded text
+    m_sub = re.search(r"\bI\.\s*SUBJECTS\b", bounded_index_text, re.IGNORECASE)
+    m_lat = re.search(r"\bII\.\s*LATIN\b", bounded_index_text, re.IGNORECASE)
+    m_grk = re.search(r"\bIII\.\s*GREEK\b", bounded_index_text, re.IGNORECASE)
 
-    passed = has_subjects and has_latin and has_greek and has_abraham and has_adam and has_ot_use
+    has_subjects = m_sub is not None
+    has_latin = m_lat is not None
+    has_greek = m_grk is not None
+
+    ordered = False
+    if has_subjects and has_latin and has_greek:
+        pos_sub = m_sub.start()
+        pos_lat = m_lat.start()
+        pos_grk = m_grk.start()
+        ordered = (0 <= pos_sub < pos_lat < pos_grk)
+
+    if not ordered:
+        return {
+            "index_present": True,
+            "index_offset": idx_start,
+            "index_end_offset": idx_end,
+            "has_subjects_section": has_subjects,
+            "has_latin_section": has_latin,
+            "has_greek_section": has_greek,
+            "ordered": False,
+            "has_scripture_index": False,
+            "error": "Index sections missing or out of order",
+            "passed": False,
+        }
+
+    # Bounded subjects text
+    subjects_text = bounded_index_text[m_sub.start():m_lat.start()]
+
+    # Positive controls strictly bounded inside subjects section
+    has_abraham = re.search(r"\bAbraham\b.*?\b100\b", subjects_text, re.DOTALL | re.IGNORECASE) is not None
+    has_adam = re.search(r"\bAdam\b.*?\b130\b", subjects_text, re.DOTALL | re.IGNORECASE) is not None
+    has_ot_use = re.search(r"Old\s+Testament,\s*Use\s+of\s+the\b.*?\b302\b", subjects_text, re.DOTALL | re.IGNORECASE) is not None
+
+    positive_controls_passed = has_abraham and has_adam and has_ot_use
+
+    # Detect unexpected Scripture passage index patterns within bounded index text
+    scripture_patterns = [
+        r"\bIV\.\s*PASSAGES\b",
+        r"\bINDEX\s+OF\s+PASSAGES\b",
+        r"\bINDEX\s+LOCORUM\b",
+        r"\bPASSAGES\s+OF\s+SCRIPTURE\b",
+        r"\bSCRIPTURE\s+INDEX\b",
+    ]
+    detected_scripture_pattern = None
+    for p in scripture_patterns:
+        m_scrip = re.search(p, bounded_index_text, re.IGNORECASE)
+        if m_scrip:
+            detected_scripture_pattern = p
+            break
+
+    has_scripture_index = detected_scripture_pattern is not None
+
+    # Passed requires valid bounded ordered sections, positive controls, and no unexpected scripture index
+    passed = ordered and positive_controls_passed and not has_scripture_index
 
     return {
         "index_present": True,
         "index_offset": idx_start,
+        "index_end_offset": idx_end,
         "has_subjects_section": has_subjects,
         "has_latin_section": has_latin,
         "has_greek_section": has_greek,
+        "ordered": ordered,
         "positive_controls": {
             "Abraham": has_abraham,
             "Adam": has_adam,
             "Old Testament, Use of the": has_ot_use,
         },
         "has_scripture_index": has_scripture_index,
+        "detected_scripture_pattern": detected_scripture_pattern,
         "passed": passed,
     }
 
@@ -279,6 +331,7 @@ def build_markdown_report(
     text_sha256: str,
     line_count: int,
     word_count: int,
+    raw_text: str = "",
 ) -> str:
     md = []
     md.append("# S02F — Full-Volume Negative Search Verification Log")
@@ -359,19 +412,34 @@ def build_markdown_report(
     md.append("## Bibliographic Structure of the Authorial Index")
     md.append("")
     md.append("Programmatic inspection of the authorial **Index to the Notes** (printed pp. 437–450) established the following bibliographic facts:")
-    md.append(f"- **Index Present:** `{index_results['index_present']}` (starting at text offset {index_results.get('index_offset', 'N/A')})")
-    md.append(f"- **Section I. Subjects (pp. 437–442):** Present (`{index_results['has_subjects_section']}`)")
-    md.append(f"- **Section II. Latin Words (pp. 443–444):** Present (`{index_results['has_latin_section']}`)")
-    md.append(f"- **Section III. Greek Words (pp. 445–450):** Present (`{index_results['has_greek_section']}`)")
-    md.append(f"- **Dedicated Scripture Passage Index (Index Locorum):** None (`has_scripture_index={index_results['has_scripture_index']}`). Sanday & Headlam's 1895 commentary contains no systematic Scripture index of Old or New Testament citations.")
+    md.append(f"- **Index Present:** `{index_results.get('index_present', False)}` (bounds: offset {index_results.get('index_offset', 'N/A')} to {index_results.get('index_end_offset', 'N/A')})")
+    md.append(f"- **Section I. Subjects (pp. 437–442):** Present (`{index_results.get('has_subjects_section', False)}`)")
+    md.append(f"- **Section II. Latin Words (pp. 443–444):** Present (`{index_results.get('has_latin_section', False)}`)")
+    md.append(f"- **Section III. Greek Words (pp. 445–450):** Present (`{index_results.get('has_greek_section', False)}`)")
+    md.append(f"- **Sections Ordered:** `{index_results.get('ordered', False)}`")
+
+    # Accurate, non-contradictory Scripture index reporting
+    if index_results.get("has_scripture_index"):
+        pat = index_results.get("detected_scripture_pattern", "pattern matched")
+        md.append(f"- **Dedicated Scripture Passage Index (Index Locorum):** PRESENT (detected pattern: `{pat}`).")
+    else:
+        md.append("- **Dedicated Scripture Passage Index (Index Locorum):** None detected within the bounded index structure (pp. 437–450; subject to OCR and typographical limits). The authorial index is organized exclusively into I. Subjects, II. Latin Words, and III. Greek Words.")
+
     md.append("- **Subject Index Positive Controls:**")
-    for k, v in index_results["positive_controls"].items():
+    for k, v in index_results.get("positive_controls", {}).items():
         md.append(f"  - Entry `{k}`: `{v}`")
     md.append("")
     md.append("---")
     md.append("")
     md.append("## Scholarly Qualitative Assessment of Detected Hits")
     md.append("")
+
+    # Source-and-text-hash-bound check for genuine 1895 volume context
+    is_authentic_volume = (
+        text_sha256 == EXPECTED_TEXT_SHA256
+        and "Schader" in raw_text or "Sch\u00e4der" in raw_text or "lebendigen Christus" in raw_text
+    )
+
     has_any_hits = any(r["total_matches"] > 0 for r in results)
     if not has_any_hits:
         md.append("No matches detected across any of the five non-Romans loci.")
@@ -381,11 +449,12 @@ def build_markdown_report(
                 md.append(f"### Assessment for {r['id']} ({r['name']})")
                 md.append("")
                 md.append(f"- **Pattern Breakdown:** `{r['nt_matches']}` NT citation match(es), `{r['ot_matches']}` OT citation match(es), `{r['lemma_matches']}` lemma match(es).")
-                if r["id"] == "B001-12" and r["nt_matches"] == 1 and r["ot_matches"] == 0 and r["lemma_matches"] == 0:
-                    md.append("- **Contextual Analysis:** The single NT citation (`Gal. iii, 13`) occurs on printed page 118 in a theological note on Rom 4:25 summarizing E. Schäder's 1893 monograph (*Die Bedeutung des lebendigen Christus für die Rechtfertigung nach Paulus*). It is cited parenthetically alongside 2 Cor 5:21 as a dogmatic proof text for Christ enduring divine wrath.")
+                # Genuine p. 118 historical context emitted ONLY when hash-bound and context-verified
+                if r["id"] == "B001-12" and is_authentic_volume and r["nt_matches"] == 1 and r["ot_matches"] == 0 and r["lemma_matches"] == 0:
+                    md.append("- **Verified Source Context (Printed p. 118):** The single NT citation (`Gal. iii, 13`) occurs on printed page 118 in a theological note on Rom 4:25 summarizing E. Schäder's 1893 monograph (*Die Bedeutung des lebendigen Christus für die Rechtfertigung nach Paulus*). It is cited parenthetically alongside 2 Cor 5:21 as a dogmatic proof text for Christ enduring divine wrath.")
                     md.append("- **Absence of Text-Critical Analysis:** The Old Testament Vorlage (Deut 21:23) is not cited (`0 matches`), Greek quotation wording (`ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου`) is not present (`0 matches`), and the textual divergence between Gal 3:13 and Deut 21:23 is not analyzed.")
                 else:
-                    md.append(f"- **Contextual Analysis:** Measured matches ({r['total_matches']}) require evaluation against the printed commentary context.")
+                    md.append(f"- **Contextual Analysis:** Measured matches ({r['total_matches']}) require evaluation against the specific text layer. Contextual interpretation unverified for arbitrary or synthetic input.")
                 md.append("")
 
     md.append("---")
@@ -395,7 +464,16 @@ def build_markdown_report(
     md.append(f"1. **Digital Text Layer Scope:** The search was executed across the {line_count:,}-line text layer extracted from `{pdf_path.name}` via Poppler `pdftotext -layout 23.03.0`.")
     md.append("2. **OCR and Typographical Quality:** Nineteenth-century Greek typography, accented characters, font ligatures, line breaks, hyphenations, or scan artifacts could hypothetically cause a regex pattern to miss an irregular typographical instance. Stripping accents and testing truncated stems (e.g. `φιμωσ`, `κημωσ`) mitigates this limitation.")
     md.append("3. **Epistemological Constraint:** While a negative OCR/regex search proves that no matching citation strings or diagnostic Greek/English phrases exist in the machine-readable digital text layer, it constitutes empirical negative text-search evidence rather than a metaphysical proof of non-existence in the authors' unexpressed thoughts.")
-    md.append("4. **Scope Preservation:** While the five specific non-Romans B001 passage comparisons (and their Old Testament Vorlagen) are not analyzed in this Romans commentary (with Gal 3:13 appearing only once as an incidental parenthetical proof text on p. 118), the Excursus on 'St. Paul's Use of the Old Testament' (printed pp. 302–307) addresses cross-Pauline quotation practice globally, including Emil Kautzsch's (1869) 84-quotation taxonomy and 1 Cor 3:19 / Job 5:13. These cross-Pauline findings are preserved in `citation_ledger.csv` under `S02F-E010` through `S02F-E014`.")
+
+    # Scope preservation: dynamic, non-contradictory summary based on actual results
+    zero_loci = [r["id"] for r in results if r["total_matches"] == 0]
+    matched_loci = [r["id"] for r in results if r["total_matches"] > 0]
+    if len(zero_loci) == len(results):
+        md.append("4. **Scope Preservation:** No discussion of any of the five non-Romans B001 passage comparisons was found in the documented full-volume text search.")
+    elif is_authentic_volume and zero_loci == ["B001-8", "B001-9", "B001-10", "B001-11"] and matched_loci == ["B001-12"]:
+        md.append("4. **Scope Preservation:** While the five specific non-Romans B001 passage comparisons (and their Old Testament Vorlagen) are not analyzed in this Romans commentary (with Gal 3:13 appearing only once as an incidental parenthetical proof text on p. 118), the Excursus on 'St. Paul's Use of the Old Testament' (printed pp. 302–307) addresses cross-Pauline quotation practice globally, including Emil Kautzsch's (1869) 84-quotation taxonomy and 1 Cor 3:19 / Job 5:13. These cross-Pauline findings are preserved in `citation_ledger.csv` under `S02F-E010` through `S02F-E014`.")
+    else:
+        md.append(f"4. **Scope Preservation:** Measured matches detected for {', '.join(matched_loci)}; no matches detected for {', '.join(zero_loci)}. Cross-Pauline excursus evidence preserved in citation ledger.")
     md.append("")
     return "\n".join(md).rstrip() + "\n"
 
@@ -405,6 +483,7 @@ def main() -> int:
     parser.add_argument("--pdf", type=Path, default=RAW_PDF_DEFAULT)
     parser.add_argument("--text", type=Path, default=DEFAULT_TEXT_PATH)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT_PATH)
+    parser.add_argument("--allow-text-digest-mismatch", action="store_true", help="Permit text layer whose SHA-256 differs from pinned EXPECTED_TEXT_SHA256")
     args = parser.parse_args()
 
     # Rule 1: Fail closed if raw PDF is missing
@@ -440,9 +519,10 @@ def main() -> int:
             print(f"pdftotext failed with exit code {res.returncode}", file=sys.stderr)
             return 4
         text_sha256 = get_sha256(args.text)
-        # Verify text digest matches expected
-        if text_sha256 != EXPECTED_TEXT_SHA256:
-            print(f"Warning: Extracted text SHA-256 ({text_sha256}) does not match expected ({EXPECTED_TEXT_SHA256}). Binding to measured digest.", file=sys.stderr)
+        # Strict text digest enforcement (R5-F4): fail closed on digest mismatch unless explicitly allowed
+        if text_sha256 != EXPECTED_TEXT_SHA256 and not args.allow_text_digest_mismatch:
+            print(f"Error: Extracted text SHA-256 ({text_sha256}) does not match expected ({EXPECTED_TEXT_SHA256}). Fail closed to enforce cryptographic reproducibility.", file=sys.stderr)
+            return 8
     else:
         text_sha256 = get_sha256(args.text)
 
@@ -497,6 +577,7 @@ def main() -> int:
         text_sha256,
         line_count,
         word_count,
+        raw_text=full_text,
     )
 
     args.out.parent.mkdir(parents=True, exist_ok=True)

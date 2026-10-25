@@ -130,11 +130,12 @@ Before executing negative target queries, the regex engine was validated against
 ## Bibliographic Structure of the Authorial Index
 
 Programmatic inspection of the authorial **Index to the Notes** (printed pp. 437–450) established the following bibliographic facts:
-- **Index Present:** `True` (starting at text offset 1850437)
+- **Index Present:** `True` (bounds: offset 1850437 to 1907238)
 - **Section I. Subjects (pp. 437–442):** Present (`True`)
 - **Section II. Latin Words (pp. 443–444):** Present (`True`)
 - **Section III. Greek Words (pp. 445–450):** Present (`True`)
-- **Dedicated Scripture Passage Index (Index Locorum):** None (`has_scripture_index=False`). Sanday & Headlam's 1895 commentary contains no systematic Scripture index of Old or New Testament citations.
+- **Sections Ordered:** `True`
+- **Dedicated Scripture Passage Index (Index Locorum):** None detected within the bounded index structure (pp. 437–450; subject to OCR and typographical limits). The authorial index is organized exclusively into I. Subjects, II. Latin Words, and III. Greek Words.
 - **Subject Index Positive Controls:**
   - Entry `Abraham`: `True`
   - Entry `Adam`: `True`
@@ -147,7 +148,7 @@ Programmatic inspection of the authorial **Index to the Notes** (printed pp. 437
 ### Assessment for B001-12 (Galatians 3:13 / Deuteronomy 21:23)
 
 - **Pattern Breakdown:** `1` NT citation match(es), `0` OT citation match(es), `0` lemma match(es).
-- **Contextual Analysis:** The single NT citation (`Gal. iii, 13`) occurs on printed page 118 in a theological note on Rom 4:25 summarizing E. Schäder's 1893 monograph (*Die Bedeutung des lebendigen Christus für die Rechtfertigung nach Paulus*). It is cited parenthetically alongside 2 Cor 5:21 as a dogmatic proof text for Christ enduring divine wrath.
+- **Verified Source Context (Printed p. 118):** The single NT citation (`Gal. iii, 13`) occurs on printed page 118 in a theological note on Rom 4:25 summarizing E. Schäder's 1893 monograph (*Die Bedeutung des lebendigen Christus für die Rechtfertigung nach Paulus*). It is cited parenthetically alongside 2 Cor 5:21 as a dogmatic proof text for Christ enduring divine wrath.
 - **Absence of Text-Critical Analysis:** The Old Testament Vorlage (Deut 21:23) is not cited (`0 matches`), Greek quotation wording (`ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου`) is not present (`0 matches`), and the textual divergence between Gal 3:13 and Deut 21:23 is not analyzed.
 
 ---

@@ -278,15 +278,19 @@ def test_s02f_synthetic_report_generation_and_index_validation():
         "passed": True,
     }
 
-    # Scenario A: Synthetic NT-only hit for B001-12
+    # Scenario A: Synthetic NT-only hit for B001-12 (arbitrary text, unverified context)
     text_nt = "Incidental cross-reference to Gal. iii, 13 in dogmatic note."
     res_nt = vns.run_search(text_nt)
     b12_nt = [r for r in res_nt if r["id"] == "B001-12"][0]
     assert b12_nt["nt_matches"] == 1
     assert b12_nt["ot_matches"] == 0
     assert b12_nt["lemma_matches"] == 0
-    report_nt = vns.build_markdown_report(res_nt, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha", dummy_text, "sha_txt", 50, 100)
+    report_nt = vns.build_markdown_report(res_nt, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha_arbitrary", dummy_text, "sha_txt_arbitrary", 50, 100, raw_text=text_nt)
     assert "MATCH DETECTED (1 hit(s): 1 NT, 0 OT, 0 lemma)" in report_nt
+    # CRITICAL INVARIANT: For arbitrary synthetic text, specific p. 118 / Schäder context is NEVER emitted!
+    assert "Schäder" not in report_nt
+    assert "Printed p. 118" not in report_nt
+    assert "Contextual interpretation unverified" in report_nt
 
     # Scenario B: Synthetic OT-positive hit for B001-12 (Deut 21:23)
     text_ot = "Paul's citation of Deut. xxi. 23 examined critically."
@@ -295,11 +299,12 @@ def test_s02f_synthetic_report_generation_and_index_validation():
     assert b12_ot["nt_matches"] == 0
     assert b12_ot["ot_matches"] == 1
     assert b12_ot["lemma_matches"] == 0
-    report_ot = vns.build_markdown_report(res_ot, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha", dummy_text, "sha_txt", 50, 100)
+    report_ot = vns.build_markdown_report(res_ot, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha_ot", dummy_text, "sha_txt_ot", 50, 100, raw_text=text_ot)
     assert "MATCH DETECTED (1 hit(s): 0 NT, 1 OT, 0 lemma)" in report_ot
-    # CRITICAL INVARIANT: When OT matches, no statement asserting Deut is absent may exist!
+    # CRITICAL INVARIANT: When OT matches, no statement asserting Deut is absent may exist anywhere in report!
     assert "Deut 21:23 is not cited" not in report_ot
     assert "Deut 21:23 is nowhere cited" not in report_ot
+    assert "Schäder" not in report_ot
 
     # Scenario C: Synthetic lemma-positive hit for B001-12
     text_lemma = "Quoting ἐπικατάρατος πᾶς as Greek text."
@@ -309,8 +314,9 @@ def test_s02f_synthetic_report_generation_and_index_validation():
     assert b12_lemma["ot_matches"] == 0
     # Matches both accented and unaccented lemma patterns
     assert b12_lemma["lemma_matches"] == 2
-    report_lemma = vns.build_markdown_report(res_lemma, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha", dummy_text, "sha_txt", 50, 100)
+    report_lemma = vns.build_markdown_report(res_lemma, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha_lemma", dummy_text, "sha_txt_lemma", 50, 100, raw_text=text_lemma)
     assert "MATCH DETECTED (2 hit(s): 0 NT, 0 OT, 2 lemma)" in report_lemma
+    assert "Schäder" not in report_lemma
 
     # Scenario D: Synthetic combined hit
     text_combined = "Gal. iii, 13 citing Deut. xxi. 23 with ἐπικατάρατος πᾶς."
@@ -320,16 +326,18 @@ def test_s02f_synthetic_report_generation_and_index_validation():
     assert b12_combined["ot_matches"] == 1
     assert b12_combined["lemma_matches"] == 2
     assert b12_combined["total_matches"] == 4
-    report_combined = vns.build_markdown_report(res_combined, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha", dummy_text, "sha_txt", 50, 100)
+    report_combined = vns.build_markdown_report(res_combined, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha_comb", dummy_text, "sha_txt_comb", 50, 100, raw_text=text_combined)
     assert "MATCH DETECTED (4 hit(s): 1 NT, 1 OT, 2 lemma)" in report_combined
+    assert "Deut 21:23 is not cited" not in report_combined
 
     # Scenario E: Synthetic zero-match text
     text_zero = "General discourse mentioning no targets."
     res_zero = vns.run_search(text_zero)
     for r in res_zero:
         assert r["total_matches"] == 0
-    report_zero = vns.build_markdown_report(res_zero, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha", dummy_text, "sha_txt", 50, 100)
+    report_zero = vns.build_markdown_report(res_zero, dummy_positive_results, dummy_index_results, dummy_pdf, 1000, "sha_zero", dummy_text, "sha_txt_zero", 50, 100, raw_text=text_zero)
     assert report_zero.count("NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH") >= 5
+    assert "No discussion of any of the five non-Romans B001 passage comparisons was found" in report_zero
 
     # Index structure validation tests
     # Missing index fails
@@ -349,4 +357,57 @@ def test_s02f_synthetic_report_generation_and_index_validation():
     assert good_index["has_subjects_section"] is True
     assert good_index["has_latin_section"] is True
     assert good_index["has_greek_section"] is True
+    assert good_index["ordered"] is True
     assert good_index["has_scripture_index"] is False
+
+    # Adversarial index test 1: Unexpected Scripture index detected
+    scrip_index_text = (
+        "Main text...\nINDEX              TO THE                NOTES\n"
+        "I. SUBJECTS\nAbraham, Righteousness of, p. 100 ff.\nAdam, p. 130 ff.\n"
+        "Old Testament, Use of the, pp. 77; 302-307.\n"
+        "II. LATIN WORDS\nIII. GREEK WORDS\nIV. PASSAGES OF SCRIPTURE\n"
+    )
+    scrip_index = vns.verify_index_structure(scrip_index_text)
+    assert scrip_index["has_scripture_index"] is True
+    assert scrip_index["passed"] is False
+    scrip_report = vns.build_markdown_report(res_zero, dummy_positive_results, scrip_index, dummy_pdf, 1000, "sha", dummy_text, "sha_txt", 50, 100, raw_text=scrip_index_text)
+    # MUST NOT print None when scripture index exists
+    assert "Dedicated Scripture Passage Index (Index Locorum): None" not in scrip_report
+    assert "PRESENT (detected pattern" in scrip_report
+
+    # Adversarial index test 2: Out-of-order sections fail
+    out_of_order_text = (
+        "Main text...\nINDEX              TO THE                NOTES\n"
+        "III. GREEK WORDS\nI. SUBJECTS\nAbraham, Righteousness of, p. 100 ff.\n"
+        "II. LATIN WORDS\n"
+    )
+    ooo_index = vns.verify_index_structure(out_of_order_text)
+    assert ooo_index["passed"] is False
+    assert ooo_index["ordered"] is False
+
+    # Adversarial index test 3: Positive control out-of-bounds (e.g. Abraham after Latin section) fails
+    oob_text = (
+        "Main text...\nINDEX              TO THE                NOTES\n"
+        "I. SUBJECTS\nAdam, p. 130 ff.\nOld Testament, Use of the, pp. 77; 302-307.\n"
+        "II. LATIN WORDS\nAbraham, Righteousness of, p. 100 ff.\nIII. GREEK WORDS\n"
+    )
+    oob_index = vns.verify_index_structure(oob_text)
+    assert oob_index["passed"] is False
+    assert oob_index["positive_controls"]["Abraham"] is False
+
+def test_s02f_self_audit_consistency_with_search_log():
+    repo_root = Path(__file__).resolve().parent.parent
+    s02f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S02F"
+    audit_path = s02f_dir / "notebooklm_self_audit.md"
+
+    with open(audit_path, encoding="utf-8") as f:
+        audit_text = f.read()
+
+    # Must accurately distinguish 4 no-match loci from the 1 parenthetical Gal 3:13 hit
+    assert "B001-8" in audit_text
+    assert "B001-9" in audit_text
+    assert "B001-10" in audit_text
+    assert "B001-11" in audit_text
+    assert "B001-12" in audit_text
+    assert "Gal. iii, 13" in audit_text
+    assert "0 occurrences across all 5 loci" not in audit_text
