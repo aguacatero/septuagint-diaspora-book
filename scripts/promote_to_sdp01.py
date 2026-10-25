@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Promote accepted source packet into cumulative synthesis notebook SDP-01 Paul."""
 
+import argparse
 import asyncio
 import hashlib
 import json
@@ -9,12 +10,24 @@ import sys
 import time
 import urllib.request
 from pathlib import Path
+from typing import Optional, Dict, Any
 import websockets
 
-PDF_PATH = Path("/Users/chrisrodriguez/Downloads/sanday_headlam_1895_romans_icc.pdf")
-EXPECTED_FILENAME = "sanday_headlam_1895_romans_icc.pdf"
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from scripts.queue_context import get_source_context
+
 SDP01_UUID = "65d4bea4-7939-4754-bb7b-09d420e8ff19"
 TARGET_URL = f"https://notebook.google.com/notebook/{SDP01_UUID}"
+
+PROBE_QUERIES = {
+    "S01F": "In Aageson's Paul's Use of Scripture, what is his primary methodology for identifying Pauline scriptural quotations?",
+    "S02F": "In Sanday and Headlam's commentary on Romans, what is their discussion in the Excursus on St. Paul's Use of the Old Testament regarding whether Paul quotes from memory or from a manuscript roll?",
+    "S03F": "In Robertson and Plummer's commentary on 1 Corinthians, what is their discussion in the Introduction regarding Paul's quotations from the Old Testament and agreement with the Septuagint?",
+    "P01F": "In this Greek New Testament edition, what text is printed for 1 Corinthians 1:19?",
+    "P02F": "In this Septuagint edition, what Greek text is printed for Genesis 15:6?",
+    "P03F": "In this Septuagint edition, what Greek text is printed for Isaiah 29:14?",
+}
 
 
 class CDPClient:
@@ -112,9 +125,23 @@ async def inspect_sdp01(client: CDPClient) -> dict:
     return await client.evaluate(expr) or {}
 
 
-async def prove_retrieval(client: CDPClient, expected_source: str, timeout: float = 90.0) -> bool:
+async def prove_retrieval(
+    client: CDPClient,
+    expected_source: str,
+    source_id: str,
+    author: Optional[str] = None,
+    title: Optional[str] = None,
+    timeout: float = 90.0
+) -> bool:
     print(f"Running source-grounded retrieval verification in SDP-01 Paul for '{expected_source}'...", flush=True)
-    probe_query = "In Sanday and Headlam's commentary on Romans, what is their discussion in the Excursus on St. Paul's Use of the Old Testament regarding whether Paul quotes from memory or from a manuscript roll?"
+    probe_query = PROBE_QUERIES.get(source_id)
+    if not probe_query:
+        if author and title:
+            probe_query = f"In {author}'s {title}, what is the primary discussion regarding Paul's use and quotation of Old Testament scripture?"
+        else:
+            probe_query = f"In this work ({expected_source}), what is the primary discussion regarding Paul's use and quotation of Old Testament scripture?"
+            
+    print(f"Probe query: '{probe_query}'", flush=True)
     
     init_count = await client.evaluate("document.querySelectorAll('.to-user-message-card-content').length") or 0
     
@@ -174,20 +201,46 @@ async def prove_retrieval(client: CDPClient, expected_source: str, timeout: floa
         """
         status = await client.evaluate(check_js) or {}
         if status.get("settled"):
-            print(f"Retrieval probe succeeded! Response length: {status.get('text_len')}, Citations: {status.get('markers')}", flush=True)
-            return True
+            markers = status.get("markers", 0)
+            text_len = status.get("text_len", 0)
+            if markers > 0 and text_len > 50:
+                print(f"Retrieval probe succeeded! Response length: {text_len}, Citations: {markers}", flush=True)
+                return True
+            else:
+                print(f"Retrieval probe response settled but lacks citations (length={text_len}, markers={markers})", flush=True)
+                return False
             
     print(f"Retrieval probe timed out after {timeout}s", flush=True)
     return False
 
 
-async def promote():
-    if not PDF_PATH.is_file():
-        raise FileNotFoundError(f"Missing PDF: {PDF_PATH}")
+async def promote_source(
+    source_id: Optional[str] = None,
+    pdf_path: Optional[str] = None,
+    timeout: float = 300.0,
+    probe_timeout: float = 90.0
+) -> Dict[str, Any]:
+    """
+    Promotes an accepted source into cumulative synthesis notebook SDP-01 Paul.
+    Fails closed if the PDF is missing, ingestion fails, or retrieval probe fails.
+    """
+    ctx = get_source_context(source_id=source_id)
+    sid = ctx["source_id"]
+    expected_filename = ctx["expected_filename"]
+    author = ctx.get("author_or_editor")
+    title = ctx.get("title")
     
-    file_bytes = PDF_PATH.stat().st_size
-    h = hashlib.sha256(PDF_PATH.read_bytes()).hexdigest()
-    print(f"Validated local PDF: {EXPECTED_FILENAME} ({file_bytes:,} bytes, sha256={h})")
+    if pdf_path:
+        pdf_file = Path(pdf_path)
+    else:
+        pdf_file = Path("/Users/chrisrodriguez/Downloads") / expected_filename
+        
+    if not pdf_file.is_file():
+        raise FileNotFoundError(f"Missing PDF for promotion: {pdf_file}")
+        
+    file_bytes = pdf_file.stat().st_size
+    h = hashlib.sha256(pdf_file.read_bytes()).hexdigest()
+    print(f"Promoting source {sid}: {expected_filename} ({file_bytes:,} bytes, sha256={h[:16]}...)")
     
     # Connect to Chrome CDP and activate tab
     with urllib.request.urlopen("http://127.0.0.1:9222/json") as r:
@@ -220,14 +273,20 @@ async def promote():
             state = await inspect_sdp01(client)
             print(f"Current SDP-01 Paul state: {state}")
             
-            if EXPECTED_FILENAME in state.get("sources", []):
-                print(f"SUCCESS: {EXPECTED_FILENAME} already present in SDP-01 Paul!")
-                if not state.get("is_indexing") and not state.get("has_error"):
-                    probe_ok = await prove_retrieval(client, EXPECTED_FILENAME, timeout=60.0)
-                    print(f"Retrieval verified: {probe_ok}")
+            if expected_filename in state.get("sources", []):
+                print(f"Source {expected_filename} is already present in SDP-01 Paul. Verifying retrieval...")
+                if state.get("is_indexing"):
+                    raise RuntimeError(f"Cannot verify retrieval: source {expected_filename} is currently indexing")
+                if state.get("has_error"):
+                    raise RuntimeError(f"Cannot verify retrieval: source {expected_filename} has error state")
+                    
+                probe_ok = await prove_retrieval(client, expected_filename, sid, author, title, timeout=probe_timeout)
+                if not probe_ok:
+                    raise RuntimeError(f"Source-attributed retrieval verification failed for '{expected_filename}'")
+                print(f"SUCCESS: {expected_filename} is verified in SDP-01 Paul!")
                 return state
                 
-            print(f"Uploading {EXPECTED_FILENAME} into SDP-01 Paul...")
+            print(f"Uploading {expected_filename} into SDP-01 Paul...")
             
             # Open Add source dialog if not open
             if not state.get("dialog_open"):
@@ -280,19 +339,19 @@ async def promote():
             print(f"Page.fileChooserOpened received (backendNodeId={backend_node_id})!")
             
             # Set file input
-            print(f"Setting file input to '{PDF_PATH}'...")
+            print(f"Setting file input to '{pdf_file}'...")
             res = await client.call("DOM.setFileInputFiles", {
-                "files": [str(PDF_PATH)],
+                "files": [str(pdf_file)],
                 "backendNodeId": backend_node_id
             })
             print(f"DOM.setFileInputFiles response: {res}")
             
             # Monitor ingestion progression
-            print("Monitoring ingestion progression in SDP-01 Paul (deadline: 300s)...")
+            print(f"Monitoring ingestion progression in SDP-01 Paul (deadline: {timeout}s)...")
             t_start = time.time()
             saw_source = False
             
-            while time.time() - t_start < 300.0:
+            while time.time() - t_start < timeout:
                 await asyncio.sleep(5)
                 elapsed = int(time.time() - t_start)
                 st = await inspect_sdp01(client)
@@ -304,14 +363,16 @@ async def promote():
                 if error:
                     raise RuntimeError(f"Terminal error indicator detected in SDP-01 Paul: {st}")
                     
-                if EXPECTED_FILENAME in sources:
+                if expected_filename in sources:
                     saw_source = True
                     
                 if saw_source and not indexing:
-                    print(f"SUCCESS: {EXPECTED_FILENAME} ingested and settled in SDP-01 Paul after {elapsed}s!")
+                    print(f"SUCCESS: {expected_filename} ingested and settled in SDP-01 Paul after {elapsed}s!")
                     print(f"Cumulative sources in SDP-01 Paul ({len(sources)}): {sources}")
-                    probe_ok = await prove_retrieval(client, EXPECTED_FILENAME, timeout=90.0)
-                    print(f"Retrieval probe ok: {probe_ok}")
+                    probe_ok = await prove_retrieval(client, expected_filename, sid, author, title, timeout=probe_timeout)
+                    if not probe_ok:
+                        raise RuntimeError(f"Promotion failed: source-attributed retrieval verification failed for '{expected_filename}'")
+                    print(f"Retrieval probe verified successfully for '{expected_filename}'!")
                     return st
                     
             raise TimeoutError("Monotonic deadline exceeded waiting for SDP-01 Paul ingestion")
@@ -319,6 +380,22 @@ async def promote():
             await client.close()
 
 
-if __name__ == "__main__":
-    res = asyncio.run(promote())
+def main():
+    parser = argparse.ArgumentParser(description="Promote accepted source packet into cumulative synthesis notebook SDP-01 Paul.")
+    parser.add_argument("--source-id", default=None, help="Source ID to promote (e.g. S02F, S03F). Defaults to active/last accepted source.")
+    parser.add_argument("--pdf-path", default=None, help="Optional explicit path to the source PDF.")
+    parser.add_argument("--timeout", type=float, default=300.0, help="Ingestion timeout in seconds.")
+    parser.add_argument("--probe-timeout", type=float, default=90.0, help="Retrieval probe timeout in seconds.")
+    args = parser.parse_args()
+    
+    res = asyncio.run(promote_source(
+        source_id=args.source_id,
+        pdf_path=args.pdf_path,
+        timeout=args.timeout,
+        probe_timeout=args.probe_timeout
+    ))
     print("\nPROMOTION COMPLETED:", json.dumps(res, indent=2))
+
+
+if __name__ == "__main__":
+    main()

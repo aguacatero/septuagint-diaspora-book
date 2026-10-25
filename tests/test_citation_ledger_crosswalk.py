@@ -124,15 +124,17 @@ def test_s02f_provenance_and_hash_integrity():
     with open(req_path, encoding="utf-8") as f:
         req_text = f.read()
 
-    # Verified Internet Archive link to 1895 Scribner's first edition
-    assert "https://archive.org/details/epistlecommentar00sanduoft" in req_text
-    assert "1895" in req_text
-    assert "acriticalandexe00headgoog" not in req_text
+    # If S02F is currently under review, verify review request details
+    if "Source ID: `S02F`" in req_text or "SOURCE_ID: S02F" in req_text:
+        # Verified Internet Archive link to 1895 Scribner's first edition
+        assert "https://archive.org/details/epistlecommentar00sanduoft" in req_text
+        assert "1895" in req_text
+        assert "acriticalandexe00headgoog" not in req_text
 
-    # Target PDF hash and reconciled byte size
-    assert "4be4cad08705963505f13a38a12b8737040e531a6146b1fa4400c936cc37cf4c" in req_text
-    assert "4,187,334 bytes" in req_text
-    assert "4,183,892 bytes" not in req_text
+        # Target PDF hash and reconciled byte size
+        assert "4be4cad08705963505f13a38a12b8737040e531a6146b1fa4400c936cc37cf4c" in req_text
+        assert "4,187,334 bytes" in req_text
+        assert "4,183,892 bytes" not in req_text
 
     # Diagnostic byte match
     diag_path = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S02F/ingestion_diagnostic.md"
@@ -199,12 +201,13 @@ def test_s02f_negative_search_evidence_discipline():
         )
         assert "full_volume_search_log.md" in content
 
-    # Review request file must also reflect this standard
+    # Review request file must reflect S02F if S02F is currently under review
     req_path = repo_root / "research-queue/B001_CHATGPT_REVIEW_REQUEST.md"
     with open(req_path, encoding="utf-8") as f:
         req_text = f.read()
-    assert "NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH" in req_text
-    assert "Gal. iii, 13" in req_text
+    if "Source ID: `S02F`" in req_text or "SOURCE_ID: S02F" in req_text:
+        assert "NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH" in req_text
+        assert "Gal. iii, 13" in req_text
 
 def test_s02f_negative_search_script_fail_closed_and_controls(tmp_path):
     repo_root = Path(__file__).resolve().parent.parent
@@ -589,3 +592,68 @@ def test_s02f_text_digest_mismatch_exit_code_8_and_override(tmp_path, monkeypatc
     monkeypatch.setattr(sys, "argv", test_args_override)
     ret_override = vns.main()
     assert ret_override != 8, f"Expected override to bypass exit code 8, got {ret_override}"
+
+
+def test_s03f_citation_ledger_crosswalk_integrity():
+    repo_root = Path(__file__).resolve().parent.parent
+    s03f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S03F"
+    csv_path = s03f_dir / "citation_ledger.csv"
+
+    prompts = {}
+    for p in [2, 3]:
+        raw_file = s03f_dir / f"prompt_{p}_raw.json"
+        if raw_file.is_file():
+            with open(raw_file, encoding="utf-8") as f:
+                prompts[p] = json.load(f)["citations"]
+
+    with open(csv_path, encoding="utf-8") as f:
+        reader = list(csv.DictReader(f))
+
+    assert len(reader) == 12, f"Expected 12 ledger rows for S03F, found {len(reader)}"
+
+    for row in reader:
+        eid = row["evidence_id"]
+        assert row["source_id"] == "S03F"
+        raw_ptr = row["notebooklm_citation"]
+        m = re.search(r"Prompt (\d+) / citations\[index=(\d+)\], label=(\d+)", raw_ptr)
+        assert m is not None, f"Could not parse pointer '{raw_ptr}' for {eid}"
+
+        p_num = int(m.group(1))
+        c_idx = int(m.group(2))
+        c_lbl = m.group(3)
+
+        assert p_num in prompts, f"Prompt {p_num} not loaded"
+        assert c_idx < len(prompts[p_num]), f"Citation index {c_idx} out of range for Prompt {p_num}"
+
+        citation = prompts[p_num][c_idx]
+        assert citation["label"] == c_lbl, f"Label mismatch for {eid}: expected {c_lbl}, found {citation['label']}"
+        assert citation["snippet"], f"Empty snippet for {eid}"
+
+        # Verify measured audit metadata
+        audit = citation.get("audit", {})
+        assert audit.get("pre_hover_cleared") is True, f"Audit pre_hover_cleared failed for {eid}"
+        assert audit.get("overlay_pane_id"), f"Missing overlay_pane_id for {eid}"
+        assert audit.get("is_fresh_pane") is True, f"Audit is_fresh_pane failed for {eid}"
+        assert audit.get("trigger_bound") is True, f"Audit trigger_bound failed for {eid}"
+        assert audit.get("handshake_verified") is True, f"Audit handshake_verified failed for {eid}"
+        assert row["verification_status"] == "VERIFIED", f"Verification status not VERIFIED for {eid}"
+
+
+def test_s03f_self_audit_corrections_incorporated():
+    repo_root = Path(__file__).resolve().parent.parent
+    s03f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S03F"
+    csv_path = s03f_dir / "citation_ledger.csv"
+
+    with open(csv_path, encoding="utf-8") as f:
+        rows = {r["evidence_id"]: r for r in csv.DictReader(f)}
+
+    # Check 1: S03F-E001 preserves possibility framing from Ps 33:10
+    e001 = rows["S03F-E001"]
+    assert "possibly" in e001["author_claim"].lower() or "possibly" in e001["qualification"].lower()
+    assert "33:10" in e001["author_claim"] or "33:10" in e001["qualification"]
+
+    # Check 2: S03F-E006 includes explicit qualification regarding pantos
+    e006 = rows["S03F-E006"]
+    assert "πάντως" in e006["qualification"]
+    assert "oxen" in e006["qualification"]
+
