@@ -9,7 +9,9 @@ This is a public-facing research and book project designed as a serious crossove
 
 ![Six-stage research roadmap](assets/progress.svg)
 
-**Current: B001 — Pauline TXT pilot underway** ([current research batch](research-queue/CURRENT_BATCH.md)). The research constitution, evidence framework, and controlled workflow are established. The pilot validates the method on twelve Pauline quotations before the [complete TXT corpus](research-queue/BACKLOG.md); NAR, CUL, HIS, and manuscript development follow the reviewed research.
+**Current: B001 — Pauline TXT pilot underway (TXT gate not yet complete)** ([canonical batch contract](research-queue/CURRENT_BATCH.md); [active draft research PR #2](https://github.com/aguacatero/septuagint-diaspora-book/pull/2)). The research constitution, evidence framework, and controlled workflow are established. The pilot tests twelve Pauline quotation comparisons before the [complete TXT corpus](research-queue/BACKLOG.md); NAR, CUL, HIS, and manuscript development follow reviewed research.
+
+**Draft-pipeline checkpoint — October 25, 2026 (not yet merged into `main`):** 5 of 16 queued source packets have **source-level independent acceptance** (P01F, P02F, P03F, S01F, S02F). The sixth, **S03F (Robertson & Plummer, 1 Corinthians ICC)**, was extracted but received **REVISE** with blocking findings in the [October 25 independent review](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6407409511); repairs and a fresh exact-SHA review are required before synthesis promotion. The queue's `AWAITING_REVIEW` field has not yet consumed that verdict. S04F onward remains pending. **Neither PR #2 nor B001 is merged/completed, and no additional six-stage milestone is accepted.**
 
 *The roadmap tracks independently accepted research-to-book gates, not a percentage of scholarship completed, manuscript pages written, or confidence in the hypothesis. Candidate work and unreviewed LLM output do not count as accepted.*
 
@@ -52,7 +54,7 @@ If you are running this project through Hermes, start with [`HERMES_START.md`](H
 
 The operating model is:
 
-**GitHub contract → Hermes/OpenRouter + Open Notebook research → staged research branch → adversarial review → canonical promotion to `main` → next batch.**
+**GitHub contract → source-bound research in a staging branch → independent adversarial review → reviewed promotion → next source/batch.** The active B001 draft uses **Antigravity/Gemini + one-source-at-a-time NotebookLM** for extraction and ChatGPT for exact-SHA independent review ([serial workflow](docs/workflow/NOTEBOOKLM_ANTIGRAVITY_SERIAL.md) on the draft branch). The Hermes/OpenRouter + Open Notebook instructions below describe the original `main` workflow and remain fallback/history until a reviewed transition is merged.
 
 Key files:
 
@@ -112,4 +114,4 @@ They are retained for provenance and **must not be treated as verified current f
 
 ## Status
 
-The research architecture is established. The active next step is the bounded Hermes/OpenRouter TXT pilot defined in `research-queue/CURRENT_BATCH.md`; after review, the workflow will scale to the complete quotation census across the defined primary corpus.
+The architecture and foundation gate are established (**1/6 milestones accepted**). The current bounded Pauline TXT pilot (B001) is still in progress: the active [serial NotebookLM research branch / draft PR #2](https://github.com/aguacatero/septuagint-diaspora-book/pull/2) has five accepted **source packets**, while S03F requires revisions following the [independent review](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6407409511). This is draft/unmerged research, not accepted `main` evidence or completion of TXT. The complete quotation census across the defined primary corpus begins only after B001 passes its gates.
