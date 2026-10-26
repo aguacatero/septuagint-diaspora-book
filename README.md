@@ -54,7 +54,7 @@ If you are running this project through Hermes, start with [`HERMES_START.md`](H
 
 The operating model is:
 
-**GitHub contract → source-bound research in a staging branch → independent adversarial review → reviewed promotion → next source/batch.** The active B001 draft uses **Antigravity/Gemini + one-source-at-a-time NotebookLM** for extraction and ChatGPT for exact-SHA independent review ([serial workflow](docs/workflow/NOTEBOOKLM_ANTIGRAVITY_SERIAL.md) on the draft branch). The Hermes/OpenRouter + Open Notebook instructions below describe the original `main` workflow and remain fallback/history until a reviewed transition is merged.
+**GitHub contract → source-bound research in a staging branch → independent adversarial review → reviewed promotion → next source/batch.** The active B001 draft uses **Antigravity/Gemini + one-source-at-a-time NotebookLM** for extraction and ChatGPT for exact-SHA independent review ([serial workflow](https://github.com/aguacatero/septuagint-diaspora-book/blob/research/B001-notebooklm-serial/docs/workflow/NOTEBOOKLM_ANTIGRAVITY_SERIAL.md) on the draft branch). The Hermes/OpenRouter + Open Notebook instructions below describe the original `main` workflow and remain fallback/history until a reviewed transition is merged.
 
 Key files:
 
