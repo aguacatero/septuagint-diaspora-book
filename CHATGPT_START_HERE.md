@@ -15,7 +15,7 @@ The user should be able to paste only the URL to this file and say: **continue/r
 
 ## First actions in every new ChatGPT session
 
-Do not trust a stale SHA written in a handoff.
+Do not trust a stale SHA written in a handoff. **Before acting, read root [`AGENTS.md`](AGENTS.md) and the `README.md` Research progress section; update public progress only when authorized and never treat a draft source verdict as a completed milestone.**
 
 1. Fetch live PR #2 and record the current full HEAD SHA.
 2. Read:
@@ -109,3 +109,5 @@ Progress: <accepted sources>/<total queue sources>
 ```
 
 Then explain only meaningful blockers or recent changes.
+
+Before ending any task, apply the mandatory README/status check in [`AGENTS.md`](AGENTS.md), including review disposition and the difference between draft-source and six-gate acceptance.
