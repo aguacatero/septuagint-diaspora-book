@@ -29,10 +29,11 @@ Systematic extraction of counterevidence, uncertainties, competing textual forms
 ---
 
 ## 6. B001-6: Romans 11:34 / Isaiah 40:13 (Comparative Cross-Epistle Evidence)
-- **Page / Locator:** Printed pp. 50–51 (Raw scan pp. 126–127; Derivative pp. 32–33).
+- **Page / Locator:** Printed pp. 50–51 (Raw scan pp. 126–127; Derivative pp. 31–32).
 - **Textual Divergence and Epistolary Comparison:**
   - On page 50, the authors conduct an explicit textual comparison between 1 Cor 2:16 and Rom 11:34:
     > *"From Isa. xl. 13 (LXX), but shortened by the omission of the middle clause, καὶ τίς αὐτοῦ σύνβουλος ἐγένετο; This clause is retained in Rom. xi. 34, while ὃς συνβιβάσει αὐτόν is omitted."*
+  - Authentically printed text preserves Hellenistic unassimilated orthography with nu (`σύνβουλος`, `συνβιβάσει`), adhering to Westcott-Hort typography.
 - **Hebrew vs Septuagint Ambiguity:**
   - On page 50, the authors analyze the semantic shift between the Hebrew and Greek versions:
     > *"νοῦν Κυρίου. The νοῦν (LXX) corresponds to the Hebrew for πνεῦμα in the original. In God, νοῦς and πνεῦμα are identical... but not in aspect, νοῦς being suitable to denote the Divine knowledge or counsel, πνεῦμα the Divine action, either in creation or in grace."*
@@ -50,7 +51,7 @@ Systematic extraction of counterevidence, uncertainties, competing textual forms
 ---
 
 ## 8. B001-8: 1 Corinthians 1:19 / Isaiah 29:14
-- **Page / Locator:** Printed p. 19 (also Introduction § VI, p. liii; Derivative pp. 11, 25).
+- **Page / Locator:** Printed p. 19 (also Introduction § VI, p. liii; Derivative pp. 10, 25).
 - **Allows Authorial Adaptation & Unknown/Cross-Scriptural Influence:**
   - On page 19, the authors observe that Paul substitutes ἀθετήσω for LXX κρύψω "in accordance with St Paul's usual freedom of citation."
   - They further note an unknown or cross-scriptural verbal influence: *"Possibly ἀθετήσω comes from Ps. xxxiii. 10."*
@@ -60,7 +61,7 @@ Systematic extraction of counterevidence, uncertainties, competing textual forms
 ---
 
 ## 9. B001-9: 1 Corinthians 6:16 / Genesis 2:24
-- **Page / Locator:** Printed p. 126 (also Introduction § VI, p. liii; Derivative pp. 11, 37).
+- **Page / Locator:** Printed p. 126 (also Introduction § VI, p. liii; Derivative pp. 10, 36).
 - **Discusses a Competing Textual Form:**
   - On page 126, the authors highlight that Paul quotes Genesis 2:24 directly from the LXX containing οἱ δύο, *"although it is not in the original"* (the Hebrew text as represented in standard witnesses).
 - **Allows Unknown Source / Textual Form:**
@@ -71,7 +72,7 @@ Systematic extraction of counterevidence, uncertainties, competing textual forms
 ---
 
 ## 10. B001-10: 1 Corinthians 9:9 / Deuteronomy 25:4
-- **Page / Locator:** Printed pp. 183–184 (also Introduction § VII, p. lxii; Derivative pp. 18, 45–46).
+- **Page / Locator:** Printed pp. 183–184 (also Introduction § VII, p. lxii; Derivative pp. 19, 43–44).
 - **Acknowledges Uncertainty Between Competing Textual Forms:**
   - On page 183, the authors explicitly open their discussion with measured reserve:
     > *"It is not easy to decide between φιμώσεις and κημώσεις."*
@@ -86,7 +87,7 @@ Systematic extraction of counterevidence, uncertainties, competing textual forms
 ---
 
 ## 11. B001-11: 1 Corinthians 10:7 / Exodus 32:6
-- **Page / Locator:** Printed pp. 203–204 (also Introduction § VI, p. liii; Derivative pp. 11, 53–54).
+- **Page / Locator:** Printed pp. 203–204 (also Introduction § VI, p. liii; Derivative pp. 10, 52–53).
 - **Acknowledges Evidence That Weakens an Alternative Interpretation:**
   - On page 203 (fn. *), the authors reject taking τύποι as formal redemptive-historical "types" (where Israelites prefigure Corinthians), noting that this reading fails because *"This would imply that the Corinthians were predestined to fall as the Israelites did."*
 - **Discusses Competing Textual Variants:**

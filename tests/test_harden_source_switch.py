@@ -192,64 +192,122 @@ async def test_promote_to_sdp01_fails_on_unattributed_or_error_state():
             await promote_source(source_id="S03F")
 
 
-def test_verify_s03f_negative_search_rejects_tampered_text(tmp_path):
+def test_verify_s03f_negative_search_rejects_tampered_text(tmp_path, monkeypatch):
     """
-    Step 6 Hardening Gate:
+    Step 6 Hardening Gate (Finding S03F-R2-F3):
     Verify extract_and_validate_text fails closed with exit code 8 when
-    extracted text does not match EXPECTED_TEXT_SHA256.
+    extracted text does not match EXPECTED_TEXT_SHA256, unconditionally in CI.
     """
     from scripts.verify_s03f_negative_search import (
         extract_and_validate_text,
-        RAW_PDF_DEFAULT,
         EXPECTED_TEXT_SHA256
     )
+
+    dummy_pdf = tmp_path / "dummy.pdf"
+    dummy_bytes = b"%PDF-1.4 dummy pdf content for CI verification"
+    dummy_pdf.write_bytes(dummy_bytes)
+    dummy_sha = hashlib.sha256(dummy_bytes).hexdigest()
+
+    monkeypatch.setattr("scripts.verify_s03f_negative_search.EXPECTED_RAW_PDF_SHA256", dummy_sha)
+    monkeypatch.setattr("scripts.verify_s03f_negative_search.EXPECTED_RAW_PDF_BYTES", len(dummy_bytes))
 
     tampered_text_file = tmp_path / "tampered_text.txt"
     tampered_text_file.write_text("Corrupted or altered text from adversarial cache", encoding="utf-8")
 
-    # When raw PDF exists and cached text is tampered, fails closed with code 8
-    if RAW_PDF_DEFAULT.exists():
-        text, sha, code = extract_and_validate_text(
-            pdf_path=RAW_PDF_DEFAULT,
-            text_path=tampered_text_file,
-            allow_text_digest_mismatch=False
-        )
-        assert code == 8
-        assert sha != EXPECTED_TEXT_SHA256
+    # Must fail closed with exit code 8
+    text, sha, code = extract_and_validate_text(
+        pdf_path=dummy_pdf,
+        text_path=tampered_text_file,
+        allow_text_digest_mismatch=False
+    )
+    assert code == 8
+    assert sha != EXPECTED_TEXT_SHA256
 
-        # When --allow-text-digest-mismatch is enabled, permits continuation (code 0)
-        text, sha, code = extract_and_validate_text(
-            pdf_path=RAW_PDF_DEFAULT,
-            text_path=tampered_text_file,
-            allow_text_digest_mismatch=True
-        )
-        assert code == 0
+    # When --allow-text-digest-mismatch is enabled, permits continuation (code 0)
+    text, sha, code = extract_and_validate_text(
+        pdf_path=dummy_pdf,
+        text_path=tampered_text_file,
+        allow_text_digest_mismatch=True
+    )
+    assert code == 0
+    assert sha != EXPECTED_TEXT_SHA256
 
 
-def test_verify_s03f_negative_search_detects_b001_5_and_6():
+def test_verify_s03f_negative_search_dynamic_adjudication():
     """
-    Step 6 Hardening Gate:
-    Verify verify_s03f_negative_search reclassifies B001-6 and B001-5 appropriately.
+    Step 6 Hardening Gate (Finding S03F-R2-F1):
+    Verify adjudicate_target and adjudicate_hit perform real evidence-grounded
+    adjudication rather than hard-coded string reflection.
     """
-    from scripts.verify_s03f_negative_search import TARGET_QUERIES
+    from scripts.verify_s03f_negative_search import (
+        TARGET_QUERIES,
+        adjudicate_target,
+        adjudicate_hit
+    )
 
     queries_by_id = {q["id"]: q for q in TARGET_QUERIES}
 
-    assert "B001-6" in queries_by_id
-    assert queries_by_id["B001-6"]["classification"] == "SUBSTANTIVE_CROSS_EPISTLE_COMPARISON"
-    assert "1 Cor 2:16" in queries_by_id["B001-6"]["rationale"]
-    assert "Rom 11:34" in queries_by_id["B001-6"]["rationale"]
+    # 1. B001-6 hit on 1 Cor 2:16 is dynamically classified as SUBSTANTIVE_CROSS_EPISTLE_COMPARISON
+    hit_b001_6 = {
+        "match": "Rom. xi. 34",
+        "start": 287850,
+        "snippet": "This clause is retained in Rom. xi. 34, while ὃς συνβιβάσει αὐτόν is omitted..."
+    }
+    res_b001_6 = adjudicate_target(queries_by_id["B001-6"], [hit_b001_6], "dummy full text")
+    assert res_b001_6["classification"] == "SUBSTANTIVE_CROSS_EPISTLE_COMPARISON"
+    assert res_b001_6["substantive"] is True
+    assert "Rom 11:34" in res_b001_6["rationale"]
 
-    assert "B001-5" in queries_by_id
-    assert queries_by_id["B001-5"]["classification"] == "RELEVANT_INTERPRETIVE_CROSS_REFERENCE"
-    assert "1 Cor 1:2" in queries_by_id["B001-5"]["rationale"]
-    assert "Joel 2:32" in queries_by_id["B001-5"]["rationale"]
+    # 2. B001-5 hit on 1 Cor 1:2 is dynamically classified as RELEVANT_INTERPRETIVE_CROSS_REFERENCE
+    hit_b001_5 = {
+        "match": "Joel ii. 32",
+        "start": 160227,
+        "snippet": "This goes back to Joel ii. 32, and involves the thought of faith... See Rom. x. 12, 13."
+    }
+    res_b001_5 = adjudicate_target(queries_by_id["B001-5"], [hit_b001_5], "dummy full text")
+    assert res_b001_5["classification"] == "RELEVANT_INTERPRETIVE_CROSS_REFERENCE"
+    assert res_b001_5["substantive"] is True
+
+    # 3. Target with 0 matches dynamically evaluates to NOT_DISCUSSED
+    res_empty = adjudicate_target(queries_by_id["B001-1"], [], "dummy full text")
+    assert res_empty["classification"] == "NOT_DISCUSSED"
+    assert res_empty["substantive"] is False
+    assert "0 matches found" in res_empty["rationale"]
+
+    # 4. Target with only passing citation dynamically evaluates to NOT_DISCUSSED
+    passing_hit = {
+        "match": "Rom. ix. 25",
+        "start": 690592,
+        "snippet": "one each in Rom. ix. 25; Gal. iv. 8; Phil. iii. 3..."
+    }
+    res_passing = adjudicate_target(queries_by_id["B001-2"], [passing_hit], "dummy full text")
+    assert res_passing["classification"] == "NOT_DISCUSSED"
+    assert res_passing["substantive"] is False
+    assert "passing citation(s) found" in res_passing["rationale"]
+
+    # 5. ADVERSARIAL REGRESSION: Injected substantive hit for formerly negative target (B001-1)
+    # Must NOT retain old NOT_DISCUSSED label; must dynamically classify as SUBSTANTIVE_DISCUSSION!
+    synthetic_context = (
+        "Paul's argument in Rom. iv. 3 cites the Septuagint quotation from Gen. xv. 6, "
+        "translating the Hebrew text with characteristic fidelity and argumentative force."
+    )
+    synthetic_hit = {
+        "match": "Rom. iv. 3",
+        "start": 10,
+        "snippet": synthetic_context
+    }
+    res_adversarial = adjudicate_target(queries_by_id["B001-1"], [synthetic_hit], synthetic_context)
+    assert res_adversarial["classification"] == "SUBSTANTIVE_DISCUSSION"
+    assert res_adversarial["substantive"] is True
+    assert "substantive exegetical/textual commentary" in res_adversarial["rationale"]
 
 
 def test_verify_s03f_negative_search_enforces_index_boundaries():
     """
-    Step 6 Hardening Gate:
-    Verify verify_index_structure fails closed on synthetic text lacking authentic index bounds.
+    Step 6 Hardening Gate (Finding S03F-R2-F2):
+    Verify verify_index_structure enforces section-localized positive controls,
+    and fails closed on synthetic index fixtures containing a Fourth section
+    or Scripture passage index heading.
     """
     from scripts.verify_s03f_negative_search import verify_index_structure
 
@@ -274,3 +332,53 @@ def test_verify_s03f_negative_search_enforces_index_boundaries():
     res3 = verify_index_structure(synthetic_out_of_order)
     assert res3["passed"] is False
     assert res3["ordered"] is False
+
+    # 4. Adversarial fixture with IV. BIBLICAL REFERENCES fails closed
+    synthetic_with_fourth_section = (
+        "INDEXES\n"
+        "I. GENERAL\n"
+        "Allegorical interpretation Assimilation Aquila\n"
+        "II. GREEK WORDS\n"
+        "ἀδάπανος ἀλοάω\n"
+        "III. LATIN\n"
+        "Caritas underling\n"
+        "IV. BIBLICAL REFERENCES\n"
+        "Genesis, Exodus, Romans\n"
+        "Printed by Morrison & Gibb Limited\n"
+    )
+    res4 = verify_index_structure(synthetic_with_fourth_section)
+    assert res4["has_scripture_index"] is True
+    assert res4["passed"] is False
+
+    # 5. Adversarial fixture with INDEX OF SCRIPTURE fails closed
+    synthetic_with_scripture_index = (
+        "INDEXES\n"
+        "I. GENERAL\n"
+        "Allegorical interpretation Assimilation Aquila\n"
+        "II. GREEK WORDS\n"
+        "ἀδάπανος ἀλοάω\n"
+        "III. LATIN\n"
+        "Caritas underling\n"
+        "INDEX OF SCRIPTURE\n"
+        "Romans 4:3\n"
+        "Printed by Morrison & Gibb Limited\n"
+    )
+    res5 = verify_index_structure(synthetic_with_scripture_index)
+    assert res5["has_scripture_index"] is True
+    assert res5["passed"] is False
+
+    # 6. Non-localized positive controls fail closed
+    # (e.g. ἀδάπανος placed in Section I instead of Section II)
+    synthetic_mislocalized = (
+        "INDEXES\n"
+        "I. GENERAL\n"
+        "Allegorical interpretation Assimilation Aquila ἀδάπανος\n"
+        "II. GREEK WORDS\n"
+        "ἀλοάω\n"
+        "III. LATIN\n"
+        "Caritas underling\n"
+        "Printed by Morrison & Gibb Limited\n"
+    )
+    res6 = verify_index_structure(synthetic_mislocalized)
+    assert res6["passed"] is False
+    assert res6["positive_controls"]["Section II: ἀδάπανος"] is False
