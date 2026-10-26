@@ -19,6 +19,17 @@ These instructions apply to **every AI assistant or human contributor** working 
 - Before proposing, committing, or reporting a completed change, run `python3 scripts/update_progress.py --check`. Fix any out-of-sync files. The repository's progress CI also runs this check.
 - Do **not** edit the SVG by hand or invent accepted gates. The generator ensures that accepted counts and current-module tiles agree with the canonical status files.
 
+## Material draft progress is still reportable
+
+**Never let `README.md`'s `## Research progress` or `## Status` lag behind a material, verified change in the active workflow—even when the change is inside a draft PR.** At the end of **every agent run**, compare those sections with `research-queue/CURRENT_BATCH.md`, the active branch's state/queue files, and the *latest exact-SHA independent review on the live PR*. Update the README in the same commit as a project-status change whenever feasible, or in an immediate documentation follow-up. Review-only or no-change runs must explicitly record that the README was checked and remains accurate.
+
+- Report the active **batch, source ID, source-queue position and total, source-level accepted count, latest independent reviewer disposition and blockers, and a dated status/source link** when those facts materially change. Distinguish **live PR review verdict** from an **unconsumed/stale queue state**.
+- Separate **source packet accepted on a draft research branch**, **promoted into a cumulative research notebook**, **accepted into `main`**, and **whole milestone gate accepted**. A draft source accepted by the reviewer is **not** an accepted TXT gate and never justifies checking a milestone box or changing `assets/progress.svg` to DONE.
+- The README may summarize in-progress draft work, provided it clearly labels it **DRAFT / UNMERGED** and cites the branch or PR; it must never imply that provisional findings are canonical. If the branch HEAD changes, an earlier exact-SHA review does **not** automatically validate the new HEAD.
+- **Review both README sections and the underlying six checkboxes**, not merely the SVG. `scripts/update_progress.py --check` checks milestone/SVG synchronization but cannot establish the accuracy or freshness of descriptive source/review status.
+- Before a long-lived research branch is merged, reconcile its README and agent instructions with the current `main` versions so merging cannot silently restore older project status or drop the progress tracker. Do not merge autonomously.
+- If a write is blocked, carry forward an explicit progress correction and the blocker in the handoff; do not assert that an uncommitted update was published.
+
 ## The research branch is not the public authority
 
 - **Research agents such as Hermes** work on batch branches, generate candidate materials, and submit them for review. They **must not** mark a milestone complete or push progress changes to `main` without authorization.
