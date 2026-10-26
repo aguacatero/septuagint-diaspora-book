@@ -80,17 +80,17 @@ POSITIVE_CONTROLS = [
     },
     {
         "name": "1 Cor 10:7 / Exod 32:6 (Commentary p. 203, Intro p. liii)",
-        "pattern": r"\b(?:Exod|Ex|Exodus)(?:\.|\b)\s*(?:32|xxxii)[\.:,]?\s*(?:6|vi)\b",
+        "pattern": r"\b(?:Exod|Ex|Exodus)\b\.?\s*\b(?:32|xxxii)\b\s*[:\.,]\s*\b(?:6|vi)\b",
         "expected_min_matches": 1,
     },
     {
         "name": "1 Cor 15:54 / Isa 25:8 (Commentary p. 378, Intro p. liii, liv)",
-        "pattern": r"\b(?:Isa|Is|Isaiah)(?:\.|\b)\s*(?:25|xxv)[\.:,]?\s*(?:8|viii)\b",
+        "pattern": r"\b(?:Isa|Is|Isaiah)\b\.?\s*\b(?:25|xxv)\b\s*[:\.,]\s*\b(?:8|viii)\b",
         "expected_min_matches": 1,
     },
     {
         "name": "Sanday and Headlam citation (Intro p. lii)",
-        "pattern": r"Sanday\s+and\s+Headlam",
+        "pattern": r"\bSanday\s+and\s+Headlam\b",
         "expected_min_matches": 1,
     },
 ]
@@ -103,8 +103,8 @@ TARGET_QUERIES = [
         "nt_target": "Rom 4:3",
         "ot_target": "Gen 15:6",
         "patterns": [
-            r"\b(?:Rom|Romans)(?:\.|\b)\s*(?:4|iv)[\.:,]?\s*(?:3|iii)\b",
-            r"\b(?:Gen|Genesis)(?:\.|\b)\s*(?:15|xv)[\.:,]?\s*(?:6|vi)\b",
+            r"\b(?:Rom|Romans)\b\.?\s*\b(?:4|iv)\b\s*[:\.,]\s*\b(?:3|iii)\b",
+            r"\b(?:Gen|Genesis)\b\.?\s*\b(?:15|xv)\b\s*[:\.,]\s*\b(?:6|vi)\b",
         ],
     },
     {
@@ -113,8 +113,8 @@ TARGET_QUERIES = [
         "nt_target": "Rom 9:25",
         "ot_target": "Hos 2:23",
         "patterns": [
-            r"\b(?:Rom|Romans)(?:\.|\b)\s*(?:9|ix)[\.:,]?\s*(?:25|xxv)\b",
-            r"\b(?:Hos|Hosea)(?:\.|\b)\s*(?:2|ii)[\.:,]?\s*(?:23|xxiii)\b",
+            r"\b(?:Rom|Romans)\b\.?\s*\b(?:9|ix)\b\s*[:\.,]\s*\b(?:25|xxv)\b",
+            r"\b(?:Hos|Hosea)\b\.?\s*\b(?:2|ii)\b\s*[:\.,]\s*\b(?:23|xxiii)\b",
         ],
     },
     {
@@ -123,8 +123,8 @@ TARGET_QUERIES = [
         "nt_target": "Rom 9:26",
         "ot_target": "Hos 1:10",
         "patterns": [
-            r"\b(?:Rom|Romans)(?:\.|\b)\s*(?:9|ix)[\.:,]?\s*(?:26|xxvi)\b",
-            r"\b(?:Hos|Hosea)(?:\.|\b)\s*(?:1|i)[\.:,]?\s*(?:10|x)\b",
+            r"\b(?:Rom|Romans)\b\.?\s*\b(?:9|ix)\b\s*[:\.,]\s*\b(?:26|xxvi)\b",
+            r"\b(?:Hos|Hosea)\b\.?\s*\b(?:1|i)\b\s*[:\.,]\s*\b(?:10|x)\b",
         ],
     },
     {
@@ -133,8 +133,8 @@ TARGET_QUERIES = [
         "nt_target": "Rom 10:11",
         "ot_target": "Isa 28:16",
         "patterns": [
-            r"\b(?:Rom|Romans)(?:\.|\b)\s*(?:10|x)[\.:,]?\s*(?:11|xi)\b",
-            r"\b(?:Isa|Is|Isaiah)(?:\.|\b)\s*(?:28|xxviii)[\.:,]?\s*(?:16|xvi)\b",
+            r"\b(?:Rom|Romans)\b\.?\s*\b(?:10|x)\b\s*[:\.,]\s*\b(?:11|xi)\b",
+            r"\b(?:Isa|Is|Isaiah)\b\.?\s*\b(?:28|xxviii)\b\s*[:\.,]\s*\b(?:16|xvi)\b",
         ],
     },
     {
@@ -143,8 +143,8 @@ TARGET_QUERIES = [
         "nt_target": "Rom 10:13",
         "ot_target": "Joel 2:32 (LXX 3:5)",
         "patterns": [
-            r"\b(?:Rom|Romans)(?:\.|\b)\s*(?:10|x)[\.:,]?\s*(?:13|xiii|12)\b",
-            r"\b(?:Joel)(?:\.|\b)\s*(?:2|ii|3|iii)[\.:,]?\s*(?:32|xxxii|5|v)\b",
+            r"\b(?:Rom|Romans)\b\.?\s*\b(?:10|x)\b\s*[:\.,]\s*(?:(?:12\s*[,-]\s*)?(?:13\b|xiii\b|132\b))",
+            r"\b(?:Joel)\b\.?\s*\b(?:2|ii|3|iii)\b\s*[:\.,]\s*\b(?:32|xxxii|5|v)\b",
         ],
     },
     {
@@ -153,8 +153,8 @@ TARGET_QUERIES = [
         "nt_target": "Rom 11:34",
         "ot_target": "Isa 40:13",
         "patterns": [
-            r"\b(?:Rom|Romans)(?:\.|\b)\s*(?:11|xi)[\.:,]?\s*(?:34|xxxiv)\b",
-            r"\b(?:Isa|Is|Isaiah)(?:\.|\b)\s*(?:40|xl)[\.:,]?\s*(?:13|xiii)\b",
+            r"\b(?:Rom|Romans)\b\.?\s*\b(?:11|xi)\b\s*[:\.,]\s*\b(?:34|xxxiv)\b",
+            r"\b(?:Isa|Is|Isaiah)\b\.?\s*\b(?:40|xl)\b\s*[:\.,]\s*\b(?:13|xiii)\b",
         ],
     },
     {
@@ -163,8 +163,8 @@ TARGET_QUERIES = [
         "nt_target": "Rom 15:12",
         "ot_target": "Isa 11:10",
         "patterns": [
-            r"\b(?:Rom|Romans)(?:\.|\b)\s*(?:15|xv)[\.:,]?\s*(?:12|xii)\b",
-            r"\b(?:Isa|Is|Isaiah)(?:\.|\b)\s*(?:11|xi)[\.:,]?\s*(?:10|x)\b",
+            r"\b(?:Rom|Romans)\b\.?\s*\b(?:15|xv)\b\s*[:\.,]\s*\b(?:12|xii)\b",
+            r"\b(?:Isa|Is|Isaiah)\b\.?\s*\b(?:11|xi)\b\s*[:\.,]\s*\b(?:10|x)\b",
         ],
     },
     {
@@ -173,8 +173,8 @@ TARGET_QUERIES = [
         "nt_target": "Gal 3:13",
         "ot_target": "Deut 21:23",
         "patterns": [
-            r"\b(?:Gal|Galatians)(?:\.|\b)\s*(?:3|iii)[\.:,]?\s*(?:13|xiii)\b",
-            r"\b(?:Deut|Deuteronomy)(?:\.|\b)\s*(?:21|xxi)[\.:,]?\s*(?:23|xxiii)\b",
+            r"\b(?:Gal|Galatians)\b\.?\s*\b(?:3|iii)\b\s*[:\.,]\s*\b(?:13|xiii)\b",
+            r"\b(?:Deut|Deuteronomy)\b\.?\s*\b(?:21|xxi)\b\s*[:\.,]\s*\b(?:23|xxiii)\b",
         ],
     },
 ]
@@ -182,77 +182,80 @@ TARGET_QUERIES = [
 
 # Verified match catalog: human-audited match annotations keyed by (b001_id, offset)
 # in the authentic text (EXPECTED_TEXT_SHA256: 9be8ab66...).
+# Each entry is bound to an exact normalized match string and surrounding context witness.
 VERIFIED_MATCH_CATALOG = {
     # B001-2: 2 passing cross-references without substantive commentary
     ("B001-2", 690592): {
-        "match": "Rom. ix. 25",
+        "expected_match": "Rom. ix. 25",
+        "context_witness": "al. iv. 27 ; one each in Rom. ix. 25; Gal. iv. 8; Phil.\niii. ",
         "classification": "PASSING_CITATION",
         "substantive": False,
         "rationale": "Grammatical note cataloging Pauline usage of a word; no discussion of the quotation or its OT source.",
     },
     ("B001-2", 1093294): {
-        "match": "Rom.\nix. 25",
+        "expected_match": "Rom.\nix. 25",
+        "context_witness": "alled an Apostle.’ Comp. Rom.\nix. 25; Heb. iit. 11. The viole",
         "classification": "PASSING_CITATION",
         "substantive": False,
         "rationale": "Passing parenthetical cross-reference on 1 Cor 15:9; no discussion of the quotation or its OT source.",
     },
-    # B001-3: 1 regex match on Hosea 9:5
-    ("B001-3", 1143523): {
-        "match": "Hos. ix",
-        "classification": "PASSING_CITATION",
-        "substantive": False,
-        "rationale": "Reference to Hosea 9:5 (Hos. ix. 5) in note on 1 Cor 15:55; not Hosea 1:10.",
-    },
-    # B001-5: 3 hits (2 passing, 1 substantive secondary interpretive on 1 Cor 1:2)
+    # B001-5: 6 hits on authentic text (2 substantive secondary on 1 Cor 1:2, 4 passing cross-references)
     ("B001-5", 76476): {
-        "match": "Rom. x. 13",
+        "expected_match": "Rom. x. 13",
+        "context_witness": "); He is ‘the Lord’ (cf. Rom. x. 13), ‘through whom are\nall ",
         "classification": "PASSING_CITATION",
         "substantive": False,
-        "rationale": "Passing reference to Rom 10:13 in Introduction p. xxxvii.",
+        "rationale": "Passing reference to Rom 10:13 in Introduction p. xxxvii cataloging Pauline theological concepts; no quotation analysis.",
     },
     ("B001-5", 160227): {
-        "match": "Joel ii. 32",
+        "expected_match": "Joel ii. 32",
+        "context_witness": "νοις. This goes back\n\nto Joel ii. 32, and\ninvolves the though",
         "classification": "RELEVANT_INTERPRETIVE_CROSS_REFERENCE",
         "substantive": True,
         "rationale": "Commentary on 1 Cor 1:2 (printed p. 3): explicitly traces invocation formula to Joel 2:32, cross-references Rom 10:12-13, and analyzes Pauline christological transfer of OT Yahweh worship formula.",
     },
+    ("B001-5", 160303): {
+        "expected_match": "Rom. x. 12,132",
+        "context_witness": " common bond of all. See\nRom. x. 12,132.\nHere, as there, St Paul",
+        "classification": "RELEVANT_INTERPRETIVE_CROSS_REFERENCE",
+        "substantive": True,
+        "rationale": "Commentary on 1 Cor 1:2 (printed p. 3): explicitly connects invocation formula from Joel 2:32 to Rom 10:12-13, analyzing Pauline worship of Christ under OT divine formula.",
+    },
     ("B001-5", 228383): {
-        "match": "Rom.\nx. 13",
+        "expected_match": "Rom.\nx. 13",
+        "context_witness": "or. x. 17; Phil. ii. r1; Rom.\nx. 13. Hort’s remarks on 1 Pet",
         "classification": "PASSING_CITATION",
         "substantive": False,
-        "rationale": "Passing cross-reference on 1 Cor 1:31 citing Hort on 1 Pet 2:3.",
+        "rationale": "Passing cross-reference on 1 Cor 1:31 citing Hort on 1 Pet 2:3; no discussion of the Joel quotation or its OT source.",
+    },
+    ("B001-5", 288281): {
+        "expected_match": "Rom. x. 12, 13",
+        "context_witness": ". 22, 23, 26; and see on Rom. x. 12, 13.\n\nνοῦν Κυρίου. The νοῦν ",
+        "classification": "PASSING_CITATION",
+        "substantive": False,
+        "rationale": "Passing cross-reference on 1 Cor 2:16 ('and see on Rom. x. 12, 13') pointing back to the earlier 1 Cor 1:2 note; not substantive quotation commentary in this passage.",
+    },
+    ("B001-5", 717693): {
+        "expected_match": "Rom. x. 12,13",
+        "context_witness": " in the N.T.”\nBut see on Rom. x. 12,13.\nInthe N.T. ὁ Κύριος\ncom",
+        "classification": "PASSING_CITATION",
+        "substantive": False,
+        "rationale": "Passing cross-reference on 1 Cor 10:9 ('But see on Rom. x. 12,13') pointing back to the earlier 1 Cor 1:2 note on divine titles; not substantive quotation commentary in this passage.",
     },
     # B001-6: 2 hits on 1 Cor 2:16 (printed pp. 50-51)
     ("B001-6", 287731): {
-        "match": "Isa. xl. 13",
+        "expected_match": "Isa. xl. 13",
+        "context_witness": "ὐτόν) is from the LXX of Isa. xl. 13,\nadapted by the omission",
         "classification": "SUBSTANTIVE_CROSS_EPISTLE_COMPARISON",
         "substantive": True,
         "rationale": "Commentary on 1 Cor 2:16 (printed pp. 50-51): explicitly compares 1 Cor 2:16 quotation of Isa 40:13 LXX with Rom 11:34 (omission vs retention of middle clause) and analyzes LXX νοῦν translating Hebrew ruach.",
     },
     ("B001-6", 287850): {
-        "match": "Rom. xi. 34",
+        "expected_match": "Rom. xi. 34",
+        "context_witness": "is clause is retained in Rom. xi. 34, while\nés συνβιβάσει αὐτ",
         "classification": "SUBSTANTIVE_CROSS_EPISTLE_COMPARISON",
         "substantive": True,
         "rationale": "Commentary on 1 Cor 2:16 (printed pp. 50-51): analyzes clause retention in Rom 11:34 vs omission in 1 Cor 2:16.",
-    },
-    # B001-7: 3 regex matches on Isa xix (Isa 19)
-    ("B001-7", 119987): {
-        "match": "Isa. xix",
-        "classification": "PASSING_CITATION",
-        "substantive": False,
-        "rationale": "Reference to Isa 19:11 in Introduction p. liii; not Isa 11:10.",
-    },
-    ("B001-7", 204416): {
-        "match": "Isa. xix",
-        "classification": "PASSING_CITATION",
-        "substantive": False,
-        "rationale": "Reference to Isa 19:12 on 1 Cor 1:20; not Isa 11:10.",
-    },
-    ("B001-7", 206094): {
-        "match": "Isa. xix",
-        "classification": "PASSING_CITATION",
-        "substantive": False,
-        "rationale": "Reference to Isa 19:11 on 1 Cor 1:20; not Isa 11:10.",
     },
 }
 
@@ -423,66 +426,67 @@ def verify_index_structure(full_text: str) -> dict:
     }
 
 
-def adjudicate_hit(b001_id: str, match_item: dict, full_text: str) -> dict:
+def adjudicate_hit(
+    b001_id: str,
+    match_item: dict,
+    full_text: str,
+    text_sha256: str = "",
+) -> dict:
     """
     Evaluates an individual match using verified match registry and context analysis.
-    Dynamically identifies substantive vs passing context for any match.
+    Requires text_sha256 to match EXPECTED_TEXT_SHA256, match string to match expected_match,
+    and surrounding text to contain context_witness before granting catalog verification.
+    All uncatalogued or unverified hits fail closed to CONTEXT_REVIEW_REQUIRED.
     """
     offset = match_item["start"]
     match_str = match_item["match"]
     key = (b001_id, offset)
 
-    # 1. Check known verified catalog
-    if key in VERIFIED_MATCH_CATALOG:
+    def _norm(s: str) -> str:
+        return re.sub(r"\s+", " ", s.strip())
+
+    is_authenticated_text = (text_sha256 == EXPECTED_TEXT_SHA256)
+
+    # 1. Check known verified catalog ONLY on authentic text
+    if is_authenticated_text and key in VERIFIED_MATCH_CATALOG:
         cat_entry = VERIFIED_MATCH_CATALOG[key]
-        return {
-            "b001_id": b001_id,
-            "offset": offset,
-            "match": match_str,
-            "snippet": match_item["snippet"],
-            "classification": cat_entry["classification"],
-            "substantive": cat_entry["substantive"],
-            "rationale": cat_entry["rationale"],
-            "catalog_verified": True,
-        }
+        match_matches = (_norm(match_str) == _norm(cat_entry["expected_match"]))
+        offset_valid = (full_text[offset : offset + len(match_str)] == match_str)
+        context_window = full_text[max(0, offset - 60) : min(len(full_text), offset + len(match_str) + 60)]
+        witness_valid = (cat_entry["context_witness"] in context_window)
 
-    # 2. Dynamic analysis of unexpected / unreviewed / synthetic match
-    start_win = max(0, offset - 250)
-    end_win = min(len(full_text), offset + 250)
-    context = full_text[start_win:end_win]
+        if match_matches and offset_valid and witness_valid:
+            return {
+                "b001_id": b001_id,
+                "offset": offset,
+                "match": match_str,
+                "snippet": match_item["snippet"],
+                "classification": cat_entry["classification"],
+                "substantive": cat_entry["substantive"],
+                "rationale": cat_entry["rationale"],
+                "catalog_verified": True,
+            }
 
-    substantive_indicators = [
-        r"\bquotation\b", r"\bquotes?\b", r"\bcited?\b", r"\bLXX\b",
-        r"\bSeptuagint\b", r"\bHebrew\b", r"\bomits?\b", r"\badapts?\b",
-        r"\bsubstitut", r"\bclause\b", r"\btranslating\b", r"\brendering\b"
-    ]
-    is_substantive = any(re.search(ind, context, re.IGNORECASE) for ind in substantive_indicators)
-
-    if is_substantive:
-        return {
-            "b001_id": b001_id,
-            "offset": offset,
-            "match": match_str,
-            "snippet": match_item["snippet"],
-            "classification": "SUBSTANTIVE_DISCUSSION",
-            "substantive": True,
-            "rationale": f"Dynamic context inspection detected substantive exegetical/textual commentary around '{match_str}'.",
-            "catalog_verified": False,
-        }
-    else:
-        return {
-            "b001_id": b001_id,
-            "offset": offset,
-            "match": match_str,
-            "snippet": match_item["snippet"],
-            "classification": "PASSING_CITATION",
-            "substantive": False,
-            "rationale": f"Dynamic context inspection found passing citation without substantive quotation discussion.",
-            "catalog_verified": False,
-        }
+    # 2. Unverified / out-of-catalog / hash-mismatched match:
+    # Fails closed. Does NOT declare substantive discussion based on generic keyword proximity!
+    return {
+        "b001_id": b001_id,
+        "offset": offset,
+        "match": match_str,
+        "snippet": match_item["snippet"],
+        "classification": "CONTEXT_REVIEW_REQUIRED",
+        "substantive": False,
+        "rationale": f"Uncatalogued or unverified match '{match_str}' at offset {offset}; manual context review required to establish exegetical status.",
+        "catalog_verified": False,
+    }
 
 
-def adjudicate_target(target: dict, matches: list[dict], full_text: str) -> dict:
+def adjudicate_target(
+    target: dict,
+    matches: list[dict],
+    full_text: str,
+    text_sha256: str = "",
+) -> dict:
     """
     Dynamically computes target-level classification and rationale from adjudicated hits.
     Never relies on predetermined or hard-coded target strings.
@@ -500,7 +504,7 @@ def adjudicate_target(target: dict, matches: list[dict], full_text: str) -> dict
             "adjudicated_hits": [],
         }
 
-    adjudicated_hits = [adjudicate_hit(target["id"], m, full_text) for m in matches]
+    adjudicated_hits = [adjudicate_hit(target["id"], m, full_text, text_sha256) for m in matches]
     substantive_hits = [h for h in adjudicated_hits if h["substantive"]]
 
     if substantive_hits:
@@ -518,9 +522,15 @@ def adjudicate_target(target: dict, matches: list[dict], full_text: str) -> dict
             rationale = substantive_hits[0]["rationale"]
         substantive = True
     else:
-        classification = "NOT_DISCUSSED"
-        rationale = f"{len(matches)} passing citation(s) found without substantive discussion of target quotation."
-        substantive = False
+        review_hits = [h for h in adjudicated_hits if h["classification"] == "CONTEXT_REVIEW_REQUIRED"]
+        if review_hits:
+            classification = "CONTEXT_REVIEW_REQUIRED"
+            rationale = f"{len(matches)} match(es) require manual context review; unverified or out-of-catalog context."
+            substantive = False
+        else:
+            classification = "NOT_DISCUSSED"
+            rationale = f"{len(matches)} passing citation(s) found without substantive discussion of target quotation."
+            substantive = False
 
     return {
         "id": target["id"],
@@ -584,7 +594,7 @@ def run_verification(
                 seen_offsets.add(m["start"])
                 dedup_matches.append(m)
 
-        res = adjudicate_target(target, dedup_matches, text)
+        res = adjudicate_target(target, dedup_matches, text, text_sha256=text_sha)
         target_results.append(res)
         all_hits_flat.extend(res["adjudicated_hits"])
 
@@ -665,31 +675,62 @@ def run_verification(
     md.append("")
     md.append("---")
     md.append("")
-    md.append("## 6. Detailed Case-by-Case Adjudication of Reclassified Targets")
+    md.append("## 6. Detailed Case-by-Case Adjudication of Substantive Targets")
     md.append("")
-    md.append("### B001-6: Romans 11:34 / Isaiah 40:13 — Substantive Comparative Evidence")
-    md.append("- **Location in 1 Corinthians:** Commentary on 1 Cor 2:16, printed pp. 50–51 (Raw scan pp. 126–127; Derivative pp. 31–32).")
-    md.append("- **Observed Exegetical Text:**")
-    md.append("  > *The quotation (τίς. . . αὐτόν) is from the LXX of Isa. xl. 13, adapted by the omission of the middle clause, καὶ τίς αὐτοῦ σύνβουλος ἐγένετο; This clause is retained in Rom. xi. 34, while ὃς συνβιβάσει αὐτόν is omitted... νοῦν Κυρίου. The νοῦν (LXX) corresponds to the Hebrew for πνεῦμα in the original.*")
-    md.append("- **Scholarly Finding:** Robertson and Plummer conduct a direct cross-epistle textual comparison between 1 Cor 2:16 and Rom 11:34, identifying the alternating clause-omissions in Paul's citation of Isaiah 40:13 LXX and analyzing the lexical correspondence between LXX `νοῦν` and Hebrew `רוּחַ` (*rūaḥ* / `πνεῦμα`). Note that the authentic printed edition uses unassimilated orthography with *nu* (`σύνβουλος`, `συνβιβάσει`), characteristic of the ICC series' adherence to Westcott-Hort typography.")
-    md.append("- **Ledger Status:** Admitted as substantive comparative evidence row `S03F-E013`.")
-    md.append("")
-    md.append("### B001-5: Romans 10:13 / Joel 2:32 — Relevant Interpretive Cross-Reference")
-    md.append("- **Location in 1 Corinthians:** Commentary on 1 Cor 1:2, printed p. 3 (Raw scan p. 79; Derivative p. 22).")
-    md.append("- **Observed Exegetical Text:**")
-    md.append("  > *τοῖς ἐπικαλουμένοις. This goes back to Joel ii. 32, and involves the thought of faith, the common bond of all. See Rom. x. 12, 13. Here, as there, St Paul significantly brings in the worship of Christ under the O.T. formula for worship addressed to the LORD God of Israel.*")
-    md.append("- **Scholarly Finding:** The authors explicitly connect the invocation formula `τοῖς ἐπικαλουμένοις` to Joel 2:32 and cross-reference Romans 10:12–13, demonstrating Paul's christological transfer of the Old Testament divine name / worship formula for Yahweh to Jesus Christ.")
-    md.append("- **Ledger Status:** Admitted as secondary interpretive cross-reference evidence row `S03F-E014`.")
-    md.append("")
+    substantive_targets = [tr for tr in target_results if tr["substantive"]]
+    if not substantive_targets:
+        md.append("No substantive comparative or secondary interpretive loci were detected in this volume under authenticated search patterns.")
+        md.append("")
+    else:
+        for tr in substantive_targets:
+            md.append(f"### {tr['id']}: {tr['name']} — {tr['classification']}")
+            md.append(f"- **Total Measured Matches:** {tr['total_matches']}")
+            md.append(f"- **Evaluated Scholarly Finding:** {tr['rationale']}")
+            md.append("- **Observed Exegetical Match Evidence:**")
+            for h in tr["adjudicated_hits"]:
+                if h["substantive"]:
+                    clean_match = h["match"].replace("\n", " ")
+                    clean_snip = h["snippet"].replace("|", "\\|").replace("\n", " ")
+                    md.append(f"  - Offset `{h['offset']}` (`{clean_match}`): *\"{clean_snip[:120]}...\"*")
+                    md.append(f"    - *Rationale:* {h['rationale']}")
+            if tr["id"] == "B001-6":
+                md.append("- **Ledger Status:** Admitted as substantive comparative evidence row `S03F-E013` (Commentary on 1 Cor 2:16, printed pp. 50–51; authentic edition uses unassimilated Hellenistic *nu* orthography `σύνβουλος`, `συνβιβάσει`).")
+            elif tr["id"] == "B001-5":
+                md.append("- **Ledger Status:** Admitted as secondary interpretive cross-reference evidence row `S03F-E014` (Commentary on 1 Cor 1:2, printed p. 3).")
+            md.append("")
     md.append("---")
     md.append("")
     md.append("## 7. Scholarly Verification Verdict")
     md.append("")
-    md.append("1. **B001-6** is dynamically adjudicated as **SUBSTANTIVE_CROSS_EPISTLE_COMPARISON** based on printed pp. 50–51.")
-    md.append("2. **B001-5** is dynamically adjudicated as **RELEVANT_INTERPRETIVE_CROSS_REFERENCE** based on printed p. 3.")
-    md.append("3. For the remaining six targets (**B001-1, B001-2, B001-3, B001-4, B001-7, B001-12**), dynamic per-hit evaluation ")
-    md.append("   and section-localized index inspection confirm that **no substantive discussion is found under these search patterns** ")
-    md.append("   in Robertson and Plummer's 1 Corinthians commentary.")
+    if text_sha != EXPECTED_TEXT_SHA256:
+        md.append("⚠️ **NOTICE:** Verification executed under text digest mismatch override (`--allow-text-digest-mismatch`). Verified match catalog was unauthenticated; qualitative claims are provisional.")
+        md.append("")
+
+    verdict_num = 1
+    for tr in substantive_targets:
+        md.append(f"{verdict_num}. **{tr['id']}** ({tr['name']}) is dynamically adjudicated as **{tr['classification']}** based on observed evidence ({tr['rationale']}).")
+        verdict_num += 1
+
+    review_req_targets = [tr for tr in target_results if tr["classification"] == "CONTEXT_REVIEW_REQUIRED"]
+    if review_req_targets:
+        req_ids = ", ".join(f"**{tr['id']}**" for tr in review_req_targets)
+        md.append(f"{verdict_num}. ⚠️ Targets ({req_ids}) contain unverified matches requiring manual context review.")
+        verdict_num += 1
+
+    non_subst_targets = [tr for tr in target_results if not tr["substantive"] and tr["classification"] != "CONTEXT_REVIEW_REQUIRED"]
+    zero_targets = [tr for tr in non_subst_targets if tr["total_matches"] == 0]
+    passing_targets = [tr for tr in non_subst_targets if tr["total_matches"] > 0]
+
+    if zero_targets:
+        zero_ids = ", ".join(f"**{tr['id']}**" for tr in zero_targets)
+        md.append(f"{verdict_num}. For targets ({zero_ids}), **0 matches** were detected across all 504 pages under authenticated search patterns.")
+        verdict_num += 1
+
+    if passing_targets:
+        passing_desc = ", ".join(f"**{tr['id']}** ({tr['total_matches']} hit(s))" for tr in passing_targets)
+        md.append(f"{verdict_num}. For targets ({passing_desc}), only passing citation(s) were observed without substantive quotation discussion, confirming they are **NOT_DISCUSSED** in this volume.")
+        verdict_num += 1
+
     md.append("")
 
     out_path.parent.mkdir(parents=True, exist_ok=True)

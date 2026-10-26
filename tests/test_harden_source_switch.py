@@ -235,11 +235,12 @@ def test_verify_s03f_negative_search_rejects_tampered_text(tmp_path, monkeypatch
 
 def test_verify_s03f_negative_search_dynamic_adjudication():
     """
-    Step 6 Hardening Gate (Finding S03F-R2-F1):
+    Step 6 Hardening Gate (Findings S03F-R2-F1 & S03F-R3-F1):
     Verify adjudicate_target and adjudicate_hit perform real evidence-grounded
-    adjudication rather than hard-coded string reflection.
+    adjudication bound to authentic text digest and context witnesses.
     """
     from scripts.verify_s03f_negative_search import (
+        EXPECTED_TEXT_SHA256,
         TARGET_QUERIES,
         adjudicate_target,
         adjudicate_hit
@@ -247,59 +248,220 @@ def test_verify_s03f_negative_search_dynamic_adjudication():
 
     queries_by_id = {q["id"]: q for q in TARGET_QUERIES}
 
-    # 1. B001-6 hit on 1 Cor 2:16 is dynamically classified as SUBSTANTIVE_CROSS_EPISTLE_COMPARISON
-    hit_b001_6 = {
-        "match": "Rom. xi. 34",
-        "start": 287850,
-        "snippet": "This clause is retained in Rom. xi. 34, while ὃς συνβιβάσει αὐτόν is omitted..."
-    }
-    res_b001_6 = adjudicate_target(queries_by_id["B001-6"], [hit_b001_6], "dummy full text")
-    assert res_b001_6["classification"] == "SUBSTANTIVE_CROSS_EPISTLE_COMPARISON"
-    assert res_b001_6["substantive"] is True
-    assert "Rom 11:34" in res_b001_6["rationale"]
-
-    # 2. B001-5 hit on 1 Cor 1:2 is dynamically classified as RELEVANT_INTERPRETIVE_CROSS_REFERENCE
-    hit_b001_5 = {
-        "match": "Joel ii. 32",
-        "start": 160227,
-        "snippet": "This goes back to Joel ii. 32, and involves the thought of faith... See Rom. x. 12, 13."
-    }
-    res_b001_5 = adjudicate_target(queries_by_id["B001-5"], [hit_b001_5], "dummy full text")
-    assert res_b001_5["classification"] == "RELEVANT_INTERPRETIVE_CROSS_REFERENCE"
-    assert res_b001_5["substantive"] is True
-
-    # 3. Target with 0 matches dynamically evaluates to NOT_DISCUSSED
-    res_empty = adjudicate_target(queries_by_id["B001-1"], [], "dummy full text")
+    # 1. Target with 0 matches dynamically evaluates to NOT_DISCUSSED
+    res_empty = adjudicate_target(queries_by_id["B001-1"], [], "dummy full text", text_sha256=EXPECTED_TEXT_SHA256)
     assert res_empty["classification"] == "NOT_DISCUSSED"
     assert res_empty["substantive"] is False
     assert "0 matches found" in res_empty["rationale"]
 
-    # 4. Target with only passing citation dynamically evaluates to NOT_DISCUSSED
-    passing_hit = {
-        "match": "Rom. ix. 25",
-        "start": 690592,
-        "snippet": "one each in Rom. ix. 25; Gal. iv. 8; Phil. iii. 3..."
-    }
-    res_passing = adjudicate_target(queries_by_id["B001-2"], [passing_hit], "dummy full text")
-    assert res_passing["classification"] == "NOT_DISCUSSED"
-    assert res_passing["substantive"] is False
-    assert "passing citation(s) found" in res_passing["rationale"]
-
-    # 5. ADVERSARIAL REGRESSION: Injected substantive hit for formerly negative target (B001-1)
-    # Must NOT retain old NOT_DISCUSSED label; must dynamically classify as SUBSTANTIVE_DISCUSSION!
-    synthetic_context = (
-        "Paul's argument in Rom. iv. 3 cites the Septuagint quotation from Gen. xv. 6, "
-        "translating the Hebrew text with characteristic fidelity and argumentative force."
-    )
-    synthetic_hit = {
+    # 2. Out-of-catalog unverified hit fails closed to CONTEXT_REVIEW_REQUIRED
+    unverified_hit = {
         "match": "Rom. iv. 3",
-        "start": 10,
-        "snippet": synthetic_context
+        "start": 500,
+        "snippet": "Some text mentioning Rom. iv. 3 in passing..."
     }
-    res_adversarial = adjudicate_target(queries_by_id["B001-1"], [synthetic_hit], synthetic_context)
-    assert res_adversarial["classification"] == "SUBSTANTIVE_DISCUSSION"
-    assert res_adversarial["substantive"] is True
-    assert "substantive exegetical/textual commentary" in res_adversarial["rationale"]
+    res_unverified = adjudicate_target(queries_by_id["B001-1"], [unverified_hit], "x" * 1000, text_sha256=EXPECTED_TEXT_SHA256)
+    assert res_unverified["classification"] == "CONTEXT_REVIEW_REQUIRED"
+    assert res_unverified["substantive"] is False
+    assert "require manual context review" in res_unverified["rationale"]
+
+
+def test_verify_s03f_match_catalog_authentication_and_hash_binding():
+    """
+    Step 6 Hardening Gate (Finding S03F-R3-F1):
+    Verify that the verified match catalog is strictly cryptographically bound to
+    EXPECTED_TEXT_SHA256, exact normalized match string, offset validity, and context witness.
+    Wrong-text-at-known-offset, wrong hash, and altered witness MUST fail closed.
+    """
+    import re
+    from scripts.verify_s03f_negative_search import (
+        EXPECTED_TEXT_SHA256,
+        VERIFIED_MATCH_CATALOG,
+        adjudicate_hit
+    )
+
+    # Construct authenticated mock buffer containing exact authentic text at known offset 287850
+    cat_entry = VERIFIED_MATCH_CATALOG[("B001-6", 287850)]
+    mock_context = "is clause is retained in Rom. xi. 34, while\nés συνβιβάσει αὐτ"
+    match_str = "Rom. xi. 34"
+    match_idx = mock_context.index(match_str)
+    prefix_len = 287850 - match_idx
+    mock_prefix = " " * prefix_len
+    # Ensure exact offset 287850 matches "Rom. xi. 34"
+    mock_text = mock_prefix + mock_context + (" " * 1000)
+    assert mock_text[287850 : 287850 + len(match_str)] == match_str
+
+    hit_valid = {
+        "match": match_str,
+        "start": 287850,
+        "snippet": mock_context
+    }
+
+    # 1. Authentic text + valid hash -> PASSES with catalog verification
+    res1 = adjudicate_hit("B001-6", hit_valid, mock_text, text_sha256=EXPECTED_TEXT_SHA256)
+    assert res1["catalog_verified"] is True
+    assert res1["classification"] == "SUBSTANTIVE_CROSS_EPISTLE_COMPARISON"
+    assert res1["substantive"] is True
+
+    # 2. Wrong-hash regression: text_sha256 differs from EXPECTED_TEXT_SHA256
+    # MUST fail closed to CONTEXT_REVIEW_REQUIRED with catalog_verified=False
+    res_wrong_hash = adjudicate_hit("B001-6", hit_valid, mock_text, text_sha256="wrong_hash_1234567890abcdef")
+    assert res_wrong_hash["catalog_verified"] is False
+    assert res_wrong_hash["classification"] == "CONTEXT_REVIEW_REQUIRED"
+    assert res_wrong_hash["substantive"] is False
+
+    # 3. Wrong-text-at-known-offset regression: different match string at known offset 287850
+    # MUST NOT receive the catalog verdict; MUST fail closed
+    hit_wrong_match = {
+        "match": "Rom. iv. 3",
+        "start": 287850,
+        "snippet": mock_context
+    }
+    res_wrong_match = adjudicate_hit("B001-6", hit_wrong_match, mock_text, text_sha256=EXPECTED_TEXT_SHA256)
+    assert res_wrong_match["catalog_verified"] is False
+    assert res_wrong_match["classification"] == "CONTEXT_REVIEW_REQUIRED"
+    assert res_wrong_match["substantive"] is False
+
+    # 4. Altered context witness regression: context witness does not match catalog
+    tampered_context = "is clause is retained in Rom. xi. 34, [ALTERED CONTEXT]"
+    tampered_idx = tampered_context.index(match_str)
+    tampered_prefix = " " * (287850 - tampered_idx)
+    tampered_text = tampered_prefix + tampered_context + (" " * 1000)
+    res_altered_witness = adjudicate_hit("B001-6", hit_valid, tampered_text, text_sha256=EXPECTED_TEXT_SHA256)
+    assert res_altered_witness["catalog_verified"] is False
+    assert res_altered_witness["classification"] == "CONTEXT_REVIEW_REQUIRED"
+    assert res_altered_witness["substantive"] is False
+
+
+def test_verify_s03f_search_patterns_reject_counterexamples():
+    """
+    Step 6 Hardening Gate (Finding S03F-R3-F2):
+    Verify search regexes require unambiguous chapter/verse delimiters and complete
+    numeral boundaries, rejecting counterexamples Hos. ix. 5, Isa. xix. 11, and Rom. x. 12
+    while reliably matching legitimate citations.
+    """
+    import re
+    from scripts.verify_s03f_negative_search import TARGET_QUERIES
+
+    queries_by_id = {q["id"]: q for q in TARGET_QUERIES}
+
+    # 1. B001-3 (Hosea 1:10) MUST reject Hosea 9:5 (Hos. ix. 5)
+    pats_b001_3 = queries_by_id["B001-3"]["patterns"]
+    assert not any(re.search(p, "Hos. ix. 5", re.I) for p in pats_b001_3), "Hos. ix. 5 falsely matched B001-3"
+    assert not any(re.search(p, "Hos. ix", re.I) for p in pats_b001_3), "Hos. ix falsely matched B001-3"
+    assert any(re.search(p, "Hos. i. 10", re.I) for p in pats_b001_3), "Legitimate Hos. i. 10 did not match"
+    assert any(re.search(p, "Hosea 1:10", re.I) for p in pats_b001_3), "Legitimate Hosea 1:10 did not match"
+
+    # 2. B001-7 (Isaiah 11:10) MUST reject Isaiah 19:11 (Isa. xix. 11)
+    pats_b001_7 = queries_by_id["B001-7"]["patterns"]
+    assert not any(re.search(p, "Isa. xix. 11", re.I) for p in pats_b001_7), "Isa. xix. 11 falsely matched B001-7"
+    assert not any(re.search(p, "Isa. xix", re.I) for p in pats_b001_7), "Isa. xix falsely matched B001-7"
+    assert any(re.search(p, "Isa. xi. 10", re.I) for p in pats_b001_7), "Legitimate Isa. xi. 10 did not match"
+    assert any(re.search(p, "Isaiah 11:10", re.I) for p in pats_b001_7), "Legitimate Isaiah 11:10 did not match"
+
+    # 3. B001-5 (Romans 10:13) MUST reject standalone Romans 10:12
+    pats_b001_5 = queries_by_id["B001-5"]["patterns"]
+    assert not any(re.search(p, "Rom. x. 12", re.I) for p in pats_b001_5), "Standalone Rom. x. 12 falsely matched B001-5"
+    assert not any(re.search(p, "Rom. x. 12; Eph. ii. 14", re.I) for p in pats_b001_5), "Rom. x. 12; Eph. ii. 14 falsely matched B001-5"
+    assert any(re.search(p, "Rom. x. 13", re.I) for p in pats_b001_5), "Legitimate Rom. x. 13 did not match"
+    assert any(re.search(p, "Rom. x. 12, 13", re.I) for p in pats_b001_5), "Legitimate Rom. x. 12, 13 did not match"
+    assert any(re.search(p, "Rom. x. 12,132.", re.I) for p in pats_b001_5), "Authentic OCR Rom. x. 12,132. did not match"
+
+
+def test_verify_s03f_adjudication_rejects_generic_lxx_proximity():
+    """
+    Step 6 Hardening Gate (Finding S03F-R3-F3):
+    Verify that out-of-catalog or unexpected matches do NOT automatically get classified
+    as SUBSTANTIVE_DISCUSSION simply because the word 'LXX' or 'Hebrew' appears nearby.
+    Must fail closed to CONTEXT_REVIEW_REQUIRED with substantive=False.
+    """
+    from scripts.verify_s03f_negative_search import (
+        EXPECTED_TEXT_SHA256,
+        TARGET_QUERIES,
+        adjudicate_target
+    )
+
+    queries_by_id = {q["id"]: q for q in TARGET_QUERIES}
+
+    # Context with an injected match near isolated generic words 'LXX' and 'Hebrew'
+    injected_context = (
+        "In our discussion of the LXX rendering of an unrelated passage, we note Hebrew usage. "
+        "Meanwhile, Rom. iv. 3 is cited elsewhere in the literature without commentary."
+    )
+    hit = {
+        "match": "Rom. iv. 3",
+        "start": injected_context.index("Rom. iv. 3"),
+        "snippet": injected_context
+    }
+
+    res = adjudicate_target(queries_by_id["B001-1"], [hit], injected_context, text_sha256=EXPECTED_TEXT_SHA256)
+    assert res["classification"] == "CONTEXT_REVIEW_REQUIRED"
+    assert res["substantive"] is False
+    assert "require manual context review" in res["rationale"]
+
+
+def test_verify_s03f_report_sections_dynamically_conditioned(tmp_path, monkeypatch):
+    """
+    Step 6 Hardening Gate (Finding S03F-R3-F3):
+    Verify that run_verification makes Sections 6 and 7 strictly conditional on observed evidence:
+    when substantive hits (B001-5 / B001-6) are absent, Sections 6 and 7 do NOT claim they are
+    verified, and all report sections remain 100% free of contradictions.
+    """
+    from scripts.verify_s03f_negative_search import run_verification
+
+    # 1. Construct synthetic PDF and text without B001-5 or B001-6 matches
+    dummy_pdf = tmp_path / "dummy.pdf"
+    dummy_pdf.write_bytes(b"%PDF-1.4 synthetic")
+    dummy_sha = hashlib.sha256(b"%PDF-1.4 synthetic").hexdigest()
+
+    monkeypatch.setattr("scripts.verify_s03f_negative_search.EXPECTED_RAW_PDF_SHA256", dummy_sha)
+    monkeypatch.setattr("scripts.verify_s03f_negative_search.EXPECTED_RAW_PDF_BYTES", len(b"%PDF-1.4 synthetic"))
+
+    # Synthetic text passing positive controls and index checks, but with 0 matches for target queries
+    synthetic_clean_text = (
+        "POSITIVE CONTROLS:\n"
+        "Isa. xxix. 14\n"
+        "Gen. ii. 24\n"
+        "Deut. xxv. 4\n"
+        "Exod. xxxii. 6\n"
+        "Isa. xxv. 8\n"
+        "Sanday and Headlam\n\n"
+        "MAIN COMMENTARY TEXT:\n"
+        "General discussion of Corinthians without target citations.\n\n"
+        "INDEXES\n"
+        "I. GENERAL\n"
+        "Allegorical interpretation Assimilation Aquila\n"
+        "II. GREEK WORDS\n"
+        "ἀδάπανος ἀλοάω\n"
+        "III. LATIN AND ENGLISH WORDS\n"
+        "Caritas underling\n"
+        "Printed by Morrison & Gibb Limited, Edinburgh\n"
+    )
+
+    clean_text_file = tmp_path / "clean_text.txt"
+    clean_text_file.write_text(synthetic_clean_text, encoding="utf-8")
+    report_file = tmp_path / "report.md"
+
+    code = run_verification(
+        dummy_pdf,
+        clean_text_file,
+        report_file,
+        allow_text_digest_mismatch=True
+    )
+    assert code == 0
+    report_content = report_file.read_text(encoding="utf-8")
+
+    # Section 6 must state that NO substantive targets were detected
+    assert "No substantive comparative or secondary interpretive loci were detected" in report_content
+    # Must NOT claim B001-5 or B001-6 are verified or admitted!
+    assert "Admitted as substantive comparative evidence row" not in report_content
+    assert "Admitted as secondary interpretive cross-reference evidence row" not in report_content
+
+    # Section 7 must NOT list B001-5 or B001-6 as substantive
+    assert "B001-5 (Romans 10:13 / Joel 2:32) is dynamically adjudicated as RELEVANT_INTERPRETIVE_CROSS_REFERENCE" not in report_content
+    assert "B001-6 (Romans 11:34 / Isaiah 40:13) is dynamically adjudicated as SUBSTANTIVE_CROSS_EPISTLE_COMPARISON" not in report_content
+    assert "For targets (**B001-1**, **B001-2**, **B001-3**, **B001-4**, **B001-5**, **B001-6**, **B001-7**, **B001-12**), **0 matches** were detected" in report_content
+    assert "NOTICE:** Verification executed under text digest mismatch override" in report_content
 
 
 def test_verify_s03f_negative_search_enforces_index_boundaries():

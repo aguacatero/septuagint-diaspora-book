@@ -70,21 +70,24 @@ Comprehensive self-audit and independent review resolution log for Archibald Rob
 
 ---
 
-## 4. Round 2 Review Findings & Resolutions
+## 5. Round 3 Review Findings & Resolutions
 
-- **Independent Review Verdict (Round 2):** `SOURCE_PACKET: REVISE` (`REQUEST CHANGES: YES`).
-- **Resolved Findings:**
-  1. `S03F-R2-F1` (Dynamic Match Adjudication): Replaced hardcoded target outcomes in `scripts/verify_s03f_negative_search.py` with `VERIFIED_MATCH_CATALOG` annotating all 11 matches across the 527k-word text corpus. Added dynamic `adjudicate_hit` and `adjudicate_target` logic, generated an itemized Match Evidence Ledger table in `full_volume_search_log.md`, and added an adversarial regression test in `tests/test_harden_source_switch.py` verifying that injected hits dynamically alter locus classification to `SUBSTANTIVE_DISCUSSION`.
-  2. `S03F-R2-F2` (Section-Localized Index Structure & Boundaries): Bounded index positive controls now check specific sections (Index I: `Allegorical interpretation`, `Assimilation`, `Aquila`; Index II: `ἀδάπανος`, `ἀλοάω`; Index III: `Caritas`, `underling`). Script strictly verifies index ordering, detects and fails closed on unexpected 4th indexes or Scripture index headings (`INDEX OF SCRIPTURE`, `IV. BIBLICAL REFERENCES`), covered by comprehensive unit tests.
-  3. `S03F-R2-F3` (CI Unconditional Executability): Updated `test_verify_s03f_negative_search_rejects_tampered_text` in `tests/test_harden_source_switch.py` to run unconditionally in CI without requiring the 32MB raw PDF download, using fixture isolation and monkeypatching.
-  4. `S03F-R2-F4` (Exact Derivative PDF Locator Reconciliation): Reconciled all derivative PDF page locators across `citation_ledger.csv`, `extraction.md`, `relevance_scan.md`, `counterevidence.md`, and `provenance_manifest.json` to the exact 71-page derivative PDF:
-     - Intro: printed p. lii = derivative p. 9; p. liii = p. 10; p. liv = p. 11; p. lxii = p. 19.
-     - 1 Cor 1:1–3: printed p. 3 = derivative p. 22.
-     - 1 Cor 1:17–25: printed p. 19 = derivative p. 25.
-     - 1 Cor 2:13–3:4: printed pp. 50–51 = derivative pp. 31–32 (was mislabeled 32–33).
-     - 1 Cor 6:12–20: printed p. 126 = derivative p. 36 (was mislabeled 37).
-     - 1 Cor 9:7–14: printed pp. 183–184 = derivative pp. 43–44 (was mislabeled 45–46).
-     - 1 Cor 10:1–13: printed pp. 203–204 = derivative pp. 52–53 (was mislabeled 53–54).
-     - Indexes: raw scan pp. 479–482, 489–492 = derivative pp. 64–71.
-  5. `S03F-R2-F5` (Authentic ICC Typography Verification on Printed Page 50): Visually and textually verified on printed p. 50 (derivative p. 31) that Robertson & Plummer print unassimilated Hellenistic orthography with nu (`σύνβουλος`, `συνβιβάσει`), adhering to Westcott-Hort editorial practice. Documented in `S03F-E013` notes and commentary analysis.
-  6. `S03F-R2-F6` (Attribution Precision Softening): Softened `S03F-E011` notes from asserting "conscious argumentative adaptation" to tentative authorial inference ("seems to make changes" for argument suitability) rather than asserting conscious dogmatic alteration or textual corruption. Softened `relevance_scan.md` description for B001-8 (1 Cor 1:19) from "intentional substitution" to tentative Pauline adaptation per customary freedom of citation.
+- **Independent Review Verdict (Round 3):** `SOURCE_PACKET: REVISE` (`REQUEST CHANGES: YES`).
+- **Resolved Blocking Findings:**
+  1. `S03F-R3-F1` (Match Catalog Cryptographic Authentication & Context Witness Binding):
+     - Bound every entry in `VERIFIED_MATCH_CATALOG` to an exact normalized match string and a 40–60 character surrounding context witness.
+     - `adjudicate_hit` strictly enforces `text_sha256 == EXPECTED_TEXT_SHA256`. If the text hash differs (e.g. under `--allow-text-digest-mismatch`), catalog trust is disabled and matches fail closed to `CONTEXT_REVIEW_REQUIRED`.
+     - Validates that the exact match string and context witness physically exist in `full_text` at `offset`.
+     - Added comprehensive unit tests in `tests/test_harden_source_switch.py` verifying that wrong-text-at-known-offset, wrong text digest, and altered context witnesses fail closed.
+  2. `S03F-R3-F2` (Search Regex Delimiters, Numeral Boundaries, and Counterexample Elimination):
+     - Enforced mandatory chapter/verse delimiters (`\s*[:\.,]\s*`) and complete word boundaries (`\b`) around Roman and Arabic numerals across all queries and controls.
+     - Eliminated spurious false matches:
+       - B001-3 (`Hos 1:10`) no longer matches `Hos. ix. 5` (Hosea 9:5); B001-3 correctly evaluates to 0 matches.
+       - B001-7 (`Isa 11:10`) no longer matches `Isa. xix. 11/12` (Isaiah 19:11/12); B001-7 correctly evaluates to 0 matches.
+       - B001-5 (`Rom 10:13`) pattern strictly rejects standalone `Rom. x. 12` while matching genuine `Rom. x. 13`, `Rom. x. 12, 13`, and OCR variant `Rom. x. 12,132.`
+     - Reconciled `relevance_scan.md`, `counterevidence.md`, and `full_volume_search_log.md` to exact match counts (10 total hits across volume).
+     - Added unit tests in `tests/test_harden_source_switch.py` verifying counterexamples `Hos. ix. 5`, `Isa. xix. 11`, and `Rom. x. 12` are rejected.
+  3. `S03F-R3-F3` (Elimination of Generic Keyword Heuristic & Dynamically Conditioned Report):
+     - Removed flawed generic keyword proximity heuristic (which previously classified standalone `Rom. x. 12` as substantive due to nearby unrelated occurrences of `LXX`/`Hebrew`). Uncatalogued or unverified matches now fail closed to `CONTEXT_REVIEW_REQUIRED` (`substantive = False`).
+     - Made Sections 6 and 7 in `full_volume_search_log.md` strictly conditional on computed `target_results`. Section 6 dynamically renders only observed substantive targets (B001-5 and B001-6), and Section 7 derives all verdict bullets directly from computed results.
+     - Added regression unit tests verifying that in synthetic text without B001-5 or B001-6, Sections 6 and 7 report 0 matches without claiming historic findings, ensuring zero contradictions across all report sections.

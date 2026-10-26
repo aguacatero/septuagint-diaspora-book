@@ -8,13 +8,13 @@ Systematic extraction of counterevidence, uncertainties, competing textual forms
 - **Result:** No substantive discussion found under full-volume search patterns. (Volume is a commentary on 1 Corinthians).
 
 ## 2. B001-2: Romans 9:25 / Hosea 2:23
-- **Result:** No substantive discussion found under full-volume search patterns. (Passing cross-references to Hosea 2:23 on pp. 88, 344 in other contexts).
+- **Result:** No substantive discussion found under full-volume search patterns. (Two passing cross-references to Rom. ix. 25 on pp. 200, 344 in grammatical and parenthetical notes; no discussion of the quotation or its OT source).
 
 ## 3. B001-3: Romans 9:26 / Hosea 1:10
-- **Result:** No substantive discussion found under full-volume search patterns. (Passing citation of Hosea 1:10 on p. 204 in note on 1 Cor 10:7).
+- **Result:** No discussion found under full-volume search patterns. (0 occurrences across all 504 pages under authenticated search patterns).
 
 ## 4. B001-4: Romans 10:11 / Isaiah 28:16
-- **Result:** No substantive discussion found under full-volume search patterns. (Volume is a commentary on 1 Corinthians).
+- **Result:** No substantive discussion found under full-volume search patterns. (Volume is a commentary on 1 Corinthians; 0 occurrences).
 
 ---
 
@@ -46,7 +46,7 @@ Systematic extraction of counterevidence, uncertainties, competing textual forms
 ---
 
 ## 7. B001-7: Romans 15:12 / Isaiah 11:10
-- **Result:** No substantive discussion found under full-volume search patterns. (Passing citations on pp. 354, 358 in notes on 1 Cor 15:25, 27).
+- **Result:** No discussion found under full-volume search patterns. (0 occurrences across all 504 pages under authenticated search patterns).
 
 ---
 

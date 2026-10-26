@@ -64,11 +64,11 @@ were scanned across the entire 504-page volume to evaluate presence, cross-epist
 | :--- | :--- | :--- | :--- | :--- |
 | **B001-1** | Romans 4:3 / Genesis 15:6 | 0 | **NOT_DISCUSSED** | 0 matches found under verified search patterns across all 504 pages. |
 | **B001-2** | Romans 9:25 / Hosea 2:23 | 2 | **NOT_DISCUSSED** | 2 passing citation(s) found without substantive discussion of target quotation. |
-| **B001-3** | Romans 9:26 / Hosea 1:10 | 1 | **NOT_DISCUSSED** | 1 passing citation(s) found without substantive discussion of target quotation. |
+| **B001-3** | Romans 9:26 / Hosea 1:10 | 0 | **NOT_DISCUSSED** | 0 matches found under verified search patterns across all 504 pages. |
 | **B001-4** | Romans 10:11 / Isaiah 28:16 | 0 | **NOT_DISCUSSED** | 0 matches found under verified search patterns across all 504 pages. |
-| **B001-5** | Romans 10:13 / Joel 2:32 | 7 | **RELEVANT_INTERPRETIVE_CROSS_REFERENCE** | Commentary on 1 Cor 1:2 (printed p. 3): explicitly traces invocation formula to Joel 2:32, cross-references Rom 10:12-13, and analyzes Pauline christological transfer of OT Yahweh worship formula. |
+| **B001-5** | Romans 10:13 / Joel 2:32 | 6 | **RELEVANT_INTERPRETIVE_CROSS_REFERENCE** | Commentary on 1 Cor 1:2 (printed p. 3): explicitly connects invocation formula from Joel 2:32 to Rom 10:12-13, analyzing Pauline worship of Christ under OT divine formula. |
 | **B001-6** | Romans 11:34 / Isaiah 40:13 | 2 | **SUBSTANTIVE_CROSS_EPISTLE_COMPARISON** | Commentary on 1 Cor 2:16 (printed pp. 50-51): analyzes clause retention in Rom 11:34 vs omission in 1 Cor 2:16. |
-| **B001-7** | Romans 15:12 / Isaiah 11:10 | 3 | **NOT_DISCUSSED** | 3 passing citation(s) found without substantive discussion of target quotation. |
+| **B001-7** | Romans 15:12 / Isaiah 11:10 | 0 | **NOT_DISCUSSED** | 0 matches found under verified search patterns across all 504 pages. |
 | **B001-12** | Galatians 3:13 / Deuteronomy 21:23 | 0 | **NOT_DISCUSSED** | 0 matches found under verified search patterns across all 504 pages. |
 
 ---
@@ -81,44 +81,44 @@ Every individual regex match detected across the 504-page text layer is itemized
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 1 | **B001-2** | `690592` | `Rom. ix. 25` | `Paul: four in 2 Cor. iv. 8, 9; two in a quotation in Gal. iv. 27 ; one each in R...` | **PASSING_CITATION** | Grammatical note cataloging Pauline usage of a word; no discussion of the quotation or its OT source. |
 | 2 | **B001-2** | `1093294` | `Rom. ix. 25` | `use of the relative; ‘seeing that I am not fit to be called an Apostle.’ Comp. R...` | **PASSING_CITATION** | Passing parenthetical cross-reference on 1 Cor 15:9; no discussion of the quotation or its OT source. |
-| 3 | **B001-3** | `1143523` | `Hos. ix` | `3 is quite parallel, for there the verb is present, not future. Jer. iv. 30 and ...` | **PASSING_CITATION** | Reference to Hosea 9:5 (Hos. ix. 5) in note on 1 Cor 15:55; not Hosea 1:10. |
-| 4 | **B001-5** | `76476` | `Rom. x. 13` | `ly lays down. Christ was the whole of his Gospel (ii. 2); He is ‘the Lord’ (cf. ...` | **PASSING_CITATION** | Passing reference to Rom 10:13 in Introduction p. xxxvii. |
-| 5 | **B001-5** | `160303` | `Rom. x. 12` | `to Joel ii. 32, and involves the thought of faith, the common bond of all. See R...` | **PASSING_CITATION** | Dynamic context inspection found passing citation without substantive quotation discussion. |
-| 6 | **B001-5** | `228383` | `Rom. x. 13` | `e quotes as other instances in Paul, ii. 16, x. 22; 2 Cor. x. 17; Phil. ii. r1; ...` | **PASSING_CITATION** | Passing cross-reference on 1 Cor 1:31 citing Hort on 1 Pet 2:3. |
-| 7 | **B001-5** | `288281` | `Rom. x. 12` | `ificance.  Cf. Wisd.  ix. 13;  Ecclus. 1. 6;  Job xxxvi. 22, 23, 26; and see on ...` | **SUBSTANTIVE_DISCUSSION** | Dynamic context inspection detected substantive exegetical/textual commentary around 'Rom. x. 12'. |
-| 8 | **B001-5** | `717693` | `Rom. x. 12` | `i. 3, ‘‘ No such identification can be clearly made out in the N.T.” But see on ...` | **SUBSTANTIVE_DISCUSSION** | Dynamic context inspection detected substantive exegetical/textual commentary around 'Rom. x. 12'. |
-| 9 | **B001-5** | `902005` | `Rom. x. 12` | `to whom the Apostle is writing. See Lightfoot on Col. iil. 11, and cf. vii. 22; ...` | **PASSING_CITATION** | Dynamic context inspection found passing citation without substantive quotation discussion. |
-| 10 | **B001-5** | `160227` | `Joel ii. 32` | `hat are addressed, not all Christendom. τοῖς ἐπικαλουμένοις. This goes back  to ...` | **RELEVANT_INTERPRETIVE_CROSS_REFERENCE** | Commentary on 1 Cor 1:2 (printed p. 3): explicitly traces invocation formula to Joel 2:32, cross-references Rom 10:12-13, and analyzes Pauline christological transfer of OT Yahweh worship formula. |
-| 11 | **B001-6** | `287850` | `Rom. xi. 34` | `the middle clause, καὶ τίς αὐτοῦ σύνβουλος ἐγένετο; This clause is retained in R...` | **SUBSTANTIVE_CROSS_EPISTLE_COMPARISON** | Commentary on 1 Cor 2:16 (printed pp. 50-51): analyzes clause retention in Rom 11:34 vs omission in 1 Cor 2:16. |
-| 12 | **B001-6** | `287731` | `Isa. xl. 13` | `by any merely external norm. The quotation (τίς. . . αὐτόν) is from the LXX of I...` | **SUBSTANTIVE_CROSS_EPISTLE_COMPARISON** | Commentary on 1 Cor 2:16 (printed pp. 50-51): explicitly compares 1 Cor 2:16 quotation of Isa 40:13 LXX with Rom 11:34 (omission vs retention of middle clause) and analyzes LXX νοῦν translating Hebrew ruach. |
-| 13 | **B001-7** | `119987` | `Isa. xix` | `reference for the Hebrew, or possibly for some version not known to us. i, 20 = ...` | **PASSING_CITATION** | Reference to Isa 19:11 in Introduction p. liii; not Isa 11:10. |
-| 14 | **B001-7** | `204416` | `Isa. xix` | `x. 20. quotes from it Matt. xi. 5, xv. 8f.  Our Lord  + He may have in his mind ...` | **PASSING_CITATION** | Reference to Isa 19:12 on 1 Cor 1:20; not Isa 11:10. |
-| 15 | **B001-7** | `206094` | `Isa. xix` | `stultam fecit (Vulg.), infatuavit (Tertull. and Beza). Cf. Rom. i. 22, 23, and I...` | **PASSING_CITATION** | Reference to Isa 19:11 on 1 Cor 1:20; not Isa 11:10. |
+| 3 | **B001-5** | `76476` | `Rom. x. 13` | `ly lays down. Christ was the whole of his Gospel (ii. 2); He is ‘the Lord’ (cf. ...` | **PASSING_CITATION** | Passing reference to Rom 10:13 in Introduction p. xxxvii cataloging Pauline theological concepts; no quotation analysis. |
+| 4 | **B001-5** | `160303` | `Rom. x. 12,132` | `to Joel ii. 32, and involves the thought of faith, the common bond of all. See R...` | **RELEVANT_INTERPRETIVE_CROSS_REFERENCE** | Commentary on 1 Cor 1:2 (printed p. 3): explicitly connects invocation formula from Joel 2:32 to Rom 10:12-13, analyzing Pauline worship of Christ under OT divine formula. |
+| 5 | **B001-5** | `228383` | `Rom. x. 13` | `e quotes as other instances in Paul, ii. 16, x. 22; 2 Cor. x. 17; Phil. ii. r1; ...` | **PASSING_CITATION** | Passing cross-reference on 1 Cor 1:31 citing Hort on 1 Pet 2:3; no discussion of the Joel quotation or its OT source. |
+| 6 | **B001-5** | `288281` | `Rom. x. 12, 13` | `ificance.  Cf. Wisd.  ix. 13;  Ecclus. 1. 6;  Job xxxvi. 22, 23, 26; and see on ...` | **PASSING_CITATION** | Passing cross-reference on 1 Cor 2:16 ('and see on Rom. x. 12, 13') pointing back to the earlier 1 Cor 1:2 note; not substantive quotation commentary in this passage. |
+| 7 | **B001-5** | `717693` | `Rom. x. 12,13` | `i. 3, ‘‘ No such identification can be clearly made out in the N.T.” But see on ...` | **PASSING_CITATION** | Passing cross-reference on 1 Cor 10:9 ('But see on Rom. x. 12,13') pointing back to the earlier 1 Cor 1:2 note on divine titles; not substantive quotation commentary in this passage. |
+| 8 | **B001-5** | `160227` | `Joel ii. 32` | `hat are addressed, not all Christendom. τοῖς ἐπικαλουμένοις. This goes back  to ...` | **RELEVANT_INTERPRETIVE_CROSS_REFERENCE** | Commentary on 1 Cor 1:2 (printed p. 3): explicitly traces invocation formula to Joel 2:32, cross-references Rom 10:12-13, and analyzes Pauline christological transfer of OT Yahweh worship formula. |
+| 9 | **B001-6** | `287850` | `Rom. xi. 34` | `the middle clause, καὶ τίς αὐτοῦ σύνβουλος ἐγένετο; This clause is retained in R...` | **SUBSTANTIVE_CROSS_EPISTLE_COMPARISON** | Commentary on 1 Cor 2:16 (printed pp. 50-51): analyzes clause retention in Rom 11:34 vs omission in 1 Cor 2:16. |
+| 10 | **B001-6** | `287731` | `Isa. xl. 13` | `by any merely external norm. The quotation (τίς. . . αὐτόν) is from the LXX of I...` | **SUBSTANTIVE_CROSS_EPISTLE_COMPARISON** | Commentary on 1 Cor 2:16 (printed pp. 50-51): explicitly compares 1 Cor 2:16 quotation of Isa 40:13 LXX with Rom 11:34 (omission vs retention of middle clause) and analyzes LXX νοῦν translating Hebrew ruach. |
 
 ---
 
-## 6. Detailed Case-by-Case Adjudication of Reclassified Targets
+## 6. Detailed Case-by-Case Adjudication of Substantive Targets
 
-### B001-6: Romans 11:34 / Isaiah 40:13 — Substantive Comparative Evidence
-- **Location in 1 Corinthians:** Commentary on 1 Cor 2:16, printed pp. 50–51 (Raw scan pp. 126–127; Derivative pp. 31–32).
-- **Observed Exegetical Text:**
-  > *The quotation (τίς. . . αὐτόν) is from the LXX of Isa. xl. 13, adapted by the omission of the middle clause, καὶ τίς αὐτοῦ σύνβουλος ἐγένετο; This clause is retained in Rom. xi. 34, while ὃς συνβιβάσει αὐτόν is omitted... νοῦν Κυρίου. The νοῦν (LXX) corresponds to the Hebrew for πνεῦμα in the original.*
-- **Scholarly Finding:** Robertson and Plummer conduct a direct cross-epistle textual comparison between 1 Cor 2:16 and Rom 11:34, identifying the alternating clause-omissions in Paul's citation of Isaiah 40:13 LXX and analyzing the lexical correspondence between LXX `νοῦν` and Hebrew `רוּחַ` (*rūaḥ* / `πνεῦμα`). Note that the authentic printed edition uses unassimilated orthography with *nu* (`σύνβουλος`, `συνβιβάσει`), characteristic of the ICC series' adherence to Westcott-Hort typography.
-- **Ledger Status:** Admitted as substantive comparative evidence row `S03F-E013`.
+### B001-5: Romans 10:13 / Joel 2:32 — RELEVANT_INTERPRETIVE_CROSS_REFERENCE
+- **Total Measured Matches:** 6
+- **Evaluated Scholarly Finding:** Commentary on 1 Cor 1:2 (printed p. 3): explicitly connects invocation formula from Joel 2:32 to Rom 10:12-13, analyzing Pauline worship of Christ under OT divine formula.
+- **Observed Exegetical Match Evidence:**
+  - Offset `160303` (`Rom. x. 12,132`): *"to Joel ii. 32, and involves the thought of faith, the common bond of all. See Rom. x. 12,132. Here, as there, St Paul s..."*
+    - *Rationale:* Commentary on 1 Cor 1:2 (printed p. 3): explicitly connects invocation formula from Joel 2:32 to Rom 10:12-13, analyzing Pauline worship of Christ under OT divine formula.
+  - Offset `160227` (`Joel ii. 32`): *"hat are addressed, not all Christendom. τοῖς ἐπικαλουμένοις. This goes back  to Joel ii. 32, and involves the thought of..."*
+    - *Rationale:* Commentary on 1 Cor 1:2 (printed p. 3): explicitly traces invocation formula to Joel 2:32, cross-references Rom 10:12-13, and analyzes Pauline christological transfer of OT Yahweh worship formula.
+- **Ledger Status:** Admitted as secondary interpretive cross-reference evidence row `S03F-E014` (Commentary on 1 Cor 1:2, printed p. 3).
 
-### B001-5: Romans 10:13 / Joel 2:32 — Relevant Interpretive Cross-Reference
-- **Location in 1 Corinthians:** Commentary on 1 Cor 1:2, printed p. 3 (Raw scan p. 79; Derivative p. 22).
-- **Observed Exegetical Text:**
-  > *τοῖς ἐπικαλουμένοις. This goes back to Joel ii. 32, and involves the thought of faith, the common bond of all. See Rom. x. 12, 13. Here, as there, St Paul significantly brings in the worship of Christ under the O.T. formula for worship addressed to the LORD God of Israel.*
-- **Scholarly Finding:** The authors explicitly connect the invocation formula `τοῖς ἐπικαλουμένοις` to Joel 2:32 and cross-reference Romans 10:12–13, demonstrating Paul's christological transfer of the Old Testament divine name / worship formula for Yahweh to Jesus Christ.
-- **Ledger Status:** Admitted as secondary interpretive cross-reference evidence row `S03F-E014`.
+### B001-6: Romans 11:34 / Isaiah 40:13 — SUBSTANTIVE_CROSS_EPISTLE_COMPARISON
+- **Total Measured Matches:** 2
+- **Evaluated Scholarly Finding:** Commentary on 1 Cor 2:16 (printed pp. 50-51): analyzes clause retention in Rom 11:34 vs omission in 1 Cor 2:16.
+- **Observed Exegetical Match Evidence:**
+  - Offset `287850` (`Rom. xi. 34`): *"the middle clause, καὶ τίς αὐτοῦ σύνβουλος ἐγένετο; This clause is retained in Rom. xi. 34, while és συνβιβάσει αὐτόν is..."*
+    - *Rationale:* Commentary on 1 Cor 2:16 (printed pp. 50-51): analyzes clause retention in Rom 11:34 vs omission in 1 Cor 2:16.
+  - Offset `287731` (`Isa. xl. 13`): *"by any merely external norm. The quotation (τίς. . . αὐτόν) is from the LXX of Isa. xl. 13, adapted by the omission of t..."*
+    - *Rationale:* Commentary on 1 Cor 2:16 (printed pp. 50-51): explicitly compares 1 Cor 2:16 quotation of Isa 40:13 LXX with Rom 11:34 (omission vs retention of middle clause) and analyzes LXX νοῦν translating Hebrew ruach.
+- **Ledger Status:** Admitted as substantive comparative evidence row `S03F-E013` (Commentary on 1 Cor 2:16, printed pp. 50–51; authentic edition uses unassimilated Hellenistic *nu* orthography `σύνβουλος`, `συνβιβάσει`).
 
 ---
 
 ## 7. Scholarly Verification Verdict
 
-1. **B001-6** is dynamically adjudicated as **SUBSTANTIVE_CROSS_EPISTLE_COMPARISON** based on printed pp. 50–51.
-2. **B001-5** is dynamically adjudicated as **RELEVANT_INTERPRETIVE_CROSS_REFERENCE** based on printed p. 3.
-3. For the remaining six targets (**B001-1, B001-2, B001-3, B001-4, B001-7, B001-12**), dynamic per-hit evaluation 
-   and section-localized index inspection confirm that **no substantive discussion is found under these search patterns** 
-   in Robertson and Plummer's 1 Corinthians commentary.
+1. **B001-5** (Romans 10:13 / Joel 2:32) is dynamically adjudicated as **RELEVANT_INTERPRETIVE_CROSS_REFERENCE** based on observed evidence (Commentary on 1 Cor 1:2 (printed p. 3): explicitly connects invocation formula from Joel 2:32 to Rom 10:12-13, analyzing Pauline worship of Christ under OT divine formula.).
+2. **B001-6** (Romans 11:34 / Isaiah 40:13) is dynamically adjudicated as **SUBSTANTIVE_CROSS_EPISTLE_COMPARISON** based on observed evidence (Commentary on 1 Cor 2:16 (printed pp. 50-51): analyzes clause retention in Rom 11:34 vs omission in 1 Cor 2:16.).
+3. For targets (**B001-1**, **B001-3**, **B001-4**, **B001-7**, **B001-12**), **0 matches** were detected across all 504 pages under authenticated search patterns.
+4. For targets (**B001-2** (2 hit(s))), only passing citation(s) were observed without substantive quotation discussion, confirming they are **NOT_DISCUSSED** in this volume.
