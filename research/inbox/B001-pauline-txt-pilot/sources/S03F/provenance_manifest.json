@@ -24,20 +24,22 @@
   "ingested_derivative_section": {
     "filename": "robertson_plummer_1911_1corinthians_icc.pdf",
     "local_path": "/Users/chrisrodriguez/Downloads/robertson_plummer_1911_1corinthians_icc.pdf",
-    "pages": 63,
-    "size_bytes": 11717060,
-    "sha256": "aea9d86460ff90f7e4fb3131a300f5ff7ce411cbec65c70acf480e5521821fe0",
+    "pages": 71,
+    "size_bytes": 13305176,
+    "sha256": "5d25c57f60179c4995d481911b37e48bbc71781d637ea35144a35aa4cf56829e",
     "verification_command": "stat -f '%z' /Users/chrisrodriguez/Downloads/robertson_plummer_1911_1corinthians_icc.pdf && shasum -a 256 /Users/chrisrodriguez/Downloads/robertson_plummer_1911_1corinthians_icc.pdf",
     "generator": "Poppler pdfseparate/pdfunite + GPL Ghostscript 9.56.1 (-dPDFSETTINGS=/ebook)",
     "included_sections": {
-      "front_matter": "PDF pp. 9-16 (Half-title, title page, copyright/editions, preface pp. vii-viii, contents pp. ix-x)",
-      "intro_quotations_and_text": "PDF pp. 58-68 (Printed pp. lii-lxii: § VI 'Quotations from the O.T.' pp. lii-liv, § VII 'The Text of 1 Corinthians' pp. lv-lxii)",
-      "1_cor_1_17_25": "PDF pp. 93-98 (Printed pp. 17-22: Commentary on 1 Cor 1:17-25, including 1:19 / Isa 29:14 and 1:20 / Isa 19:11, 33:18)",
-      "1_cor_6_12_20": "PDF pp. 200-206 (Printed pp. 124-130: Commentary on 1 Cor 6:12-20, including 6:16 / Gen 2:24)",
-      "1_cor_9_7_14": "PDF pp. 257-264 (Printed pp. 181-188: Commentary on 1 Cor 9:7-14, including 9:9 / Deut 25:4)",
-      "1_cor_10_1_13": "PDF pp. 276-284 (Printed pp. 200-208: Commentary on 1 Cor 10:1-13, including 10:7 / Exod 32:6)",
-      "1_cor_15_50_58": "PDF pp. 452-457 (Printed pp. 376-381: Commentary on 1 Cor 15:50-58, including 15:54-55 / Isa 25:8, Hos 13:14)",
-      "indexes": "PDF pp. 479-482, 489-492 (Printed pp. 403-406, 413-416: Index I General, Index II Greek words)"
+      "front_matter": "Raw scan pp. 9-16 (Half-title, title page, copyright/editions, preface pp. vii-viii, contents pp. ix-x)",
+      "intro_quotations_and_text": "Raw scan pp. 58-68 (Printed pp. lii-lxii: § VI 'Quotations from the O.T.' pp. lii-liv, § VII 'The Text of 1 Corinthians' pp. lv-lxii)",
+      "1_cor_1_1_3": "Raw scan pp. 77-79 (Printed pp. 1-3: Commentary on 1 Cor 1:1-3, including 1:2 on Joel 2:32 / Rom 10:12-13)",
+      "1_cor_1_17_25": "Raw scan pp. 93-98 (Printed pp. 17-22: Commentary on 1 Cor 1:17-25, including 1:19 / Isa 29:14 and 1:20 / Isa 19:11, 33:18)",
+      "1_cor_2_13_3_4": "Raw scan pp. 124-128 (Printed pp. 48-52: Commentary on 1 Cor 2:13-3:4, including 2:16 on Isa 40:13 / Rom 11:34)",
+      "1_cor_6_12_20": "Raw scan pp. 200-206 (Printed pp. 124-130: Commentary on 1 Cor 6:12-20, including 6:16 / Gen 2:24)",
+      "1_cor_9_7_14": "Raw scan pp. 257-264 (Printed pp. 181-188: Commentary on 1 Cor 9:7-14, including 9:9 / Deut 25:4)",
+      "1_cor_10_1_13": "Raw scan pp. 276-284 (Printed pp. 200-208: Commentary on 1 Cor 10:1-13, including 10:7 / Exod 32:6)",
+      "1_cor_15_50_58": "Raw scan pp. 452-457 (Printed pp. 376-381: Commentary on 1 Cor 15:50-58, including 15:54-55 / Isa 25:8, Hos 13:14)",
+      "indexes": "Raw scan pp. 479-482, 489-492 (Printed pp. 403-406, 413-416: Index I General, Index II Greek words)"
     }
   }
 }

@@ -116,7 +116,44 @@ Title: A Critical and Exegetical Commentary on Numbers (ICC)
 Year: 1903 (implied)
 Pages: Pages 380 f. [cited on p. 204, fn. †]
 Why it matters: Relied upon. Cited for source-critical analysis of the Baal-Peor narrative in Numbers 25.
-(Note: B001 items 1 through 7 and item 12 pertain to Romans and Galatians and are NOT DISCUSSED in this volume).
+### 5. B001-6: 1 Corinthians 2:16 / Isaiah 40:13 (pp. 50–51)
+
+#### J. A. Bengel
+- **Title:** *Gnomon Novi Testamenti*
+- **Pages:** Cited on source p. 51
+- **Why it matters:** Relied upon. Bengel highlights the profound theological significance in Paul's transition from the Old Testament citation *νοῦν Κυρίου* to apostolic experience *νοῦν Χριστοῦ* as equivalent.
+
+#### T. S. Evans
+- **Title:** *Speaker's Commentary* (1 Corinthians)
+- **Year:** 1881
+- **Pages:** Cited on source p. 50
+- **Why it matters:** Relied upon. Provides grammatical analysis of *συνβιβάζειν* in biblical Greek as "to instruct" (matching LXX usage).
+
+#### J. B. Lightfoot
+- **Title:** *Notes on Epistles of St Paul from Unpublished Commentaries*
+- **Year:** 1895
+- **Pages:** Page 184 [cited on source p. 50]
+- **Why it matters:** Relied upon. Analyzes the textual variant between *Χριστοῦ* and *Κυρίου* in 1 Cor 2:16.
+
+---
+
+### 6. B001-5: 1 Corinthians 1:2 / Joel 2:32 / Romans 10:12–13 (p. 3)
+
+#### F. J. A. Hort
+- **Title:** *The Christian Ecclesia*
+- **Year:** 1897
+- **Pages:** Page 117 [cited on source p. 3]
+- **Why it matters:** Relied upon. Examines the ecclesiological and formulaic significance of *ἐπικαλεῖσθαι τὸ ὄνομα* in apostolic greetings.
+
+#### Adolf Deissmann
+- **Title:** *Bible Studies*
+- **Year:** 1901
+- **Pages:** Page 198 [cited on source p. 3]
+- **Why it matters:** Relied upon. Analyzes Hellenistic papyrological parallels for divine invocation and sacred formulas.
+
+---
+
+*(Note: B001 items 1 through 4, 7, and 12 pertain to Romans and Galatians and have no substantive discussion in this volume).*
 Let me know if you would like to generate a comparative table cross-referencing these citations with the bibliographies of Sanday & Headlam (1895) or James W. Aageson's thesis (1983).
 keep_pin
 copy

@@ -1,4 +1,4 @@
-# Full-Volume Negative Search Verification Log — S03F
+# Full-Volume Negative & Comparative Search Verification Log — S03F
 
 ## 1. Provenance and Cryptographic Binding
 
@@ -33,123 +33,61 @@ in this volume, positive controls were executed for known citations:
 
 ---
 
-## 3. Negative Target Search Across All 504 Pages
+## 3. Bounded Index Structure Inspection
+
+Inspection of the volume's back matter confirms bounded and ordered index structure:
+- **Index I: General** (Authors and Subjects, pp. 403–414): Verified present.
+- **Index II: Greek Words** (pp. 415–422): Verified present.
+- **Index III: Latin and English Words** (pp. 423–424): Verified present.
+- **Independent End Delimiter:** Verified (`Printed by Morrison & Gibb Limited, Edinburgh`).
+- **Ordered Sequence Check:** Verified (`Index I < Index II < Index III < End Delimiter`).
+- **Positive Control Entries:** Verified (`Allegorical interpretation`, `Assimilation`, `Aquila`, `ἀδάπανος`, `ἀλοάω`, `Caritas`, `underling`).
+- **Scripture Passage Index:** Verified absent (confirming Dr. Plummer's preface note that the index is a general author/subject and lexical index).
+
+---
+
+## 4. Target Query Verification Across All 504 Pages (Dynamic Adjudication)
 
 Robertson and Plummer's commentary is dedicated to **1 Corinthians**. The B001 research corpus 
-includes twelve specific Pauline quotation comparisons, of which four belong to 1 Corinthians 
-(B001-8, B001-9, B001-10, B001-11) and eight belong to Romans or Galatians (B001-1 through B001-7, B001-12).
+includes twelve specific Pauline quotation comparisons. Four belong directly to 1 Corinthians 
+(B001-8, B001-9, B001-10, B001-11). The remaining eight loci (B001-1 through B001-7, B001-12) 
+were scanned across the entire 504-page volume to evaluate presence, cross-epistle comparison, or genuine absence:
 
-To prevent false-negative assertions arising from derivative PDF scoping, the entire 504-page raw volume 
-was scanned for both the NT verse target and the OT citation target:
-
-| B001 ID | Comparison Target | Raw Pattern Matches | Substantive Commentary | Scholarly Evaluation |
+| B001 ID | Comparison Target | Measured Matches | Scholarly Classification | Evaluated Context & Rationale |
 | :--- | :--- | :--- | :--- | :--- |
-| **B001-1** | Romans 4:3 / Genesis 15:6 | 0 | **NO** | Entirely absent from volume; no occurrence in commentary, notes, or indexes. |
-| **B001-2** | Romans 9:25 / Hosea 2:23 | 2 | **NO** | 2 passing citation/cross-reference match(es); no substantive exegetical discussion of target comparison. |
-| **B001-3** | Romans 9:26 / Hosea 1:10 | 1 | **NO** | 1 passing citation/cross-reference match(es); no substantive exegetical discussion of target comparison. |
-| **B001-4** | Romans 10:11 / Isaiah 28:16 | 0 | **NO** | Entirely absent from volume; no occurrence in commentary, notes, or indexes. |
-| **B001-5** | Romans 10:13 / Joel 2:32 | 3 | **NO** | 3 passing citation/cross-reference match(es); no substantive exegetical discussion of target comparison. |
-| **B001-6** | Romans 11:34 / Isaiah 40:13 | 2 | **NO** | 2 passing citation/cross-reference match(es); no substantive exegetical discussion of target comparison. |
-| **B001-7** | Romans 15:12 / Isaiah 11:10 | 3 | **NO** | 3 passing citation/cross-reference match(es); no substantive exegetical discussion of target comparison. |
-| **B001-12** | Galatians 3:13 / Deuteronomy 21:23 | 0 | **NO** | Entirely absent from volume; no occurrence in commentary, notes, or indexes. |
+| **B001-1** | Romans 4:3 / Genesis 15:6 | 0 | **NOT_DISCUSSED** | No substantive discussion or cross-reference found in volume. |
+| **B001-2** | Romans 9:25 / Hosea 2:23 | 2 | **NOT_DISCUSSED** | Two passing cross-reference occurrences (notes on 2 Cor 4:8 and 1 Cor 15:9); no substantive discussion of target quotation. |
+| **B001-3** | Romans 9:26 / Hosea 1:10 | 1 | **NOT_DISCUSSED** | One passing citation on p. 204 in note on 1 Cor 10:7; no substantive discussion. |
+| **B001-4** | Romans 10:11 / Isaiah 28:16 | 0 | **NOT_DISCUSSED** | No substantive discussion or cross-reference found in volume. |
+| **B001-5** | Romans 10:13 / Joel 2:32 | 7 | **RELEVANT_INTERPRETIVE_CROSS_REFERENCE** | Substantive secondary interpretive discussion on 1 Cor 1:2 (printed p. 3): traces τοῖς ἐπικαλουμένοις to Joel 2:32 and Rom 10:12-13, analyzing Pauline application of OT Yahweh worship formula to Christ. |
+| **B001-6** | Romans 11:34 / Isaiah 40:13 | 2 | **SUBSTANTIVE_CROSS_EPISTLE_COMPARISON** | Substantive comparative textual discussion on 1 Cor 2:16 (printed pp. 50-51): compares 1 Cor 2:16 quotation of Isa 40:13 with Rom 11:34 (omission vs retention of middle clause καὶ τίς αὐτοῦ σύνβουλος ἐγένετο) and analyzes LXX νοῦν translating Hebrew ruach. |
+| **B001-7** | Romans 15:12 / Isaiah 11:10 | 3 | **NOT_DISCUSSED** | Passing citations on pp. 354, 358 (notes on 1 Cor 15:25, 27); no substantive discussion of target quotation. |
+| **B001-12** | Galatians 3:13 / Deuteronomy 21:23 | 0 | **NOT_DISCUSSED** | No substantive discussion or cross-reference found in volume. |
 
 ---
 
-## 4. Itemized Target Locus Analysis
+## 5. Detailed Case-by-Case Adjudication of Reclassified Targets
 
-### B001-1: Romans 4:3 / Genesis 15:6
-- **New Testament Target:** `Rom 4:3`
-- **Old Testament Target:** `Gen 15:6`
-- **Matches in Full 504 Pages:** 0
-- **Substantive Exegetical Discussion:** NOT DISCUSSED
-- **Search Result:** Zero matches across all 504 pages.
-- **Conclusion:** Confirmed genuinely absent from substantive discussion in Robertson & Plummer (1 Corinthians ICC).
+### B001-6: Romans 11:34 / Isaiah 40:13 — Substantive Comparative Evidence
+- **Location in 1 Corinthians:** Commentary on 1 Cor 2:16, printed pp. 50–51 (Raw scan pp. 126–127; Derivative pp. 32–33).
+- **Observed Exegetical Text:**
+  > *τίς γὰρ ἔγνω νοῦν Κυρίου; ὃς συνβιβάσει αὐτόν; From Isa. xl. 13 (LXX), but shortened by the omission of the middle clause, καὶ τίς αὐτοῦ σύνβουλος ἐγένετο; This clause is retained in Rom. xi. 34, while ὃς συνβιβάσει αὐτόν is omitted... νοῦν Κυρίου. The νοῦν (LXX) corresponds to the Hebrew for πνεῦμα in the original.*
+- **Scholarly Finding:** Robertson and Plummer conduct a direct cross-epistle textual comparison between 1 Cor 2:16 and Rom 11:34, identifying the alternating clause-omissions in Paul's citation of Isaiah 40:13 LXX and analyzing the lexical correspondence between LXX `νοῦν` and Hebrew `רוּחַ` (*rūaḥ* / `πνεῦμα`).
+- **Ledger Status:** Admitted as substantive comparative evidence row `S03F-E013`.
 
-### B001-2: Romans 9:25 / Hosea 2:23
-- **New Testament Target:** `Rom 9:25`
-- **Old Testament Target:** `Hos 2:23`
-- **Matches in Full 504 Pages:** 2
-- **Substantive Exegetical Discussion:** NOT DISCUSSED
-- **Observed Occurrences:**
-  - `Paul: four in 2 Cor. iv. 8, 9; two in a quotation in Gal. iv. 27 ; one each in Rom. ix. 25; Gal. iv. 8; Phil. iii. 3; Col. ii. 19; 1 Thess. ii. 4. See also Matt. xxii. 11`
-  - `use of the relative; ‘seeing that I am not fit to be called an Apostle.’ Comp. Rom. ix. 25; Heb. iit. 11. The violent ἔκτρωσις was rendered necessary by his having been a`
-- **Conclusion:** Confirmed genuinely absent from substantive discussion in Robertson & Plummer (1 Corinthians ICC).
-
-### B001-3: Romans 9:26 / Hosea 1:10
-- **New Testament Target:** `Rom 9:26`
-- **Old Testament Target:** `Hos 1:10`
-- **Matches in Full 504 Pages:** 1
-- **Substantive Exegetical Discussion:** NOT DISCUSSED
-- **Observed Occurrences:**
-  - `3 is quite parallel, for there the verb is present, not future. Jer. iv. 30 and Hos. ix. 5 have the future, with the meaning, ‘what will you resort to?’ The question h`
-- **Conclusion:** Confirmed genuinely absent from substantive discussion in Robertson & Plummer (1 Corinthians ICC).
-
-### B001-4: Romans 10:11 / Isaiah 28:16
-- **New Testament Target:** `Rom 10:11`
-- **Old Testament Target:** `Isa 28:16`
-- **Matches in Full 504 Pages:** 0
-- **Substantive Exegetical Discussion:** NOT DISCUSSED
-- **Search Result:** Zero matches across all 504 pages.
-- **Conclusion:** Confirmed genuinely absent from substantive discussion in Robertson & Plummer (1 Corinthians ICC).
-
-### B001-5: Romans 10:13 / Joel 2:32
-- **New Testament Target:** `Rom 10:13`
-- **Old Testament Target:** `Joel 2:32 (LXX 3:5)`
-- **Matches in Full 504 Pages:** 3
-- **Substantive Exegetical Discussion:** NOT DISCUSSED
-- **Observed Occurrences:**
-  - `ly lays down. Christ was the whole of his Gospel (ii. 2); He is ‘the Lord’ (cf. Rom. x. 13), ‘through whom are all things, and we through Him’ (viii. 6); He satisfies all`
-  - `e quotes as other instances in Paul, ii. 16, x. 22; 2 Cor. x. 17; Phil. ii. r1; Rom. x. 13. Hort’s remarks on 1 Pet. ii. 3, where 6 Κύριος in Ps. xxxiv. 8 is transferred`
-  - `hat are addressed, not all Christendom. τοῖς ἐπικαλουμένοις. This goes back  to Joel ii. 32, and involves the thought of faith, the common bond of all. See Rom. x. 12,132.`
-- **Conclusion:** Confirmed genuinely absent from substantive discussion in Robertson & Plummer (1 Corinthians ICC).
-
-### B001-6: Romans 11:34 / Isaiah 40:13
-- **New Testament Target:** `Rom 11:34`
-- **Old Testament Target:** `Isa 40:13`
-- **Matches in Full 504 Pages:** 2
-- **Substantive Exegetical Discussion:** NOT DISCUSSED
-- **Observed Occurrences:**
-  - `the middle clause, καὶ τίς αὐτοῦ σύνβουλος ἐγένετο; This clause is retained in Rom. xi. 34, while és συνβιβάσει αὐτόν is omitted. The aorist (ἔγνω) belongs to  II. 16-1|`
-  - `by any merely external norm. The quotation (τίς. . . αὐτόν) is from the LXX of Isa. xl. 13, adapted by the omission of the middle clause, καὶ τίς αὐτοῦ σύνβουλος ἐγένετο;`
-- **Conclusion:** Confirmed genuinely absent from substantive discussion in Robertson & Plummer (1 Corinthians ICC).
-
-### B001-7: Romans 15:12 / Isaiah 11:10
-- **New Testament Target:** `Rom 15:12`
-- **Old Testament Target:** `Isa 11:10`
-- **Matches in Full 504 Pages:** 3
-- **Substantive Exegetical Discussion:** NOT DISCUSSED
-- **Observed Occurrences:**
-  - `reference for the Hebrew, or possibly for some version not known to us. i, 20 = Isa. xix. 11 f., xxxiii. 18 iii. 19 = Jobv. 13  xiv. 25 = Isa. xlv. 14 xv. 54 = Isa. xxv`
-  - `x. 20. quotes from it Matt. xi. 5, xv. 8f.  Our Lord  + He may have in his mind Isa. xix. 12, ποῦ εἰσιν νῦν οἱ σοφοί cov; and Isa. xxxiii. 18, ποῦ εἰσιν ol γὙραμματικοί`
-  - `stultam fecit (Vulg.), infatuavit (Tertull. and Beza). Cf. Rom. i. 22, 23, and Isa. xix. 11, xliv. 25, 33. The passage in Romans is an expansion of the ‘thought here.`
-- **Conclusion:** Confirmed genuinely absent from substantive discussion in Robertson & Plummer (1 Corinthians ICC).
-
-### B001-12: Galatians 3:13 / Deuteronomy 21:23
-- **New Testament Target:** `Gal 3:13`
-- **Old Testament Target:** `Deut 21:23`
-- **Matches in Full 504 Pages:** 0
-- **Substantive Exegetical Discussion:** NOT DISCUSSED
-- **Search Result:** Zero matches across all 504 pages.
-- **Conclusion:** Confirmed genuinely absent from substantive discussion in Robertson & Plummer (1 Corinthians ICC).
-
----
-
-## 5. Index Structure Inspection
-
-Inspection of the volume's back matter confirms:
-- **Index I: General** (Authors and Subjects, pp. 403–414)
-- **Index II: Greek Words** (pp. 415–422)
-- **Index III: Latin and English Words** (pp. 423–424)
-- **Scripture Index:** None present in the volume (as noted in the Preface p. viii, the index was compiled entirely by Dr. Plummer as a general author/subject and lexical index).
-- No entries for Romans 4:3, 9:25–26, 10:11, 10:13, 11:34, 15:12, or Galatians 3:13 appear in any index.
+### B001-5: Romans 10:13 / Joel 2:32 — Relevant Interpretive Cross-Reference
+- **Location in 1 Corinthians:** Commentary on 1 Cor 1:2, printed p. 3 (Raw scan p. 79; Derivative p. 22).
+- **Observed Exegetical Text:**
+  > *τοῖς ἐπικαλουμένοις. This goes back to Joel ii. 32, and involves the thought of faith, the common bond of all. See Rom. x. 12, 13. Here, as there, St Paul significantly brings in the worship of Christ under the O.T. formula for worship addressed to the LORD God of Israel.*
+- **Scholarly Finding:** The authors explicitly connect the invocation formula `τοῖς ἐπικαλουμένοις` to Joel 2:32 and cross-reference Romans 10:12–13, demonstrating Paul's christological transfer of the Old Testament divine name / worship formula for Yahweh to Jesus Christ.
+- **Ledger Status:** Admitted as secondary interpretive cross-reference evidence row `S03F-E014`.
 
 ---
 
 ## 6. Scholarly Verification Verdict
 
-The absence of B001-1 through B001-7 and B001-12 from `relevance_scan.md` is **conclusively verified** 
-against the complete 504-page authentic original volume scan, not merely inferred from the derivative PDF.
-
-Robertson and Plummer (1911/1914) provides substantive, authoritative commentary on the four 1 Corinthians loci 
-(B001-8, B001-9, B001-10, B001-11) and valuable general Pauline quotation methodology in Introduction § VI (pp. lii–liv), 
-while the remaining eight non-Corinthians loci are genuinely NOT DISCUSSED.
+1. **B001-6** is reclassified as **substantive comparative textual evidence** based on printed pp. 50–51.
+2. **B001-5** is reclassified as **relevant secondary interpretive evidence** based on printed p. 3.
+3. For the remaining six targets (**B001-1, B001-2, B001-3, B001-4, B001-7, B001-12**), documented text searches 
+   and bounded index inspection confirm that **no substantive discussion is found under these search patterns** 
+   in Robertson and Plummer's 1 Corinthians commentary.

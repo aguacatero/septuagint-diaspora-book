@@ -609,7 +609,7 @@ def test_s03f_citation_ledger_crosswalk_integrity():
     with open(csv_path, encoding="utf-8") as f:
         reader = list(csv.DictReader(f))
 
-    assert len(reader) == 12, f"Expected 12 ledger rows for S03F, found {len(reader)}"
+    assert len(reader) == 14, f"Expected 14 ledger rows for S03F, found {len(reader)}"
 
     for row in reader:
         eid = row["evidence_id"]
@@ -656,4 +656,34 @@ def test_s03f_self_audit_corrections_incorporated():
     e006 = rows["S03F-E006"]
     assert "πάντως" in e006["qualification"]
     assert "oxen" in e006["qualification"]
+
+    # Check 3: S03F-E005 preserves explicit uncertainty "not easy to decide"
+    e005 = rows["S03F-E005"]
+    assert "not easy to decide" in e005["author_claim"].lower() or "not easy to decide" in e005["qualification"].lower()
+    assert "κημώσεις" in e005["author_claim"]
+
+    # Check 4: S03F-E011 preserves authors' exact qualification "seems to make changes"
+    e011 = rows["S03F-E011"]
+    assert "seems to make changes" in e011["author_claim"]
+
+    # Check 5: S03F-E004 retains Sirach 19:2 as alternate/contributing verbal source
+    e004 = rows["S03F-E004"]
+    assert "Sirach 19:2" in e004["author_claim"] or "Sirach 19:2" in e004["qualification"]
+
+    # Check 6: S03F-E003 clarifies Robertson & Plummer attribution and Hebrew context
+    e003 = rows["S03F-E003"]
+    assert "not in the original" in e003["author_claim"].lower()
+    assert "Hebrew" in e003["qualification"]
+
+    # Check 7: S03F-E013 is admitted for B001-6 comparative evidence
+    e013 = rows["S03F-E013"]
+    assert e013["b001_id"] == "B001-6"
+    assert "Rom. xi. 34" in e013["short_quote"] or "Rom 11:34" in e013["author_claim"]
+    assert "50" in e013["printed_page"]
+
+    # Check 8: S03F-E014 is admitted for B001-5 secondary interpretive evidence
+    e014 = rows["S03F-E014"]
+    assert e014["b001_id"] == "B001-5"
+    assert "Joel" in e014["author_claim"] and "Rom" in e014["author_claim"]
+    assert "3" in e014["printed_page"]
 

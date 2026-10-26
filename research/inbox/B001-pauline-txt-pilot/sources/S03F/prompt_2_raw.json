@@ -1442,6 +1442,70 @@
         "trigger_bound": true,
         "handshake_verified": true
       }
+    },
+    {
+      "index": 45,
+      "label": "1",
+      "snippet": "The quotation (τίς. . . αὐτόν) is from the LXX of Isa. xl. 13, adapted by the omission of the middle clause, καὶ τίς αὐτοῦ σύνβουλος ἐγένετο; This clause is retained in Rom. xi. 34, while ὃς συνβιβάσει αὐτόν is omitted... νοῦν Κυρίου. The νοῦν (LXX) corresponds to the Hebrew for πνεῦμα in the original. In God, νοῦς and πνεῦμα are identical... but not in aspect, νοῦς being suitable to denote the Divine knowledge or counsel, πνεῦμα the Divine action... On the other hand, the immediate transition from νοῦν Κυρίου to νοῦν Χριστοῦ as equivalent is full of deep significance.",
+      "audit": {
+        "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
+        "overlay_pane_id": "cdk-overlay-255",
+        "prev_pane_id": null,
+        "is_fresh_pane": true,
+        "marker_rect": {
+          "left": 467.9296875,
+          "top": 429.5703125,
+          "right": 489.9296875,
+          "bottom": 451.5703125,
+          "width": 22,
+          "height": 22
+        },
+        "tooltip_rect": {
+          "left": 478.9296875,
+          "top": 16,
+          "width": 390,
+          "height": 393.5703125,
+          "x": 478.9296875,
+          "y": 16
+        },
+        "vertical_dist": 20,
+        "horizontal_overlap": true,
+        "trigger_bound": true,
+        "handshake_verified": true
+      }
+    },
+    {
+      "index": 46,
+      "label": "3",
+      "snippet": "τοῖς ἐπικαλουμένοις. This goes back to Joel ii. 32, and involves the thought of faith, the common bond of all. See Rom. x. 12, 13. Here, as there, St Paul significantly brings in the worship of Christ under the O.T. formula for worship addressed to the LORD God of Israel. To be a believer is to worship Christ.",
+      "audit": {
+        "pre_hover_cleared": true,
+        "pre_hover_pane_ids": [],
+        "overlay_pane_id": "cdk-overlay-255",
+        "prev_pane_id": null,
+        "is_fresh_pane": true,
+        "marker_rect": {
+          "left": 467.9296875,
+          "top": 429.5703125,
+          "right": 489.9296875,
+          "bottom": 451.5703125,
+          "width": 22,
+          "height": 22
+        },
+        "tooltip_rect": {
+          "left": 478.9296875,
+          "top": 16,
+          "width": 390,
+          "height": 393.5703125,
+          "x": 478.9296875,
+          "y": 16
+        },
+        "vertical_dist": 20,
+        "horizontal_overlap": true,
+        "trigger_bound": true,
+        "handshake_verified": true
+      }
     }
   ]
 }

@@ -5,15 +5,21 @@ Antigravity rewrites this file for every source before requesting review.
 ## Current source
 
 - Source ID: `S03F`
+- Review Round: `Round 2 (Revisions Addressing S03F-R1 Review Findings)`
 - Exact citation: Archibald Robertson and Alfred Plummer, *A Critical and Exegetical Commentary on the First Epistle of St Paul to the Corinthians* (International Critical Commentary; Edinburgh: T. & T. Clark / New York: Charles Scribner's Sons, 1911; Second Edition, 1914).
 - Public/source locator: Internet Archive, `https://archive.org/details/criticalexegetic33robeuoft` (Internet Archive item ID: `criticalexegetic33robeuoft`).
 - Raw full-scan hash: `robertson_plummer_1911_1corinthians_icc_ia_raw.pdf` (504 pages, 32,652,569 bytes, SHA-256: `4e7d0aa655aff66d84fca857387860d25dddd4c2be1c5aa2ea0446f11df78efd`).
-- Target derivative section: `robertson_plummer_1911_1corinthians_icc.pdf` (63 authentic pages covering half-title/title page, preface pp. vii–viii, contents pp. ix–x, Introduction § VI 'Quotations from the O.T.' pp. lii–liv and § VII 'Text of 1 Corinthians' pp. lv–lxii, 1 Cor 1:17–25 pp. 17–22, 1 Cor 6:12–20 pp. 124–130, 1 Cor 9:7–14 pp. 181–188, 1 Cor 10:1–13 pp. 200–208, 1 Cor 15:50–58 pp. 376–381, Index I General pp. 403–406, Index II Greek words pp. 413–416; 11,717,060 bytes, SHA-256: `aea9d86460ff90f7e4fb3131a300f5ff7ce411cbec65c70acf480e5521821fe0`).
+- Target derivative section: `robertson_plummer_1911_1corinthians_icc.pdf` (71 authentic pages covering half-title/title page, preface pp. vii–viii, contents pp. ix–x, Introduction § VI 'Quotations from the O.T.' pp. lii–liv and § VII 'Text of 1 Corinthians' pp. lv–lxii, 1 Cor 1:1–3 pp. 1–3, 1 Cor 1:17–25 pp. 17–22, 1 Cor 2:13–3:4 pp. 48–52, 1 Cor 6:12–20 pp. 124–130, 1 Cor 9:7–14 pp. 181–188, 1 Cor 10:1–13 pp. 200–208, 1 Cor 15:50–58 pp. 376–381, Index I General pp. 403–406, Index II Greek words pp. 413–416; 13,305,176 bytes, SHA-256: `5d25c57f60179c4995d481911b37e48bbc71781d637ea35144a35aa4cf56829e`).
 - Branch: `research/B001-notebooklm-serial`
 - Draft PR: `2`
-- Extraction status: Complete secondary route source packet extracted via NotebookLM from `robertson_plummer_1911_1corinthians_icc.pdf` as sole source in `SDP-B001-EXTRACT`, covering the four 1 Corinthians B001 comparisons (B001-8, B001-9, B001-10, B001-11) PLUS general Pauline quotation methodology from Introduction § VI (pp. lii–liv). Contains 12 verified evidence claims (`S03F-E001` through `S03F-E012`) in `citation_ledger.csv` (`verification_status=VERIFIED`, verified letter-for-letter against authentic printed page numbers).
-- Non-Corinthians scope & negative-search verification: Documented full-volume text search across the complete 504-page text layer of the original volume (`robertson_plummer_1911_1corinthians_icc_ia_raw.pdf`, SHA-256: `4e7d0aa6...`, 32,652,569 bytes; Poppler pdftotext; validated with positive controls on typography) confirmed genuine absence of substantive discussion for B001-1 through B001-7 and B001-12 (see `full_volume_search_log.md` and `scripts/verify_s03f_negative_search.py`). Any occasional occurrences are passing parenthetical cross-references without commentary.
-- Incorporated self-audit corrections: S03F-E001 preserves possibility framing ("possibly influenced by Psalm 33:10 LXX"); S03F-E006 preserves the author's explicit qualification on `πάντως` in 1 Cor 9:10 (does not mean oxen are not cared for at all by God).
+- Extraction status: Complete secondary route source packet extracted via NotebookLM from `robertson_plummer_1911_1corinthians_icc.pdf` (71 pages) as sole source in `SDP-B001-EXTRACT`, covering the four direct 1 Corinthians loci (B001-8, B001-9, B001-10, B001-11), general Pauline quotation methodology (B001-GENERAL), substantive cross-epistle comparison on Isa 40:13 / Rom 11:34 (B001-6), and relevant secondary interpretive discussion on Joel 2:32 / Rom 10:12–13 (B001-5). Contains 14 verified evidence claims (`S03F-E001` through `S03F-E014`) in `citation_ledger.csv` (`verification_status=VERIFIED`, verified letter-for-letter against authentic printed page numbers).
+- Round 1 Review Findings Addressed:
+  - `[S03F-R1-F1] Resolved`: Reclassified B001-6 (Rom 11:34 / Isa 40:13) as substantive comparative evidence; expanded derivative with printed pp. 48–52; admitted evidence row `S03F-E013` (printed pp. 50–51) analyzing alternating clause omission against Rom 11:34 and LXX `νοῦν` translating Hebrew `רוּחַ`.
+  - `[S03F-R1-F2] Resolved`: Reclassified B001-5 (Rom 10:13 / Joel 2:32) as relevant secondary interpretive evidence; expanded derivative with printed pp. 1–3; admitted evidence row `S03F-E014` (printed p. 3) analyzing Pauline application of Joel 2:32 Yahweh worship formula to Christ and connecting to Rom 10:12–13.
+  - `[S03F-R1-F3] Resolved`: Hardened `scripts/verify_s03f_negative_search.py` with fail-closed cryptographic check on extracted full text against `EXPECTED_TEXT_SHA256` (`9be8ab66...`) with exit code 8 on mismatch, positive control validation, bounded ordered index verification (`I < II < III < Colophon`), dynamic case-by-case adjudication, and measured negative findings ("no substantive discussion found under these search patterns").
+  - `[S03F-R1-M1] Resolved`: Softened text-critical and literary claims (`S03F-E005` preserves opening reserve "not easy to decide between φιμώσεις and κημώσεις"; `S03F-E011` preserves "seems to make changes"; `S03F-E004` preserves Sirach 19:2 possibility for `κολλᾶσθαι`).
+  - `[S03F-R1-M2] Resolved`: Softened `S03F-E003` to attribute "not in the original" to Robertson & Plummer regarding standard Hebrew witnesses, avoiding MT archetype dogmatism over Hebrew textual plurality.
+- Non-Corinthians scope & negative-search verification: Documented full-volume text search across the complete 504-page text layer of the original volume (`robertson_plummer_1911_1corinthians_icc_ia_raw.pdf`, SHA-256: `4e7d0aa6...`, 32,652,569 bytes; Poppler pdftotext; cryptographically bound and positive-controlled) confirmed that for the remaining six loci (B001-1, B001-2, B001-3, B001-4, B001-7, B001-12), no substantive discussion is found under documented search patterns (see `full_volume_search_log.md` and `scripts/verify_s03f_negative_search.py`).
 - Review readiness: `READY`
 - Review target: `LIVE_PR_HEAD`
 
@@ -32,8 +38,13 @@ Antigravity rewrites this file for every source before requesting review.
 - `full_volume_search_log.md`
 - `provenance_manifest.json`
 
-Plus governing method:
+Plus governing scripts and tests:
+- `scripts/build_s03f_derivative.py`
+- `scripts/verify_s03f_negative_search.py`
+- `tests/test_citation_ledger_crosswalk.py`
+- `tests/test_harden_source_switch.py`
 
+Plus governing method:
 - `docs/design/PROJECT_CONSTITUTION.md`
 - `research/TXT/textual_classifications.md`
 - `research/TXT/hebrew_consultation_test.md`
@@ -42,19 +53,18 @@ Plus governing method:
 
 ## Review task
 
-Independently audit the current source packet.
+Independently audit the revised source packet (Round 2).
 
 Check:
 
 1. fidelity to what the source actually says;
-2. citation/locator support for each evidence row;
-3. omitted qualifications, counterarguments, or relevant discussion;
-4. author-view vs reported-other-scholar confusion;
-5. primary-text fact vs secondary-author claim confusion;
-6. overstatement from possibility -> probability/certainty;
-7. unsupported page numbers or fabricated source details;
-8. cherry-picking or context loss;
-9. whether the packet is safe to admit into cumulative synthesis.
+2. citation/locator support for each evidence row (14 rows);
+3. whether Round 1 findings (S03F-R1-F1, F2, F3, M1, M2) are fully and accurately addressed;
+4. whether B001-6 (Isa 40:13) and B001-5 (Joel 2:32) are properly integrated;
+5. whether text-critical and literary qualifications are preserved without overstatement;
+6. author-view vs reported-other-scholar confusion;
+7. primary-text fact vs secondary-author claim confusion;
+8. whether the packet is safe to admit into cumulative synthesis.
 
 Do not reward agreement with the project's hypothesis. Negative, indeterminate, or contrary evidence is valid.
 

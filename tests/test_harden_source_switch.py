@@ -190,3 +190,87 @@ async def test_promote_to_sdp01_fails_on_unattributed_or_error_state():
 
         with pytest.raises(RuntimeError, match="has error state"):
             await promote_source(source_id="S03F")
+
+
+def test_verify_s03f_negative_search_rejects_tampered_text(tmp_path):
+    """
+    Step 6 Hardening Gate:
+    Verify extract_and_validate_text fails closed with exit code 8 when
+    extracted text does not match EXPECTED_TEXT_SHA256.
+    """
+    from scripts.verify_s03f_negative_search import (
+        extract_and_validate_text,
+        RAW_PDF_DEFAULT,
+        EXPECTED_TEXT_SHA256
+    )
+
+    tampered_text_file = tmp_path / "tampered_text.txt"
+    tampered_text_file.write_text("Corrupted or altered text from adversarial cache", encoding="utf-8")
+
+    # When raw PDF exists and cached text is tampered, fails closed with code 8
+    if RAW_PDF_DEFAULT.exists():
+        text, sha, code = extract_and_validate_text(
+            pdf_path=RAW_PDF_DEFAULT,
+            text_path=tampered_text_file,
+            allow_text_digest_mismatch=False
+        )
+        assert code == 8
+        assert sha != EXPECTED_TEXT_SHA256
+
+        # When --allow-text-digest-mismatch is enabled, permits continuation (code 0)
+        text, sha, code = extract_and_validate_text(
+            pdf_path=RAW_PDF_DEFAULT,
+            text_path=tampered_text_file,
+            allow_text_digest_mismatch=True
+        )
+        assert code == 0
+
+
+def test_verify_s03f_negative_search_detects_b001_5_and_6():
+    """
+    Step 6 Hardening Gate:
+    Verify verify_s03f_negative_search reclassifies B001-6 and B001-5 appropriately.
+    """
+    from scripts.verify_s03f_negative_search import TARGET_QUERIES
+
+    queries_by_id = {q["id"]: q for q in TARGET_QUERIES}
+
+    assert "B001-6" in queries_by_id
+    assert queries_by_id["B001-6"]["classification"] == "SUBSTANTIVE_CROSS_EPISTLE_COMPARISON"
+    assert "1 Cor 2:16" in queries_by_id["B001-6"]["rationale"]
+    assert "Rom 11:34" in queries_by_id["B001-6"]["rationale"]
+
+    assert "B001-5" in queries_by_id
+    assert queries_by_id["B001-5"]["classification"] == "RELEVANT_INTERPRETIVE_CROSS_REFERENCE"
+    assert "1 Cor 1:2" in queries_by_id["B001-5"]["rationale"]
+    assert "Joel 2:32" in queries_by_id["B001-5"]["rationale"]
+
+
+def test_verify_s03f_negative_search_enforces_index_boundaries():
+    """
+    Step 6 Hardening Gate:
+    Verify verify_index_structure fails closed on synthetic text lacking authentic index bounds.
+    """
+    from scripts.verify_s03f_negative_search import verify_index_structure
+
+    # 1. Text without INDEXES heading fails
+    res1 = verify_index_structure("No index heading here")
+    assert res1["passed"] is False
+    assert "INDEXES heading not found" in res1["error"]
+
+    # 2. Text with INDEXES heading but without end delimiter fails
+    res2 = verify_index_structure("INDEXES\nI. GENERAL\nAbbott\nII. GREEK WORDS\nIII. LATIN\nNo end colophon")
+    assert res2["passed"] is False
+    assert "Authentic index end delimiter not found" in res2["error"]
+
+    # 3. Synthetic text with out-of-order sections fails
+    synthetic_out_of_order = (
+        "INDEXES\n"
+        "III. LATIN\n"
+        "II. GREEK WORDS\n"
+        "I. GENERAL\n"
+        "Printed by Morrison & Gibb Limited\n"
+    )
+    res3 = verify_index_structure(synthetic_out_of_order)
+    assert res3["passed"] is False
+    assert res3["ordered"] is False

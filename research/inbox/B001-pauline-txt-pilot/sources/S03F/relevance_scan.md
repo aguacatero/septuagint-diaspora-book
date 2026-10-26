@@ -1,159 +1,20 @@
 # S03F — Relevance Scan
 
-Thoughts
-expand_more
-Based on Archibald Robertson and Alfred Plummer’s A Critical and Exegetical Commentary on the First Epistle of St Paul to the Corinthians (1914), the four 1 Corinthians passages among the B001 targets are directly and substantively discussed, whereas the eight non-1 Corinthians passages (from Romans and Galatians) are NOT DISCUSSED in this volume.
-B001 Discussion Analysis Table
-B001 ID
-	
-Discussed
-	
-Page / Locator
-	
-Depth
-	
-Description of Author's Discussion
+Based on Archibald Robertson and Alfred Plummer’s *A Critical and Exegetical Commentary on the First Epistle of St Paul to the Corinthians* (ICC, 1911/1914), the four primary 1 Corinthians passages among the B001 targets (B001-8, B001-9, B001-10, B001-11) are directly and substantively discussed. In addition, full-volume examination identifies substantive cross-epistle comparison for **B001-6** (1 Cor 2:16 on Isa 40:13 / Rom 11:34) and relevant secondary interpretive discussion for **B001-5** (1 Cor 1:2 on Joel 2:32 / Rom 10:12–13). The remaining six non-1 Corinthians targets are not discussed.
 
+## B001 Discussion Analysis Table
 
-1. Romans 4:3 / Genesis 15:6
-	
-NO
-	
-N/A
-	
-N/A
-	
-NOT DISCUSSED
-
-
-2. Romans 9:25 / Hosea 2:23
-	
-NO
-	
-N/A
-	
-N/A
-	
-NOT DISCUSSED
-
-
-3. Romans 9:26 / Hosea 1:10
-	
-NO
-	
-N/A
-	
-N/A
-	
-NOT DISCUSSED
-
-
-4. Romans 10:11 / Isaiah 28:16
-	
-NO
-	
-N/A
-	
-N/A
-	
-NOT DISCUSSED
-
-
-5. Romans 10:13 / Joel 2:32
-	
-NO
-	
-N/A
-	
-N/A
-	
-NOT DISCUSSED
-
-
-6. Romans 11:34 / Isaiah 40:13
-	
-NO
-	
-N/A
-	
-N/A
-	
-NOT DISCUSSED
-
-
-7. Romans 15:12 / Isaiah 11:10
-	
-NO
-	
-N/A
-	
-N/A
-	
-NOT DISCUSSED
-
-
-8. 1 Corinthians 1:19 / Isaiah 29:14
-	
-YES
-	
-Pages liii, 19
-	
-Substantive
-	
-Robertson and Plummer examine Paul's quotation of Isaiah 29:14 LXX, noting his intentional substitution of ἀθετήσω ("set aside") for κρύψω (possibly influenced by Ps 33:10) to state a divine principle overriding worldly statesmanship and human cleverness.
-
-
-9. 1 Corinthians 6:16 / Genesis 2:24
-	
-YES
-	
-Pages liii, 126
-	
-Substantive
-	
-The authors analyze Paul's direct citation of Genesis 2:24 LXX (which includes οἱ δύο), introduced with φησίν as an assertion of divine authority, applying the "one flesh" creation principle in ethical condemnation of immoral union with a harlot.
-
-
-10. 1 Corinthians 9:9 / Deuteronomy 25:4
-	
-YES
-	
-Pages lii, liii, 183–184
-	
-Extended
-	
-The authors evaluate the text-critical reading κημώσεις vs. φιμώσεις in Deuteronomy 25:4, contrasting Philo's purely allegorical rejection of the literal command with Paul's method, which preserves the literal principle while applying its higher spiritual import to an apostle's right to material support.
-
-
-11. 1 Corinthians 10:7 / Exodus 32:6
-	
-YES
-	
-Pages liii, 203–204
-	
-Substantive
-	
-Robertson and Plummer analyze Paul's direct quotation of Exodus 32:6 LXX, explaining that "play" (παίζειν) denotes idolatrous dances in honor of the golden calf following an idol-banquet, functioning as a warning example (τύπος) against Corinthian participation in pagan feasts.
-
-
-12. Galatians 3:13 / Deuteronomy 21:23
-	
-NO
-	
-N/A
-	
-N/A
-	
-NOT DISCUSSED
-💡 Next Steps:
-Would you like to extract the authors' exact claims, textual-critical decisions, or short direct quotes for items B001-8, B001-9, B001-10, or B001-11?
-keep_pin
-copy
-thumb_up
-thumb_down
-Tell me more about Paul's quotations from Isaiah
-subdirectory_arrow_right
-How do Robertson and Plummer analyze 1 Corinthians 9:9?
-subdirectory_arrow_right
-What do the authors say about quotations made from memory?
-subdirectory_arrow_right
+| B001 ID | Comparison Target | Discussed | Page / Locator | Depth | Description of Author's Discussion |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **B001-1** | Rom 4:3 / Gen 15:6 | **NO** | N/A | None | NOT DISCUSSED. Full-volume search verifies 0 occurrences. |
+| **B001-2** | Rom 9:25 / Hos 2:23 | **NO** | N/A | None | NOT DISCUSSED. Two passing cross-references to Hos 2:23 in notes on 2 Cor 4:8 and 1 Cor 15:9; no discussion of Rom 9:25 quotation. |
+| **B001-3** | Rom 9:26 / Hos 1:10 | **NO** | N/A | None | NOT DISCUSSED. Passing citation on p. 204 in note on 1 Cor 10:7; no discussion of Rom 9:26 quotation. |
+| **B001-4** | Rom 10:11 / Isa 28:16 | **NO** | N/A | None | NOT DISCUSSED. Full-volume search verifies 0 occurrences. |
+| **B001-5** | Rom 10:13 / Joel 2:32 | **YES** | Printed p. 3 (Raw p. 79; Derivative p. 22) | Secondary / Interpretive | Exegetical note on 1 Cor 1:2 (τοῖς ἐπικαλουμένοις) tracing the formula to Joel 2:32 and cross-referencing Rom 10:12–13, analyzing Pauline christological application of the Old Testament Yahweh worship formula. |
+| **B001-6** | Rom 11:34 / Isa 40:13 | **YES** | Printed pp. 50–51 (Raw pp. 126–127; Derivative pp. 32–33) | Substantive Comparative | Textual-critical commentary on 1 Cor 2:16 explicitly comparing Paul's quotation of Isa 40:13 LXX with Rom 11:34, analyzing the alternating omission of clauses between the two epistles and the lexical correspondence of LXX νοῦν to Hebrew רוּחַ (πνεῦμα). |
+| **B001-7** | Rom 15:12 / Isa 11:10 | **NO** | N/A | None | NOT DISCUSSED. Passing citations on pp. 354, 358; no discussion of Rom 15:12 quotation. |
+| **B001-8** | 1 Cor 1:19 / Isa 29:14 | **YES** | Printed pp. liii, 19 (Derivative pp. 11, 25) | Substantive | Robertson and Plummer examine Paul's quotation of Isaiah 29:14 LXX, noting his intentional substitution of ἀθετήσω ("set aside") for κρύψω (possibly influenced by Ps 33:10) to state a divine principle overriding worldly statesmanship and human cleverness. |
+| **B001-9** | 1 Cor 6:16 / Gen 2:24 | **YES** | Printed pp. liii, 126 (Derivative pp. 11, 37) | Substantive | The authors analyze Paul's direct citation of Genesis 2:24 LXX (which includes οἱ δύο, noted as "not in the original" Hebrew text), introduced with φησίν as an assertion of divine authority, applying the "one flesh" creation principle in ethical condemnation of immoral union with a harlot (with possible allusion to Sirach 19:2). |
+| **B001-10** | 1 Cor 9:9 / Deut 25:4 | **YES** | Printed pp. lii, liii, 183–184 (Derivative pp. 10, 11, 45–46) | Extended | The authors evaluate the text-critical reading κημώσεις vs. φιμώσεις, noting that while "it is not easy to decide", κημώσεις is more likely original on transcriptional grounds. They contrast Philo's purely allegorical rejection of the literal command with Paul's method, which preserves the literal principle while applying its higher spiritual import. |
+| **B001-11** | 1 Cor 10:7 / Exod 32:6 | **YES** | Printed pp. liii, 203–204 (Derivative pp. 11, 53–54) | Substantive | Robertson and Plummer analyze Paul's direct quotation of Exodus 32:6 LXX, explaining that "play" (παίζειν) denotes idolatrous dances in honor of the golden calf following an idol-banquet, functioning as a warning example (τύπος) against Corinthian participation in pagan feasts. |
+| **B001-12** | Gal 3:13 / Deut 21:23 | **NO** | N/A | None | NOT DISCUSSED. Full-volume search verifies 0 occurrences. |

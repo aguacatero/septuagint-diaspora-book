@@ -2,8 +2,12 @@ import asyncio
 import base64
 import json
 from pathlib import Path
+import sys
 import urllib.request
 import websockets
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from scripts.queue_context import get_source_context
 
 async def diagnose():
     url = 'http://127.0.0.1:9222/json'
@@ -63,7 +67,8 @@ async def diagnose():
         # Capture screenshot for diagnostic artifact
         shot = await send('Page.captureScreenshot', {'format': 'png'})
         if 'result' in shot and 'data' in shot['result']:
-            out_img = Path('research/inbox/B001-pauline-txt-pilot/sources/S02F/diagnostic_extract_tab.png')
+            sid = get_source_context()["source_id"]
+            out_img = Path(f'research/inbox/B001-pauline-txt-pilot/sources/{sid}/diagnostic_extract_tab.png')
             out_img.parent.mkdir(parents=True, exist_ok=True)
             out_img.write_bytes(base64.b64decode(shot['result']['data']))
             print(f"Diagnostic screenshot saved to: {out_img}")
