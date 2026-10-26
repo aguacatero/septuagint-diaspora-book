@@ -2,6 +2,8 @@
 
 This is the only file the owner needs to point Antigravity at.
 
+**Durable agent requirement:** Read root [`AGENTS.md`](AGENTS.md) and check the `README.md` Research progress and Status sections at every run checkpoint. Record a material active source/review transition accurately while preserving the six-stage acceptance gate. Draft PR #2 must stay draft/unmerged; see `AGENTS.md` for the no-inflated-progress rule.
+
 ## First run: smoke test only
 
 Copy/paste this into Antigravity with this repository open:
