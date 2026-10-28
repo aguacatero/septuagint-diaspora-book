@@ -16,7 +16,7 @@ Each section explicitly distinguishes **Explicit Source Statements** (direct cla
   - *Explicit Source Statement:* The verb ἀθετέω is post-classical, occurring in Polybius and the Septuagint, with an etymological sense of "set aside" or "set at nought" rather than "destroy" (p. 19).
   - *Explicit Source Statement:* A similar phrase (ἀθετήσω) appears in Psalm 33:10 LXX (32:10 LXX) (p. 19).
 - **INFERENCE:**
-  - *Structural Paraphrase:* Paul intentionally substitutes ἀθετήσω (possibly influenced by Ps 33:10 LXX) in accordance with his habitual freedom of citation to express that God "sets aside" human intellectual cleverness.
+  - *Structural Paraphrase:* Paul substitutes ἀθετήσω (where the authors infer he "seems to make changes", possibly influenced by Ps 33:10 LXX) in accordance with his habitual freedom of citation to express that God "sets aside" human intellectual cleverness.
   - *Structural Paraphrase:* Paul seizes the prophetic principle behind the Assyrian crisis—that human political and intellectual schemes fail under divine judgment—and applies it to the "word of the Cross".
 - **CONCLUSION:**
   - *Explicit Source Statement:* The citation serves as scriptural proof (γέγραπται γάρ) for verse 18, demonstrating the failure of worldly cleverness when dealing with the things of God (p. 19).

@@ -266,30 +266,47 @@ def test_verify_s03f_negative_search_dynamic_adjudication():
     assert "require manual context review" in res_unverified["rationale"]
 
 
-def test_verify_s03f_match_catalog_authentication_and_hash_binding():
+def test_verify_s03f_match_catalog_authentication_and_hash_binding(monkeypatch):
     """
     Step 6 Hardening Gate (Finding S03F-R3-F1):
     Verify that the verified match catalog is strictly cryptographically bound to
-    EXPECTED_TEXT_SHA256, exact normalized match string, offset validity, and context witness.
-    Wrong-text-at-known-offset, wrong hash, and altered witness MUST fail closed.
+    EXPECTED_TEXT_SHA256 (both passed and computed from full_text), exact normalized
+    match string, offset validity, and context witness.
+    Wrong-text-at-known-offset, wrong hash, dummy full text, and altered witness MUST fail closed.
     """
-    import re
     from scripts.verify_s03f_negative_search import (
         EXPECTED_TEXT_SHA256,
+        TARGET_QUERIES,
         VERIFIED_MATCH_CATALOG,
-        adjudicate_hit
+        adjudicate_hit,
+        adjudicate_target,
     )
 
-    # Construct authenticated mock buffer containing exact authentic text at known offset 287850
-    cat_entry = VERIFIED_MATCH_CATALOG[("B001-6", 287850)]
+    queries_by_id = {q["id"]: q for q in TARGET_QUERIES}
+
+    # 0. Exact reviewer counterexample from S03F-R3-F1:
+    # adjudicate_target(B001-6, [{"start":287850,"match":"Rom. xi. 34","snippet":"..."}], "dummy full text")
+    # MUST fail closed to CONTEXT_REVIEW_REQUIRED (substantive=False), even if text_sha256 is passed!
+    counterexample_hit = [{"start": 287850, "match": "Rom. xi. 34", "snippet": "..."}]
+    res_counter_default = adjudicate_target(queries_by_id["B001-6"], counterexample_hit, "dummy full text")
+    assert res_counter_default["classification"] == "CONTEXT_REVIEW_REQUIRED"
+    assert res_counter_default["substantive"] is False
+
+    res_counter_spoofed_sha = adjudicate_target(
+        queries_by_id["B001-6"], counterexample_hit, "dummy full text", text_sha256=EXPECTED_TEXT_SHA256
+    )
+    assert res_counter_spoofed_sha["classification"] == "CONTEXT_REVIEW_REQUIRED"
+    assert res_counter_spoofed_sha["substantive"] is False
+
+    # Construct mock buffer containing exact authentic text at known offset 287850
     mock_context = "is clause is retained in Rom. xi. 34, while\nés συνβιβάσει αὐτ"
     match_str = "Rom. xi. 34"
     match_idx = mock_context.index(match_str)
     prefix_len = 287850 - match_idx
     mock_prefix = " " * prefix_len
-    # Ensure exact offset 287850 matches "Rom. xi. 34"
     mock_text = mock_prefix + mock_context + (" " * 1000)
     assert mock_text[287850 : 287850 + len(match_str)] == match_str
+    mock_sha = hashlib.sha256(mock_text.encode("utf-8")).hexdigest()
 
     hit_valid = {
         "match": match_str,
@@ -297,37 +314,49 @@ def test_verify_s03f_match_catalog_authentication_and_hash_binding():
         "snippet": mock_context
     }
 
-    # 1. Authentic text + valid hash -> PASSES with catalog verification
-    res1 = adjudicate_hit("B001-6", hit_valid, mock_text, text_sha256=EXPECTED_TEXT_SHA256)
+    # 1. Before monkeypatching EXPECTED_TEXT_SHA256, mock_text's true SHA-256 differs from
+    # EXPECTED_TEXT_SHA256, so even passing text_sha256=EXPECTED_TEXT_SHA256 MUST fail closed
+    res_unauthenticated_buf = adjudicate_hit("B001-6", hit_valid, mock_text, text_sha256=EXPECTED_TEXT_SHA256)
+    assert res_unauthenticated_buf["catalog_verified"] is False
+    assert res_unauthenticated_buf["classification"] == "CONTEXT_REVIEW_REQUIRED"
+    assert res_unauthenticated_buf["substantive"] is False
+
+    # Bind EXPECTED_TEXT_SHA256 to mock_sha to test authenticated catalog lookup in CI
+    monkeypatch.setattr("scripts.verify_s03f_negative_search.EXPECTED_TEXT_SHA256", mock_sha)
+
+    # 2. Authentic text + valid hash -> PASSES with catalog verification
+    res1 = adjudicate_hit("B001-6", hit_valid, mock_text, text_sha256=mock_sha)
     assert res1["catalog_verified"] is True
     assert res1["classification"] == "SUBSTANTIVE_CROSS_EPISTLE_COMPARISON"
     assert res1["substantive"] is True
 
-    # 2. Wrong-hash regression: text_sha256 differs from EXPECTED_TEXT_SHA256
+    # 3. Wrong-hash regression: text_sha256 differs from EXPECTED_TEXT_SHA256
     # MUST fail closed to CONTEXT_REVIEW_REQUIRED with catalog_verified=False
     res_wrong_hash = adjudicate_hit("B001-6", hit_valid, mock_text, text_sha256="wrong_hash_1234567890abcdef")
     assert res_wrong_hash["catalog_verified"] is False
     assert res_wrong_hash["classification"] == "CONTEXT_REVIEW_REQUIRED"
     assert res_wrong_hash["substantive"] is False
 
-    # 3. Wrong-text-at-known-offset regression: different match string at known offset 287850
+    # 4. Wrong-text-at-known-offset regression: different match string at known offset 287850
     # MUST NOT receive the catalog verdict; MUST fail closed
     hit_wrong_match = {
         "match": "Rom. iv. 3",
         "start": 287850,
         "snippet": mock_context
     }
-    res_wrong_match = adjudicate_hit("B001-6", hit_wrong_match, mock_text, text_sha256=EXPECTED_TEXT_SHA256)
+    res_wrong_match = adjudicate_hit("B001-6", hit_wrong_match, mock_text, text_sha256=mock_sha)
     assert res_wrong_match["catalog_verified"] is False
     assert res_wrong_match["classification"] == "CONTEXT_REVIEW_REQUIRED"
     assert res_wrong_match["substantive"] is False
 
-    # 4. Altered context witness regression: context witness does not match catalog
+    # 5. Altered context witness regression: context witness does not match catalog
     tampered_context = "is clause is retained in Rom. xi. 34, [ALTERED CONTEXT]"
     tampered_idx = tampered_context.index(match_str)
     tampered_prefix = " " * (287850 - tampered_idx)
     tampered_text = tampered_prefix + tampered_context + (" " * 1000)
-    res_altered_witness = adjudicate_hit("B001-6", hit_valid, tampered_text, text_sha256=EXPECTED_TEXT_SHA256)
+    tampered_sha = hashlib.sha256(tampered_text.encode("utf-8")).hexdigest()
+    monkeypatch.setattr("scripts.verify_s03f_negative_search.EXPECTED_TEXT_SHA256", tampered_sha)
+    res_altered_witness = adjudicate_hit("B001-6", hit_valid, tampered_text, text_sha256=tampered_sha)
     assert res_altered_witness["catalog_verified"] is False
     assert res_altered_witness["classification"] == "CONTEXT_REVIEW_REQUIRED"
     assert res_altered_witness["substantive"] is False
@@ -337,35 +366,60 @@ def test_verify_s03f_search_patterns_reject_counterexamples():
     """
     Step 6 Hardening Gate (Finding S03F-R3-F2):
     Verify search regexes require unambiguous chapter/verse delimiters and complete
-    numeral boundaries, rejecting counterexamples Hos. ix. 5, Isa. xix. 11, and Rom. x. 12
-    while reliably matching legitimate citations.
+    numeral boundaries, rejecting counterexamples Hos. ix. 5, Isa. xix. 11, Rom. x. 12,
+    Joel ii. 5, and missing delimiters while reliably matching legitimate citations and
+    distinguishing direct Rom 10:13 hits from Rom 10:12, 13 cross-reference variants.
     """
     import re
-    from scripts.verify_s03f_negative_search import TARGET_QUERIES
+    from scripts.verify_s03f_negative_search import POSITIVE_CONTROLS, TARGET_QUERIES
 
     queries_by_id = {q["id"]: q for q in TARGET_QUERIES}
 
-    # 1. B001-3 (Hosea 1:10) MUST reject Hosea 9:5 (Hos. ix. 5)
+    # 1. B001-3 (Hosea 1:10) MUST reject Hosea 9:5 (Hos. ix. 5) and missing delimiters
     pats_b001_3 = queries_by_id["B001-3"]["patterns"]
     assert not any(re.search(p, "Hos. ix. 5", re.I) for p in pats_b001_3), "Hos. ix. 5 falsely matched B001-3"
     assert not any(re.search(p, "Hos. ix", re.I) for p in pats_b001_3), "Hos. ix falsely matched B001-3"
+    assert not any(re.search(p, "Hos 1 10", re.I) for p in pats_b001_3), "Missing delimiter Hos 1 10 matched B001-3"
     assert any(re.search(p, "Hos. i. 10", re.I) for p in pats_b001_3), "Legitimate Hos. i. 10 did not match"
     assert any(re.search(p, "Hosea 1:10", re.I) for p in pats_b001_3), "Legitimate Hosea 1:10 did not match"
 
-    # 2. B001-7 (Isaiah 11:10) MUST reject Isaiah 19:11 (Isa. xix. 11)
+    # 2. B001-7 (Isaiah 11:10) MUST reject Isaiah 19:11/12 (Isa. xix. 11) and missing delimiters
     pats_b001_7 = queries_by_id["B001-7"]["patterns"]
     assert not any(re.search(p, "Isa. xix. 11", re.I) for p in pats_b001_7), "Isa. xix. 11 falsely matched B001-7"
+    assert not any(re.search(p, "Isa. xix. 12", re.I) for p in pats_b001_7), "Isa. xix. 12 falsely matched B001-7"
     assert not any(re.search(p, "Isa. xix", re.I) for p in pats_b001_7), "Isa. xix falsely matched B001-7"
+    assert not any(re.search(p, "Isa 11 10", re.I) for p in pats_b001_7), "Missing delimiter Isa 11 10 matched B001-7"
     assert any(re.search(p, "Isa. xi. 10", re.I) for p in pats_b001_7), "Legitimate Isa. xi. 10 did not match"
     assert any(re.search(p, "Isaiah 11:10", re.I) for p in pats_b001_7), "Legitimate Isaiah 11:10 did not match"
 
-    # 3. B001-5 (Romans 10:13) MUST reject standalone Romans 10:12
+    # 3. B001-5 (Romans 10:13 / Joel 2:32) MUST reject standalone Romans 10:12 and mismatched Joel 2:5 / 3:32,
+    # and distinguish direct Rom 10:13 pattern from compound Rom 10:12, 13 cross-reference pattern
     pats_b001_5 = queries_by_id["B001-5"]["patterns"]
+    direct_rom_10_13_pat, compound_rom_10_12_13_pat, joel_pat = pats_b001_5
+
     assert not any(re.search(p, "Rom. x. 12", re.I) for p in pats_b001_5), "Standalone Rom. x. 12 falsely matched B001-5"
     assert not any(re.search(p, "Rom. x. 12; Eph. ii. 14", re.I) for p in pats_b001_5), "Rom. x. 12; Eph. ii. 14 falsely matched B001-5"
-    assert any(re.search(p, "Rom. x. 13", re.I) for p in pats_b001_5), "Legitimate Rom. x. 13 did not match"
-    assert any(re.search(p, "Rom. x. 12, 13", re.I) for p in pats_b001_5), "Legitimate Rom. x. 12, 13 did not match"
-    assert any(re.search(p, "Rom. x. 12,132.", re.I) for p in pats_b001_5), "Authentic OCR Rom. x. 12,132. did not match"
+    assert not any(re.search(p, "Rom 10 13", re.I) for p in pats_b001_5), "Missing delimiter Rom 10 13 matched B001-5"
+    assert not any(re.search(p, "Joel ii. 5", re.I) for p in pats_b001_5), "Mismatched Joel ii. 5 falsely matched B001-5"
+    assert not any(re.search(p, "Joel 3:32", re.I) for p in pats_b001_5), "Mismatched Joel 3:32 falsely matched B001-5"
+
+    # Direct Rom 10:13 pattern matches only direct 10:13, not 10:12, 13
+    assert re.search(direct_rom_10_13_pat, "Rom. x. 13", re.I)
+    assert not re.search(direct_rom_10_13_pat, "Rom. x. 12, 13", re.I)
+
+    # Compound Rom 10:12, 13 pattern matches only the 12, 13 cross-reference variant, not standalone 12 or direct 13
+    assert re.search(compound_rom_10_12_13_pat, "Rom. x. 12, 13", re.I)
+    assert re.search(compound_rom_10_12_13_pat, "Rom. x. 12,132.", re.I)
+    assert not re.search(compound_rom_10_12_13_pat, "Rom. x. 12", re.I)
+    assert not re.search(compound_rom_10_12_13_pat, "Rom. x. 13", re.I)
+
+    # Joel pattern matches MT 2:32 and LXX 3:5
+    assert re.search(joel_pat, "Joel ii. 32", re.I)
+    assert re.search(joel_pat, "Joel 3:5", re.I)
+
+    # 4. Positive controls also enforce mandatory delimiters and numeral boundaries
+    assert not re.search(POSITIVE_CONTROLS[0]["pattern"], "Isa 29 14", re.I)
+    assert re.search(POSITIVE_CONTROLS[0]["pattern"], "Isa. xxix. 14", re.I)
 
 
 def test_verify_s03f_adjudication_rejects_generic_lxx_proximity():
@@ -403,13 +457,14 @@ def test_verify_s03f_adjudication_rejects_generic_lxx_proximity():
 def test_verify_s03f_report_sections_dynamically_conditioned(tmp_path, monkeypatch):
     """
     Step 6 Hardening Gate (Finding S03F-R3-F3):
-    Verify that run_verification makes Sections 6 and 7 strictly conditional on observed evidence:
-    when substantive hits (B001-5 / B001-6) are absent, Sections 6 and 7 do NOT claim they are
-    verified, and all report sections remain 100% free of contradictions.
+    Verify that run_verification makes all report sections (Sections 4, 5, 6, and 7)
+    strictly conditional on authenticated observed evidence, with zero contradictions:
+      - Case A: when B001-5 and B001-6 hits are removed (0 target matches).
+      - Case B: when run under source-hash mismatch (--allow-text-digest-mismatch) with
+        B001-5 / B001-6 citations AND an injected target near unrelated 'LXX'/'Hebrew' keywords.
     """
     from scripts.verify_s03f_negative_search import run_verification
 
-    # 1. Construct synthetic PDF and text without B001-5 or B001-6 matches
     dummy_pdf = tmp_path / "dummy.pdf"
     dummy_pdf.write_bytes(b"%PDF-1.4 synthetic")
     dummy_sha = hashlib.sha256(b"%PDF-1.4 synthetic").hexdigest()
@@ -417,7 +472,7 @@ def test_verify_s03f_report_sections_dynamically_conditioned(tmp_path, monkeypat
     monkeypatch.setattr("scripts.verify_s03f_negative_search.EXPECTED_RAW_PDF_SHA256", dummy_sha)
     monkeypatch.setattr("scripts.verify_s03f_negative_search.EXPECTED_RAW_PDF_BYTES", len(b"%PDF-1.4 synthetic"))
 
-    # Synthetic text passing positive controls and index checks, but with 0 matches for target queries
+    # Case A: Synthetic text passing positive controls and index checks, but with 0 matches for target queries
     synthetic_clean_text = (
         "POSITIVE CONTROLS:\n"
         "Isa. xxix. 14\n"
@@ -451,9 +506,13 @@ def test_verify_s03f_report_sections_dynamically_conditioned(tmp_path, monkeypat
     assert code == 0
     report_content = report_file.read_text(encoding="utf-8")
 
+    # Section 4 & 5: all 8 targets show 0 matches and NOT_DISCUSSED; Section 5 shows no target matches
+    assert "| **B001-5** | Romans 10:13 / Joel 2:32 | 0 | **NOT_DISCUSSED** |" in report_content
+    assert "| **B001-6** | Romans 11:34 / Isaiah 40:13 | 0 | **NOT_DISCUSSED** |" in report_content
+    assert "No target matches detected across text layer" in report_content
+
     # Section 6 must state that NO substantive targets were detected
     assert "No substantive comparative or secondary interpretive loci were detected" in report_content
-    # Must NOT claim B001-5 or B001-6 are verified or admitted!
     assert "Admitted as substantive comparative evidence row" not in report_content
     assert "Admitted as secondary interpretive cross-reference evidence row" not in report_content
 
@@ -462,6 +521,51 @@ def test_verify_s03f_report_sections_dynamically_conditioned(tmp_path, monkeypat
     assert "B001-6 (Romans 11:34 / Isaiah 40:13) is dynamically adjudicated as SUBSTANTIVE_CROSS_EPISTLE_COMPARISON" not in report_content
     assert "For targets (**B001-1**, **B001-2**, **B001-3**, **B001-4**, **B001-5**, **B001-6**, **B001-7**, **B001-12**), **0 matches** were detected" in report_content
     assert "NOTICE:** Verification executed under text digest mismatch override" in report_content
+
+    # Case B: Source-hash mismatch with B001-5/B001-6 hits present AND injected unrelated 'LXX' near B001-1
+    synthetic_unauth_hits_text = (
+        "POSITIVE CONTROLS:\n"
+        "Isa. xxix. 14\n"
+        "Gen. ii. 24\n"
+        "Deut. xxv. 4\n"
+        "Exod. xxxii. 6\n"
+        "Isa. xxv. 8\n"
+        "Sanday and Headlam\n\n"
+        "MAIN COMMENTARY TEXT:\n"
+        "Unrelated discussion of LXX rendering and Hebrew clause near Rom. iv. 3 in passing.\n"
+        "Also mentioning Joel ii. 32 and Rom. x. 12, 13 and Isa. xl. 13 and Rom. xi. 34 in unverified text.\n\n"
+        "INDEXES\n"
+        "I. GENERAL\n"
+        "Allegorical interpretation Assimilation Aquila\n"
+        "II. GREEK WORDS\n"
+        "ἀδάπανος ἀλοάω\n"
+        "III. LATIN AND ENGLISH WORDS\n"
+        "Caritas underling\n"
+        "Printed by Morrison & Gibb Limited, Edinburgh\n"
+    )
+    unauth_text_file = tmp_path / "unauth_hits.txt"
+    unauth_text_file.write_text(synthetic_unauth_hits_text, encoding="utf-8")
+    report_unauth_file = tmp_path / "report_unauth.md"
+
+    code_unauth = run_verification(
+        dummy_pdf,
+        unauth_text_file,
+        report_unauth_file,
+        allow_text_digest_mismatch=True
+    )
+    assert code_unauth == 0
+    unauth_report = report_unauth_file.read_text(encoding="utf-8")
+
+    # Across Sections 4, 5, 6, 7: hits under hash mismatch fail closed to CONTEXT_REVIEW_REQUIRED
+    assert "| **B001-1** | Romans 4:3 / Genesis 15:6 | 1 | **CONTEXT_REVIEW_REQUIRED** |" in unauth_report
+    assert "| **B001-5** | Romans 10:13 / Joel 2:32 | 2 | **CONTEXT_REVIEW_REQUIRED** |" in unauth_report
+    assert "| **B001-6** | Romans 11:34 / Isaiah 40:13 | 2 | **CONTEXT_REVIEW_REQUIRED** |" in unauth_report
+    assert "SUBSTANTIVE_DISCUSSION" not in unauth_report
+    assert "SUBSTANTIVE_CROSS_EPISTLE_COMPARISON" not in unauth_report
+    assert "RELEVANT_INTERPRETIVE_CROSS_REFERENCE" not in unauth_report
+    assert "No substantive comparative or secondary interpretive loci were detected" in unauth_report
+    assert "Targets (**B001-1**, **B001-5**, **B001-6**) contain unverified matches requiring manual context review." in unauth_report
+    assert "For targets (**B001-2**, **B001-3**, **B001-4**, **B001-7**, **B001-12**), **0 matches** were detected" in unauth_report
 
 
 def test_verify_s03f_negative_search_enforces_index_boundaries():

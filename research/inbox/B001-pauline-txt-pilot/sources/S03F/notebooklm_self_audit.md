@@ -70,24 +70,37 @@ Comprehensive self-audit and independent review resolution log for Archibald Rob
 
 ---
 
+## 4. Round 2 Review Findings & Resolutions
+
+- **Independent Review Verdict (Round 2):** `SOURCE_PACKET: REVISE` (`REQUEST CHANGES: YES`).
+- **Resolved Findings:**
+  1. `S03F-R2-F1`: Replaced preassigned target classifications with an itemized per-hit match ledger and computed target-level adjudication.
+  2. `S03F-R2-F2`: Localized positive controls within each bounded index section (`Section I`, `Section II`, `Section III`) and enforced fail-closed checks for unexpected fourth/Scripture index sections.
+  3. `S03F-R2-F3`: Made the tampered-text digest unit test run unconditionally in CI using a synthetic PDF fixture with monkeypatched size/hash expectations.
+  4. `S03F-R2-F4`: Reconciled all derivative page locators across `provenance_manifest.json`, `citation_ledger.csv`, and markdown artifacts to the 71-page derivative PDF.
+  5. `S03F-R2-F5`: Documented the authentic Westcott-Hort unassimilated Greek *nu* orthography (`σύνβουλος`, `συνβιβάσει`) on printed p. 50.
+  6. `S03F-R2-F6`: Preserved tentative authorial inference ("seems to make changes") in `S03F-E011`, `relevance_scan.md`, and `argument_map.md`.
+
+---
+
 ## 5. Round 3 Review Findings & Resolutions
 
 - **Independent Review Verdict (Round 3):** `SOURCE_PACKET: REVISE` (`REQUEST CHANGES: YES`).
 - **Resolved Blocking Findings:**
   1. `S03F-R3-F1` (Match Catalog Cryptographic Authentication & Context Witness Binding):
      - Bound every entry in `VERIFIED_MATCH_CATALOG` to an exact normalized match string and a 40–60 character surrounding context witness.
-     - `adjudicate_hit` strictly enforces `text_sha256 == EXPECTED_TEXT_SHA256`. If the text hash differs (e.g. under `--allow-text-digest-mismatch`), catalog trust is disabled and matches fail closed to `CONTEXT_REVIEW_REQUIRED`.
+     - `adjudicate_hit` strictly enforces that both `text_sha256` and the actual SHA-256 computed from `full_text` equal `EXPECTED_TEXT_SHA256`. If the text hash differs (e.g. under `--allow-text-digest-mismatch` or on dummy text), catalog trust is disabled and matches fail closed to `CONTEXT_REVIEW_REQUIRED`.
      - Validates that the exact match string and context witness physically exist in `full_text` at `offset`.
-     - Added comprehensive unit tests in `tests/test_harden_source_switch.py` verifying that wrong-text-at-known-offset, wrong text digest, and altered context witnesses fail closed.
+     - Added comprehensive unit tests in `tests/test_harden_source_switch.py` verifying that the exact reviewer counterexample (`"dummy full text"`), wrong-text-at-known-offset, wrong text digest, and altered context witnesses fail closed.
   2. `S03F-R3-F2` (Search Regex Delimiters, Numeral Boundaries, and Counterexample Elimination):
-     - Enforced mandatory chapter/verse delimiters (`\s*[:\.,]\s*`) and complete word boundaries (`\b`) around Roman and Arabic numerals across all queries and controls.
+     - Enforced mandatory chapter/verse delimiters (`\s*[:\.,]\s*`) and complete word boundaries (`\b`) around Roman and Arabic numerals across all queries and positive controls.
      - Eliminated spurious false matches:
        - B001-3 (`Hos 1:10`) no longer matches `Hos. ix. 5` (Hosea 9:5); B001-3 correctly evaluates to 0 matches.
        - B001-7 (`Isa 11:10`) no longer matches `Isa. xix. 11/12` (Isaiah 19:11/12); B001-7 correctly evaluates to 0 matches.
-       - B001-5 (`Rom 10:13`) pattern strictly rejects standalone `Rom. x. 12` while matching genuine `Rom. x. 13`, `Rom. x. 12, 13`, and OCR variant `Rom. x. 12,132.`
-     - Reconciled `relevance_scan.md`, `counterevidence.md`, and `full_volume_search_log.md` to exact match counts (10 total hits across volume).
-     - Added unit tests in `tests/test_harden_source_switch.py` verifying counterexamples `Hos. ix. 5`, `Isa. xix. 11`, and `Rom. x. 12` are rejected.
+       - B001-5 (`Rom 10:13 / Joel 2:32`) explicitly separates the direct `Rom 10:13` pattern from the compound `Rom 10:12, 13` cross-reference variant pattern, pairs `Joel 2:32` (`2|ii` with `32|xxxii`) and `Joel 3:5` (`3|iii` with `5|v`) separately, and strictly rejects standalone `Rom. x. 12` and mismatched `Joel ii. 5`.
+     - Reconciled `relevance_scan.md`, `counterevidence.md`, and `full_volume_search_log.md` to exact match counts (10 total hits across volume, with full ±60-character surrounding context excerpts).
+     - Added unit tests in `tests/test_harden_source_switch.py` verifying counterexamples `Hos. ix. 5`, `Isa. xix. 11`, `Rom. x. 12`, `Joel ii. 5`, and missing delimiters are rejected, while distinguishing direct `Rom 10:13` from compound `Rom 10:12, 13`.
   3. `S03F-R3-F3` (Elimination of Generic Keyword Heuristic & Dynamically Conditioned Report):
      - Removed flawed generic keyword proximity heuristic (which previously classified standalone `Rom. x. 12` as substantive due to nearby unrelated occurrences of `LXX`/`Hebrew`). Uncatalogued or unverified matches now fail closed to `CONTEXT_REVIEW_REQUIRED` (`substantive = False`).
-     - Made Sections 6 and 7 in `full_volume_search_log.md` strictly conditional on computed `target_results`. Section 6 dynamically renders only observed substantive targets (B001-5 and B001-6), and Section 7 derives all verdict bullets directly from computed results.
-     - Added regression unit tests verifying that in synthetic text without B001-5 or B001-6, Sections 6 and 7 report 0 matches without claiming historic findings, ensuring zero contradictions across all report sections.
+     - Made Sections 4, 5, 6, and 7 in `full_volume_search_log.md` strictly conditional on computed `target_results`. Section 6 dynamically renders only observed substantive targets (B001-5 and B001-6), and Section 7 derives all verdict bullets directly from computed results.
+     - Added regression unit tests verifying both synthetic text with B001-5/B001-6 removed (0 matches) and synthetic text under source-hash mismatch with B001-5/B001-6 hits plus injected unrelated `LXX` near `Rom. iv. 3`, confirming zero contradictions across all report sections.

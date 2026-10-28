@@ -12,7 +12,7 @@
   "chatgpt_relay_mode": "REVIEW_LOOP_ONLY",
   "allow_legacy_relay_worker": false,
   "allow_paid_api": false,
-  "updated_at": "2026-10-25",
+  "updated_at": "2026-10-27",
   "smoke_test_status": "PASSED",
   "hands_off_enabled": true
 }

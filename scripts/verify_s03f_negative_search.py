@@ -65,17 +65,17 @@ def get_sha256(path: Path) -> str:
 POSITIVE_CONTROLS = [
     {
         "name": "1 Cor 1:19 / Isa 29:14 (Commentary p. 19, Intro p. liii)",
-        "pattern": r"\b(?:Isa|Is|Isaiah)(?:\.|\b)\s*(?:29|xxix)[\.:,]?\s*(?:14|xiv)\b",
+        "pattern": r"\b(?:Isa|Is|Isaiah)\b\.?\s*\b(?:29|xxix)\b\s*[:\.,]\s*\b(?:14|xiv)\b",
         "expected_min_matches": 1,
     },
     {
         "name": "1 Cor 6:16 / Gen 2:24 (Commentary p. 126, Intro p. liii)",
-        "pattern": r"\b(?:Gen|Genesis)(?:\.|\b)\s*(?:2|ii)[\.:,]?\s*(?:24|xxiv)\b",
+        "pattern": r"\b(?:Gen|Genesis)\b\.?\s*\b(?:2|ii)\b\s*[:\.,]\s*\b(?:24|xxiv)\b",
         "expected_min_matches": 1,
     },
     {
         "name": "1 Cor 9:9 / Deut 25:4 (Commentary p. 183, Intro p. liii)",
-        "pattern": r"\b(?:Deut|Deuteronomy)(?:\.|\b)\s*(?:25|xxv)[\.:,]?\s*(?:4|iv)\b",
+        "pattern": r"\b(?:Deut|Deuteronomy)\b\.?\s*\b(?:25|xxv)\b\s*[:\.,]\s*\b(?:4|iv)\b",
         "expected_min_matches": 1,
     },
     {
@@ -143,8 +143,9 @@ TARGET_QUERIES = [
         "nt_target": "Rom 10:13",
         "ot_target": "Joel 2:32 (LXX 3:5)",
         "patterns": [
-            r"\b(?:Rom|Romans)\b\.?\s*\b(?:10|x)\b\s*[:\.,]\s*(?:(?:12\s*[,-]\s*)?(?:13\b|xiii\b|132\b))",
-            r"\b(?:Joel)\b\.?\s*\b(?:2|ii|3|iii)\b\s*[:\.,]\s*\b(?:32|xxxii|5|v)\b",
+            r"\b(?:Rom|Romans)\b\.?\s*\b(?:10|x)\b\s*[:\.,]\s*\b(?:13|xiii)\b",
+            r"\b(?:Rom|Romans)\b\.?\s*\b(?:10|x)\b\s*[:\.,]\s*\b(?:12|xii)\b\s*[,-]\s*\b(?:13|xiii|132)\b",
+            r"\b(?:Joel)\b\.?\s*(?:\b(?:2|ii)\b\s*[:\.,]\s*\b(?:32|xxxii)\b|\b(?:3|iii)\b\s*[:\.,]\s*\b(?:5|v)\b)",
         ],
     },
     {
@@ -300,8 +301,8 @@ def scan_matches(text: str, pattern: str) -> list[dict]:
     results = []
     regex = re.compile(pattern, re.IGNORECASE)
     for m in regex.finditer(text):
-        start = max(0, m.start() - 80)
-        end = min(len(text), m.end() + 80)
+        start = max(0, m.start() - 60)
+        end = min(len(text), m.end() + 60)
         snippet = text[start:end].replace("\n", " ").strip()
         results.append({
             "match": m.group(0),
@@ -434,8 +435,9 @@ def adjudicate_hit(
 ) -> dict:
     """
     Evaluates an individual match using verified match registry and context analysis.
-    Requires text_sha256 to match EXPECTED_TEXT_SHA256, match string to match expected_match,
-    and surrounding text to contain context_witness before granting catalog verification.
+    Requires both text_sha256 and the actual SHA-256 digest of full_text to match
+    EXPECTED_TEXT_SHA256, match string to match expected_match, and surrounding text
+    to contain context_witness before granting catalog verification.
     All uncatalogued or unverified hits fail closed to CONTEXT_REVIEW_REQUIRED.
     """
     offset = match_item["start"]
@@ -445,13 +447,22 @@ def adjudicate_hit(
     def _norm(s: str) -> str:
         return re.sub(r"\s+", " ", s.strip())
 
-    is_authenticated_text = (text_sha256 == EXPECTED_TEXT_SHA256)
+    computed_sha = hashlib.sha256(full_text.encode("utf-8")).hexdigest()
+    effective_sha = text_sha256 if text_sha256 else computed_sha
+    is_authenticated_text = (
+        effective_sha == EXPECTED_TEXT_SHA256
+        and computed_sha == EXPECTED_TEXT_SHA256
+    )
 
     # 1. Check known verified catalog ONLY on authentic text
     if is_authenticated_text and key in VERIFIED_MATCH_CATALOG:
         cat_entry = VERIFIED_MATCH_CATALOG[key]
         match_matches = (_norm(match_str) == _norm(cat_entry["expected_match"]))
-        offset_valid = (full_text[offset : offset + len(match_str)] == match_str)
+        offset_valid = (
+            0 <= offset < len(full_text)
+            and offset + len(match_str) <= len(full_text)
+            and full_text[offset : offset + len(match_str)] == match_str
+        )
         context_window = full_text[max(0, offset - 60) : min(len(full_text), offset + len(match_str) + 60)]
         witness_valid = (cat_entry["context_witness"] in context_window)
 
@@ -668,10 +679,13 @@ def run_verification(
     md.append("")
     md.append("| Hit # | Target ID | Offset | Matched Text | Surrounding Context Excerpt | Hit Classification | Evaluation Rationale |")
     md.append("| :--- | :--- | :--- | :--- | :--- | :--- | :--- |")
-    for i, h in enumerate(all_hits_flat, 1):
-        clean_match = h["match"].replace("\n", " ")
-        clean_snippet = h["snippet"].replace("|", "\\|").replace("\n", " ")
-        md.append(f"| {i} | **{h['b001_id']}** | `{h['offset']}` | `{clean_match}` | `{clean_snippet[:80]}...` | **{h['classification']}** | {h['rationale']} |")
+    if not all_hits_flat:
+        md.append("| — | — | — | — | No target matches detected across text layer | — | — |")
+    else:
+        for i, h in enumerate(all_hits_flat, 1):
+            clean_match = h["match"].replace("\n", " ")
+            clean_snippet = h["snippet"].replace("|", "\\|").replace("\n", " ")
+            md.append(f"| {i} | **{h['b001_id']}** | `{h['offset']}` | `{clean_match}` | `...{clean_snippet}...` | **{h['classification']}** | {h['rationale']} |")
     md.append("")
     md.append("---")
     md.append("")
@@ -691,7 +705,7 @@ def run_verification(
                 if h["substantive"]:
                     clean_match = h["match"].replace("\n", " ")
                     clean_snip = h["snippet"].replace("|", "\\|").replace("\n", " ")
-                    md.append(f"  - Offset `{h['offset']}` (`{clean_match}`): *\"{clean_snip[:120]}...\"*")
+                    md.append(f"  - Offset `{h['offset']}` (`{clean_match}`): *\"...{clean_snip}...\"*")
                     md.append(f"    - *Rationale:* {h['rationale']}")
             if tr["id"] == "B001-6":
                 md.append("- **Ledger Status:** Admitted as substantive comparative evidence row `S03F-E013` (Commentary on 1 Cor 2:16, printed pp. 50–51; authentic edition uses unassimilated Hellenistic *nu* orthography `σύνβουλος`, `συνβιβάσει`).")
