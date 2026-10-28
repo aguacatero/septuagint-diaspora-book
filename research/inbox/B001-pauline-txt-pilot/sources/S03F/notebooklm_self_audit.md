@@ -104,3 +104,17 @@ Comprehensive self-audit and independent review resolution log for Archibald Rob
      - Removed flawed generic keyword proximity heuristic (which previously classified standalone `Rom. x. 12` as substantive due to nearby unrelated occurrences of `LXX`/`Hebrew`). Uncatalogued or unverified matches now fail closed to `CONTEXT_REVIEW_REQUIRED` (`substantive = False`).
      - Made Sections 4, 5, 6, and 7 in `full_volume_search_log.md` strictly conditional on computed `target_results`. Section 6 dynamically renders only observed substantive targets (B001-5 and B001-6), and Section 7 derives all verdict bullets directly from computed results.
      - Added regression unit tests verifying both synthetic text with B001-5/B001-6 removed (0 matches) and synthetic text under source-hash mismatch with B001-5/B001-6 hits plus injected unrelated `LXX` near `Rom. iv. 3`, confirming zero contradictions across all report sections.
+
+
+---
+
+## 6. Round 4 Review Findings & Resolutions
+
+- **Independent Review Verdict (Round 4):** `SOURCE_PACKET: REVISE` (`REQUEST CHANGES: YES`).
+- **Resolved Single Remaining Blocking Finding:**
+  1. `S03F-R4-F1` (Full-Text Authentication State Propagated to Zero-Hit Adjudication, Report Conditioning, and Canonical Path Protection):
+     - Added `is_text_authenticated(full_text, text_sha256)` in `scripts/verify_s03f_negative_search.py` to verify that both the supplied `text_sha256` and the SHA-256 computed directly from `full_text` match `EXPECTED_TEXT_SHA256` (`9be8ab66...`).
+     - Updated `adjudicate_target` to evaluate `is_text_authenticated(full_text, text_sha256)` prior to zero-hit adjudication: returns `NOT_DISCUSSED` (`authenticated=True`) only when full text is cryptographically authenticated, and returns `UNVERIFIED_ZERO_MATCHES` (`authenticated=False`, with an explicit rationale that negative absence across the 504-page volume cannot be certified) whenever the full-text digest is unverified or mismatched.
+     - Conditioned all Sections 1–7 of `run_verification` on `is_authenticated` so unauthenticated override runs (`--allow-text-digest-mismatch`) never claim `"AUTHENTICATED"`, `"504 pages"`, `"Verified absent ... in the volume"`, `"NOT_DISCUSSED"`, or `"under authenticated search patterns"`, scoping provisional findings strictly to the supplied text input.
+     - Added canonical report path protection in `run_verification` refusing to overwrite `DEFAULT_OUT_PATH` (`full_volume_search_log.md`) under an unauthenticated text digest override.
+     - Updated unit tests in `tests/test_harden_source_switch.py` so unauthenticated zero-hit cases (Case A and Case B zero-hit loci, plus `"dummy full text"` in `test_verify_s03f_negative_search_dynamic_adjudication`) require `UNVERIFIED_ZERO_MATCHES` and explicitly reject `NOT_DISCUSSED` and 504-page certainty, while an authenticated expected-hash case (Case C) retains `NOT_DISCUSSED` zero-hit behavior and Case D enforces canonical path protection.

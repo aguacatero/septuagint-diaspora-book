@@ -5,7 +5,7 @@ Antigravity rewrites this file for every source before requesting review.
 ## Current source
 
 - Source ID: `S03F`
-- Review Round: `Round 4 (Revisions Addressing S03F-R3 Review Findings)`
+- Review Round: `Round 5 (Revisions Addressing S03F-R4 Review Finding S03F-R4-F1)`
 - Exact citation: Archibald Robertson and Alfred Plummer, *A Critical and Exegetical Commentary on the First Epistle of St Paul to the Corinthians* (International Critical Commentary; Edinburgh: T. & T. Clark / New York: Charles Scribner's Sons, 1911; Second Edition, 1914).
 - Public/source locator: Internet Archive, `https://archive.org/details/criticalexegetic33robeuoft` (Internet Archive item ID: `criticalexegetic33robeuoft`).
 - Raw full-scan hash: `robertson_plummer_1911_1corinthians_icc_ia_raw.pdf` (504 pages, 32,652,569 bytes, SHA-256: `4e7d0aa655aff66d84fca857387860d25dddd4c2be1c5aa2ea0446f11df78efd`).
@@ -17,6 +17,8 @@ Antigravity rewrites this file for every source before requesting review.
   - `[S03F-R3-F1] Resolved`: Bound verified match catalog cryptographically to `EXPECTED_TEXT_SHA256` (`9be8ab66...` verified against both `text_sha256` and the actual SHA-256 computed from `full_text`), exact normalized match strings, offset validity, and surrounding context witnesses. Bypasses catalog on hash mismatch, dummy text, or tampered text, failing closed to `CONTEXT_REVIEW_REQUIRED`. Added unit tests for the reviewer's exact `"dummy full text"` counterexample, wrong text at known offset, wrong hash, and altered witness.
   - `[S03F-R3-F2] Resolved`: Enforced mandatory chapter/verse delimiters (`\s*[:\.,]\s*`) and complete word boundaries (`\b`) around Roman and Arabic numerals across all queries and positive controls. Eliminated spurious matches for B001-3 (`Hos. ix. 5`) and B001-7 (`Isa. xix. 11/12`), bringing genuine volume matches for both to 0. Separated the direct `Rom. x. 13` pattern from the compound `Rom. x. 12, 13` cross-reference variant pattern in B001-5, paired `Joel 2:32` (`2|ii` with `32|xxxii`) and `Joel 3:5` (`3|iii` with `5|v`) separately, and rejected standalone `Rom. x. 12` and mismatched `Joel ii. 5`. Added regression tests rejecting counterexamples `Hos. ix. 5`, `Isa. xix. 11`, `Rom. x. 12`, `Joel ii. 5`, and missing delimiters while verifying pattern separation.
   - `[S03F-R3-F3] Resolved`: Removed flawed generic keyword proximity heuristic; unverified or out-of-catalog hits fail closed to `CONTEXT_REVIEW_REQUIRED` (`substantive = False`). Made Sections 4, 5, 6, and 7 of `full_volume_search_log.md` strictly conditional on computed `target_results`, dynamically rendering only observed substantive targets and deriving all verdict bullets from computed results. Added unit tests verifying zero contradictions across all report sections both when B001-5/B001-6 are absent and under source-hash mismatch with injected unrelated `LXX` near a target.
+- Round 4 Review Finding Addressed:
+  - `[S03F-R4-F1] Resolved`: Propagated full-text cryptographic authentication state (`is_text_authenticated(full_text, text_sha256)`) through `adjudicate_target` to zero-hit decisions, marking all zero-hit loci `UNVERIFIED_ZERO_MATCHES` (`authenticated=False`) whenever the supplied/computed text digest does not match `EXPECTED_TEXT_SHA256`, and reserving `NOT_DISCUSSED` (`authenticated=True`) strictly for authenticated 504-page text. Made every Section 1–7 assertion of "verified", "authenticated", "504 pages", and "NOT_DISCUSSED" dependent on actual authentication, scoped provisional override results solely to the supplied unauthenticated text, and prevented canonical report replacement (`DEFAULT_OUT_PATH`) on unauthenticated runs. Updated negative-search tests (`test_verify_s03f_negative_search_dynamic_adjudication` and `test_verify_s03f_report_sections_dynamically_conditioned` Cases A–D) so unauthenticated mismatch runs reject `NOT_DISCUSSED` and false 504-page certainty while an expected-hash case (Case C) retains `NOT_DISCUSSED` zero-hit behavior.
 - Non-Corinthians scope & negative-search verification: Documented full-volume text search across the complete 504-page text layer of the original volume (`robertson_plummer_1911_1corinthians_icc_ia_raw.pdf`, SHA-256: `4e7d0aa6...`, 32,652,569 bytes; Poppler pdftotext; cryptographically bound and positive-controlled) confirmed that for the remaining six loci (B001-1, B001-2, B001-3, B001-4, B001-7, B001-12), no substantive discussion is found under documented search patterns (see `full_volume_search_log.md` with 10 itemized matches and full ±60-character surrounding context excerpts, and `scripts/verify_s03f_negative_search.py`).
 - Review readiness: `READY`
 - Review target: `LIVE_PR_HEAD`
@@ -51,13 +53,13 @@ Plus governing method:
 
 ## Review task
 
-Independently audit the revised source packet (Round 4).
+Independently audit the revised source packet (Round 5).
 
 Check:
 
 1. fidelity to what the source actually says;
 2. citation/locator support for each evidence row (14 rows);
-3. whether Round 1, Round 2, and Round 3 findings (including `S03F-R3-F1`, `S03F-R3-F2`, `S03F-R3-F3`) are fully and accurately addressed;
+3. whether Round 1, Round 2, Round 3, and Round 4 findings (including `S03F-R4-F1`) are fully and accurately addressed;
 4. whether B001-6 (Isa 40:13) and B001-5 (Joel 2:32) are properly integrated;
 5. whether text-critical and literary qualifications are preserved without overstatement;
 6. author-view vs reported-other-scholar confusion;

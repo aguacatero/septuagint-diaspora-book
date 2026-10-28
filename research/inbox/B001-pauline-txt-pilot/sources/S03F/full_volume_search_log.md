@@ -12,6 +12,7 @@
 - **Raw Scan SHA-256:** `4e7d0aa655aff66d84fca857387860d25dddd4c2be1c5aa2ea0446f11df78efd`
 - **Full Extracted Text Size:** `1,423,358` bytes
 - **Full Extracted Text SHA-256:** `9be8ab66f4f8bd70f67b0f22bc02e9cd9be48354d6a23a304d8b1d9d69a79ade`
+- **Authentication Status:** **AUTHENTICATED** (matches expected 504-page volume digest)
 - **Total Volume Pages:** 504 pages (pp. i–lxx, 1–424, plus title & plates)
 
 ---
@@ -22,7 +23,7 @@ To establish that OCR text extraction and regular expression patterns reliably m
 authentic 19th/20th-century typographical conventions, Roman numerals, and citation formatting 
 in this volume, positive controls were executed for known citations:
 
-| Positive Control Citation | Expected Min | Actual Matches | Status | Sample Verified Context |
+| Positive Control Citation | Expected Min | Actual Matches | Status | Sample Context |
 | :--- | :--- | :--- | :--- | :--- |
 | 1 Cor 1:19 / Isa 29:14 (Commentary p. 19, Intro p. liii) | 1 | 2 | **PASSED** | `v. 11, where he substitutes σοφῶν for ἀνθρώπων, or in i. 19=Isa. xxix. 14, where he_ subst...` |
 | 1 Cor 6:16 / Gen 2:24 (Commentary p. 126, Intro p. liii) | 1 | 2 | **PASSED** | `πὶ ΧΙ]. 152 ΤΠ 10 Ξ Ob ν. 12 NI 20 ΞΞ ἘΞ' xcive LE vi. 16 = Gen. ii. 24 ix. 9 = Deut. xxv....` |

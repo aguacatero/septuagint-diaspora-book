@@ -233,11 +233,12 @@ def test_verify_s03f_negative_search_rejects_tampered_text(tmp_path, monkeypatch
     assert sha != EXPECTED_TEXT_SHA256
 
 
-def test_verify_s03f_negative_search_dynamic_adjudication():
+def test_verify_s03f_negative_search_dynamic_adjudication(monkeypatch):
     """
-    Step 6 Hardening Gate (Findings S03F-R2-F1 & S03F-R3-F1):
+    Step 6 Hardening Gate (Findings S03F-R2-F1, S03F-R3-F1, S03F-R4-F1):
     Verify adjudicate_target and adjudicate_hit perform real evidence-grounded
-    adjudication bound to authentic text digest and context witnesses.
+    adjudication bound to authentic text digest and context witnesses, including
+    on zero-hit decisions.
     """
     from scripts.verify_s03f_negative_search import (
         EXPECTED_TEXT_SHA256,
@@ -248,19 +249,37 @@ def test_verify_s03f_negative_search_dynamic_adjudication():
 
     queries_by_id = {q["id"]: q for q in TARGET_QUERIES}
 
-    # 1. Target with 0 matches dynamically evaluates to NOT_DISCUSSED
-    res_empty = adjudicate_target(queries_by_id["B001-1"], [], "dummy full text", text_sha256=EXPECTED_TEXT_SHA256)
-    assert res_empty["classification"] == "NOT_DISCUSSED"
-    assert res_empty["substantive"] is False
-    assert "0 matches found" in res_empty["rationale"]
+    # 1. Target with 0 matches on unauthenticated text ("dummy full text" != EXPECTED_TEXT_SHA256)
+    # MUST return UNVERIFIED_ZERO_MATCHES (authenticated=False), even if text_sha256 is spoofed!
+    res_empty_unauth = adjudicate_target(queries_by_id["B001-1"], [], "dummy full text", text_sha256=EXPECTED_TEXT_SHA256)
+    assert res_empty_unauth["classification"] == "UNVERIFIED_ZERO_MATCHES"
+    assert res_empty_unauth["substantive"] is False
+    assert res_empty_unauth["authenticated"] is False
+    assert "cannot be certified" in res_empty_unauth["rationale"]
 
-    # 2. Out-of-catalog unverified hit fails closed to CONTEXT_REVIEW_REQUIRED
+    res_empty_wrong_sha = adjudicate_target(queries_by_id["B001-1"], [], "dummy full text", text_sha256="wrong_sha")
+    assert res_empty_wrong_sha["classification"] == "UNVERIFIED_ZERO_MATCHES"
+    assert res_empty_wrong_sha["substantive"] is False
+    assert res_empty_wrong_sha["authenticated"] is False
+
+    # 2. Target with 0 matches on authenticated text (digest matches EXPECTED_TEXT_SHA256)
+    # evaluates to NOT_DISCUSSED (authenticated=True)
+    auth_text = "authenticated 504-page text fixture"
+    auth_sha = hashlib.sha256(auth_text.encode("utf-8")).hexdigest()
+    monkeypatch.setattr("scripts.verify_s03f_negative_search.EXPECTED_TEXT_SHA256", auth_sha)
+    res_empty_auth = adjudicate_target(queries_by_id["B001-1"], [], auth_text, text_sha256=auth_sha)
+    assert res_empty_auth["classification"] == "NOT_DISCUSSED"
+    assert res_empty_auth["substantive"] is False
+    assert res_empty_auth["authenticated"] is True
+    assert "0 matches found under verified search patterns across all 504 pages." in res_empty_auth["rationale"]
+
+    # 3. Out-of-catalog unverified hit fails closed to CONTEXT_REVIEW_REQUIRED
     unverified_hit = {
         "match": "Rom. iv. 3",
         "start": 500,
         "snippet": "Some text mentioning Rom. iv. 3 in passing..."
     }
-    res_unverified = adjudicate_target(queries_by_id["B001-1"], [unverified_hit], "x" * 1000, text_sha256=EXPECTED_TEXT_SHA256)
+    res_unverified = adjudicate_target(queries_by_id["B001-1"], [unverified_hit], "x" * 1000, text_sha256=auth_sha)
     assert res_unverified["classification"] == "CONTEXT_REVIEW_REQUIRED"
     assert res_unverified["substantive"] is False
     assert "require manual context review" in res_unverified["rationale"]
@@ -456,14 +475,20 @@ def test_verify_s03f_adjudication_rejects_generic_lxx_proximity():
 
 def test_verify_s03f_report_sections_dynamically_conditioned(tmp_path, monkeypatch):
     """
-    Step 6 Hardening Gate (Finding S03F-R3-F3):
-    Verify that run_verification makes all report sections (Sections 4, 5, 6, and 7)
+    Step 6 Hardening Gate (Findings S03F-R3-F3 & S03F-R4-F1):
+    Verify that run_verification makes all report sections (Sections 1 through 7)
     strictly conditional on authenticated observed evidence, with zero contradictions:
-      - Case A: when B001-5 and B001-6 hits are removed (0 target matches).
-      - Case B: when run under source-hash mismatch (--allow-text-digest-mismatch) with
-        B001-5 / B001-6 citations AND an injected target near unrelated 'LXX'/'Hebrew' keywords.
+      - Case A (Unauthenticated override, 0 target matches): marks all 8 targets as
+        UNVERIFIED_ZERO_MATCHES and rejects any claim of 'NOT_DISCUSSED', 'Verified absent ... in the volume',
+        or 'across all 504 pages under authenticated search patterns'.
+      - Case B (Unauthenticated override, B001-5/B001-6 hits + injected unrelated 'LXX' near B001-1):
+        marks matched targets CONTEXT_REVIEW_REQUIRED and zero-hit targets UNVERIFIED_ZERO_MATCHES.
+      - Case C (Authenticated expected-hash run, 0 target matches): when EXPECTED_TEXT_SHA256 matches
+        the text digest, zero-hit targets are certified as NOT_DISCUSSED while Sections 6 and 7
+        report 0 matches without falsely claiming B001-5 or B001-6 are substantively present.
+      - Case D (Canonical report path protection): refuses to overwrite DEFAULT_OUT_PATH on unauthenticated override.
     """
-    from scripts.verify_s03f_negative_search import run_verification
+    from scripts.verify_s03f_negative_search import DEFAULT_OUT_PATH, run_verification
 
     dummy_pdf = tmp_path / "dummy.pdf"
     dummy_pdf.write_bytes(b"%PDF-1.4 synthetic")
@@ -472,7 +497,7 @@ def test_verify_s03f_report_sections_dynamically_conditioned(tmp_path, monkeypat
     monkeypatch.setattr("scripts.verify_s03f_negative_search.EXPECTED_RAW_PDF_SHA256", dummy_sha)
     monkeypatch.setattr("scripts.verify_s03f_negative_search.EXPECTED_RAW_PDF_BYTES", len(b"%PDF-1.4 synthetic"))
 
-    # Case A: Synthetic text passing positive controls and index checks, but with 0 matches for target queries
+    # Synthetic text passing positive controls and index checks, but with 0 matches for target queries
     synthetic_clean_text = (
         "POSITIVE CONTROLS:\n"
         "Isa. xxix. 14\n"
@@ -497,6 +522,16 @@ def test_verify_s03f_report_sections_dynamically_conditioned(tmp_path, monkeypat
     clean_text_file.write_text(synthetic_clean_text, encoding="utf-8")
     report_file = tmp_path / "report.md"
 
+    # Case D: Canonical report replacement must fail closed under unauthenticated override
+    with pytest.raises(RuntimeError, match="Refusing to overwrite canonical report path"):
+        run_verification(
+            dummy_pdf,
+            clean_text_file,
+            DEFAULT_OUT_PATH,
+            allow_text_digest_mismatch=True
+        )
+
+    # Case A: Unauthenticated override with 0 target matches
     code = run_verification(
         dummy_pdf,
         clean_text_file,
@@ -506,20 +541,18 @@ def test_verify_s03f_report_sections_dynamically_conditioned(tmp_path, monkeypat
     assert code == 0
     report_content = report_file.read_text(encoding="utf-8")
 
-    # Section 4 & 5: all 8 targets show 0 matches and NOT_DISCUSSED; Section 5 shows no target matches
-    assert "| **B001-5** | Romans 10:13 / Joel 2:32 | 0 | **NOT_DISCUSSED** |" in report_content
-    assert "| **B001-6** | Romans 11:34 / Isaiah 40:13 | 0 | **NOT_DISCUSSED** |" in report_content
-    assert "No target matches detected across text layer" in report_content
-
-    # Section 6 must state that NO substantive targets were detected
-    assert "No substantive comparative or secondary interpretive loci were detected" in report_content
-    assert "Admitted as substantive comparative evidence row" not in report_content
-    assert "Admitted as secondary interpretive cross-reference evidence row" not in report_content
-
-    # Section 7 must NOT list B001-5 or B001-6 as substantive
-    assert "B001-5 (Romans 10:13 / Joel 2:32) is dynamically adjudicated as RELEVANT_INTERPRETIVE_CROSS_REFERENCE" not in report_content
-    assert "B001-6 (Romans 11:34 / Isaiah 40:13) is dynamically adjudicated as SUBSTANTIVE_CROSS_EPISTLE_COMPARISON" not in report_content
-    assert "For targets (**B001-1**, **B001-2**, **B001-3**, **B001-4**, **B001-5**, **B001-6**, **B001-7**, **B001-12**), **0 matches** were detected" in report_content
+    # Under mismatch override, MUST NOT claim NOT_DISCUSSED, Verified absent in volume, or 504-page certainty!
+    assert "| **B001-1** | Romans 4:3 / Genesis 15:6 | 0 | **UNVERIFIED_ZERO_MATCHES** |" in report_content
+    assert "| **B001-5** | Romans 10:13 / Joel 2:32 | 0 | **UNVERIFIED_ZERO_MATCHES** |" in report_content
+    assert "| **B001-6** | Romans 11:34 / Isaiah 40:13 | 0 | **UNVERIFIED_ZERO_MATCHES** |" in report_content
+    assert "NOT_DISCUSSED" not in report_content
+    assert "Verified absent. No Fourth Section, Scripture Index, or Passage Index heading exists in the volume" not in report_content
+    assert "0 matches found under verified search patterns across all 504 pages" not in report_content
+    assert "across all 504 pages under authenticated search patterns" not in report_content
+    assert "Authentication Status:** **UNAUTHENTICATED OVERRIDE**" in report_content
+    assert "No Fourth Section or Scripture Index heading detected in supplied unauthenticated text (does not certify absence across the 504-page volume)" in report_content
+    assert "No substantive comparative or secondary interpretive loci can be certified because the supplied text layer is unauthenticated." in report_content
+    assert "For targets (**B001-1**, **B001-2**, **B001-3**, **B001-4**, **B001-5**, **B001-6**, **B001-7**, **B001-12**), **0 matches** were found in the supplied unauthenticated text (**UNVERIFIED_ZERO_MATCHES**); genuine absence across the 504-page volume is **not certified**." in report_content
     assert "NOTICE:** Verification executed under text digest mismatch override" in report_content
 
     # Case B: Source-hash mismatch with B001-5/B001-6 hits present AND injected unrelated 'LXX' near B001-1
@@ -556,16 +589,43 @@ def test_verify_s03f_report_sections_dynamically_conditioned(tmp_path, monkeypat
     assert code_unauth == 0
     unauth_report = report_unauth_file.read_text(encoding="utf-8")
 
-    # Across Sections 4, 5, 6, 7: hits under hash mismatch fail closed to CONTEXT_REVIEW_REQUIRED
+    # Across Sections 1–7: hits under hash mismatch fail closed to CONTEXT_REVIEW_REQUIRED,
+    # and zero-hit loci fail closed to UNVERIFIED_ZERO_MATCHES (never NOT_DISCUSSED)
     assert "| **B001-1** | Romans 4:3 / Genesis 15:6 | 1 | **CONTEXT_REVIEW_REQUIRED** |" in unauth_report
     assert "| **B001-5** | Romans 10:13 / Joel 2:32 | 2 | **CONTEXT_REVIEW_REQUIRED** |" in unauth_report
     assert "| **B001-6** | Romans 11:34 / Isaiah 40:13 | 2 | **CONTEXT_REVIEW_REQUIRED** |" in unauth_report
+    assert "| **B001-2** | Romans 9:25 / Hosea 2:23 | 0 | **UNVERIFIED_ZERO_MATCHES** |" in unauth_report
+    assert "NOT_DISCUSSED" not in unauth_report
     assert "SUBSTANTIVE_DISCUSSION" not in unauth_report
     assert "SUBSTANTIVE_CROSS_EPISTLE_COMPARISON" not in unauth_report
     assert "RELEVANT_INTERPRETIVE_CROSS_REFERENCE" not in unauth_report
-    assert "No substantive comparative or secondary interpretive loci were detected" in unauth_report
+    assert "No substantive comparative or secondary interpretive loci can be certified because the supplied text layer is unauthenticated." in unauth_report
     assert "Targets (**B001-1**, **B001-5**, **B001-6**) contain unverified matches requiring manual context review." in unauth_report
-    assert "For targets (**B001-2**, **B001-3**, **B001-4**, **B001-7**, **B001-12**), **0 matches** were detected" in unauth_report
+    assert "For targets (**B001-2**, **B001-3**, **B001-4**, **B001-7**, **B001-12**), **0 matches** were found in the supplied unauthenticated text (**UNVERIFIED_ZERO_MATCHES**); genuine absence across the 504-page volume is **not certified**." in unauth_report
+
+    # Case C: Authenticated expected-hash run with 0 target matches retains NOT_DISCUSSED
+    # while dynamically omitting B001-5/B001-6 substantive claims
+    clean_sha = hashlib.sha256(synthetic_clean_text.encode("utf-8")).hexdigest()
+    monkeypatch.setattr("scripts.verify_s03f_negative_search.EXPECTED_TEXT_SHA256", clean_sha)
+    report_auth_zero_file = tmp_path / "report_auth_zero.md"
+
+    code_auth_zero = run_verification(
+        dummy_pdf,
+        clean_text_file,
+        report_auth_zero_file,
+        allow_text_digest_mismatch=False
+    )
+    assert code_auth_zero == 0
+    auth_zero_report = report_auth_zero_file.read_text(encoding="utf-8")
+
+    assert "Authentication Status:** **AUTHENTICATED**" in auth_zero_report
+    assert "| **B001-5** | Romans 10:13 / Joel 2:32 | 0 | **NOT_DISCUSSED** |" in auth_zero_report
+    assert "| **B001-6** | Romans 11:34 / Isaiah 40:13 | 0 | **NOT_DISCUSSED** |" in auth_zero_report
+    assert "UNVERIFIED_ZERO_MATCHES" not in auth_zero_report
+    assert "No substantive comparative or secondary interpretive loci were detected in this volume under authenticated search patterns." in auth_zero_report
+    assert "Admitted as substantive comparative evidence row" not in auth_zero_report
+    assert "Admitted as secondary interpretive cross-reference evidence row" not in auth_zero_report
+    assert "For targets (**B001-1**, **B001-2**, **B001-3**, **B001-4**, **B001-5**, **B001-6**, **B001-7**, **B001-12**), **0 matches** were detected across all 504 pages under authenticated search patterns." in auth_zero_report
 
 
 def test_verify_s03f_negative_search_enforces_index_boundaries():

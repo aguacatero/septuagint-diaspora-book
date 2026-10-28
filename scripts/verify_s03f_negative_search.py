@@ -427,6 +427,19 @@ def verify_index_structure(full_text: str) -> dict:
     }
 
 
+def is_text_authenticated(full_text: str, text_sha256: str = "") -> bool:
+    """
+    Verify that both the actual computed SHA-256 of full_text and any supplied
+    text_sha256 match EXPECTED_TEXT_SHA256.
+    """
+    computed_sha = hashlib.sha256(full_text.encode("utf-8")).hexdigest()
+    effective_sha = text_sha256 if text_sha256 else computed_sha
+    return (
+        effective_sha == EXPECTED_TEXT_SHA256
+        and computed_sha == EXPECTED_TEXT_SHA256
+    )
+
+
 def adjudicate_hit(
     b001_id: str,
     match_item: dict,
@@ -447,12 +460,7 @@ def adjudicate_hit(
     def _norm(s: str) -> str:
         return re.sub(r"\s+", " ", s.strip())
 
-    computed_sha = hashlib.sha256(full_text.encode("utf-8")).hexdigest()
-    effective_sha = text_sha256 if text_sha256 else computed_sha
-    is_authenticated_text = (
-        effective_sha == EXPECTED_TEXT_SHA256
-        and computed_sha == EXPECTED_TEXT_SHA256
-    )
+    is_authenticated_text = is_text_authenticated(full_text, text_sha256)
 
     # 1. Check known verified catalog ONLY on authentic text
     if is_authenticated_text and key in VERIFIED_MATCH_CATALOG:
@@ -500,20 +508,39 @@ def adjudicate_target(
 ) -> dict:
     """
     Dynamically computes target-level classification and rationale from adjudicated hits.
-    Never relies on predetermined or hard-coded target strings.
+    Carries full-text authentication state through to zero-hit decisions, marking
+    zero-hit loci UNVERIFIED_ZERO_MATCHES whenever the supplied or computed text digest
+    does not match EXPECTED_TEXT_SHA256.
     """
+    is_authenticated = is_text_authenticated(full_text, text_sha256)
+
     if not matches:
-        return {
-            "id": target["id"],
-            "name": target["name"],
-            "nt_target": target["nt_target"],
-            "ot_target": target["ot_target"],
-            "total_matches": 0,
-            "classification": "NOT_DISCUSSED",
-            "rationale": "0 matches found under verified search patterns across all 504 pages.",
-            "substantive": False,
-            "adjudicated_hits": [],
-        }
+        if is_authenticated:
+            return {
+                "id": target["id"],
+                "name": target["name"],
+                "nt_target": target["nt_target"],
+                "ot_target": target["ot_target"],
+                "total_matches": 0,
+                "classification": "NOT_DISCUSSED",
+                "rationale": "0 matches found under verified search patterns across all 504 pages.",
+                "substantive": False,
+                "authenticated": True,
+                "adjudicated_hits": [],
+            }
+        else:
+            return {
+                "id": target["id"],
+                "name": target["name"],
+                "nt_target": target["nt_target"],
+                "ot_target": target["ot_target"],
+                "total_matches": 0,
+                "classification": "UNVERIFIED_ZERO_MATCHES",
+                "rationale": "0 matches in supplied unauthenticated text; negative absence across the 504-page volume cannot be certified without expected source text digest.",
+                "substantive": False,
+                "authenticated": False,
+                "adjudicated_hits": [],
+            }
 
     adjudicated_hits = [adjudicate_hit(target["id"], m, full_text, text_sha256) for m in matches]
     substantive_hits = [h for h in adjudicated_hits if h["substantive"]]
@@ -534,7 +561,7 @@ def adjudicate_target(
         substantive = True
     else:
         review_hits = [h for h in adjudicated_hits if h["classification"] == "CONTEXT_REVIEW_REQUIRED"]
-        if review_hits:
+        if review_hits or not is_authenticated:
             classification = "CONTEXT_REVIEW_REQUIRED"
             rationale = f"{len(matches)} match(es) require manual context review; unverified or out-of-catalog context."
             substantive = False
@@ -552,6 +579,7 @@ def adjudicate_target(
         "classification": classification,
         "rationale": rationale,
         "substantive": substantive,
+        "authenticated": is_authenticated,
         "adjudicated_hits": adjudicated_hits,
     }
 
@@ -564,6 +592,14 @@ def run_verification(
     )
     if code != 0:
         return code
+
+    is_authenticated = is_text_authenticated(text, text_sha)
+
+    # Prevent canonical report replacement under unauthenticated text digest override
+    if not is_authenticated and out_path.resolve() == DEFAULT_OUT_PATH.resolve():
+        raise RuntimeError(
+            f"Refusing to overwrite canonical report path {out_path} under unauthenticated text digest override"
+        )
 
     raw_bytes = raw_pdf.stat().st_size
     raw_sha = get_sha256(raw_pdf)
@@ -625,17 +661,25 @@ def run_verification(
     md.append(f"- **Raw Scan SHA-256:** `{raw_sha}`")
     md.append(f"- **Full Extracted Text Size:** `{len(text.encode('utf-8')):,}` bytes")
     md.append(f"- **Full Extracted Text SHA-256:** `{text_sha}`")
-    md.append(f"- **Total Volume Pages:** 504 pages (pp. i–lxx, 1–424, plus title & plates)")
+    if is_authenticated:
+        md.append(f"- **Authentication Status:** **AUTHENTICATED** (matches expected 504-page volume digest)")
+        md.append(f"- **Total Volume Pages:** 504 pages (pp. i–lxx, 1–424, plus title & plates)")
+    else:
+        md.append(f"- **Authentication Status:** **UNAUTHENTICATED OVERRIDE** (supplied text digest differs from expected source digest; all results below are provisional and scoped solely to the supplied text)")
+        md.append(f"- **Supplied Text Scope:** Unauthenticated text input (not certified as the 504-page volume)")
     md.append("")
     md.append("---")
     md.append("")
     md.append("## 2. Positive Control Verification")
     md.append("")
-    md.append("To establish that OCR text extraction and regular expression patterns reliably match ")
-    md.append("authentic 19th/20th-century typographical conventions, Roman numerals, and citation formatting ")
-    md.append("in this volume, positive controls were executed for known citations:")
+    if is_authenticated:
+        md.append("To establish that OCR text extraction and regular expression patterns reliably match ")
+        md.append("authentic 19th/20th-century typographical conventions, Roman numerals, and citation formatting ")
+        md.append("in this volume, positive controls were executed for known citations:")
+    else:
+        md.append("Positive control patterns were checked against the supplied unauthenticated text:")
     md.append("")
-    md.append("| Positive Control Citation | Expected Min | Actual Matches | Status | Sample Verified Context |")
+    md.append("| Positive Control Citation | Expected Min | Actual Matches | Status | Sample Context |")
     md.append("| :--- | :--- | :--- | :--- | :--- |")
     for cr in control_results:
         status = "PASSED" if cr["ok"] else "FAILED"
@@ -646,25 +690,43 @@ def run_verification(
     md.append("")
     md.append("## 3. Bounded Index Structure & Section-Localized Positive Controls")
     md.append("")
-    md.append("Inspection of the volume's back matter confirms bounded, ordered, and section-localized index structure:")
-    for h in idx_res["verified_headings"]:
-        md.append(f"- **Verified Section:** `{h}`")
-    md.append(f"- **Independent End Delimiter:** Verified (`Printed by Morrison & Gibb Limited, Edinburgh`).")
-    md.append(f"- **Ordered Sequence Check:** Verified (`Index I < Index II < Index III < End Delimiter`).")
-    md.append(f"- **Section-Localized Positive Controls:**")
-    for pc_name, pc_val in idx_res["positive_controls"].items():
-        pc_status = "VERIFIED" if pc_val else "FAILED"
-        md.append(f"  - `{pc_name}`: **{pc_status}**")
-    md.append(f"- **Scripture / Biblical Reference Index Absence:** Verified absent. No Fourth Section, Scripture Index, or Passage Index heading exists in the volume (consistent with Dr. Plummer's Preface p. viii stating the indexes comprise author/subject and lexical indexes compiled by himself).")
+    if is_authenticated:
+        md.append("Inspection of the volume's back matter confirms bounded, ordered, and section-localized index structure:")
+        for h in idx_res["verified_headings"]:
+            md.append(f"- **Verified Section:** `{h}`")
+        md.append(f"- **Independent End Delimiter:** Verified (`Printed by Morrison & Gibb Limited, Edinburgh`).")
+        md.append(f"- **Ordered Sequence Check:** Verified (`Index I < Index II < Index III < End Delimiter`).")
+        md.append(f"- **Section-Localized Positive Controls:**")
+        for pc_name, pc_val in idx_res["positive_controls"].items():
+            pc_status = "VERIFIED" if pc_val else "FAILED"
+            md.append(f"  - `{pc_name}`: **{pc_status}**")
+        md.append(f"- **Scripture / Biblical Reference Index Absence:** Verified absent. No Fourth Section, Scripture Index, or Passage Index heading exists in the volume (consistent with Dr. Plummer's Preface p. viii stating the indexes comprise author/subject and lexical indexes compiled by himself).")
+    else:
+        md.append("Inspection of the supplied unauthenticated text's index block (provisional; not certified for the 504-page volume):")
+        for h in idx_res["verified_headings"]:
+            md.append(f"- **Detected Section (Unauthenticated Text):** `{h}`")
+        md.append(f"- **Independent End Delimiter:** Detected in supplied text (unauthenticated).")
+        md.append(f"- **Ordered Sequence Check:** Detected in supplied text (`Index I < Index II < Index III < End Delimiter`; unauthenticated).")
+        md.append(f"- **Section-Localized Positive Controls (Supplied Text):**")
+        for pc_name, pc_val in idx_res["positive_controls"].items():
+            pc_status = "DETECTED (UNAUTHENTICATED)" if pc_val else "FAILED"
+            md.append(f"  - `{pc_name}`: **{pc_status}**")
+        md.append(f"- **Scripture / Biblical Reference Index Absence:** No Fourth Section or Scripture Index heading detected in supplied unauthenticated text (does not certify absence across the 504-page volume).")
     md.append("")
     md.append("---")
     md.append("")
-    md.append("## 4. Target Query Verification Across All 504 Pages (Dynamic Adjudication)")
-    md.append("")
-    md.append("Robertson and Plummer's commentary is dedicated to **1 Corinthians**. The B001 research corpus ")
-    md.append("includes twelve specific Pauline quotation comparisons. Four belong directly to 1 Corinthians ")
-    md.append("(B001-8, B001-9, B001-10, B001-11). The remaining eight loci (B001-1 through B001-7, B001-12) ")
-    md.append("were scanned across the entire 504-page volume to evaluate presence, cross-epistle comparison, or genuine absence:")
+    if is_authenticated:
+        md.append("## 4. Target Query Verification Across All 504 Pages (Dynamic Adjudication)")
+        md.append("")
+        md.append("Robertson and Plummer's commentary is dedicated to **1 Corinthians**. The B001 research corpus ")
+        md.append("includes twelve specific Pauline quotation comparisons. Four belong directly to 1 Corinthians ")
+        md.append("(B001-8, B001-9, B001-10, B001-11). The remaining eight loci (B001-1 through B001-7, B001-12) ")
+        md.append("were scanned across the entire 504-page volume to evaluate presence, cross-epistle comparison, or genuine absence:")
+    else:
+        md.append("## 4. Target Query Scan Across Supplied Unauthenticated Text (Provisional)")
+        md.append("")
+        md.append("The eight non-1 Corinthians loci (B001-1 through B001-7, B001-12) were scanned across the supplied unauthenticated text. ")
+        md.append("Because the text digest does not match `EXPECTED_TEXT_SHA256`, neither substantive presence nor negative absence across the 504-page volume can be certified:")
     md.append("")
     md.append("| B001 ID | Comparison Target | Measured Matches | Scholarly Classification | Dynamic Evaluated Rationale |")
     md.append("| :--- | :--- | :--- | :--- | :--- |")
@@ -675,7 +737,10 @@ def run_verification(
     md.append("")
     md.append("## 5. Itemized Match Evidence Ledger")
     md.append("")
-    md.append("Every individual regex match detected across the 504-page text layer is itemized below with its exact character offset, matched string, surrounding context, hit classification, and evaluation rationale:")
+    if is_authenticated:
+        md.append("Every individual regex match detected across the 504-page text layer is itemized below with its exact character offset, matched string, surrounding context, hit classification, and evaluation rationale:")
+    else:
+        md.append("Every individual regex match detected across the supplied unauthenticated text layer is itemized below (unverified context):")
     md.append("")
     md.append("| Hit # | Target ID | Offset | Matched Text | Surrounding Context Excerpt | Hit Classification | Evaluation Rationale |")
     md.append("| :--- | :--- | :--- | :--- | :--- | :--- | :--- |")
@@ -693,7 +758,10 @@ def run_verification(
     md.append("")
     substantive_targets = [tr for tr in target_results if tr["substantive"]]
     if not substantive_targets:
-        md.append("No substantive comparative or secondary interpretive loci were detected in this volume under authenticated search patterns.")
+        if is_authenticated:
+            md.append("No substantive comparative or secondary interpretive loci were detected in this volume under authenticated search patterns.")
+        else:
+            md.append("No substantive comparative or secondary interpretive loci can be certified because the supplied text layer is unauthenticated.")
         md.append("")
     else:
         for tr in substantive_targets:
@@ -716,8 +784,8 @@ def run_verification(
     md.append("")
     md.append("## 7. Scholarly Verification Verdict")
     md.append("")
-    if text_sha != EXPECTED_TEXT_SHA256:
-        md.append("⚠️ **NOTICE:** Verification executed under text digest mismatch override (`--allow-text-digest-mismatch`). Verified match catalog was unauthenticated; qualitative claims are provisional.")
+    if not is_authenticated:
+        md.append("⚠️ **NOTICE:** Verification executed under text digest mismatch override (`--allow-text-digest-mismatch`). Supplied text is unauthenticated; neither positive catalog classifications nor negative absence across the 504-page volume are certified.")
         md.append("")
 
     verdict_num = 1
@@ -731,19 +799,30 @@ def run_verification(
         md.append(f"{verdict_num}. ⚠️ Targets ({req_ids}) contain unverified matches requiring manual context review.")
         verdict_num += 1
 
-    non_subst_targets = [tr for tr in target_results if not tr["substantive"] and tr["classification"] != "CONTEXT_REVIEW_REQUIRED"]
-    zero_targets = [tr for tr in non_subst_targets if tr["total_matches"] == 0]
-    passing_targets = [tr for tr in non_subst_targets if tr["total_matches"] > 0]
-
-    if zero_targets:
-        zero_ids = ", ".join(f"**{tr['id']}**" for tr in zero_targets)
-        md.append(f"{verdict_num}. For targets ({zero_ids}), **0 matches** were detected across all 504 pages under authenticated search patterns.")
+    unverified_zero_targets = [tr for tr in target_results if tr["classification"] == "UNVERIFIED_ZERO_MATCHES"]
+    if unverified_zero_targets:
+        unv_ids = ", ".join(f"**{tr['id']}**" for tr in unverified_zero_targets)
+        md.append(f"{verdict_num}. ⚠️ For targets ({unv_ids}), **0 matches** were found in the supplied unauthenticated text (**UNVERIFIED_ZERO_MATCHES**); genuine absence across the 504-page volume is **not certified**.")
         verdict_num += 1
 
-    if passing_targets:
-        passing_desc = ", ".join(f"**{tr['id']}** ({tr['total_matches']} hit(s))" for tr in passing_targets)
-        md.append(f"{verdict_num}. For targets ({passing_desc}), only passing citation(s) were observed without substantive quotation discussion, confirming they are **NOT_DISCUSSED** in this volume.")
-        verdict_num += 1
+    if is_authenticated:
+        non_subst_targets = [
+            tr for tr in target_results
+            if not tr["substantive"]
+            and tr["classification"] not in ("CONTEXT_REVIEW_REQUIRED", "UNVERIFIED_ZERO_MATCHES")
+        ]
+        zero_targets = [tr for tr in non_subst_targets if tr["total_matches"] == 0]
+        passing_targets = [tr for tr in non_subst_targets if tr["total_matches"] > 0]
+
+        if zero_targets:
+            zero_ids = ", ".join(f"**{tr['id']}**" for tr in zero_targets)
+            md.append(f"{verdict_num}. For targets ({zero_ids}), **0 matches** were detected across all 504 pages under authenticated search patterns.")
+            verdict_num += 1
+
+        if passing_targets:
+            passing_desc = ", ".join(f"**{tr['id']}** ({tr['total_matches']} hit(s))" for tr in passing_targets)
+            md.append(f"{verdict_num}. For targets ({passing_desc}), only passing citation(s) were observed without substantive quotation discussion, confirming they are **NOT_DISCUSSED** in this volume.")
+            verdict_num += 1
 
     md.append("")
 
