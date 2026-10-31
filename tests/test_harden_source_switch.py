@@ -192,6 +192,48 @@ async def test_promote_to_sdp01_fails_on_unattributed_or_error_state():
             await promote_source(source_id="S03F")
 
 
+@pytest.mark.anyio
+async def test_prove_retrieval_handles_streaming_progression():
+    """Verify prove_retrieval does not fail early on 0 markers while text streams, succeeding once settled."""
+    from scripts.promote_to_sdp01 import prove_retrieval
+
+    mock_client = AsyncMock()
+    # 1. init_count check -> returns 0
+    # 2. type_js -> returns True
+    # 3. submit_js -> returns True
+    # 4. check_js loop:
+    #    cycle 1: text_len=35, markers=0, generating=False (streaming start)
+    #    cycle 2: text_len=366, markers=0, generating=False (streaming continue)
+    #    cycle 3: text_len=2621, markers=13, generating=False (settled with citations)
+    mock_client.evaluate.side_effect = [
+        0,      # init_count
+        True,   # type_js
+        True,   # submit_js
+        {"has_message": True, "is_generating": False, "text_len": 35, "markers": 0},
+        {"has_message": True, "is_generating": False, "text_len": 366, "markers": 0},
+        {"has_message": True, "is_generating": False, "text_len": 2621, "markers": 13},
+    ]
+
+    with patch("asyncio.sleep", new=AsyncMock(return_value=None)):
+        ok = await prove_retrieval(mock_client, "dummy.pdf", "S03F", timeout=20.0)
+        assert ok is True
+
+    # Also verify that if text settles for >= 2 cycles without citations, it returns False
+    mock_client_fail = AsyncMock()
+    mock_client_fail.evaluate.side_effect = [
+        0,      # init_count
+        True,   # type_js
+        True,   # submit_js
+        {"has_message": True, "is_generating": False, "text_len": 200, "markers": 0},
+        {"has_message": True, "is_generating": False, "text_len": 200, "markers": 0},
+        {"has_message": True, "is_generating": False, "text_len": 200, "markers": 0},
+    ]
+
+    with patch("asyncio.sleep", new=AsyncMock(return_value=None)):
+        ok_fail = await prove_retrieval(mock_client_fail, "dummy.pdf", "S03F", timeout=20.0)
+        assert ok_fail is False
+
+
 def test_verify_s03f_negative_search_rejects_tampered_text(tmp_path, monkeypatch):
     """
     Step 6 Hardening Gate (Finding S03F-R2-F3):

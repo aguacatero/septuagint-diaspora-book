@@ -943,13 +943,15 @@ async def test_source_switch_s01f_to_s02f_fails_closed_without_overwriting_s01f(
     assert ctx_s02f["output_dir"].endswith("/sources/S02F")
     assert ctx_s02f["output_dir"] != ctx_s01f["output_dir"]
 
-    # Active queue context (S02F when active, or S03F after promotion)
+    # Active queue context (S02F, S03F, or S04F after serial promotion)
     ctx_active = get_source_context()
-    assert ctx_active["source_id"] in ("S02F", "S03F")
+    assert ctx_active["source_id"] in ("S02F", "S03F", "S04F")
     if ctx_active["source_id"] == "S02F":
         assert ctx_active["expected_filename"] == "sanday_headlam_1895_romans_icc.pdf"
-    else:
+    elif ctx_active["source_id"] == "S03F":
         assert ctx_active["expected_filename"] == "robertson_plummer_1911_1corinthians_icc.pdf"
+    else:
+        assert ctx_active["expected_filename"] == "lightfoot_1914_galatians.pdf"
 
     # 2. Residual Aageson-only notebook or wrong/ambiguous source fails closed under S02F
     with pytest.raises(RuntimeError, match="Source identity invariant violated: expected sole source 'sanday_headlam_1895_romans_icc.pdf', but found 'aageson_1984_pauls_use_of_scripture.pdf'"):
