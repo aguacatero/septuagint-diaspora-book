@@ -5,7 +5,7 @@ Antigravity rewrites this file for every source before requesting review.
 ## Current source
 
 - Source ID: `S04F`
-- Review Round: `Round 2 — Remediation of S04F-R1-F1 through F4 and M1 through M3`
+- Review Round: `Round 3 — Remediation of S04F-R2-F1, S04F-R2-L1, and S04F-R2-L2`
 - Exact citation: J. B. Lightfoot, *Saint Paul's Epistle to the Galatians: A Revised Text with Introduction, Notes, and Dissertations* (London: Macmillan and Co., Limited, 1914 reprint of the tenth edition 1890).
 - Branch: `research/B001-notebooklm-serial`
 - Draft PR: `2`
@@ -13,6 +13,23 @@ Antigravity rewrites this file for every source before requesting review.
 - Review target: `LIVE_PR_HEAD`
 - Previous source disposition: `S03F ACCEPTED` in Round 5 independent review ([#issuecomment-6460107612](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6460107612)) at commit `c518c27339c9f1df4e9c17154361b6944de35f2b`, and promoted to cumulative notebook `SDP-01 Paul`.
 - Round 1 Review Verdict: `SOURCE_PACKET: REVISE`, `MERGE: NO`, `REQUEST CHANGES: YES` ([#issuecomment-6546174969](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6546174969)) at commit `c7cb48f41a1c522af0aa3e01de484317625797c4`.
+- Round 2 Review Verdict: `SOURCE_PACKET: REVISE`, `MERGE: NO`, `REQUEST CHANGES: YES` ([#issuecomment-6548475674](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6548475674)) at commit `35e5415b6a98ff294d1a668464950c7dce7f9fc0`.
+
+## Round 2 Findings Remediated in Round 3
+
+1. **S04F-R2-F1 [HIGH/BLOCKING] — Per-Locus Authorial Scripture Index Inventory & Verification:**
+   - Implemented `B001_INDEX_PATTERNS` in `scripts/verify_s04f_negative_search.py` covering all 12 B001 targets against the authentic bounded index text (printed pp. 375–384).
+   - `verify_index_structure()` now executes two distinct index gates:
+     1. Structural controls (`Deuteronomy commented on`, `Genesis commented on`, `Acts commented on`, `Abraham`, `Judaizers`);
+     2. Per-locus scripture reference inventory across all 12 B001 loci, validating positive entries for B001-1 (`Genesis xv. 6` p. 159 sq) and B001-12 (`Deuteronomy xxi. 23` p. 152 sq), and mathematically verifying absence across the 8 negative loci and passing loci.
+   - Added fail-closed enforcement: if an unexpected index entry appears (such as the reviewer's adversarial counterexample fixture `Isa. xl. 13`), the verifier detects the unexpected hit, fails closed (exit code 5), and refuses to certify negative absence.
+   - Emits a dedicated `Per-Locus Authorial Scripture Index Ledger` in `full_volume_search_log.md` itemizing per-target index hits/zeroes and verification status.
+   - Added deterministic adversarial unit tests in `tests/test_citation_ledger_crosswalk.py` (`test_s04f_index_per_locus_scripture_inventory` and `test_s04f_index_counterexample_fails_closed`).
+   - Corrected index architectural description in `provenance_manifest.json` line 37 (Lightfoot organizes scripture entries under book names in a single comprehensive index, rather than a separate tripartite index).
+2. **S04F-R2-L1 [LOW] — Positive Control Prose Count Alignment:**
+   - Updated the Negative Search Verification bullet in this review request from "5 positive controls passed" to "6 positive controls passed" to match the 6 evaluated citation typography controls in `full_volume_search_log.md`.
+3. **S04F-R2-L2 [LOW] — Categorical Shorthand Replaced in Relevance Scan:**
+   - Replaced categorical `NOT DISCUSSED` table shorthand in `relevance_scan.md` for the eight zero-regex loci with `ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index)` to prevent over-reading pattern-bounded absence as absolute semantic absence.
 
 ## Round 1 Findings Remediated in Round 2
 
@@ -68,7 +85,7 @@ Antigravity rewrites this file for every source before requesting review.
   - `B001-11 (1 Cor 10:7 / Exod 32:6):` Passing illustration cross-reference in Dissertation III (p. 311).
 - **Negative Search Verification:**
   - Full-volume fail-closed verification (`scripts/verify_s04f_negative_search.py`) confirms that the remaining 8 B001 loci (`B001-2, B001-3, B001-4, B001-5, B001-6, B001-7, B001-9, B001-10`) have **0 occurrences** across all 408 pages of the authentic volume.
-  - Cryptographically bound to text layer SHA-256 (`213da033...`), 5 positive controls passed, and bounded index structure validated.
+  - Cryptographically bound to text layer SHA-256 (`213da033...`), 6 positive controls passed, and bounded index structure and per-locus scripture targets validated.
 
 ## Files in scope
 
@@ -101,7 +118,7 @@ Plus governing method:
 
 ## Review task
 
-Independently audit the complete S04F evidence packet (Round 2 remediation). Verify that findings S04F-R1-F1 through F4 and M1 through M3 are fully resolved.
+Independently audit the complete S04F evidence packet (Round 3 remediation). Verify that findings S04F-R2-F1, S04F-R2-L1, and S04F-R2-L2 are fully resolved.
 
 Check:
 

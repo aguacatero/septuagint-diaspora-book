@@ -43,7 +43,7 @@ Total Positive Controls Evaluated: **6**
 
 ---
 
-## Bounded Index Structure Validation
+## Bounded Index Structure & Scripture Reference Validation
 
 - **Index Present:** True
 - **Index Start Offset:** 1101620
@@ -54,7 +54,29 @@ Total Positive Controls Evaluated: **6**
   - Positive Control `Acts commented on`: FOUND
   - Positive Control `Abraham faith entry`: FOUND
   - Positive Control `Judaizers entry`: FOUND
-- **Index Validation Verdict:** **PASS**
+- **Structural Controls Verdict:** **PASS**
+- **Per-Locus Scripture Targets Verdict:** **PASS**
+- **Index Validation Overall Verdict:** **PASS**
+
+### Per-Locus Authorial Scripture Index Ledger
+
+Lightfoot's *Galatians* index combines subjects, persons, Greek words, and scriptural citations into a single comprehensive index (printed pp. 375–384), indexing scripture passages commented on directly under their respective biblical book names (e.g. *Genesis, passages commented on*, *Deuteronomy, passages commented on*).
+Each B001 target is evaluated against the bounded index text using both Lightfoot's book-heading format and standard citation typography:
+
+| B001 ID | Comparison | NT / OT Target | Expected in Index | Detected Index Matches | Index Verification Status |
+|:---|:---|:---|:---:|:---|:---:|
+| `B001-1` | Rom 4:3 / Gen 15:6 | Romans 4:3 / Genesis 15:6 | **YES** | `Genesis, passages commented  on, (xv.  6)` | **VERIFIED INDEX ENTRY** |
+| `B001-2` | Rom 9:25 / Hos 2:23 | Romans 9:25 / Hosea 2:23 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
+| `B001-3` | Rom 9:26 / Hos 1:10 | Romans 9:26 / Hosea 1:10 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
+| `B001-4` | Rom 10:11 / Isa 28:16 | Romans 10:11 / Isaiah 28:16 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
+| `B001-5` | Rom 10:13 / Joel 2:32 | Romans 10:13 / Joel 2:32 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
+| `B001-6` | Rom 11:34 / Isa 40:13 | Romans 11:34 / Isaiah 40:13 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
+| `B001-7` | Rom 15:12 / Isa 11:10 | Romans 15:12 / Isaiah 11:10 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
+| `B001-8` | 1 Cor 1:19 / Isa 29:14 | 1 Corinthians 1:19 / Isaiah 29:14 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
+| `B001-9` | 1 Cor 6:16 / Gen 2:24 | 1 Corinthians 6:16 / Genesis 2:24 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
+| `B001-10` | 1 Cor 9:9 / Deut 25:4 | 1 Corinthians 9:9 / Deuteronomy 25:4 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
+| `B001-11` | 1 Cor 10:7 / Exod 32:6 | 1 Corinthians 10:7 / Exodus 32:6 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
+| `B001-12` | Gal 3:13 / Deut 21:23 | Galatians 3:13 / Deuteronomy 21:23 | **YES** | `Deuteronomy, passages commented on;  (xxi. 23)` | **VERIFIED INDEX ENTRY** |
 
 ---
 
@@ -63,15 +85,15 @@ Total Positive Controls Evaluated: **6**
 | B001 ID | Comparison | NT Target | OT Target | Hits | Adjudication |
 |:---|:---|:---|:---|:---:|:---|
 | `B001-1` | Romans 4:3 / Genesis 15:6 | Rom 4:3 | Gen 15:6 | 5 | SUBSTANTIVE CROSS-EPISTLE COMPARISON (5 hit(s): Gal 3:6 commentary p. 136, Faith excursuses pp. 156, 157, 164) |
-| `B001-2` | Romans 9:25 / Hosea 2:23 | Rom 9:25 | Hos 2:23 | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; no index entry) |
-| `B001-3` | Romans 9:26 / Hosea 1:10 | Rom 9:26 | Hos 1:10 | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; no index entry) |
-| `B001-4` | Romans 10:11 / Isaiah 28:16 | Rom 10:11 | Isa 28:16 | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; no index entry) |
-| `B001-5` | Romans 10:13 / Joel 2:32 | Rom 10:13 | Joel 2:32 (LXX 3:5) | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; no index entry) |
-| `B001-6` | Romans 11:34 / Isaiah 40:13 | Rom 11:34 | Isa 40:13 | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; no index entry) |
-| `B001-7` | Romans 15:12 / Isaiah 11:10 | Rom 15:12 | Isa 11:10 | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; no index entry) |
+| `B001-2` | Romans 9:25 / Hosea 2:23 | Rom 9:25 | Hos 2:23 | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; verified absent from authorial index) |
+| `B001-3` | Romans 9:26 / Hosea 1:10 | Rom 9:26 | Hos 1:10 | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; verified absent from authorial index) |
+| `B001-4` | Romans 10:11 / Isaiah 28:16 | Rom 10:11 | Isa 28:16 | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; verified absent from authorial index) |
+| `B001-5` | Romans 10:13 / Joel 2:32 | Rom 10:13 | Joel 2:32 (LXX 3:5) | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; verified absent from authorial index) |
+| `B001-6` | Romans 11:34 / Isaiah 40:13 | Rom 11:34 | Isa 40:13 | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; verified absent from authorial index) |
+| `B001-7` | Romans 15:12 / Isaiah 11:10 | Rom 15:12 | Isa 11:10 | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; verified absent from authorial index) |
 | `B001-8` | 1 Corinthians 1:19 / Isaiah 29:14 | 1 Cor 1:19 | Isa 29:14 | 1 | PASSING CITATION (1 hit(s): lexical note on ἀθετῶ, Gal 2:21 p. 120) |
-| `B001-9` | 1 Corinthians 6:16 / Genesis 2:24 | 1 Cor 6:16 | Gen 2:24 | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; no index entry) |
-| `B001-10` | 1 Corinthians 9:9 / Deuteronomy 25:4 | 1 Cor 9:9 | Deut 25:4 | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; no index entry) |
+| `B001-9` | 1 Corinthians 6:16 / Genesis 2:24 | 1 Cor 6:16 | Gen 2:24 | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; verified absent from authorial index) |
+| `B001-10` | 1 Corinthians 9:9 / Deuteronomy 25:4 | 1 Cor 9:9 | Deut 25:4 | 0 | NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; verified absent from authorial index) |
 | `B001-11` | 1 Corinthians 10:7 / Exodus 32:6 | 1 Cor 10:7 | Exod 32:6 | 1 | PASSING CITATION (1 hit(s): Balaam illustration cross-reference, Diss. III p. 311; no exegesis of Exod 32:6) |
 
 ---
@@ -141,7 +163,7 @@ x. 7`
 
 - **Cryptographic Text Binding:** PASSED (Pinned SHA-256 `213da03319394f724893c31ae77bf24251020220f19e27fbf4068fc7cc34c219`)
 - **Citation Typography Controls:** PASSED (6 positive controls validated)
-- **Bounded Index Structure:** PASSED (Authentic colophon delimiter verified, positive controls confirmed)
+- **Bounded Index Structure & Loci Verification:** PASSED (Authentic colophon delimiter verified, positive controls confirmed, per-locus absence verified across all 8 negative targets)
 - **Loci Absent (0 Hits for Enumerated Patterns):** B001-2, B001-3, B001-4, B001-5, B001-6, B001-7, B001-9, B001-10 (8 loci)
 - **Loci Passing Only:** B001-8 (1 hit, lexical note on Gal 2:21), B001-11 (1 hit, Balaam illustration in Diss. III p. 311)
 - **Loci Substantive / Primary:** B001-1 (Substantive cross-epistle comparison on Gal 3:6 & Faith excursuses), B001-12 (Primary volume target: commentary pp. 139-140, excursus pp. 152-154)

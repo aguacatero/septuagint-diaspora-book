@@ -274,6 +274,166 @@ VERIFIED_MATCH_CATALOG = {
     },
 }
 
+# B001 scripture patterns for bounded authorial index search (printed pp. 375-384).
+# Evaluates both Lightfoot's book-heading format ("Deuteronomy, passages commented on... (xxi. 23)")
+# and standard index citation forms ("Isa. xl. 13", "Deut. xxi. 23").
+B001_INDEX_PATTERNS = {
+    "B001-1": {
+        "name": "Rom 4:3 / Gen 15:6",
+        "nt_target": "Romans 4:3",
+        "ot_target": "Genesis 15:6",
+        "patterns": [
+            r"Genesis[\s\S]{0,100}?\(?\s*xv\.?\s*6\s*\)?",
+            r"\bGen(?:\.|esis)[\s\S]{0,50}?(?:xv|15)[\s.:]+6\b",
+            r"Romans[\s\S]{0,100}?(?:iv|4)[\s.:]+3\b",
+            r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:iv|4)[\s.:]+3\b",
+        ],
+        "expected_in_index": True,
+        "expected_description": "Genesis xv. 6 commented on (p. 159 sq)",
+    },
+    "B001-2": {
+        "name": "Rom 9:25 / Hos 2:23",
+        "nt_target": "Romans 9:25",
+        "ot_target": "Hosea 2:23",
+        "patterns": [
+            r"Hosea[\s\S]{0,100}?(?:ii|2)[\s.:]+23\b",
+            r"\bHos(?:\.|ea)[\s\S]{0,50}?(?:ii|2)[\s.:]+23\b",
+            r"Romans[\s\S]{0,100}?(?:ix|9)[\s.:]+25\b",
+            r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:ix|9)[\s.:]+25\b",
+        ],
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+    },
+    "B001-3": {
+        "name": "Rom 9:26 / Hos 1:10",
+        "nt_target": "Romans 9:26",
+        "ot_target": "Hosea 1:10",
+        "patterns": [
+            r"Hosea[\s\S]{0,100}?(?:i|1)[\s.:]+10\b",
+            r"\bHos(?:\.|ea)[\s\S]{0,50}?(?:i|1)[\s.:]+10\b",
+            r"Romans[\s\S]{0,100}?(?:ix|9)[\s.:]+26\b",
+            r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:ix|9)[\s.:]+26\b",
+        ],
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+    },
+    "B001-4": {
+        "name": "Rom 10:11 / Isa 28:16",
+        "nt_target": "Romans 10:11",
+        "ot_target": "Isaiah 28:16",
+        "patterns": [
+            r"Isaiah[\s\S]{0,100}?(?:xxviii|28)[\s.:]+16\b",
+            r"\bIsa(?:\.|ah)[\s\S]{0,50}?(?:xxviii|28)[\s.:]+16\b",
+            r"Romans[\s\S]{0,100}?(?:x|10)[\s.:]+11\b",
+            r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:x|10)[\s.:]+11\b",
+        ],
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+    },
+    "B001-5": {
+        "name": "Rom 10:13 / Joel 2:32",
+        "nt_target": "Romans 10:13",
+        "ot_target": "Joel 2:32",
+        "patterns": [
+            r"Joel[\s\S]{0,100}?(?:ii|2)[\s.:]+32\b",
+            r"\bJoel\b[\s\S]{0,50}?(?:ii|2)[\s.:]+32\b",
+            r"Romans[\s\S]{0,100}?(?:x|10)[\s.:]+13\b",
+            r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:x|10)[\s.:]+13\b",
+        ],
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+    },
+    "B001-6": {
+        "name": "Rom 11:34 / Isa 40:13",
+        "nt_target": "Romans 11:34",
+        "ot_target": "Isaiah 40:13",
+        "patterns": [
+            r"Isaiah[\s\S]{0,100}?(?:xl|40)[\s.:]+13\b",
+            r"\bIsa(?:\.|ah)[\s\S]{0,50}?(?:xl|40)[\s.:]+13\b",
+            r"Romans[\s\S]{0,100}?(?:xi|11)[\s.:]+34\b",
+            r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:xi|11)[\s.:]+34\b",
+        ],
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+    },
+    "B001-7": {
+        "name": "Rom 15:12 / Isa 11:10",
+        "nt_target": "Romans 15:12",
+        "ot_target": "Isaiah 11:10",
+        "patterns": [
+            r"Isaiah[\s\S]{0,100}?(?:xi|11)[\s.:]+10\b",
+            r"\bIsa(?:\.|ah)[\s\S]{0,50}?(?:xi|11)[\s.:]+10\b",
+            r"Romans[\s\S]{0,100}?(?:xv|15)[\s.:]+12\b",
+            r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:xv|15)[\s.:]+12\b",
+        ],
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+    },
+    "B001-8": {
+        "name": "1 Cor 1:19 / Isa 29:14",
+        "nt_target": "1 Corinthians 1:19",
+        "ot_target": "Isaiah 29:14",
+        "patterns": [
+            r"Corinthians[\s\S]{0,100}?(?:i|1)[\s.:]+19\b",
+            r"\b1\s*Cor(?:\.|inthians)[\s\S]{0,50}?(?:i|1)[\s.:]+19\b",
+            r"Isaiah[\s\S]{0,100}?(?:xxix|29)[\s.:]+14\b",
+            r"\bIsa(?:\.|ah)[\s\S]{0,50}?(?:xxix|29)[\s.:]+14\b",
+        ],
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+    },
+    "B001-9": {
+        "name": "1 Cor 6:16 / Gen 2:24",
+        "nt_target": "1 Corinthians 6:16",
+        "ot_target": "Genesis 2:24",
+        "patterns": [
+            r"Corinthians[\s\S]{0,100}?(?:vi|6)[\s.:]+16\b",
+            r"\b1\s*Cor(?:\.|inthians)[\s\S]{0,50}?(?:vi|6)[\s.:]+16\b",
+            r"Genesis[\s\S]{0,100}?(?:ii|2)[\s.:]+24\b",
+            r"\bGen(?:\.|esis)[\s\S]{0,50}?(?:ii|2)[\s.:]+24\b",
+        ],
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+    },
+    "B001-10": {
+        "name": "1 Cor 9:9 / Deut 25:4",
+        "nt_target": "1 Corinthians 9:9",
+        "ot_target": "Deuteronomy 25:4",
+        "patterns": [
+            r"Corinthians[\s\S]{0,100}?(?:ix|9)[\s.:]+9\b",
+            r"\b1\s*Cor(?:\.|inthians)[\s\S]{0,50}?(?:ix|9)[\s.:]+9\b",
+            r"Deuteronomy[\s\S]{0,100}?(?:xxv|25)[\s.:]+4\b",
+            r"\bDeut(?:\.|eronomy)[\s\S]{0,50}?(?:xxv|25)[\s.:]+4\b",
+        ],
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+    },
+    "B001-11": {
+        "name": "1 Cor 10:7 / Exod 32:6",
+        "nt_target": "1 Corinthians 10:7",
+        "ot_target": "Exodus 32:6",
+        "patterns": [
+            r"Corinthians[\s\S]{0,100}?(?:x|10)[\s.:]+7\b",
+            r"\b1\s*Cor(?:\.|inthians)[\s\S]{0,50}?(?:x|10)[\s.:]+7\b",
+            r"Exodus[\s\S]{0,100}?(?:xxxii|32)[\s.:]+6\b",
+            r"\bExod(?:\.|us)[\s\S]{0,50}?(?:xxxii|32)[\s.:]+6\b",
+        ],
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+    },
+    "B001-12": {
+        "name": "Gal 3:13 / Deut 21:23",
+        "nt_target": "Galatians 3:13",
+        "ot_target": "Deuteronomy 21:23",
+        "patterns": [
+            r"Deuteronomy[\s\S]{0,100}?\(?\s*xxi\.?\s*23\s*\)?",
+            r"\bDeut(?:\.|eronomy)[\s\S]{0,50}?(?:xxi|21)[\s.:]+23\b",
+        ],
+        "expected_in_index": True,
+        "expected_description": "Deuteronomy xxi. 23 commented on (p. 152 sq)",
+    },
+}
+
 
 def extract_and_validate_text(
     pdf_path: Path, text_path: Path, allow_text_digest_mismatch: bool = False
@@ -328,7 +488,8 @@ def scan_matches(text: str, pattern: str) -> list[dict]:
 
 def verify_index_structure(full_text: str) -> dict:
     """
-    Programmatically verify bounded authorial index structure and positive controls.
+    Programmatically verify bounded authorial index structure, positive controls,
+    and per-locus presence/absence across all twelve B001 targets.
     """
     m_start = re.search(r"\n\x0cINDEX\.\n|INDEX\.\nApranaM", full_text)
     if not m_start:
@@ -364,7 +525,7 @@ def verify_index_structure(full_text: str) -> dict:
     idx_end = idx_start + earliest_end_rel
     bounded_index_text = full_text[idx_start:idx_end]
 
-    # Positive controls inside index
+    # Positive structural controls inside index
     pc_entries = {
         "Deuteronomy commented on": bool(re.search(r"Deuteronomy,\s*passages\s+commented\s+on", bounded_index_text, re.IGNORECASE)),
         "Genesis commented on": bool(re.search(r"Genesis,\s*passages\s+commented", bounded_index_text, re.IGNORECASE)),
@@ -373,7 +534,43 @@ def verify_index_structure(full_text: str) -> dict:
         "Judaizers entry": bool(re.search(r"Judaizers", bounded_index_text, re.IGNORECASE)),
     }
 
-    passed = all(pc_entries.values())
+    # Per-locus B001 Scripture Index verification
+    target_results = {}
+    for b001_id, t in B001_INDEX_PATTERNS.items():
+        hits = []
+        for pat in t["patterns"]:
+            for m in re.finditer(pat, bounded_index_text, re.IGNORECASE):
+                snippet = bounded_index_text[max(0, m.start() - 25):min(len(bounded_index_text), m.end() + 25)].replace("\n", " ").strip()
+                clean_match = m.group(0).replace("\n", " ").strip()
+                if not any(clean_match in h["match"] or h["match"] in clean_match for h in hits):
+                    hits.append({"match": clean_match, "start": m.start(), "snippet": snippet})
+
+        has_hit = len(hits) > 0
+        expected = t["expected_in_index"]
+        target_passed = (has_hit == expected)
+        target_results[b001_id] = {
+            "name": t["name"],
+            "nt_target": t["nt_target"],
+            "ot_target": t["ot_target"],
+            "expected_in_index": expected,
+            "expected_description": t.get("expected_description", ""),
+            "hits": hits,
+            "hit_count": len(hits),
+            "passed": target_passed,
+        }
+
+    structural_passed = all(pc_entries.values())
+    targets_passed = all(tr["passed"] for tr in target_results.values())
+    overall_index_passed = structural_passed and targets_passed
+
+    error_msg = None
+    if not structural_passed:
+        missing_structural = [k for k, v in pc_entries.items() if not v]
+        error_msg = f"Missing structural index controls: {missing_structural}"
+    elif not targets_passed:
+        failed_targets = [tid for tid, tr in target_results.items() if not tr["passed"]]
+        unexpected_hits = {tid: [h["match"] for h in tr["hits"]] for tid, tr in target_results.items() if not tr["expected_in_index"] and tr["hits"]}
+        error_msg = f"Index target verification failed for: {failed_targets}; unexpected hits: {unexpected_hits}"
 
     return {
         "index_present": True,
@@ -381,7 +578,11 @@ def verify_index_structure(full_text: str) -> dict:
         "index_end_offset": idx_end,
         "has_end_marker": True,
         "positive_controls": pc_entries,
-        "passed": passed,
+        "target_results": target_results,
+        "targets_passed": targets_passed,
+        "structural_passed": structural_passed,
+        "error": error_msg,
+        "passed": overall_index_passed,
     }
 
 
@@ -484,7 +685,7 @@ def build_markdown_report(
     lines.append("")
     lines.append("---")
     lines.append("")
-    lines.append("## Bounded Index Structure Validation")
+    lines.append("## Bounded Index Structure & Scripture Reference Validation")
     lines.append("")
     lines.append(f"- **Index Present:** {index_results.get('index_present', False)}")
     lines.append(f"- **Index Start Offset:** {index_results.get('index_offset')}")
@@ -493,7 +694,31 @@ def build_markdown_report(
     if "positive_controls" in index_results:
         for k, v in index_results["positive_controls"].items():
             lines.append(f"  - Positive Control `{k}`: {'FOUND' if v else 'MISSING'}")
-    lines.append(f"- **Index Validation Verdict:** {'**PASS**' if index_passed else '**FAIL**'}")
+    lines.append(f"- **Structural Controls Verdict:** {'**PASS**' if index_results.get('structural_passed', False) else '**FAIL**'}")
+    lines.append(f"- **Per-Locus Scripture Targets Verdict:** {'**PASS**' if index_results.get('targets_passed', False) else '**FAIL**'}")
+    lines.append(f"- **Index Validation Overall Verdict:** {'**PASS**' if index_passed else '**FAIL**'}")
+    lines.append("")
+    lines.append("### Per-Locus Authorial Scripture Index Ledger")
+    lines.append("")
+    lines.append("Lightfoot's *Galatians* index combines subjects, persons, Greek words, and scriptural citations into a single comprehensive index (printed pp. 375–384), indexing scripture passages commented on directly under their respective biblical book names (e.g. *Genesis, passages commented on*, *Deuteronomy, passages commented on*).")
+    lines.append("Each B001 target is evaluated against the bounded index text using both Lightfoot's book-heading format and standard citation typography:")
+    lines.append("")
+    lines.append("| B001 ID | Comparison | NT / OT Target | Expected in Index | Detected Index Matches | Index Verification Status |")
+    lines.append("|:---|:---|:---|:---:|:---|:---:|")
+
+    target_results = index_results.get("target_results", {})
+    for b001_id in ["B001-1", "B001-2", "B001-3", "B001-4", "B001-5", "B001-6", "B001-7", "B001-8", "B001-9", "B001-10", "B001-11", "B001-12"]:
+        if b001_id in target_results:
+            tr = target_results[b001_id]
+            expected_str = "**YES**" if tr["expected_in_index"] else "NO"
+            if tr["hits"]:
+                matches_str = "; ".join(f"`{h['match']}`" for h in tr["hits"])
+                status_str = "**VERIFIED INDEX ENTRY**" if tr["passed"] else "**UNEXPECTED INDEX HIT**"
+            else:
+                matches_str = "*None (0 entries)*"
+                status_str = "**VERIFIED ABSENT**" if tr["passed"] else "**MISSING EXPECTED ENTRY**"
+            lines.append(f"| `{b001_id}` | {tr['name']} | {tr['nt_target']} / {tr['ot_target']} | {expected_str} | {matches_str} | {status_str} |")
+
     lines.append("")
     lines.append("---")
     lines.append("")
@@ -512,7 +737,7 @@ def build_markdown_report(
                 adj = f"MATCH DETECTED ({hits_count} hit(s)) [Context unverified: text unauthenticated]"
         else:
             if hits_count == 0:
-                adj = "NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; no index entry)"
+                adj = "NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; verified absent from authorial index)"
             elif b001_id == "B001-1":
                 adj = f"SUBSTANTIVE CROSS-EPISTLE COMPARISON ({hits_count} hit(s): Gal 3:6 commentary p. 136, Faith excursuses pp. 156, 157, 164)"
             elif b001_id == "B001-8":
@@ -563,7 +788,7 @@ def build_markdown_report(
     else:
         lines.append(f"- **Cryptographic Text Binding:** PASSED (Pinned SHA-256 `{EXPECTED_TEXT_SHA256}`)")
         lines.append(f"- **Citation Typography Controls:** {'PASSED (' + str(len(pos_results)) + ' positive controls validated)' if pos_passed else 'FAILED'}")
-        lines.append(f"- **Bounded Index Structure:** {'PASSED (Authentic colophon delimiter verified, positive controls confirmed)' if index_passed else 'FAILED'}")
+        lines.append(f"- **Bounded Index Structure & Loci Verification:** {'PASSED (Authentic colophon delimiter verified, positive controls confirmed, per-locus absence verified across all 8 negative targets)' if index_passed else 'FAILED'}")
         lines.append("- **Loci Absent (0 Hits for Enumerated Patterns):** B001-2, B001-3, B001-4, B001-5, B001-6, B001-7, B001-9, B001-10 (8 loci)")
         lines.append("- **Loci Passing Only:** B001-8 (1 hit, lexical note on Gal 2:21), B001-11 (1 hit, Balaam illustration in Diss. III p. 311)")
         lines.append("- **Loci Substantive / Primary:** B001-1 (Substantive cross-epistle comparison on Gal 3:6 & Faith excursuses), B001-12 (Primary volume target: commentary pp. 139-140, excursus pp. 152-154)")
@@ -638,10 +863,11 @@ def run_verification(
         print(f"ERROR: Fail closed: Positive control validation failed: {failed_pcs}", file=sys.stderr)
         return 4
 
-    # Step 4: Verify index structure
+    # Step 4: Verify index structure and per-locus scripture targets
     index_results = verify_index_structure(text)
     if not index_results.get("passed", False):
-        print(f"ERROR: Fail closed: Bounded index structure verification failed: {index_results.get('error', 'control missing')}", file=sys.stderr)
+        err = index_results.get("error", "control missing")
+        print(f"ERROR: Fail closed: Bounded index verification failed: {err}", file=sys.stderr)
         return 5
 
     # Step 5: Run target search

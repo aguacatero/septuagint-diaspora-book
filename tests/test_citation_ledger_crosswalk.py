@@ -1138,4 +1138,84 @@ def test_s04f_authorial_qualifications_and_b001_11_sync():
     assert "PASSING CROSS-REFERENCE ONLY" in counter_ev
 
 
+def test_s04f_index_per_locus_scripture_inventory():
+    """S04F-R2-F1 regression guard: Verify per-locus Scripture Index evaluation across all 12 B001 loci."""
+    repo_root = Path(__file__).resolve().parent.parent
+    import sys
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s04f_negative_search as vns
+
+    text_path = Path("/tmp/lightfoot_full_text.txt")
+    if not text_path.exists():
+        text_path = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S04F/lightfoot_full_text.txt"
+    text = text_path.read_text(encoding="utf-8")
+
+    index_res = vns.verify_index_structure(text)
+    assert index_res["index_present"] is True
+    assert index_res["has_end_marker"] is True
+    assert index_res["structural_passed"] is True
+    assert index_res["targets_passed"] is True
+    assert index_res["passed"] is True
+
+    target_res = index_res["target_results"]
+    assert len(target_res) == 12, f"Expected 12 B001 target results in index inventory, got {len(target_res)}"
+
+    # Positive index controls: B001-1 and B001-12
+    assert target_res["B001-1"]["passed"] is True
+    assert target_res["B001-1"]["expected_in_index"] is True
+    assert target_res["B001-1"]["hit_count"] >= 1
+    assert any("Genesis" in h["match"] and "15" in h["match"] or "xv" in h["match"].lower() for h in target_res["B001-1"]["hits"])
+
+    assert target_res["B001-12"]["passed"] is True
+    assert target_res["B001-12"]["expected_in_index"] is True
+    assert target_res["B001-12"]["hit_count"] >= 1
+    assert any("Deuteronomy" in h["match"] and "21" in h["match"] or "xxi" in h["match"].lower() for h in target_res["B001-12"]["hits"])
+
+    # Negative index targets: B001-2 through B001-11 must have zero hits
+    for locus in ["B001-2", "B001-3", "B001-4", "B001-5", "B001-6", "B001-7", "B001-8", "B001-9", "B001-10", "B001-11"]:
+        assert target_res[locus]["passed"] is True, f"Target {locus} failed index verification"
+        assert target_res[locus]["expected_in_index"] is False
+        assert target_res[locus]["hit_count"] == 0, f"Expected 0 hits for {locus} in authentic index, got {target_res[locus]['hit_count']}: {target_res[locus]['hits']}"
+
+
+def test_s04f_index_counterexample_fails_closed():
+    """S04F-R2-F1 adversarial test: Reviewer counterexample (Isa. xl. 13 inserted) must fail index verification."""
+    repo_root = Path(__file__).resolve().parent.parent
+    import sys
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s04f_negative_search as vns
+
+    text_path = Path("/tmp/lightfoot_full_text.txt")
+    if not text_path.exists():
+        text_path = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S04F/lightfoot_full_text.txt"
+    text = text_path.read_text(encoding="utf-8")
+
+    # Inject the reviewer's exact counterexample into the bounded index
+    # (just before the colophon delimiter)
+    m_start = re.search(r"\n\x0cINDEX\.\n|INDEX\.\nApranaM", text)
+    assert m_start is not None
+    idx_start = m_start.start()
+    m_end = re.search(vns.INDEX_END_PATTERNS[0], text[idx_start:])
+    assert m_end is not None
+    insert_pos = idx_start + m_end.start()
+    adversarial_text = (
+        text[:insert_pos]
+        + "\nIII. PASSAGES OF SCRIPTURE\nIsa. xl. 13, p. 44\n"
+        + text[insert_pos:]
+    )
+
+    adv_res = vns.verify_index_structure(adversarial_text)
+
+    # Must fail closed: targets_passed must be False and overall passed must be False
+    assert adv_res["targets_passed"] is False, "Expected index targets verification to fail on inserted Isa. xl. 13!"
+    assert adv_res["passed"] is False, "Expected overall index verification to fail on inserted Isa. xl. 13!"
+
+    # B001-6 must specifically register the unexpected hit
+    b001_6 = adv_res["target_results"]["B001-6"]
+    assert b001_6["passed"] is False
+    assert b001_6["hit_count"] >= 1
+    assert any("Isa. xl. 13" in h["match"] for h in b001_6["hits"])
+
+
+
 
