@@ -31,16 +31,18 @@ Later Jewish and Ebionite translators (Aquila, Symmachus, Theodotion, Siphri, Ta
 2
 6
 .
-Deuteronomy 21:23 originally referred to the gibbeting or impaling of a malefactor's corpse after execution, not death by crucifixion
+Deuteronomy 21:23 originally referred to the gibbeting or impaling of a malefactor's corpse after execution, not death by crucifixion; Lightfoot explicitly admits on p. 154: "I do not know that there is any evidence to show that this passage of Deuteronomy had been applied by the Jews to execution by crucifixion at the time of the Christian era."
 7
 .
+Justin Martyr (Dial. c. Tryph. c. 96) quotes Deuteronomy 27:26 and 21:23 with distinctive Pauline adaptations (in Deut 21:23 substituting ἐπικατάρατος for LXX κεκατηραμένος, inserting ὁ, and omitting ὑπὸ Θεοῦ; note that πᾶς and ἐπὶ ξύλου were already present in LXX Deut 21:23).
 INFERENCE:
 Structural Paraphrase: Paul adopts the substance of the Septuagint rendering (that a hanging body is accursed), but instinctively omits ὑπὸ Θεοῦ because Christ was in no literal sense accursed by God, and including those words would have required theological qualification
 5
 .
-Structural Paraphrase: Although crucifixion was not contemplated in the original Deuteronomic statute, applying the text to Christ's crucifixion is entirely legitimate because the law attached ignominy and defilement to the hanging/exposure itself, which Jewish national sentiment regarded as essentially equivalent to crucifixion
+Structural Paraphrase: Although crucifixion was not contemplated in the original Deuteronomic statute, applying the text to Christ's crucifixion is argued to be legitimate because the law attached ignominy and defilement to the hanging/exposure itself, which Jewish national sentiment regarded as essentially equivalent to crucifixion (this argument is an authorial secondary reconstruction).
 7
 .
+Structural Paraphrase: Lightfoot infers Justin Martyr's literary dependence on Galatians based on his sharing these distinctive textual modifications, though this remains an authorial historical inference rather than a certainty excluding testimonia collections.
 CONCLUSION:
 Explicit Source Statement: Christ redeemed believers from the curse of the law by taking their place and becoming a curse for them (γενόμενος ὑπὲρ ἡμῶν κατάρα), undergoing the ignominious hanging on the tree that betokened the law's curse
 4
@@ -51,7 +53,7 @@ Assumptions Explicitly Acknowledged:
 Explicit Source Statement: Paul assumes his readers are familiar with the Old Testament law and its curse pronouncements
 4
 .
-Explicit Source Statement: The national sentiment of the Jews interpreted and strengthened the curse pronounced in the law, regarding impalement after death and crucifixion as essentially the same punishment in terms of ignominy
+Explicit Source Statement: The national sentiment of the Jews interpreted and strengthened the curse pronounced in the law, regarding impalement after death and crucifixion as essentially the same punishment in terms of ignominy (secondary reconstruction; Lightfoot acknowledges absence of direct pre-Christian Jewish evidence applying the verse to crucifixion)
 7
 .
 Alternative Explanations Considered:
@@ -104,7 +106,7 @@ Structural Paraphrase: Paul aligns with Rabbinic Judaism in maintaining the conc
 ; he aligns with Philo in emphasizing inward spiritual life, but rejects Philo's unhistorical, esoteric individualism
 11
 .
-Structural Paraphrase: The apparent contradiction between Paul and James vanishes when recognized as independent responses to different targets—Paul opposing Pharisaic legalistic works, James opposing a barren orthodoxy fruitless in charity
+Structural Paraphrase: The apparent contradiction between Paul and James resolves when recognized as addressing different errors—Paul opposing Pharisaic legalistic works, James opposing a barren orthodoxy—while Lightfoot explicitly leaves open whether James wrote with direct awareness of Paul's language or addressed independent Jewish errors (p. 164). His harmonization of their theology and reconstruction of Philonic/Rabbinic school traditions represent authorial secondary historical reconstructions.
 9
 .
 CONCLUSION:
@@ -118,11 +120,12 @@ Explicit Source Statement: The central object of Christian faith—the atoning d
 9
 11
 .
+Explicit Source Statement: Lightfoot's synthesis of Philonic allegorism, Rabbinic merit theology, and Jewish anti-Christian polemic represents a secondary historical reconstruction of the school background.
 Alternative Explanations Considered:
-Explicit Source Statement: Later Rabbinic interpretation altering the second clause of Gen 15:6 to "and Abraham counted on God's righteousness" to evade Paul's inference
+Explicit Source Statement: Later Rabbinic interpretation altering the second clause of Gen 15:6 to "and Abraham counted on God's righteousness" to evade Paul's inference (Lightfoot's secondary historical reconstruction)
 12
 .
-Explicit Source Statement: The view that James 2:24 was a direct attack on Paul or Pauline converts
+Explicit Source Statement: The view that James 2:24 was a direct attack on Paul or Pauline converts (Lightfoot concedes it is possible James was acquainted with Paul's teaching and wrote to correct a perversion of it, or lived in a different circle of labor)
 9
 .
 Alternative Explanations Not Addressed:

@@ -821,10 +821,13 @@ def test_s04f_negative_search_evidence_discipline():
     assert "Positive-Control Validation" in log_text
     assert "**PASS**" in log_text
 
-    # B001-2 through B001-7, B001-9, B001-10 must be NO MATCH FOUND
+    # B001-2 through B001-7, B001-9, B001-10 must be NO MATCH / NO OCCURRENCES
     for locus in ["B001-2", "B001-3", "B001-4", "B001-5", "B001-6", "B001-7", "B001-9", "B001-10"]:
         assert f"| `{locus}` |" in log_text
-    assert "NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH" in log_text
+    assert (
+        "NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH" in log_text
+        or "NO OCCURRENCES FOR ENUMERATED PATTERNS" in log_text
+    )
 
     # B001-1 is substantive cross-epistle comparison
     assert "SUBSTANTIVE CROSS-EPISTLE COMPARISON" in log_text
@@ -921,5 +924,218 @@ def test_s04f_text_digest_mismatch_exit_code_8_and_override(tmp_path, monkeypatc
     monkeypatch.setattr(sys, "argv", test_args_override)
     ret_override = vns.main()
     assert ret_override != 8, f"Expected override to bypass exit code 8, got {ret_override}"
+
+
+def test_s04f_derivative_page_crosswalk_computed():
+    """F3 regression guard: Programmatically verify derivative pages from manifest slices."""
+    repo_root = Path(__file__).resolve().parent.parent
+    s04f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S04F"
+    manifest_path = s04f_dir / "provenance_manifest.json"
+    csv_path = s04f_dir / "citation_ledger.csv"
+
+    with open(manifest_path, encoding="utf-8") as f:
+        manifest = json.load(f)
+
+    sections = manifest["ingested_derivative_section"]["included_sections"]
+    slices = []
+    for sec_key, sec_desc in sections.items():
+        m = re.search(r"Derivative pp\.\s*(\d+)-(\d+).*?Printed pp\.\s*(\d+)-(\d+)", sec_desc)
+        if m:
+            slices.append({
+                "name": sec_key,
+                "start_page_derivative": int(m.group(1)),
+                "end_page_derivative": int(m.group(2)),
+                "start_page_printed": int(m.group(3)),
+                "end_page_printed": int(m.group(4)),
+            })
+
+    assert len(slices) >= 4, f"Expected at least 4 sliced sections in manifest, found {len(slices)}"
+
+    with open(csv_path, encoding="utf-8") as f:
+        reader = list(csv.DictReader(f))
+
+    assert len(reader) == 14, f"Expected 14 ledger rows for S04F, found {len(reader)}"
+
+    for row in reader:
+        eid = row["evidence_id"]
+        p_printed = int(row["printed_page"])
+        locator = row["source_locator"]
+
+        # Find matching slice
+        matched_slice = None
+        for sl in slices:
+            if sl["start_page_printed"] <= p_printed <= sl["end_page_printed"]:
+                matched_slice = sl
+                break
+
+        assert matched_slice is not None, f"No manifest slice found for {eid} with printed page {p_printed}"
+
+        expected_deriv_page = matched_slice["start_page_derivative"] + (p_printed - matched_slice["start_page_printed"])
+
+        # Extract derivative page(s) from locator string
+        # Match either "PDF derivative p. X" or "PDF derivative pp. X-Y"
+        m_single = re.search(r"PDF derivative p\.\s*(\d+)", locator)
+        m_range = re.search(r"PDF derivative pp\.\s*(\d+)-(\d+)", locator)
+
+        if m_single:
+            deriv_page = int(m_single.group(1))
+            assert deriv_page == expected_deriv_page, (
+                f"Derivative page mismatch for {eid} (printed p. {p_printed}): "
+                f"expected {expected_deriv_page}, found {deriv_page} in locator '{locator}'"
+            )
+        elif m_range:
+            start_deriv = int(m_range.group(1))
+            end_deriv = int(m_range.group(2))
+            assert start_deriv <= expected_deriv_page <= end_deriv, (
+                f"Derivative page range mismatch for {eid} (printed p. {p_printed}): "
+                f"expected {expected_deriv_page} inside range {start_deriv}-{end_deriv} in locator '{locator}'"
+            )
+        else:
+            raise AssertionError(f"Could not parse derivative page from locator '{locator}' for {eid}")
+
+
+def test_s04f_failing_gates_reject_certified_verdict(tmp_path):
+    """F1 regression guard: Gate failures produce fail-closed exits and no certified report."""
+    repo_root = Path(__file__).resolve().parent.parent
+    import sys
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s04f_negative_search as vns
+
+    fake_pdf = tmp_path / "fake_gal.pdf"
+    fake_text = tmp_path / "fake_text.txt"
+
+    # Test 1: Positive control failure causes build_markdown_report to mark FAIL / UNVERIFIED
+    pos_results_failed = [
+        {"name": "Deut. 21:23 positive control", "pattern": r"Deut\.", "expected_min": 1, "passed": False, "count": 0, "sample": "None"},
+        {"name": "Gen. 15:6 positive control", "pattern": r"Gen\.", "expected_min": 1, "passed": True, "count": 5, "sample": "Gen. xv. 6"},
+    ]
+    index_results_ok = {"passed": True, "sample": "Deuteronomy xxi. 23"}
+
+    report = vns.build_markdown_report(
+        search_results=[],
+        pos_results=pos_results_failed,
+        index_results=index_results_ok,
+        pdf_path=fake_pdf,
+        pdf_size=vns.EXPECTED_RAW_PDF_BYTES,
+        pdf_sha=vns.EXPECTED_RAW_PDF_SHA256,
+        text_path=fake_text,
+        text_sha=vns.EXPECTED_TEXT_SHA256,
+        text_chars=10000,
+        text_lines=500,
+    )
+    assert "**Gate Verification Overall:** **FAIL / UNVERIFIED**" in report
+    assert "**Gate Verification Overall:** **PASS**" not in report
+    assert "**Overall Negative Search Verdict:** **FAILED**" in report
+    assert "**Overall Negative Search Verdict:** **PASSED**" not in report
+
+    # Test 2: Index failure causes build_markdown_report to mark FAIL / UNVERIFIED
+    pos_results_ok = [
+        {"name": "Deut. 21:23 positive control", "pattern": r"Deut\.", "expected_min": 1, "passed": True, "count": 10, "sample": "Deut. xxi. 23"},
+    ]
+    index_results_failed = {"passed": False, "error": "Index structure missing"}
+    report_idx_fail = vns.build_markdown_report(
+        search_results=[],
+        pos_results=pos_results_ok,
+        index_results=index_results_failed,
+        pdf_path=fake_pdf,
+        pdf_size=vns.EXPECTED_RAW_PDF_BYTES,
+        pdf_sha=vns.EXPECTED_RAW_PDF_SHA256,
+        text_path=fake_text,
+        text_sha=vns.EXPECTED_TEXT_SHA256,
+        text_chars=10000,
+        text_lines=500,
+    )
+    assert "**Gate Verification Overall:** **FAIL / UNVERIFIED**" in report_idx_fail
+    assert "**Gate Verification Overall:** **PASS**" not in report_idx_fail
+    assert "**Overall Negative Search Verdict:** **FAILED**" in report_idx_fail
+    assert "**Overall Negative Search Verdict:** **PASSED**" not in report_idx_fail
+
+
+def test_s04f_unauthenticated_override_prohibits_canonical_overwrite(tmp_path, monkeypatch):
+    """F2 regression guard: Digest mismatch override refuses canonical path (exit code 9)."""
+    repo_root = Path(__file__).resolve().parent.parent
+    import sys
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s04f_negative_search as vns
+
+    fake_pdf = tmp_path / "fake_gal.pdf"
+    fake_pdf.write_bytes(b"0" * vns.EXPECTED_RAW_PDF_BYTES)
+    fake_text = tmp_path / "fake_text.txt"
+
+    monkeypatch.setattr(vns, "get_sha256", lambda p: vns.EXPECTED_RAW_PDF_SHA256)
+
+    def mock_subprocess_run(cmd, check=False):
+        out_txt = Path(cmd[2])
+        out_txt.write_text("Dummy extracted text\n" * 100, encoding="utf-8")
+        class SubprocessResult:
+            returncode = 0
+        return SubprocessResult()
+
+    monkeypatch.setattr("subprocess.run", mock_subprocess_run)
+
+    # Calling with canonical report path under unauthenticated override must exit 9
+    ret = vns.run_verification(
+        pdf_path=fake_pdf,
+        text_path=fake_text,
+        out_path=vns.DEFAULT_OUT_PATH,
+        allow_text_digest_mismatch=True,
+        quiet=True,
+    )
+    assert ret == 9, f"Expected exit code 9 for canonical overwrite under digest mismatch, got {ret}"
+
+
+def test_s04f_e013_greek_text_critical_invariants():
+    """F4 regression guard: E013 must not assert Paul added πᾶς or ἐπὶ ξύλου to Deut 21:23."""
+    repo_root = Path(__file__).resolve().parent.parent
+    s04f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S04F"
+    csv_path = s04f_dir / "citation_ledger.csv"
+
+    with open(csv_path, encoding="utf-8") as f:
+        rows = {r["evidence_id"]: r for r in csv.DictReader(f)}
+
+    e013 = rows["S04F-E013"]
+    claim_text = e013["author_claim"].lower()
+    qual_text = e013["qualification"].lower()
+
+    # Must NOT claim Paul added πᾶς or ἐπὶ ξύλου to Deut 21:23
+    assert "adding πᾶς" not in claim_text
+    assert "adding ἐπὶ ξύλου" not in claim_text
+    assert "adding πᾶς and ἐπὶ ξύλου" not in claim_text
+
+    # Must identify the actual Pauline modifications: ἐπικατάρατος, article ὁ, omitting ὑπὸ θεοῦ
+    assert "ἐπικατάρατος" in e013["author_claim"]
+    assert "ὑπὸ θεοῦ" in claim_text or "ὑπὸ Θεοῦ" in e013["author_claim"]
+    assert "ὁ" in e013["author_claim"]
+
+    # Must characterize Justin's dependence as an authorial historical inference
+    assert "historical inference" in qual_text or "inference" in qual_text
+
+
+def test_s04f_authorial_qualifications_and_b001_11_sync():
+    """M1/M2 regression guard: Concessions preserved and B001-11 synchronized across artifacts."""
+    repo_root = Path(__file__).resolve().parent.parent
+    s04f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S04F"
+    csv_path = s04f_dir / "citation_ledger.csv"
+
+    with open(csv_path, encoding="utf-8") as f:
+        rows = {r["evidence_id"]: r for r in csv.DictReader(f)}
+
+    # E004 p. 154 crucifixion pre-Christian absence concession
+    e004 = rows["S04F-E004"]
+    assert "any evidence to show that this passage of deuteronomy had been applied" in e004["qualification"].lower()
+
+    # E009 James awareness qualification
+    e009 = rows["S04F-E009"]
+    assert "whether james knew paul's epistles" in e009["author_claim"].lower() or "leaves open" in e009["author_claim"].lower()
+
+    # B001-11 synchronized in relevance_scan.md
+    rel_scan = (s04f_dir / "relevance_scan.md").read_text(encoding="utf-8")
+    assert "11. 1 Corinthians 10:7 / Exodus 32:6\n\t\nYES\n\t\nPage 311\n\t\nPassing" in rel_scan
+
+    # B001-11 synchronized in counterevidence.md
+    counter_ev = (s04f_dir / "counterevidence.md").read_text(encoding="utf-8")
+    assert "Page 311 (Dissertation III: \"St Paul and the Three\")" in counter_ev
+    assert "PASSING CROSS-REFERENCE ONLY" in counter_ev
+
 
 

@@ -3,20 +3,22 @@
 
 Fails closed on missing or corrupted input PDF, binds extracted text cryptographically
 to the source volume (verifying EXPECTED_TEXT_SHA256 with exit code 8 on mismatch unless overridden),
-runs positive-control validation against genuine 19th/early-20th-century citation typography,
-validates bounded authorial index structure, and executes evidence-grounded per-hit dynamic
-adjudication across the non-Galatians 3:13 B001 passage targets:
-  - B001-1:  Rom 4:3 / Gen 15:6 (reclassified: substantive cross-epistle comparison on Gal 3:6 & Faith excursus)
+forbids canonical log overwrites when unauthenticated (exit code 9), fails closed on failed
+positive controls (exit code 4) or failed index validation (exit code 5), runs positive-control
+validation against genuine 19th/early-20th-century citation typography, validates bounded authorial
+index structure, and executes evidence-grounded per-hit dynamic adjudication across the non-Galatians 3:13
+B001 passage targets:
+  - B001-1:  Rom 4:3 / Gen 15:6 (substantive cross-epistle comparison on Gal 3:6 & Faith excursuses)
   - B001-2:  Rom 9:25 / Hos 2:23
   - B001-3:  Rom 9:26 / Hos 1:10
   - B001-4:  Rom 10:11 / Isa 28:16
   - B001-5:  Rom 10:13 / Joel 2:32
   - B001-6:  Rom 11:34 / Isa 40:13
   - B001-7:  Rom 15:12 / Isa 11:10
-  - B001-8:  1 Cor 1:19 / Isa 29:14 (reclassified: passing lexical note on Gal 2:21)
+  - B001-8:  1 Cor 1:19 / Isa 29:14 (passing lexical note on Gal 2:21)
   - B001-9:  1 Cor 6:16 / Gen 2:24
   - B001-10: 1 Cor 9:9 / Deut 25:4
-  - B001-11: 1 Cor 10:7 / Exod 32:6 (reclassified: passing illustration citation in Diss. III p. 311)
+  - B001-11: 1 Cor 10:7 / Exod 32:6 (passing illustration citation in Diss. III p. 311)
 
 Outputs a verified markdown search log documenting patterns, positive controls,
 localized index controls, dynamic per-hit evidence ledger, and measured scholarly evaluation.
@@ -268,7 +270,7 @@ VERIFIED_MATCH_CATALOG = {
         "context_witness": "f Balaam, St Paul uses the same Old Testament illustration, 1 Cor.  x. 7, 8, ‘Neither be ye idolaters, as were some of them; as it i",
         "classification": "PASSING_CITATION",
         "substantive": False,
-        "rationale": "Dissertation III 'St Paul and the Three' (printed p. 311): passing cross-reference to Paul using OT idolatry illustration from Balaam incident; no commentary on Exodus 32:6 text.",
+        "rationale": "Dissertation III 'St Paul and the Three' (printed p. 311): passing cross-reference to Paul using OT idolatry illustration from Balaam incident (1 Cor 10:7-8); no commentary on Exodus 32:6 text or version.",
     },
 }
 
@@ -422,8 +424,14 @@ def build_markdown_report(
     text_lines: int,
     raw_text: str = "",
 ) -> str:
+    is_authenticated = (text_sha == EXPECTED_TEXT_SHA256)
+    pos_passed = all(p["passed"] for p in pos_results)
+    index_passed = index_results.get("passed", False)
+    all_gates_passed = is_authenticated and pos_passed and index_passed
+
     lines = []
-    lines.append("# S04F — Full-Volume Negative Search Verification Log")
+    header_suffix = "" if is_authenticated else " (UNAUTHENTICATED OVERRIDE)"
+    lines.append(f"# S04F — Full-Volume Negative Search Verification Log{header_suffix}")
     lines.append("")
     lines.append("**Source ID:** S04F  ")
     lines.append("**Author:** J. B. Lightfoot  ")
@@ -432,43 +440,60 @@ def build_markdown_report(
     lines.append("**Publisher:** Macmillan and Co., Limited; London  ")
     lines.append(f"**Raw Volume Scan:** `{pdf_path.name}` ({pdf_size:,} bytes, SHA-256: `{pdf_sha}`)  ")
     lines.append(f"**Extracted Text Layer:** `{text_path.name}` ({text_chars:,} characters, {text_lines:,} lines, SHA-256: `{text_sha}`)  ")
-    lines.append("**Cryptographic Text Authentication:** " + ("VERIFIED" if text_sha == EXPECTED_TEXT_SHA256 else "UNAUTHENTICATED / MODIFIED"))
+    lines.append(f"**Cryptographic Text Authentication:** {'VERIFIED' if is_authenticated else 'UNAUTHENTICATED OVERRIDE (Digest mismatch)'}  ")
+    lines.append(f"**Gate Verification Overall:** {'**PASS**' if all_gates_passed else '**FAIL / UNVERIFIED**'}")
     lines.append("")
     lines.append("---")
     lines.append("")
     lines.append("## Executive Summary")
     lines.append("")
-    lines.append("Lightfoot's *Saint Paul's Epistle to the Galatians* (1914) provides exhaustive exegesis, text-critical analysis, and historical dissertations on the Epistle to the Galatians.")
-    lines.append("The primary B001 target in this volume is **B001-12 (Galatians 3:13 / Deuteronomy 21:23)**, which receives extensive, definitive treatment across the Introduction (§ V pp. 60–61), the commentary on Gal 3:13 (pp. 139–140), and a dedicated three-page excursus (*The interpretation of Deut. xxi. 23*, pp. 152–154).")
-    lines.append("")
-    lines.append("A full-volume text search across all 408 pages of the authentic volume establishes the following distribution for the remaining eleven B001 targets:")
-    lines.append("1. **B001-1 (Romans 4:3 / Genesis 15:6):** Substantive cross-epistle comparison on Galatians 3:6 (printed p. 136), analyzing the quotation of Gen 15:6 LXX, comparing passive ἐλογίσθη with Hebrew active וַיַּחְשְׁבֶהָ, cross-referencing Rom 4:3, James 2:23, Clement of Rome, and Justin Martyr, and dedicating two substantial excursuses (*The words denoting Faith*, pp. 154–158; *The Faith of Abraham*, pp. 158–164) to Jewish, Targumic, and rabbinic interpretations.")
-    lines.append("2. **B001-8 (1 Corinthians 1:19 / Isaiah 29:14):** 1 passing lexical citation on Galatians 2:21 (printed p. 120), citing 1 Cor 1:19 for the lexical meaning of ἀθετῶ ('to nullify'); no quotation analysis of Isaiah 29:14.")
-    lines.append("3. **B001-11 (1 Corinthians 10:7 / Exodus 32:6):** 1 passing illustration citation in Dissertation III (*St Paul and the Three*, printed p. 311), citing 1 Cor 10:7–8 on the Balaam idolatry illustration; no commentary on Exodus 32:6.")
-    lines.append("4. **Remaining Eight Loci (B001-2, B001-3, B001-4, B001-5, B001-6, B001-7, B001-9, B001-10):** **0 occurrences** across all 408 pages. Verified negative search confirms complete absence of discussion for these eight passage comparisons.")
-    lines.append("")
+
+    if not is_authenticated:
+        lines.append("⚠️ **WARNING: Verification executed under text digest mismatch override (`--allow-text-digest-mismatch`).**")
+        lines.append("The supplied text layer digest does not match the pinned canonical volume digest (`EXPECTED_TEXT_SHA256`: `213da033...`).")
+        lines.append("Because the text layer is unauthenticated, neither positive classifications nor negative absence across the 408-page volume can be certified.")
+        lines.append("All findings below are provisional, scoped strictly to the supplied input text, and MUST NOT be treated as canonical evidence.")
+        lines.append("")
+    else:
+        lines.append("Lightfoot's *Saint Paul's Epistle to the Galatians* (1914) provides exhaustive exegesis, text-critical analysis, and historical dissertations on the Epistle to the Galatians.")
+        lines.append("The primary B001 target in this volume is **B001-12 (Galatians 3:13 / Deuteronomy 21:23)**, which receives extensive treatment across the Introduction (§ V pp. 60–61), commentary on Gal 3:13 (pp. 139–140), and a dedicated three-page excursus (*The interpretation of Deut. xxi. 23*, pp. 152–154).")
+        lines.append("")
+        lines.append("A full-volume text search across all 408 pages of the authentic volume establishes the following distribution for the remaining eleven B001 targets:")
+        lines.append("1. **B001-1 (Romans 4:3 / Genesis 15:6):** Substantive cross-epistle comparison on Galatians 3:6 (printed p. 136), analyzing the quotation of Gen 15:6 LXX, comparing passive ἐλογίσθη with Hebrew active וַיַּחְשְׁבֶהָ, cross-referencing Rom 4:3, James 2:23, Clement of Rome, and Justin Martyr, and dedicating two substantial excursuses (*The words denoting Faith*, pp. 154–158; *The Faith of Abraham*, pp. 158–164) to Philonic allegory and rabbinic interpretations.")
+        lines.append("2. **B001-8 (1 Corinthians 1:19 / Isaiah 29:14):** 1 passing lexical citation on Galatians 2:21 (printed p. 120), citing 1 Cor 1:19 for the lexical meaning of ἀθετῶ ('to nullify'); no quotation analysis of Isaiah 29:14.")
+        lines.append("3. **B001-11 (1 Corinthians 10:7 / Exodus 32:6):** 1 passing illustration citation in Dissertation III (*St Paul and the Three*, printed p. 311), citing 1 Cor 10:7–8 on the Balaam idolatry illustration; no commentary on Exodus 32:6.")
+        lines.append("4. **Remaining Eight Loci (B001-2, B001-3, B001-4, B001-5, B001-6, B001-7, B001-9, B001-10):** **0 occurrences** detected for the enumerated search patterns across all 408 pages.")
+        lines.append("   - *Measured Methodological Scope:* Regex pattern searches detect specific book/chapter/verse citation typography in authentic 19th/20th-century formats. They do not constitute an exhaustive semantic proof of every unnumbered allusion or thematic discussion; however, authorial index validation confirms no dedicated entries for these scriptural loci exist in the volume's comprehensive index.")
+        lines.append("")
+
     lines.append("---")
     lines.append("")
     lines.append("## Positive-Control Validation (Authentic Citation Typography)")
+    lines.append("")
+    lines.append(f"Total Positive Controls Evaluated: **{len(pos_results)}**")
     lines.append("")
     lines.append("| Target / Passage | Regex Pattern | Expected Min | Detected Matches | Status |")
     lines.append("|:---|:---|:---:|:---:|:---:|")
     for pc in pos_results:
         st = "**PASS**" if pc["passed"] else "**FAIL**"
-        lines.append(f"| {pc['name']} | `{pc['pattern']}` | {pc['expected_min']} | {pc['count']} | {st} |")
+        pat = pc.get("pattern", "N/A")
+        exp_min = pc.get("expected_min", 1)
+        lines.append(f"| {pc['name']} | `{pat}` | {exp_min} | {pc['count']} | {st} |")
+    lines.append("")
+    lines.append(f"**Positive Controls Overall Verdict:** {'**PASS**' if pos_passed else '**FAIL**'}")
     lines.append("")
     lines.append("---")
     lines.append("")
     lines.append("## Bounded Index Structure Validation")
     lines.append("")
-    lines.append(f"- **Index Present:** {index_results['index_present']}")
+    lines.append(f"- **Index Present:** {index_results.get('index_present', False)}")
     lines.append(f"- **Index Start Offset:** {index_results.get('index_offset')}")
     lines.append(f"- **Index End Offset:** {index_results.get('index_end_offset')}")
-    lines.append(f"- **Authentic End Delimiter Verified:** {index_results['has_end_marker']}")
+    lines.append(f"- **Authentic End Delimiter Verified:** {index_results.get('has_end_marker', False)}")
     if "positive_controls" in index_results:
         for k, v in index_results["positive_controls"].items():
             lines.append(f"  - Positive Control `{k}`: {'FOUND' if v else 'MISSING'}")
-    lines.append(f"- **Index Validation Verdict:** {'**PASS**' if index_results['passed'] else '**FAIL**'}")
+    lines.append(f"- **Index Validation Verdict:** {'**PASS**' if index_passed else '**FAIL**'}")
     lines.append("")
     lines.append("---")
     lines.append("")
@@ -477,22 +502,23 @@ def build_markdown_report(
     lines.append("| B001 ID | Comparison | NT Target | OT Target | Hits | Adjudication |")
     lines.append("|:---|:---|:---|:---|:---:|:---|")
 
-    is_authenticated = (text_sha == EXPECTED_TEXT_SHA256)
-
     for res in search_results:
         b001_id = res["id"]
         hits_count = res["count"]
-        if hits_count == 0:
-            adj = "NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH"
-        else:
-            if not is_authenticated:
+        if not is_authenticated:
+            if hits_count == 0:
+                adj = "UNVERIFIED_ZERO_MATCHES (0 hit(s) in unauthenticated text; volume absence NOT certified)"
+            else:
                 adj = f"MATCH DETECTED ({hits_count} hit(s)) [Context unverified: text unauthenticated]"
+        else:
+            if hits_count == 0:
+                adj = "NO OCCURRENCES FOR ENUMERATED PATTERNS (0 hits in pinned text layer; no index entry)"
             elif b001_id == "B001-1":
                 adj = f"SUBSTANTIVE CROSS-EPISTLE COMPARISON ({hits_count} hit(s): Gal 3:6 commentary p. 136, Faith excursuses pp. 156, 157, 164)"
             elif b001_id == "B001-8":
                 adj = f"PASSING CITATION ({hits_count} hit(s): lexical note on ἀθετῶ, Gal 2:21 p. 120)"
             elif b001_id == "B001-11":
-                adj = f"PASSING CITATION ({hits_count} hit(s): Balaam illustration cross-reference, Diss. III p. 311)"
+                adj = f"PASSING CITATION ({hits_count} hit(s): Balaam illustration cross-reference, Diss. III p. 311; no exegesis of Exod 32:6)"
             else:
                 adj = f"MATCH DETECTED ({hits_count} hit(s))"
         lines.append(f"| `{b001_id}` | {res['name']} | {res['nt_target']} | {res['ot_target']} | {hits_count} | {adj} |")
@@ -530,47 +556,67 @@ def build_markdown_report(
     lines.append("")
     lines.append("## Negative Search Verification Verdict")
     lines.append("")
-    lines.append("- **Cryptographic Text Binding:** PASSED (Pinned SHA-256 `213da03319394f724893c31ae77bf24251020220f19e27fbf4068fc7cc34c219`)")
-    lines.append("- **Citation Typography Controls:** PASSED (5 positive controls validated)")
-    lines.append("- **Bounded Index Structure:** PASSED (Authentic colophon delimiter verified, positive controls confirmed)")
-    lines.append("- **Loci Absent (0 Hits):** B001-2, B001-3, B001-4, B001-5, B001-6, B001-7, B001-9, B001-10 (8 loci)")
-    lines.append("- **Loci Passing Only:** B001-8 (1 hit, lexical note on Gal 2:21), B001-11 (1 hit, Balaam illustration)")
-    lines.append("- **Loci Substantive / Primary:** B001-1 (Substantive cross-epistle comparison on Gal 3:6 & Faith excursuses), B001-12 (Primary volume target: commentary pp. 139-140, excursus pp. 152-154)")
-    lines.append("")
-    lines.append("**Search Discipline Confirmation:** All negative search conclusions are backed by verified fail-closed full-volume execution and cryptographic text authentication.")
+    if not is_authenticated:
+        lines.append("- **Cryptographic Text Binding:** FAILED (Text SHA-256 does not match pinned volume digest)")
+        lines.append("- **Verification Status:** UNAUTHENTICATED / OVERRIDE MODE")
+        lines.append("- **Certification:** NEGATIVE ABSENCE NOT CERTIFIED (Results scoped solely to supplied text fixture)")
+    else:
+        lines.append(f"- **Cryptographic Text Binding:** PASSED (Pinned SHA-256 `{EXPECTED_TEXT_SHA256}`)")
+        lines.append(f"- **Citation Typography Controls:** {'PASSED (' + str(len(pos_results)) + ' positive controls validated)' if pos_passed else 'FAILED'}")
+        lines.append(f"- **Bounded Index Structure:** {'PASSED (Authentic colophon delimiter verified, positive controls confirmed)' if index_passed else 'FAILED'}")
+        lines.append("- **Loci Absent (0 Hits for Enumerated Patterns):** B001-2, B001-3, B001-4, B001-5, B001-6, B001-7, B001-9, B001-10 (8 loci)")
+        lines.append("- **Loci Passing Only:** B001-8 (1 hit, lexical note on Gal 2:21), B001-11 (1 hit, Balaam illustration in Diss. III p. 311)")
+        lines.append("- **Loci Substantive / Primary:** B001-1 (Substantive cross-epistle comparison on Gal 3:6 & Faith excursuses), B001-12 (Primary volume target: commentary pp. 139-140, excursus pp. 152-154)")
+        lines.append("")
+        lines.append(f"- **Overall Negative Search Verdict:** {'**PASSED**' if all_gates_passed else '**FAILED**'}")
+        lines.append("")
+        lines.append("**Search Discipline Confirmation:** Negative findings are scoped to measured pattern typography in the authenticated text layer and corroborated by comprehensive authorial index inspection.")
 
     return "\n".join(lines) + "\n"
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Full-volume negative search verification for S04F (Lightfoot 1914 Galatians).")
-    parser.add_argument("--pdf", type=Path, default=RAW_PDF_DEFAULT, help="Path to raw volume PDF scan")
-    parser.add_argument("--text", type=Path, default=DEFAULT_TEXT_PATH, help="Path to extracted text layer")
-    parser.add_argument("--out", type=Path, default=DEFAULT_OUT_PATH, help="Path to output markdown search log")
-    parser.add_argument("--allow-text-digest-mismatch", action="store_true", help="Permit execution on non-matching text digest")
-    parser.add_argument("--quiet", action="store_true", help="Suppress non-essential output")
-
-    args = parser.parse_args()
-
+def run_verification(
+    pdf_path: Path,
+    text_path: Path,
+    out_path: Path,
+    allow_text_digest_mismatch: bool = False,
+    quiet: bool = False,
+) -> int:
+    """Execute verification gates, failing closed on missing inputs, gate failures, or unauthenticated writes."""
     # Step 1: Validate PDF existence and size fail-closed
-    if not args.pdf.exists():
-        print(f"ERROR: Fail closed: Raw PDF not found at {args.pdf}", file=sys.stderr)
+    if not pdf_path.exists():
+        print(f"ERROR: Fail closed: Raw PDF not found at {pdf_path}", file=sys.stderr)
         return 1
 
-    pdf_bytes = args.pdf.stat().st_size
+    pdf_bytes = pdf_path.stat().st_size
     if pdf_bytes != EXPECTED_RAW_PDF_BYTES:
         print(f"ERROR: Raw PDF size mismatch! Expected {EXPECTED_RAW_PDF_BYTES}, got {pdf_bytes}", file=sys.stderr)
         return 2
 
-    pdf_sha = get_sha256(args.pdf)
+    pdf_sha = get_sha256(pdf_path)
     if pdf_sha != EXPECTED_RAW_PDF_SHA256:
         print(f"ERROR: Raw PDF SHA-256 mismatch! Expected {EXPECTED_RAW_PDF_SHA256}, got {pdf_sha}", file=sys.stderr)
         return 3
 
     # Step 2: Validate or extract text
-    text, text_sha, text_exit = extract_and_validate_text(args.pdf, args.text, args.allow_text_digest_mismatch)
+    text, text_sha, text_exit = extract_and_validate_text(pdf_path, text_path, allow_text_digest_mismatch)
     if text_exit != 0:
         return text_exit
+
+    is_authenticated = (text_sha == EXPECTED_TEXT_SHA256)
+
+    # Step 2b: Prevent canonical report overwrite under unauthenticated override (F2)
+    if not is_authenticated:
+        try:
+            is_canonical = (out_path.resolve() == DEFAULT_OUT_PATH.resolve())
+        except Exception:
+            is_canonical = (str(out_path) == str(DEFAULT_OUT_PATH))
+        if is_canonical:
+            print(
+                f"ERROR: Fail closed: Refusing to overwrite canonical report path {out_path} under unauthenticated text digest override! Specify a non-canonical --out path.",
+                file=sys.stderr,
+            )
+            return 9
 
     # Step 3: Run positive controls
     pos_results = []
@@ -586,8 +632,17 @@ def main():
             "passed": passed,
         })
 
+    pos_passed = all(p["passed"] for p in pos_results)
+    if not pos_passed:
+        failed_pcs = [p["name"] for p in pos_results if not p["passed"]]
+        print(f"ERROR: Fail closed: Positive control validation failed: {failed_pcs}", file=sys.stderr)
+        return 4
+
     # Step 4: Verify index structure
     index_results = verify_index_structure(text)
+    if not index_results.get("passed", False):
+        print(f"ERROR: Fail closed: Bounded index structure verification failed: {index_results.get('error', 'control missing')}", file=sys.stderr)
+        return 5
 
     # Step 5: Run target search
     search_results = run_search(text)
@@ -598,26 +653,46 @@ def main():
         search_results,
         pos_results,
         index_results,
-        args.pdf,
+        pdf_path,
         pdf_bytes,
         pdf_sha,
-        args.text,
+        text_path,
         text_sha,
         len(text),
         text_lines,
         raw_text=text,
     )
 
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    with open(args.out, "w", encoding="utf-8") as f:
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as f:
         f.write(report_md)
 
-    if not args.quiet:
-        print(f"Successfully generated negative search log at {args.out}")
-        print(f"Text SHA-256: {text_sha} (Matches expected: {text_sha == EXPECTED_TEXT_SHA256})")
+    if not quiet:
+        print(f"Successfully generated negative search log at {out_path}")
+        print(f"Text SHA-256: {text_sha} (Matches expected: {is_authenticated})")
+        print(f"Positive controls passed: {pos_passed} ({len(pos_results)} controls)")
         print(f"Index structure passed: {index_results['passed']}")
 
     return 0
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Full-volume negative search verification for S04F (Lightfoot 1914 Galatians).")
+    parser.add_argument("--pdf", type=Path, default=RAW_PDF_DEFAULT, help="Path to raw volume PDF scan")
+    parser.add_argument("--text", type=Path, default=DEFAULT_TEXT_PATH, help="Path to extracted text layer")
+    parser.add_argument("--out", type=Path, default=DEFAULT_OUT_PATH, help="Path to output markdown search log")
+    parser.add_argument("--allow-text-digest-mismatch", action="store_true", help="Permit execution on non-matching text digest")
+    parser.add_argument("--quiet", action="store_true", help="Suppress non-essential output")
+
+    args = parser.parse_args()
+
+    return run_verification(
+        args.pdf,
+        args.text,
+        args.out,
+        allow_text_digest_mismatch=args.allow_text_digest_mismatch,
+        quiet=args.quiet,
+    )
 
 
 if __name__ == "__main__":

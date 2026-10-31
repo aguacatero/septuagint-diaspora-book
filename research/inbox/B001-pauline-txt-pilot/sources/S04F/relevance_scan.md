@@ -2,7 +2,7 @@
 
 Thoughts
 expand_more
-Based on J. B. Lightfoot’s Saint Paul's Epistle to the Galatians: A Revised Text with Introduction, Notes, and Dissertations (1914), two of the B001 comparisons are discussed in extended detail (as Galatians parallel texts/detached dissertations) and one is cited in passing, while the remaining nine comparisons are NOT DISCUSSED in this commentary.
+Based on J. B. Lightfoot’s Saint Paul's Epistle to the Galatians: A Revised Text with Introduction, Notes, and Dissertations (1914), two of the B001 comparisons are discussed in extended detail (B001-1, B001-12) as Galatians parallel texts and detached dissertations, and two are cited in passing (B001-8 lexical cross-reference, B001-11 historical illustration cross-reference), while the remaining eight comparisons (B001-2 through B001-7, B001-9, B001-10) have zero occurrences for the enumerated search patterns in the authenticated text layer and no entry in the authorial index.
 B001 Discussion Analysis Table
 B001 ID
 	
@@ -127,13 +127,13 @@ NOT DISCUSSED
 
 11. 1 Corinthians 10:7 / Exodus 32:6
 	
-NO
+YES
 	
-N/A
+Page 311
 	
-N/A
+Passing
 	
-NOT DISCUSSED
+Lightfoot provides a passing cross-reference to 1 Cor 10:7-8 in Dissertation III ("St Paul and the Three", p. 311) regarding Paul using the Balaam Old Testament illustration ("Neither be ye idolaters..."); no commentary on Exodus 32:6 text, translation, or textual variations.
 
 
 12. Galatians 3:13 / Deuteronomy 21:23

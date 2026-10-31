@@ -69,11 +69,11 @@ Extraction Confidence: HIGH
 S04F-E004
 Proposed Evidence ID: S04F-E004
 B001 Passage ID: B001-12
-Author's Claim: Although Deuteronomy 21:23 originally referred to the impalement or gibbeting of a malefactor's body after execution rather than death by crucifixion, Paul's application of the passage to Christ's crucifixion is entirely legitimate because the law attached ignominy to the hanging itself.
+Author's Claim: Although Deuteronomy 21:23 contemplated post-mortem exposure rather than crucifixion, and Lightfoot acknowledges no evidence shows Jews at the time of the Christian era applied it to crucifixion, he argues Paul's application was legitimate because Jewish usage attached the degradation and curse to the hanging itself.
 Supporting Quotation: "For though this passage did not contemplate death by crucifixion, the application was quite legitimate. It was the hanging, not the death, that brought ignominy"
 4
 .
-Printed Page Number: Page 154
+Printed Page Number: Page 154 (PDF derivative p. 56)
 4
 NotebookLM Citation:
 4
@@ -81,7 +81,7 @@ Textual Evidence Invoked: Hebrew verb תלה (hanged); Chaldee paraphrase of Deu
 4
 .
 Claim Type: Exegetical / Methodological
-Qualifications / Conditions: Ancient Jews considered hanging after death and crucifixion as essentially the same punishment in terms of ignominy and defilement of the land
+Qualifications / Conditions: Lightfoot explicitly concedes on p. 154: "I do not know that there is any evidence to show that this passage of Deuteronomy had been applied by the Jews to execution by crucifixion at the time of the Christian era." His argument that contemporaries readily accepted the transfer because the curse attached to the hanging is an authorial secondary reconstruction.
 4
 .
 Extraction Confidence: HIGH
@@ -168,11 +168,11 @@ Extraction Confidence: HIGH
 S04F-E009
 Proposed Evidence ID: S04F-E009
 B001 Passage ID: B001-1
-Author's Claim: The apparent contradiction between Paul (Rom 3:28 / Gal 3:6) and James (Jas 2:24) regarding Genesis 15:6 vanishes when recognized as independent responses to diverse Jewish school interpretations—Paul opposing Pharisaic reliance on outward works, James opposing a barren orthodoxy.
+Author's Claim: The apparent contradiction between Paul (Gal 3:6 / Rom 4:3) and James (Jas 2:23) regarding Genesis 15:6 resolves because they independently targeted different perversions—Paul confronting Pharisaic legalism and James confronting barren orthodoxy—while Lightfoot leaves open whether James wrote with direct awareness of Paul's language or addressed independent Jewish errors.
 Supporting Quotation: "the facts collected above destroy the force of any argument founded on the mere coincidence of the examples chosen."
 10
 .
-Printed Page Number: Page 164
+Printed Page Number: Page 164 (PDF derivative p. 66)
 10
 NotebookLM Citation:
 10
@@ -180,7 +180,7 @@ Textual Evidence Invoked: Genesis 15:6 quoted in Rom 3:28, Gal 3:6, Jas 2:24; Mi
 10
 .
 Claim Type: Exegetical / Historical
-Qualifications / Conditions: Whether James directly targeted Pharisaic barren orthodoxy or misplaced reliance on Paul's teaching must be determined by detailed examination of James, but their circles of labor were unlikely to intersect
+Qualifications / Conditions: Lightfoot maintains that Paul and James are fundamentally harmonious, but explicitly qualifies that whether James knew Paul's epistles or was addressing independent Jewish errors cannot be dogmatically decided (p. 164). His harmonization of their theological trajectories and reconstruction of school traditions is a secondary historical reconstruction.
 10
 .
 Extraction Confidence: HIGH
@@ -192,7 +192,7 @@ Author's Claim: In Galatians 2:21, the verb ἀθετῶ means "to nullify" or "
 Supporting Quotation: "For ἀθετῶ 'to nullify' see Luke vii. 30, 1 Cor. i. 19: its exact sense here is fixed by δωρεὰν ἀπέθανεν."
 11
 .
-Printed Page Number: Page 120
+Printed Page Number: Page 120 (PDF derivative p. 31)
 11
 NotebookLM Citation:
 11
@@ -200,9 +200,53 @@ Textual Evidence Invoked: Usage of ἀθετέω in Galatians 2:21, 1 Corinthian
 11
 .
 Claim Type: Exegetical / Literary
-Qualifications / Conditions: None
+Qualifications / Conditions: Passing lexical cross-reference; Lightfoot does not comment on the quotation of Isaiah 29:14 or its Old Testament context.
 11
 .
+Extraction Confidence: HIGH
+S04F-E011
+Proposed Evidence ID: S04F-E011
+B001 Passage ID: B001-12
+Author's Claim: The Septuagint adopted the subjective genitive (κεκατηραμένος ὑπὸ τοῦ Θεοῦ), whereas later Greek versions (Aquila κατάρα Θεοῦ, Symmachus propter blasphemiam Dei), the Targum of Pseudo-Jonathan, and the Peshitta adopted the objective genitive ("an insult/blasphemy against God").
+Supporting Quotation: "Aquila and Theodotion rendered it κατάρα Θεοῦ κρεμάμενος... Symmachus 'quia propter blasphemiam Dei suspensus est'"
+Printed Page Number: Pages 152–153 (PDF derivative pp. 54–55)
+NotebookLM Citation: Prompt 7 / citations[index=12], label=6
+Textual Evidence Invoked: Hebrew construct קִלְלַת אֱלֹהִים; LXX κεκατηραμένος ὑπὸ τοῦ Θεοῦ; Aquila, Symmachus, Theodotion; Targum of Pseudo-Jonathan; Peshitta Syriac
+Claim Type: Textual-critical
+Qualifications / Conditions: Lightfoot details how early versions split between subjective divine curse and objective blasphemy/contempt against God.
+Extraction Confidence: HIGH
+S04F-E012
+Proposed Evidence ID: S04F-E012
+B001 Passage ID: B001-12
+Author's Claim: Deuteronomy 21:23 occupied a prominent place in Jewish-Christian polemics, cited against Christian faith by Jewish opponents in Justin Martyr's Dialogue with Trypho (§§ 95-96), Ariston of Pella's Dispute of Jason and Papiscus, Tertullian (Adv. Judaeos § 10), and Jerome.
+Supporting Quotation: "This passage occupied an important place in the early controversies between the Jews and the Christians."
+Printed Page Number: Pages 152–153 (PDF derivative pp. 54–55)
+NotebookLM Citation: Prompt 7 / citations[index=5], label=5
+Textual Evidence Invoked: Justin Martyr (Dial. 95-96); Ariston of Pella; Tertullian (Adv. Jud. 10); Jerome (ad Gal. iii. 13)
+Claim Type: Historical
+Qualifications / Conditions: Lightfoot notes how early Christian apologists consistently followed Paul in turning the curse into a vicarious redemption.
+Extraction Confidence: HIGH
+S04F-E013
+Proposed Evidence ID: S04F-E013
+B001 Passage ID: B001-12
+Author's Claim: In the Dialogue with Trypho § 96, Justin Martyr quotes Deuteronomy 27:26 and 21:23 with distinctive Pauline adaptations found in Galatians 3:10 and 3:13 (in Deut 21:23 substituting ἐπικατάρατος for LXX κεκατηραμένος, inserting ὁ, and omitting ὑπὸ Θεοῦ), from which Lightfoot infers historical dependence on Paul's epistle.
+Supporting Quotation: "applies them as they are applied in Gal. iii. 10, 13"
+Printed Page Number: Pages 60–61 (PDF derivative pp. 16–17)
+NotebookLM Citation: Prompt 7 / citations[index=24], label=7
+Textual Evidence Invoked: Justin Martyr Dial. c. Tryph. c. 96 quoting Deut 27:26 and Deut 21:23; Gal 3:10 and Gal 3:13; LXX Deut 21:23 (κεκατηραμένος ὑπὸ θεοῦ πᾶς κρεμάμενος ἐπὶ ξύλου)
+Claim Type: Textual-critical / Historical
+Qualifications / Conditions: Lightfoot's claim that Justin drew directly from Galatians 3:13 rather than an alternate text-form or Christian testimonia collection is an authorial historical inference. Note that πᾶς and ἐπὶ ξύλου were already present in LXX Deut 21:23; the Pauline changes in Gal 3:13 are substituting ἐπικατάρατος for κεκατηραμένος, inserting ὁ, and omitting ὑπὸ Θεοῦ.
+Extraction Confidence: HIGH
+S04F-E014
+Proposed Evidence ID: S04F-E014
+B001 Passage ID: B001-1
+Author's Claim: In Galatians 3:8, the Scripture is personified as foreseeing that God justifies the Gentiles by faith, quoting Genesis 12:3 / 18:18 / 22:18 ("In thee shall all the Gentiles be blessed") to prove that spiritual blessing was always conditioned on faith rather than Mosaic legal observance.
+Supporting Quotation: "These are the words of foresight discerning that God justifies the Gentiles by faith... Scripture personified"
+Printed Page Number: Page 137 (PDF derivative p. 39)
+NotebookLM Citation: Prompt 3 / citations[index=39], label=13
+Textual Evidence Invoked: Galatians 3:8 quoting Genesis 12:3 / 18:18 / 22:18 (LXX ἐνευλογηθήσονται ἐν σοὶ πάντα τὰ ἔθνη)
+Claim Type: Exegetical
+Qualifications / Conditions: Exegetical analysis of Paul personifying Scripture and demonstrating justification by faith prior to the law.
 Extraction Confidence: HIGH
 💡 Next Steps:
 Would you like to map Lightfoot's reasoning structure (Question -> Evidence -> Inference -> Conclusion) for B001-12 or B001-1?

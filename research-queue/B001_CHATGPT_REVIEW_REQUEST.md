@@ -5,13 +5,47 @@ Antigravity rewrites this file for every source before requesting review.
 ## Current source
 
 - Source ID: `S04F`
-- Review Round: `Round 1`
+- Review Round: `Round 2 — Remediation of S04F-R1-F1 through F4 and M1 through M3`
 - Exact citation: J. B. Lightfoot, *Saint Paul's Epistle to the Galatians: A Revised Text with Introduction, Notes, and Dissertations* (London: Macmillan and Co., Limited, 1914 reprint of the tenth edition 1890).
 - Branch: `research/B001-notebooklm-serial`
 - Draft PR: `2`
 - Review readiness: `READY`
 - Review target: `LIVE_PR_HEAD`
-- Previous source disposition: `S03F ACCEPTED` in Round 5 independent review ([#issuecomment-6460107612](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6460107612)) at commit `c518c27339c9f1df4e9c17154361b6944de35f2b`, and promoted to cumulative notebook `SDP-01 Paul` with source-grounded retrieval verification.
+- Previous source disposition: `S03F ACCEPTED` in Round 5 independent review ([#issuecomment-6460107612](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6460107612)) at commit `c518c27339c9f1df4e9c17154361b6944de35f2b`, and promoted to cumulative notebook `SDP-01 Paul`.
+- Round 1 Review Verdict: `SOURCE_PACKET: REVISE`, `MERGE: NO`, `REQUEST CHANGES: YES` ([#issuecomment-6546174969](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6546174969)) at commit `c7cb48f41a1c522af0aa3e01de484317625797c4`.
+
+## Round 1 Findings Remediated in Round 2
+
+1. **S04F-R1-F1 [HIGH/BLOCKING] — Verifier Fail-Closed Gate Enforcement & Dynamic Controls Count:**
+   - `scripts/verify_s04f_negative_search.py` now returns exit code 4 on positive control failures and exit code 5 on index failures.
+   - Report dynamically computes `len(pos_results)` (6 positive controls, fixing "5 controls" typo) and gate verdicts; overall gate status reports `FAIL / UNVERIFIED` and overall verdict reports `FAILED` unless text authentication, all positive controls, and index structure pass.
+   - Added deterministic regression unit tests in `tests/test_citation_ledger_crosswalk.py` (`test_s04f_failing_gates_reject_certified_verdict`).
+2. **S04F-R1-F2 [HIGH/BLOCKING] — Unauthenticated Override Canonical Path Protection:**
+   - Verifier script strictly refuses to overwrite canonical report (`DEFAULT_OUT_PATH`) when `--allow-text-digest-mismatch` is active, exiting with code 9.
+   - Under unauthenticated execution, zero hits are classified as `UNVERIFIED_ZERO_MATCHES`, report header indicates `(UNAUTHENTICATED OVERRIDE)`, and negative absence is explicitly not certified.
+   - Added deterministic regression unit test (`test_s04f_unauthenticated_override_prohibits_canonical_overwrite`).
+3. **S04F-R1-F3 [HIGH/BLOCKING] — Derivative Page Locator Crosswalk Mathematical Verification:**
+   - Row `S04F-E010` (printed p. 120, commentary on Gal 2:21) corrected from erroneous "p. 22" to `PDF derivative p. 31` (matching slice `gal_2_15_21` printed pp. 114–123 -> derivative pp. 25–34).
+   - Audited all 14 evidence rows against `provenance_manifest.json` slice offsets.
+   - Added programmatic unit test `test_s04f_derivative_page_crosswalk_computed` verifying all derivative locators from manifest slices.
+4. **S04F-R1-F4 [HIGH/BLOCKING] — Greek Text-Critical Accuracy on Justin Martyr (Dial. 96):**
+   - Corrected row `S04F-E013` to remove the erroneous assertion that Paul added `πᾶς` and `ἐπὶ ξύλου` to Deut 21:23 (both are already in LXX `κεκατηραμένος ὑπὸ θεοῦ πᾶς κρεμάμενος ἐπὶ ξύλου`).
+   - Accurately formulated the distinctively Pauline modifications: substituting `ἐπικατάρατος` for `κεκατηραμένος`, inserting the article `ὁ`, and omitting `ὑπὸ Θεοῦ`.
+   - Explicitly categorized Lightfoot's deduction of Justin's dependence on Galatians as an authorial historical inference across all files (`citation_ledger.csv`, `extraction.md`, `argument_map.md`, `counterevidence.md`).
+   - Added regression unit test `test_s04f_e013_greek_text_critical_invariants`.
+5. **S04F-R1-M1 [MED] — Complete B001-11 Catalog Synchronization Across Artifacts:**
+   - Synchronized all S04F artifacts (`relevance_scan.md`, `counterevidence.md`, `full_volume_search_log.md`, `notebooklm_self_audit.md`):
+     - 2 substantive treatments (B001-1 on Gal 3:6 & Faith excursuses, B001-12 on Gal 3:13 & Deut 21:23 excursus);
+     - 2 passing cross-references (B001-8 lexical note on Gal 2:21 p. 120, B001-11 illustration note in Diss. III p. 311);
+     - 8 absent loci (B001-2 through B001-7, B001-9, B001-10) with zero regex hits and no index entries.
+   - Added regression unit test `test_s04f_authorial_qualifications_and_b001_11_sync`.
+6. **S04F-R1-M2 [MED] — Authorial Concessions & Secondary Reconstruction Labeling:**
+   - `S04F-E004`: Added Lightfoot's explicit admission on p. 154 that he knows of no evidence Jews at the time of the Christian era applied Deut 21:23 to crucifixion; labeled his subsequent defense of Paul's transfer as an authorial secondary reconstruction.
+   - `S04F-E009`: Preserved Lightfoot's qualification on p. 164 leaving open whether James knew Paul's epistles or was addressing independent Jewish errors.
+   - Labeled Lightfoot's reconstructions of Philo, rabbinic schools, and polemical motives as secondary reconstructions in `citation_ledger.csv`, `argument_map.md`, and `counterevidence.md`.
+7. **S04F-R1-M3 [MED] — Narrowed Negative Search Scope:**
+   - Scoped negative assertions to measured pattern typography in the authenticated text layer corroborated by authorial index inspection ("zero occurrences for the enumerated search patterns in the pinned 1914 text layer; no entry in authorial index").
+   - Test suite status: all 88 pytest unit tests pass cleanly.
 
 ## Source Provenance & Cryptographic Authentication
 
@@ -67,7 +101,7 @@ Plus governing method:
 
 ## Review task
 
-Independently audit the complete S04F evidence packet (Round 1).
+Independently audit the complete S04F evidence packet (Round 2 remediation). Verify that findings S04F-R1-F1 through F4 and M1 through M3 are fully resolved.
 
 Check:
 
