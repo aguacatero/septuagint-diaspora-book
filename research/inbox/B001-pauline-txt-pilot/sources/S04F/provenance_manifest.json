@@ -1,0 +1,40 @@
+{
+  "source_id": "S04F",
+  "work": {
+    "authors": [
+      "J. B. Lightfoot"
+    ],
+    "title": "Saint Paul's Epistle to the Galatians: A Revised Text with Introduction, Notes, and Dissertations",
+    "edition": "1914 reprint of the tenth edition (1890)",
+    "imprint": "London: Macmillan and Co., Limited; St. Martin's Street, London, 1914",
+    "preface_signed": "J. B. L., Trinity College, Cambridge",
+    "ia_item_url": "https://archive.org/details/saintpaulepistle00lighuoft",
+    "ia_item_id": "saintpaulepistle00lighuoft"
+  },
+  "raw_volume_scan": {
+    "filename": "lightfoot_1914_galatians_ia_raw.pdf",
+    "local_path": "/Users/chrisrodriguez/Downloads/lightfoot_1914_galatians_ia_raw.pdf",
+    "pages": 408,
+    "size_bytes": 27846788,
+    "sha256": "0131c0916a037f058cd9607d60ce1bf1c93fdabff621ca31767ec03b3d5788f4",
+    "verification_command": "stat -f '%z' /Users/chrisrodriguez/Downloads/lightfoot_1914_galatians_ia_raw.pdf && shasum -a 256 /Users/chrisrodriguez/Downloads/lightfoot_1914_galatians_ia_raw.pdf"
+  },
+  "ingested_derivative_section": {
+    "filename": "lightfoot_1914_galatians.pdf",
+    "local_path": "/Users/chrisrodriguez/Downloads/lightfoot_1914_galatians.pdf",
+    "pages": 91,
+    "size_bytes": 20643909,
+    "sha256": "4d6176f9b487dc291ef0d1ac828c695bb5485fd1898404177d28c0b28e5591b4",
+    "verification_command": "stat -f '%z' /Users/chrisrodriguez/Downloads/lightfoot_1914_galatians.pdf && shasum -a 256 /Users/chrisrodriguez/Downloads/lightfoot_1914_galatians.pdf",
+    "generator": "Poppler pdfseparate/pdfunite + GPL Ghostscript 9.56.1 (-dPDFSETTINGS=/ebook)",
+    "included_sections": {
+      "front_matter": "Derivative pp. 1-12 (Raw scan pp. 9-20: Half-title, title page, preface pp. v-viii, contents pp. ix-xiv)",
+      "intro_iv_v": "Derivative pp. 13-24 (Raw scan pp. 77-88: Printed pp. 57-68: § IV 'The Date of the Epistle' and § V 'Genuineness of the Epistle' citing Justin Martyr Dial. 96 on Gal 3:13)",
+      "gal_2_15_21": "Derivative pp. 25-34 (Raw scan pp. 134-143: Printed pp. 114-123: Commentary on Gal 2:15-21, including 2:21 on 1 Cor 1:19 atheto)",
+      "gal_3_complete": "Derivative pp. 35-66 (Raw scan pp. 153-184: Printed pp. 133-164: Commentary on Gal 3:1-29 including 3:6 on Gen 15:6 / Rom 4:3, 3:13 on Deut 21:23, Excursus 'The interpretation of Deut. xxi. 23' pp. 152-154, Excursus 'The words denoting Faith' pp. 154-158, Excursus 'The Faith of Abraham' pp. 158-164)",
+      "gal_4_21_31": "Derivative pp. 67-73 (Raw scan pp. 199-205: Printed pp. 179-185: Commentary on Gal 4:21-31 allegory of Hagar and Sarah)",
+      "hagar_philo_excursuses": "Derivative pp. 74-81 (Raw scan pp. 213-220: Printed pp. 193-200: Excursuses 'The Name and Office of an Apostle' and 'St Paul and the Three')",
+      "indexes": "Derivative pp. 82-91 (Raw scan pp. 395-404: Printed pp. 375-384: Index I Subjects and Persons, Index II Greek words, Index III Passages of Scripture)"
+    }
+  }
+}

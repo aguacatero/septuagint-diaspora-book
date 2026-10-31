@@ -687,3 +687,239 @@ def test_s03f_self_audit_corrections_incorporated():
     assert "Joel" in e014["author_claim"] and "Rom" in e014["author_claim"]
     assert "3" in e014["printed_page"]
 
+
+def test_s04f_citation_ledger_crosswalk_integrity():
+    repo_root = Path(__file__).resolve().parent.parent
+    s04f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S04F"
+    csv_path = s04f_dir / "citation_ledger.csv"
+
+    prompts = {}
+    for p in [2, 3, 7]:
+        raw_file = s04f_dir / f"prompt_{p}_raw.json"
+        if raw_file.is_file():
+            with open(raw_file, encoding="utf-8") as f:
+                prompts[p] = json.load(f)["citations"]
+
+    with open(csv_path, encoding="utf-8") as f:
+        reader = list(csv.DictReader(f))
+
+    assert len(reader) == 14, f"Expected 14 ledger rows for S04F, found {len(reader)}"
+
+    for row in reader:
+        eid = row["evidence_id"]
+        assert row["source_id"] == "S04F"
+        raw_ptr = row["notebooklm_citation"]
+        m = re.search(r"Prompt (\d+) / citations\[index=(\d+)\], label=(\d+)", raw_ptr)
+        assert m is not None, f"Could not parse pointer '{raw_ptr}' for {eid}"
+
+        p_num = int(m.group(1))
+        c_idx = int(m.group(2))
+        c_lbl = m.group(3)
+
+        assert p_num in prompts, f"Prompt {p_num} not loaded"
+        assert c_idx < len(prompts[p_num]), f"Citation index {c_idx} out of range for Prompt {p_num}"
+
+        citation = prompts[p_num][c_idx]
+        assert citation["label"] == c_lbl, f"Label mismatch for {eid}: expected {c_lbl}, found {citation['label']}"
+        assert citation["snippet"], f"Empty snippet for {eid}"
+
+        # Verify measured audit metadata
+        audit = citation.get("audit", {})
+        assert audit.get("pre_hover_cleared") is True, f"Audit pre_hover_cleared failed for {eid}"
+        assert audit.get("overlay_pane_id"), f"Missing overlay_pane_id for {eid}"
+        assert audit.get("is_fresh_pane") is True, f"Audit is_fresh_pane failed for {eid}"
+        assert audit.get("trigger_bound") is True, f"Audit trigger_bound failed for {eid}"
+        assert audit.get("handshake_verified") is True, f"Audit handshake_verified failed for {eid}"
+        assert row["verification_status"] == "VERIFIED", f"Verification status not VERIFIED for {eid}"
+
+
+def test_s04f_self_audit_corrections_incorporated():
+    repo_root = Path(__file__).resolve().parent.parent
+    s04f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S04F"
+    csv_path = s04f_dir / "citation_ledger.csv"
+
+    with open(csv_path, encoding="utf-8") as f:
+        rows = {r["evidence_id"]: r for r in csv.DictReader(f)}
+
+    # Check 1: S04F-E009 preserves qualification on James and Paul
+    e009 = rows["S04F-E009"]
+    assert "destroy the force" in e009["short_quote"]
+    assert "coincidence" in e009["short_quote"]
+    assert "James" in e009["author_claim"]
+
+    # Check 2: S04F-E002 includes theological qualification on omission of hypo Theou
+    e002 = rows["S04F-E002"]
+    assert "instinctively omits" in e002["short_quote"]
+    assert "sinner" in e002["qualification"].lower() or "vicarious" in e002["author_claim"].lower()
+
+    # Check 3: S04F-E001 preserves construct phrase grammatical ambiguity
+    e001 = rows["S04F-E001"]
+    assert "ambiguity" in e001["short_quote"].lower()
+    assert "subjective" in e001["author_claim"].lower() or "objective" in e001["author_claim"].lower()
+
+    # Check 4: S04F-E004 preserves legitimacy of applying post-mortem impalement to crucifixion
+    e004 = rows["S04F-E004"]
+    assert "crucifixion" in e004["short_quote"]
+    assert "legitimate" in e004["short_quote"]
+
+    # Check 5: S04F-E005 preserves verbatim agreement between Gal 3:6, Rom 4:3, and Gen 15:6
+    e005 = rows["S04F-E005"]
+    assert "Rom. iv. 3" in e005["short_quote"]
+    assert "Lxx" in e005["short_quote"]
+
+    # Check 6: S04F-E010 documents passing lexical citation of 1 Cor 1:19
+    e010 = rows["S04F-E010"]
+    assert "1 Cor. i. 19" in e010["short_quote"]
+    assert e010["b001_id"] == "B001-8"
+
+    # Check 7: S04F-E013 documents Justin Martyr's Dial. 96 citation
+    e013 = rows["S04F-E013"]
+    assert "Justin" in e013["author_claim"]
+    assert "Gal. iii. 10, 13" in e013["short_quote"]
+
+
+def test_s04f_provenance_and_hash_integrity():
+    import os
+    import hashlib
+    repo_root = Path(__file__).resolve().parent.parent
+    prov_path = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S04F/provenance_manifest.json"
+    assert prov_path.is_file(), "Missing provenance_manifest.json for S04F"
+
+    with open(prov_path, encoding="utf-8") as f:
+        prov = json.load(f)
+
+    assert prov["raw_volume_scan"]["size_bytes"] == 27846788
+    assert prov["raw_volume_scan"]["sha256"] == "0131c0916a037f058cd9607d60ce1bf1c93fdabff621ca31767ec03b3d5788f4"
+    assert prov["ingested_derivative_section"]["size_bytes"] == 20643909
+    assert prov["ingested_derivative_section"]["sha256"] == "4d6176f9b487dc291ef0d1ac828c695bb5485fd1898404177d28c0b28e5591b4"
+
+    # If physical files exist in local environment, verify stats
+    local_deriv = Path("/Users/chrisrodriguez/Downloads/lightfoot_1914_galatians.pdf")
+    if local_deriv.is_file():
+        assert os.path.getsize(local_deriv) == 20643909
+        h = hashlib.sha256(local_deriv.read_bytes()).hexdigest()
+        assert h == "4d6176f9b487dc291ef0d1ac828c695bb5485fd1898404177d28c0b28e5591b4"
+
+
+def test_s04f_negative_search_evidence_discipline():
+    repo_root = Path(__file__).resolve().parent.parent
+    s04f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S04F"
+
+    script_path = repo_root / "scripts/verify_s04f_negative_search.py"
+    log_path = s04f_dir / "full_volume_search_log.md"
+    assert script_path.is_file(), "Missing verify_s04f_negative_search.py"
+    assert log_path.is_file(), "Missing full_volume_search_log.md"
+
+    with open(log_path, encoding="utf-8") as f:
+        log_text = f.read()
+
+    # Log covers all non-Galatians 3:13 loci
+    for locus in ["B001-1", "B001-2", "B001-3", "B001-4", "B001-5", "B001-6", "B001-7", "B001-8", "B001-9", "B001-10", "B001-11"]:
+        assert locus in log_text
+
+    # Positive controls validated
+    assert "Positive-Control Validation" in log_text
+    assert "**PASS**" in log_text
+
+    # B001-2 through B001-7, B001-9, B001-10 must be NO MATCH FOUND
+    for locus in ["B001-2", "B001-3", "B001-4", "B001-5", "B001-6", "B001-7", "B001-9", "B001-10"]:
+        assert f"| `{locus}` |" in log_text
+    assert "NO MATCH FOUND BY DOCUMENTED FULL-VOLUME TEXT SEARCH" in log_text
+
+    # B001-1 is substantive cross-epistle comparison
+    assert "SUBSTANTIVE CROSS-EPISTLE COMPARISON" in log_text
+
+    # B001-8 and B001-11 are passing citations
+    assert "PASSING CITATION" in log_text
+
+
+def test_s04f_negative_search_script_fail_closed_and_controls(tmp_path):
+    repo_root = Path(__file__).resolve().parent.parent
+    import subprocess
+    import sys
+
+    script = repo_root / "scripts/verify_s04f_negative_search.py"
+
+    # Test 1: Nonexistent PDF fails closed (exit code 1)
+    fake_pdf = tmp_path / "nonexistent.pdf"
+    res = subprocess.run([sys.executable, str(script), "--pdf", str(fake_pdf)], capture_output=True, text=True)
+    assert res.returncode == 1, f"Expected exit code 1 for missing PDF, got {res.returncode}: {res.stderr}"
+    assert "Fail closed" in res.stderr
+
+    # Test 2: Dummy PDF with wrong byte size fails closed (exit code 2)
+    dummy_pdf = tmp_path / "corrupt.pdf"
+    dummy_pdf.write_bytes(b"not a valid 27mb pdf")
+    res = subprocess.run([sys.executable, str(script), "--pdf", str(dummy_pdf)], capture_output=True, text=True)
+    assert res.returncode == 2, f"Expected exit code 2 for size mismatch, got {res.returncode}: {res.stderr}"
+    assert "size mismatch" in res.stderr
+
+    # Test 3: Positive and negative regex control strings
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s04f_negative_search as vns
+
+    typography_samples = [
+        ("Gal. iii. 13", True),
+        ("Deut. xxi. 23", True),
+        ("Gen. xv. 6", True),
+        ("Rom. iv. 3", True),
+        ("1 Cor. i. 19", True),
+    ]
+    pat_deut_21 = vns.POSITIVE_CONTROLS[0]["pattern"]
+    assert re.search(pat_deut_21, "cited in Deut. xxi. 23 by Paul", re.IGNORECASE) is not None
+    assert re.search(pat_deut_21, "Deut. 21:23", re.IGNORECASE) is not None
+
+
+def test_s04f_text_digest_mismatch_exit_code_8_and_override(tmp_path, monkeypatch):
+    repo_root = Path(__file__).resolve().parent.parent
+    import sys
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s04f_negative_search as vns
+
+    fake_pdf = tmp_path / "fake_galatians.pdf"
+    fake_pdf.write_bytes(b"0" * vns.EXPECTED_RAW_PDF_BYTES)
+    fake_text = tmp_path / "fake_extracted.txt"
+    fake_out = tmp_path / "out_log.md"
+
+    # Mock get_sha256 for fake PDF
+    orig_get_sha256 = vns.get_sha256
+    def mock_get_sha256(p):
+        if Path(p) == fake_pdf:
+            return vns.EXPECTED_RAW_PDF_SHA256
+        return orig_get_sha256(p)
+
+    monkeypatch.setattr(vns, "get_sha256", mock_get_sha256)
+
+    # Mock subprocess.run for pdftotext
+    def mock_subprocess_run(cmd, check=False):
+        out_txt = Path(cmd[2])
+        out_txt.write_text("Dummy extracted text line\n" * 2000, encoding="utf-8")
+        class SubprocessResult:
+            returncode = 0
+        return SubprocessResult()
+
+    monkeypatch.setattr("subprocess.run", mock_subprocess_run)
+
+    # 1. Without override -> exit 8
+    test_args_strict = [
+        "verify_s04f_negative_search.py",
+        "--pdf", str(fake_pdf),
+        "--text", str(fake_text),
+        "--out", str(fake_out),
+    ]
+    monkeypatch.setattr(sys, "argv", test_args_strict)
+    ret_strict = vns.main()
+    assert ret_strict == 8, f"Expected exit code 8 on digest mismatch, got {ret_strict}"
+
+    # 2. With override -> bypass exit 8
+    test_args_override = [
+        "verify_s04f_negative_search.py",
+        "--pdf", str(fake_pdf),
+        "--text", str(fake_text),
+        "--out", str(fake_out),
+        "--allow-text-digest-mismatch",
+    ]
+    monkeypatch.setattr(sys, "argv", test_args_override)
+    ret_override = vns.main()
+    assert ret_override != 8, f"Expected override to bypass exit code 8, got {ret_override}"
+
+

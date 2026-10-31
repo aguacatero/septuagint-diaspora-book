@@ -164,18 +164,21 @@ async def prove_extraction_retrieval(
         return False
         
     t0 = time.time()
+    last_len = 0
+    stable_cycles = 0
     while time.time() - t0 < timeout:
         await asyncio.sleep(4)
         check_js = f"""
         (() => {{
             const msgs = document.querySelectorAll('.to-user-message-card-content');
-            if (msgs.length <= {init_count}) return {{ settled: false }};
+            if (msgs.length <= {init_count}) return {{ has_message: false }};
             const latest = msgs[msgs.length - 1];
             const text = latest.innerText || '';
             const citationBtns = Array.from(latest.querySelectorAll('button.citation-marker, [class*="citation"]'));
             const isGenerating = Boolean(document.querySelector('.generating, mat-progress-bar, [aria-label="Stop generation"]'));
             return {{
-                settled: !isGenerating && text.length > 50,
+                has_message: true,
+                is_generating: isGenerating,
                 text_len: text.length,
                 markers: citationBtns.length,
                 text_sample: text.slice(0, 300)
@@ -183,15 +186,33 @@ async def prove_extraction_retrieval(
         }})()
         """
         status = await client.evaluate(check_js) or {}
-        if status.get("settled"):
-            markers = status.get("markers", 0)
-            text_len = status.get("text_len", 0)
-            if markers > 0 and text_len > 50:
+        if not status.get("has_message"):
+            continue
+
+        markers = status.get("markers", 0)
+        text_len = status.get("text_len", 0)
+        is_generating = status.get("is_generating", False)
+
+        if text_len == last_len and text_len > 50:
+            stable_cycles += 1
+        else:
+            stable_cycles = 0
+        last_len = text_len
+
+        print(f"[{int(time.time() - t0):2d}s probe] len={text_len}, markers={markers}, generating={is_generating}, stable_cycles={stable_cycles}", flush=True)
+
+        if markers > 0 and text_len > 100 and not is_generating:
+            print(f"Retrieval probe succeeded! Response length: {text_len}, Citations: {markers}", flush=True)
+            print("Response excerpt:\n", status.get("text_sample"))
+            return True
+
+        if not is_generating and stable_cycles >= 2 and text_len > 50:
+            if markers > 0:
                 print(f"Retrieval probe succeeded! Response length: {text_len}, Citations: {markers}", flush=True)
                 print("Response excerpt:\n", status.get("text_sample"))
                 return True
             else:
-                print(f"Response settled but lacks citations (length={text_len}, markers={markers})", flush=True)
+                print(f"Response settled without citations (length={text_len}, markers={markers})", flush=True)
                 return False
                 
     print(f"Retrieval probe timed out after {timeout}s", flush=True)

@@ -6,13 +6,13 @@
   "extraction_notebook": "SDP-B001-EXTRACT",
   "synthesis_notebook": "SDP-01 Paul",
   "active_source_id": "S04F",
-  "active_phase": "AWAITING_ACQUISITION",
+  "active_phase": "AWAITING_REVIEW",
   "last_accepted_source_id": "S03F",
   "last_reviewed_sha": "c518c27339c9f1df4e9c17154361b6944de35f2b",
   "chatgpt_relay_mode": "REVIEW_LOOP_ONLY",
   "allow_legacy_relay_worker": false,
   "allow_paid_api": false,
-  "updated_at": "2026-10-30",
+  "updated_at": "2026-10-31",
   "smoke_test_status": "PASSED",
   "hands_off_enabled": true
 }
