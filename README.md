@@ -1,19 +1,43 @@
 # Shaped by the Septuagint
 
-## How Greek Scripture Shaped the Gospels—and What History Remains
+### How ancient scripture, storytelling, and the world after Jerusalem's fall may have shaped the Gospels
 
-This is a public-facing research and book project designed as a serious crossover work: readable by educated non-specialists while using a method intended to withstand specialist scrutiny.
+**Where did the stories about Jesus come from—and how much can history actually verify?**
 
+The four Gospels did not appear in a vacuum. Their writers inherited Jewish scripture, lived in a Greek-speaking Roman world, and told their stories during or after a period of upheaval for Judaism. This research-and-book project explores how those influences may have shaped the Jesus we encounter in the New Testament.
+
+The **Septuagint** is the ancient Greek translation and collection of Jewish scriptures. It is our starting point—not our assumed answer. We compare Greek and Hebrew textual traditions, literary storytelling, religious ideas circulating across the ancient world, and historical evidence. The goal is to follow the evidence, including when it contradicts the book's starting ideas.
+
+## The questions behind the book
+
+1. **Was scripture used to create parts of the Jesus story?** Did Gospel writers simply quote earlier Jewish texts, or did familiar stories, images, and phrases help them construct episodes about Jesus? We test each case rather than assume that a parallel proves invention.
+2. **Why does Mark tell the story the way it does?** Mark may be especially important for understanding the other Gospels. A [suggested video about Mark](https://www.youtube.com/watch?v=ajq5WXm7eRA) is on our research list, but its transcript has **not yet been independently obtained and checked**. We will not attribute specific arguments to it until that work is done.
+3. **Did other ancient religions influence John's picture of Jesus?** A [2026 academic article by Gad Barnea](https://doi.org/10.3390/rel17091092) explores whether ideas from **Mazdean (ancient Iranian/Zoroastrian) religion**—especially divine speech and a final figure who restores the world, the *Saošiiaṇt*—help explain John's opening description of Jesus as the divine Word. This is an argument to investigate, **not a proven case of borrowing**.
+4. **How certain are we about Paul's letters?** Scholars commonly treat seven letters attributed to Paul as “undisputed,” meaning widely accepted as authentic—not beyond challenge. We will examine their authorship, possible editing, and dates individually, including arguments against the standard view.
+5. **Could the New Testament writings be later than usually thought?** We are testing the hypothesis that **all four Gospels and the surviving Pauline letters may have been written, substantially edited, or finalized after 70 CE**, when Roman forces destroyed Jerusalem's Second Temple. We will distinguish original composition from later editing and test this proposal against earlier dates and evidence for pre-70 traditions.
+6. **What remains of the historical Jesus?** After examining literary sources and cultural influences, which claims about a real person can be supported independently? The answer could be substantial, minimal, uncertain, or compatible with a literary-origin model. No outcome is decided in advance.
+
+These newer questions are recorded in the [Gospel origins research proposal](research-queue/proposals/2026-11-01-gospel-origins-mark-mazdean-post70.md) ([draft PR #4](https://github.com/aguacatero/septuagint-diaspora-book/pull/4)). **They are proposed investigations, not accepted findings or changes to the project's established research corpus.**
+
+## How we keep the research honest
+
+- **Check the original texts.** Compare Greek and Hebrew manuscript traditions; a later standard Hebrew text is not automatically the one available to an ancient writer.
+- **Separate resemblance from dependence.** Similar religious stories might reflect direct influence, a shared culture, or coincidence. Dates, access to sources, distinctive details, and differences all matter.
+- **Test rival explanations.** A Gospel passage might preserve an event later described with scripture, reshape an older tradition, or arise mainly from literary composition. Every model gets a fair test.
+- **Distinguish evidence from interpretation.** An author's theory, a video's claims, and an AI summary do not become historical facts simply because they are interesting or persuasive.
+- **Look for disproof.** Counterexamples and inconclusive results stay in the record. We do not assume the Gospels are inventions or that a historical Jesus did or did not exist.
+
+The [Project Constitution](docs/design/PROJECT_CONSTITUTION.md) explains the full scholarly method, evidence thresholds, and safeguards.
 
 ## Research progress
 
 ![Six-stage research roadmap](assets/progress.svg)
 
-**Current: B001 — Pauline TXT pilot underway (TXT gate not yet complete)** ([canonical batch contract](research-queue/CURRENT_BATCH.md); [active draft research PR #2](https://github.com/aguacatero/septuagint-diaspora-book/pull/2)). The research constitution, evidence framework, and controlled workflow are established. The pilot tests twelve Pauline quotation comparisons before the [complete TXT corpus](research-queue/BACKLOG.md); NAR, CUL, HIS, and manuscript development follow reviewed research.
+**Currently researching:** the first close comparison of how passages from Jewish scripture appear in letters traditionally attributed to Paul (**B001 — Pauline textual pilot**). This is a methodological pilot, not a verdict about Pauline authorship or dating.
 
-**Draft-pipeline checkpoint — October 25, 2026 (not yet merged into `main`):** 5 of 16 queued source packets have **source-level independent acceptance** (P01F, P02F, P03F, S01F, S02F). The sixth, **S03F (Robertson & Plummer, 1 Corinthians ICC)**, was extracted but received **REVISE** with blocking findings in the [October 25 independent review](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6407409511); repairs and a fresh exact-SHA review are required before synthesis promotion. The queue's `AWAITING_REVIEW` field has not yet consumed that verdict. S04F onward remains pending. **Neither PR #2 nor B001 is merged/completed, and no additional six-stage milestone is accepted.**
+**Checkpoint — November 1, 2026:** **7 of 16** source packets have passed independent *source-level* review on [draft PR #2](https://github.com/aguacatero/septuagint-diaspora-book/pull/2): P01F, P02F, P03F, S01F, S02F, S03F, and S04F. The latest, S04F (J. B. Lightfoot on Galatians), [passed its fifth-round review](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6561683809) and was added to the working synthesis notebook. **S05 (Florian Wilk on Isaiah in Paul)** is next and awaits source acquisition. **PR #2 is draft/unmerged; the overall B001 batch is not finished.**
 
-*The roadmap tracks independently accepted research-to-book gates, not a percentage of scholarship completed, manuscript pages written, or confidence in the hypothesis. Candidate work and unreviewed LLM output do not count as accepted.*
+**Project milestones:** **1 of 6 accepted**—the research foundation. Accepting individual source packets does not complete the textual-analysis phase or change the other milestone checkboxes.
 
 <details>
 <summary>Milestone gates (1/6 accepted)</summary>
@@ -27,91 +51,42 @@ This is a public-facing research and book project designed as a serious crossove
 
 </details>
 
-*Contributors and LLM agents: see [AGENTS.md](AGENTS.md) for review-gated status updates and the [progress generator](scripts/update_progress.py).*
+*The roadmap measures independently reviewed research stages, not how many pages have been written, how persuasive a theory sounds, or how much AI work has been generated. The newly proposed Mark, John, Paul, and post-70 studies do not advance a milestone.*
 
----
+## How the work gets done now
 
-## Current research question
+The current B001 workflow is **Antigravity/Gemini + NotebookLM + GitHub + independent ChatGPT review**:
 
-The project tests whether the canonical Gospel authors' demonstrable scriptural practice is better explained primarily by **Greek Jewish scriptural traditions** than by direct consultation of Hebrew Scripture; how scriptural texts may have shaped or generated Gospel narrative details; how those narratives participate in the wider Hellenistic and Greco-Roman literary environment; and what historical evidence remains after those literary processes are accounted for.
+1. **Antigravity (using Gemini)** coordinates one research source at a time.
+2. **NotebookLM** supports source reading, extraction, and citation discovery. We verify important claims against the sources themselves.
+3. **GitHub** preserves the research notes, original citations, changes, and review history so the work can be audited.
+4. **ChatGPT independently reviews** each submitted source packet at its specific commit, asks for corrections when needed, and distinguishes provisional work from accepted evidence.
 
-The conclusion is **not predetermined**. The method must be able to produce results contrary to the initiating hypothesis.
+The relay is used for review coordination, **not** as a replacement research author. There is **no automatic merge** of research into the accepted record.
 
+See the [live B001 workflow and onboarding files on draft PR #2](https://github.com/aguacatero/septuagint-diaspora-book/pull/2), especially [START_HERE_ANTIGRAVITY.md](https://github.com/aguacatero/septuagint-diaspora-book/blob/research/B001-notebooklm-serial/START_HERE_ANTIGRAVITY.md), [CHATGPT_START_HERE.md](https://github.com/aguacatero/septuagint-diaspora-book/blob/research/B001-notebooklm-serial/CHATGPT_START_HERE.md), and the [serial research workflow](https://github.com/aguacatero/septuagint-diaspora-book/blob/research/B001-notebooklm-serial/docs/workflow/NOTEBOOKLM_ANTIGRAVITY_SERIAL.md).
 
-## Start here
+*Older tool-specific instructions elsewhere in the repository are retained for historical reference. They do not describe the current operating workflow.*
 
-1. [`docs/design/PROJECT_CONSTITUTION.md`](docs/design/PROJECT_CONSTITUTION.md) — authoritative methodology, corpus, boundaries, and book architecture.
-2. [`research/README.md`](research/README.md) — evidence registry and stable evidence-ID system.
-3. [`research/registry/SCHEMA.md`](research/registry/SCHEMA.md) — structured evidence contract.
-4. [`research/TXT/`](research/TXT/) — textual-tradition and direct-Hebrew-consultation analysis.
-5. [`research/NAR/`](research/NAR/) — scriptural narrative-generation analysis.
-6. [`research/CUL/`](research/CUL/) — Hellenistic / Greco-Roman comparison controls.
-7. [`research/HIS/`](research/HIS/) — claim-by-claim historical residue audit.
+## How the book will unfold
 
-## Hermes / OpenRouter research workflow
+| Part | In plain language |
+|---|---|
+| **I — The Test** | How we know what counts as evidence, and what could disprove our ideas |
+| **II — Before the Gospels** | Jewish scriptures, Greek-speaking communities, Paul, and early Christian traditions |
+| **III — The Four Gospels** | Examining Mark, Matthew, Luke, and John individually |
+| **IV — Scripture Becomes Story** | Testing whether ancient scripture influenced or generated narrative details |
+| **V — The Wider Ancient World** | Jewish, Greek, Roman, and potentially Iranian ideas and literary traditions |
+| **VI — What Is Left?** | Checking historical claims about Jesus after accounting for literary influences |
 
-If you are running this project through Hermes, start with [`HERMES_START.md`](HERMES_START.md).
+This is a **research project first, book second**. The final argument will be written from reviewed evidence, not the other way around.
 
-The operating model is:
+## For researchers and contributors
 
-**GitHub contract → source-bound research in a staging branch → independent adversarial review → reviewed promotion → next source/batch.** The active B001 draft uses **Antigravity/Gemini + one-source-at-a-time NotebookLM** for extraction and ChatGPT for exact-SHA independent review ([serial workflow](https://github.com/aguacatero/septuagint-diaspora-book/blob/research/B001-notebooklm-serial/docs/workflow/NOTEBOOKLM_ANTIGRAVITY_SERIAL.md) on the draft branch). The Hermes/OpenRouter + Open Notebook instructions below describe the original `main` workflow and remain fallback/history until a reviewed transition is merged.
+- [Project Constitution](docs/design/PROJECT_CONSTITUTION.md) — governing research method and current corpus
+- [Evidence registry and stable identifiers](research/README.md) · [Registry schema](research/registry/SCHEMA.md)
+- [Textual](research/TXT/) · [Narrative](research/NAR/) · [Cultural](research/CUL/) · [Historical](research/HIS/) research modules
+- [Research backlog](research-queue/BACKLOG.md) · [Canonical active batch contract](research-queue/CURRENT_BATCH.md) · [B001 serial work in progress](https://github.com/aguacatero/septuagint-diaspora-book/pull/2)
+- [New research proposals](research-queue/proposals/2026-11-01-gospel-origins-mark-mazdean-post70.md) · [Contributor/review rules](AGENTS.md)
 
-Key files:
-
-- [`docs/workflow/RESEARCH_WORKFLOW.md`](docs/workflow/RESEARCH_WORKFLOW.md) — full volley and review process.
-- [`docs/workflow/HERMES_INSTRUCTIONS.md`](docs/workflow/HERMES_INSTRUCTIONS.md) — exact operating rules for Hermes.
-- [`research-queue/CURRENT_BATCH.md`](research-queue/CURRENT_BATCH.md) — the only active research task.
-- [`research-queue/BACKLOG.md`](research-queue/BACKLOG.md) — dependency-ordered future batches.
-- [`research/inbox/`](research/inbox/) — non-canonical staging area for machine-assisted research packets.
-
-Hermes must not directly rewrite the project constitution or canonical evidence registry. Its job is to produce auditable candidate research, including counterevidence, for later review.
-
-## Core methodological changes
-
-- The old binary **“LXX vs. MT”** model is retired in favor of first-century textual pluriformity: Old Greek, other Jewish Greek traditions/revisions, Hebrew textual witnesses, authorial adaptation, oral/liturgical transmission, and indeterminate cases can all be classified.
-- The project does **not** assume that Gospel authors were incapable of Hebrew. It tests demonstrable compositional use of Hebrew Scripture author-by-author.
-- Explicit/identifiable quotations and allusions are tracked separately.
-- Negative evidence and Hebrew-aligned readings remain visible rather than being explained away.
-- Synoptic repetition is corrected for literary dependence; dependent texts are not automatically independent witnesses.
-- Hellenistic parallels must pass chronology, accessibility, specificity, density, structural, Jewish-scriptural, genre, difference, and transmission controls.
-- The historical-Jesus question is bracketed during literary analysis and deliberately reopened at the end from **zero assumed biography**.
-
-## Primary corpus
-
-- Mark
-- Matthew
-- Luke–Acts
-- John
-- undisputed Pauline letters
-
-Markan priority is used as an operational baseline, not as a premise that must be true for the thesis to survive. Q is not used as evidence.
-
-## Book architecture
-
-**Part I — The Test**  
-Definitions, textual pluriformity, evidence rules, controls, confidence, and falsification.
-
-**Part II — Before the Gospels**  
-Diaspora scriptural environment, control corpora, and undisputed Paul as the earliest surviving Christian authorial evidence in the primary corpus.
-
-**Part III — The Evangelists**  
-Mark, Matthew, Luke–Acts, and John audited independently through the textual framework.
-
-**Part IV — Scripture Becomes Story**  
-Testing scriptural coloring, shaping, co-construction, and probable narrative generation.
-
-**Part V — The Hellenistic Narrative World**  
-Controlled comparison with the wider Mediterranean literary environment.
-
-**Part VI — What Is Left?**  
-A claim-by-claim audit of the remaining historical evidence and the explanatory model that best fits it.
-
-## Legacy files
-
-`Core_Thesis.md`, `Book_Scholar_Outline.md`, `Book_Part1.md` through `Book_Part4.md`, and earlier files under `docs/plans/` document the historical development of the project. They contain useful research leads but also assumptions and claims that predate the current methodology.
-
-They are retained for provenance and **must not be treated as verified current findings until migrated through the evidence registry**. See [`docs/design/LEGACY_MIGRATION_NOTES.md`](docs/design/LEGACY_MIGRATION_NOTES.md) and [`research/registry/corrections_log.md`](research/registry/corrections_log.md).
-
-## Status
-
-The architecture and foundation gate are established (**1/6 milestones accepted**). The current bounded Pauline TXT pilot (B001) is still in progress: the active [serial NotebookLM research branch / draft PR #2](https://github.com/aguacatero/septuagint-diaspora-book/pull/2) has five accepted **source packets**, while S03F requires revisions following the [independent review](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6407409511). This is draft/unmerged research, not accepted `main` evidence or completion of TXT. The complete quotation census across the defined primary corpus begins only after B001 passes its gates.
+The constitution and existing batch contracts are authoritative until formally changed after review. Some older workflow documents and early book drafts remain for provenance, **not as the current source of validated findings**.
