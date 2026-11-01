@@ -2,7 +2,7 @@
 
 Thoughts
 expand_more
-Based on J. B. Lightfoot’s Saint Paul's Epistle to the Galatians: A Revised Text with Introduction, Notes, and Dissertations (1914), two of the B001 comparisons are discussed in extended detail (B001-1, B001-12) as Galatians parallel texts and detached dissertations, and two are cited in passing (B001-8 lexical cross-reference, B001-11 historical illustration cross-reference), while the remaining eight comparisons (B001-2 through B001-7, B001-9, B001-10) have zero occurrences for the enumerated search patterns in the authenticated text layer and are verified absent from the authorial Scripture index.
+Based on J. B. Lightfoot’s Saint Paul's Epistle to the Galatians: A Revised Text with Introduction, Notes, and Dissertations (1914), two of the B001 comparisons are discussed in extended detail (B001-1, B001-12) as Galatians parallel texts and detached dissertations, and two are cited in passing (B001-8 lexical cross-reference, B001-11 historical illustration cross-reference), while the remaining eight comparisons (B001-2 through B001-7, B001-9, B001-10) have zero occurrences for the enumerated search patterns in the authenticated text layer and are verified absent from the authorial Scripture index across bounded book sections and standalone citation typography (including Septuagint/MT alternate versifications like Joel 3:5 and Hosea 2:25/2:1).
 B001 Discussion Analysis Table
 B001 ID
 	
@@ -34,7 +34,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
 
 
 3. Romans 9:26 / Hosea 1:10
@@ -45,7 +45,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
 
 
 4. Romans 10:11 / Isaiah 28:16
@@ -56,7 +56,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
 
 
 5. Romans 10:13 / Joel 2:32
@@ -67,7 +67,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
 
 
 6. Romans 11:34 / Isaiah 40:13
@@ -78,7 +78,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
 
 
 7. Romans 15:12 / Isaiah 11:10
@@ -89,7 +89,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
 
 
 8. 1 Corinthians 1:19 / Isaiah 29:14
@@ -111,7 +111,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
 
 
 10. 1 Corinthians 9:9 / Deuteronomy 25:4
@@ -122,7 +122,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
 
 
 11. 1 Corinthians 10:7 / Exodus 32:6

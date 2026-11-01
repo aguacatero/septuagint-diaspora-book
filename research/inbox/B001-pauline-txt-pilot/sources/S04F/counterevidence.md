@@ -26,36 +26,37 @@ On page 164 (fn. 1), Lightfoot explicitly disagrees with commentators who view J
 On page 157 (fn. 1), Lightfoot disagrees with Prof. Benjamin Jowett's general theory regarding the looseness of Paul's language ("an entire mistake"), while acknowledging Jowett's protest against over-subtle restrictions of meaning [p. 157]
 5
 .
-2. B001-2: Romans 9:25 / Hosea 2:23
+2. B001-2: Romans 9:25 / Hosea 2:23 (LXX 2:25)
 Locator / Citation: N/A.
-Result: ZERO MATCHES IN AUTHENTICATED TEXT LAYER (Zero occurrences for the enumerated search patterns in the pinned 1914 text layer; no entry in authorial Scripture index).
-3. B001-3: Romans 9:26 / Hosea 1:10
+Result: ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography).
+3. B001-3: Romans 9:26 / Hosea 1:10 (LXX 2:1)
 Locator / Citation: N/A.
-Result: ZERO MATCHES IN AUTHENTICATED TEXT LAYER (Zero occurrences for the enumerated search patterns in the pinned 1914 text layer; no entry in authorial Scripture index).
+Result: ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography).
 4. B001-4: Romans 10:11 / Isaiah 28:16
 Locator / Citation: N/A.
-Result: ZERO MATCHES IN AUTHENTICATED TEXT LAYER (Zero occurrences for the enumerated search patterns in the pinned 1914 text layer; no entry in authorial Scripture index).
-5. B001-5: Romans 10:13 / Joel 2:32
+Result: ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography).
+5. B001-5: Romans 10:13 / Joel 2:32 (LXX 3:5)
 Locator / Citation: N/A.
-Result: ZERO MATCHES IN AUTHENTICATED TEXT LAYER (Zero occurrences for the enumerated search patterns in the pinned 1914 text layer; no entry in authorial Scripture index).
+Result: ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography).
 6. B001-6: Romans 11:34 / Isaiah 40:13
 Locator / Citation: N/A.
-Result: ZERO MATCHES IN AUTHENTICATED TEXT LAYER (Zero occurrences for the enumerated search patterns in the pinned 1914 text layer; no entry in authorial Scripture index).
+Result: ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography).
 7. B001-7: Romans 15:12 / Isaiah 11:10
 Locator / Citation: N/A.
-Result: ZERO MATCHES IN AUTHENTICATED TEXT LAYER (Zero occurrences for the enumerated search patterns in the pinned 1914 text layer; no entry in authorial Scripture index).
+Result: ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography).
 8. B001-8: 1 Corinthians 1:19 / Isaiah 29:14 (Cross-Reference at Galatians 2:21)
 Page / Locator: Page 120 (Note on Gal 2:21; PDF derivative p. 31).
 Discusses Comparative Lexical / Textual Usage:
 On page 120, Lightfoot provides a cross-reference to 1 Corinthians 1:19 and Luke 7:30 to fix the exact sense of ἀθετῶ ("to nullify / set at nought"), comparing LXX Psalm 34:7 (where Symmachus substituted ἀναιτίως for Hebrew חִנָּם) [p. 120]
+1
 6
 .
 9. B001-9: 1 Corinthians 6:16 / Genesis 2:24
 Locator / Citation: N/A.
-Result: ZERO MATCHES IN AUTHENTICATED TEXT LAYER (Zero occurrences for the enumerated search patterns in the pinned 1914 text layer; no entry in authorial Scripture index).
+Result: ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography).
 10. B001-10: 1 Corinthians 9:9 / Deuteronomy 25:4
 Locator / Citation: N/A.
-Result: ZERO MATCHES IN AUTHENTICATED TEXT LAYER (Zero occurrences for the enumerated search patterns in the pinned 1914 text layer; no entry in authorial Scripture index).
+Result: ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography).
 11. B001-11: 1 Corinthians 10:7 / Exodus 32:6
 Page / Locator: Page 311 (Dissertation III: "St Paul and the Three").
 Result: PASSING CROSS-REFERENCE ONLY. Lightfoot notes: "...St Paul uses the same Old Testament illustration, 1 Cor. x. 7, 8, 'Neither be ye idolaters, as were some of them; as it is written, The people sat down to eat and drink, and rose up to play.'" Passing cross-reference to Paul using the Old Testament idolatry illustration from the Balaam incident; no commentary on the Exodus 32:6 text, translation, or Septuagintal textual variants.

@@ -117,20 +117,20 @@ TARGET_QUERIES = [
         "id": "B001-2",
         "name": "Romans 9:25 / Hosea 2:23",
         "nt_target": "Rom 9:25",
-        "ot_target": "Hos 2:23",
+        "ot_target": "Hos 2:23 (LXX 2:25)",
         "patterns": [
             r"\b(?:Rom|Romans)\b\.?\s*\b(?:9|ix)\b\s*[:\.,]\s*\b(?:25|xxv)\b",
-            r"\b(?:Hos|Hosea)\b\.?\s*\b(?:2|ii)\b\s*[:\.,]\s*\b(?:23|xxiii)\b",
+            r"\b(?:Hos|Hosea)\b\.?\s*\b(?:2|ii)\b\s*[:\.,]\s*\b(?:23|xxiii|25|xxv)\b",
         ],
     },
     {
         "id": "B001-3",
         "name": "Romans 9:26 / Hosea 1:10",
         "nt_target": "Rom 9:26",
-        "ot_target": "Hos 1:10",
+        "ot_target": "Hos 1:10 (LXX 2:1)",
         "patterns": [
             r"\b(?:Rom|Romans)\b\.?\s*\b(?:9|ix)\b\s*[:\.,]\s*\b(?:26|xxvi)\b",
-            r"\b(?:Hos|Hosea)\b\.?\s*\b(?:1|i)\b\s*[:\.,]\s*\b(?:10|x)\b",
+            r"\b(?:Hos|Hosea)\b\.?\s*(?:\b(?:1|i)\b\s*[:\.,]\s*\b(?:10|x)\b|\b(?:2|ii)\b\s*[:\.,]\s*\b(?:1|i)\b)",
         ],
     },
     {
@@ -275,162 +275,380 @@ VERIFIED_MATCH_CATALOG = {
 }
 
 # B001 scripture patterns for bounded authorial index search (printed pp. 375-384).
-# Evaluates both Lightfoot's book-heading format ("Deuteronomy, passages commented on... (xxi. 23)")
-# and standard index citation forms ("Isa. xl. 13", "Deut. xxi. 23").
+# Dual-mode evaluation:
+# 1. Bounded book-section parsing: extracts multi-entry citation lists following book headings
+#    (e.g. "Deuteronomy, passages commented on... (xxi. 23)") bounded by the next top-level entry.
+# 2. Standalone typography patterns: detects standard index citation forms, abbreviations, and
+#    Septuagint/MT alternate versifications (e.g. Joel 3:5 / iii. 5, Hos 2:25, Hos 2:1, Isa. xl. 13).
 B001_INDEX_PATTERNS = {
     "B001-1": {
         "name": "Rom 4:3 / Gen 15:6",
         "nt_target": "Romans 4:3",
         "ot_target": "Genesis 15:6",
+        "expected_in_index": True,
+        "expected_description": "Genesis xv. 6 commented on (p. 159 sq)",
+        "book_headings": [
+            {
+                "book_regex": r"\bGenesis\b",
+                "verse_patterns": [r"(?:xv|15)[\s.:]+6\b", r"\(\s*(?:xv|15)\.\s*6\s*\)"],
+            },
+            {
+                "book_regex": r"\bRomans\b",
+                "verse_patterns": [r"(?:iv|4)[\s.:]+3\b", r"\(\s*(?:iv|4)\.\s*3\s*\)"],
+            },
+        ],
+        "standalone_patterns": [
+            r"Genesis[\s\S]{0,100}?\(?\s*xv\.?\s*6\s*\)?",
+            r"\bGen(?:\.|esis)[\s\S]{0,50}?(?:xv|15)[\s.:]+6\b",
+            r"Romans[\s\S]{0,100}?(?:iv|4)[\s.:]+3\b",
+            r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:iv|4)[\s.:]+3\b",
+        ],
         "patterns": [
             r"Genesis[\s\S]{0,100}?\(?\s*xv\.?\s*6\s*\)?",
             r"\bGen(?:\.|esis)[\s\S]{0,50}?(?:xv|15)[\s.:]+6\b",
             r"Romans[\s\S]{0,100}?(?:iv|4)[\s.:]+3\b",
             r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:iv|4)[\s.:]+3\b",
         ],
-        "expected_in_index": True,
-        "expected_description": "Genesis xv. 6 commented on (p. 159 sq)",
     },
     "B001-2": {
-        "name": "Rom 9:25 / Hos 2:23",
+        "name": "Rom 9:25 / Hos 2:23 (LXX 2:25)",
         "nt_target": "Romans 9:25",
-        "ot_target": "Hosea 2:23",
-        "patterns": [
+        "ot_target": "Hosea 2:23 (LXX 2:25)",
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+        "book_headings": [
+            {
+                "book_regex": r"\bHosea\b",
+                "verse_patterns": [
+                    r"(?:ii|2)[\s.:]+23\b", r"\(\s*(?:ii|2)\.\s*23\s*\)",
+                    r"(?:ii|2)[\s.:]+25\b", r"\(\s*(?:ii|2)\.\s*25\s*\)",
+                ],
+            },
+            {
+                "book_regex": r"\bRomans\b",
+                "verse_patterns": [r"(?:ix|9)[\s.:]+25\b", r"\(\s*(?:ix|9)\.\s*25\s*\)"],
+            },
+        ],
+        "standalone_patterns": [
             r"Hosea[\s\S]{0,100}?(?:ii|2)[\s.:]+23\b",
+            r"Hosea[\s\S]{0,100}?(?:ii|2)[\s.:]+25\b",
             r"\bHos(?:\.|ea)[\s\S]{0,50}?(?:ii|2)[\s.:]+23\b",
+            r"\bHos(?:\.|ea)[\s\S]{0,50}?(?:ii|2)[\s.:]+25\b",
             r"Romans[\s\S]{0,100}?(?:ix|9)[\s.:]+25\b",
             r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:ix|9)[\s.:]+25\b",
         ],
-        "expected_in_index": False,
-        "expected_description": "None (unindexed)",
+        "patterns": [
+            r"Hosea[\s\S]{0,100}?(?:ii|2)[\s.:]+23\b",
+            r"Hosea[\s\S]{0,100}?(?:ii|2)[\s.:]+25\b",
+            r"\bHos(?:\.|ea)[\s\S]{0,50}?(?:ii|2)[\s.:]+23\b",
+            r"\bHos(?:\.|ea)[\s\S]{0,50}?(?:ii|2)[\s.:]+25\b",
+            r"Romans[\s\S]{0,100}?(?:ix|9)[\s.:]+25\b",
+            r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:ix|9)[\s.:]+25\b",
+        ],
     },
     "B001-3": {
-        "name": "Rom 9:26 / Hos 1:10",
+        "name": "Rom 9:26 / Hos 1:10 (LXX 2:1)",
         "nt_target": "Romans 9:26",
-        "ot_target": "Hosea 1:10",
-        "patterns": [
+        "ot_target": "Hosea 1:10 (LXX 2:1)",
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+        "book_headings": [
+            {
+                "book_regex": r"\bHosea\b",
+                "verse_patterns": [
+                    r"(?:i|1)[\s.:]+10\b", r"\(\s*(?:i|1)\.\s*10\s*\)",
+                    r"(?:ii|2)[\s.:]+1\b", r"\(\s*(?:ii|2)\.\s*1\s*\)",
+                ],
+            },
+            {
+                "book_regex": r"\bRomans\b",
+                "verse_patterns": [r"(?:ix|9)[\s.:]+26\b", r"\(\s*(?:ix|9)\.\s*26\s*\)"],
+            },
+        ],
+        "standalone_patterns": [
             r"Hosea[\s\S]{0,100}?(?:i|1)[\s.:]+10\b",
+            r"Hosea[\s\S]{0,100}?(?:ii|2)[\s.:]+1\b",
             r"\bHos(?:\.|ea)[\s\S]{0,50}?(?:i|1)[\s.:]+10\b",
+            r"\bHos(?:\.|ea)[\s\S]{0,50}?(?:ii|2)[\s.:]+1\b",
             r"Romans[\s\S]{0,100}?(?:ix|9)[\s.:]+26\b",
             r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:ix|9)[\s.:]+26\b",
         ],
-        "expected_in_index": False,
-        "expected_description": "None (unindexed)",
+        "patterns": [
+            r"Hosea[\s\S]{0,100}?(?:i|1)[\s.:]+10\b",
+            r"Hosea[\s\S]{0,100}?(?:ii|2)[\s.:]+1\b",
+            r"\bHos(?:\.|ea)[\s\S]{0,50}?(?:i|1)[\s.:]+10\b",
+            r"\bHos(?:\.|ea)[\s\S]{0,50}?(?:ii|2)[\s.:]+1\b",
+            r"Romans[\s\S]{0,100}?(?:ix|9)[\s.:]+26\b",
+            r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:ix|9)[\s.:]+26\b",
+        ],
     },
     "B001-4": {
         "name": "Rom 10:11 / Isa 28:16",
         "nt_target": "Romans 10:11",
         "ot_target": "Isaiah 28:16",
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+        "book_headings": [
+            {
+                "book_regex": r"\bIsaiah\b",
+                "verse_patterns": [r"(?:xxviii|28)[\s.:]+16\b", r"\(\s*(?:xxviii|28)\.\s*16\s*\)"],
+            },
+            {
+                "book_regex": r"\bRomans\b",
+                "verse_patterns": [r"(?:x|10)[\s.:]+11\b", r"\(\s*(?:x|10)\.\s*11\s*\)"],
+            },
+        ],
+        "standalone_patterns": [
+            r"Isaiah[\s\S]{0,100}?(?:xxviii|28)[\s.:]+16\b",
+            r"\bIsa(?:\.|ah)[\s\S]{0,50}?(?:xxviii|28)[\s.:]+16\b",
+            r"Romans[\s\S]{0,100}?(?:x|10)[\s.:]+11\b",
+            r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:x|10)[\s.:]+11\b",
+        ],
         "patterns": [
             r"Isaiah[\s\S]{0,100}?(?:xxviii|28)[\s.:]+16\b",
             r"\bIsa(?:\.|ah)[\s\S]{0,50}?(?:xxviii|28)[\s.:]+16\b",
             r"Romans[\s\S]{0,100}?(?:x|10)[\s.:]+11\b",
             r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:x|10)[\s.:]+11\b",
         ],
-        "expected_in_index": False,
-        "expected_description": "None (unindexed)",
     },
     "B001-5": {
-        "name": "Rom 10:13 / Joel 2:32",
+        "name": "Rom 10:13 / Joel 2:32 (LXX 3:5)",
         "nt_target": "Romans 10:13",
-        "ot_target": "Joel 2:32",
-        "patterns": [
+        "ot_target": "Joel 2:32 (LXX 3:5)",
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+        "book_headings": [
+            {
+                "book_regex": r"\bJoel\b",
+                "verse_patterns": [
+                    r"(?:ii|2)[\s.:]+32\b", r"\(\s*(?:ii|2)\.\s*32\s*\)",
+                    r"(?:iii|3)[\s.:]+5\b", r"\(\s*(?:iii|3)\.\s*5\s*\)",
+                ],
+            },
+            {
+                "book_regex": r"\bRomans\b",
+                "verse_patterns": [r"(?:x|10)[\s.:]+13\b", r"\(\s*(?:x|10)\.\s*13\s*\)"],
+            },
+        ],
+        "standalone_patterns": [
             r"Joel[\s\S]{0,100}?(?:ii|2)[\s.:]+32\b",
+            r"Joel[\s\S]{0,100}?(?:iii|3)[\s.:]+5\b",
             r"\bJoel\b[\s\S]{0,50}?(?:ii|2)[\s.:]+32\b",
+            r"\bJoel\b[\s\S]{0,50}?(?:iii|3)[\s.:]+5\b",
             r"Romans[\s\S]{0,100}?(?:x|10)[\s.:]+13\b",
             r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:x|10)[\s.:]+13\b",
         ],
-        "expected_in_index": False,
-        "expected_description": "None (unindexed)",
+        "patterns": [
+            r"Joel[\s\S]{0,100}?(?:ii|2)[\s.:]+32\b",
+            r"Joel[\s\S]{0,100}?(?:iii|3)[\s.:]+5\b",
+            r"\bJoel\b[\s\S]{0,50}?(?:ii|2)[\s.:]+32\b",
+            r"\bJoel\b[\s\S]{0,50}?(?:iii|3)[\s.:]+5\b",
+            r"Romans[\s\S]{0,100}?(?:x|10)[\s.:]+13\b",
+            r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:x|10)[\s.:]+13\b",
+        ],
     },
     "B001-6": {
         "name": "Rom 11:34 / Isa 40:13",
         "nt_target": "Romans 11:34",
         "ot_target": "Isaiah 40:13",
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+        "book_headings": [
+            {
+                "book_regex": r"\bIsaiah\b",
+                "verse_patterns": [r"(?:xl|40)[\s.:]+13\b", r"\(\s*(?:xl|40)\.\s*13\s*\)"],
+            },
+            {
+                "book_regex": r"\bRomans\b",
+                "verse_patterns": [r"(?:xi|11)[\s.:]+34\b", r"\(\s*(?:xi|11)\.\s*34\s*\)"],
+            },
+        ],
+        "standalone_patterns": [
+            r"Isaiah[\s\S]{0,100}?(?:xl|40)[\s.:]+13\b",
+            r"\bIsa(?:\.|ah)[\s\S]{0,50}?(?:xl|40)[\s.:]+13\b",
+            r"Romans[\s\S]{0,100}?(?:xi|11)[\s.:]+34\b",
+            r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:xi|11)[\s.:]+34\b",
+        ],
         "patterns": [
             r"Isaiah[\s\S]{0,100}?(?:xl|40)[\s.:]+13\b",
             r"\bIsa(?:\.|ah)[\s\S]{0,50}?(?:xl|40)[\s.:]+13\b",
             r"Romans[\s\S]{0,100}?(?:xi|11)[\s.:]+34\b",
             r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:xi|11)[\s.:]+34\b",
         ],
-        "expected_in_index": False,
-        "expected_description": "None (unindexed)",
     },
     "B001-7": {
         "name": "Rom 15:12 / Isa 11:10",
         "nt_target": "Romans 15:12",
         "ot_target": "Isaiah 11:10",
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+        "book_headings": [
+            {
+                "book_regex": r"\bIsaiah\b",
+                "verse_patterns": [r"(?:xi|11)[\s.:]+10\b", r"\(\s*(?:xi|11)\.\s*10\s*\)"],
+            },
+            {
+                "book_regex": r"\bRomans\b",
+                "verse_patterns": [r"(?:xv|15)[\s.:]+12\b", r"\(\s*(?:xv|15)\.\s*12\s*\)"],
+            },
+        ],
+        "standalone_patterns": [
+            r"Isaiah[\s\S]{0,100}?(?:xi|11)[\s.:]+10\b",
+            r"\bIsa(?:\.|ah)[\s\S]{0,50}?(?:xi|11)[\s.:]+10\b",
+            r"Romans[\s\S]{0,100}?(?:xv|15)[\s.:]+12\b",
+            r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:xv|15)[\s.:]+12\b",
+        ],
         "patterns": [
             r"Isaiah[\s\S]{0,100}?(?:xi|11)[\s.:]+10\b",
             r"\bIsa(?:\.|ah)[\s\S]{0,50}?(?:xi|11)[\s.:]+10\b",
             r"Romans[\s\S]{0,100}?(?:xv|15)[\s.:]+12\b",
             r"\bRom(?:\.|ans)[\s\S]{0,50}?(?:xv|15)[\s.:]+12\b",
         ],
-        "expected_in_index": False,
-        "expected_description": "None (unindexed)",
     },
     "B001-8": {
         "name": "1 Cor 1:19 / Isa 29:14",
         "nt_target": "1 Corinthians 1:19",
         "ot_target": "Isaiah 29:14",
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+        "book_headings": [
+            {
+                "book_regex": r"\bIsaiah\b",
+                "verse_patterns": [r"(?:xxix|29)[\s.:]+14\b", r"\(\s*(?:xxix|29)\.\s*14\s*\)"],
+            },
+            {
+                "book_regex": r"\bCorinthians\b",
+                "verse_patterns": [r"(?:i|1)[\s.:]+19\b", r"\(\s*(?:i|1)\.\s*19\s*\)"],
+            },
+        ],
+        "standalone_patterns": [
+            r"Corinthians[\s\S]{0,100}?(?:i|1)[\s.:]+19\b",
+            r"\b1\s*Cor(?:\.|inthians)[\s\S]{0,50}?(?:i|1)[\s.:]+19\b",
+            r"Isaiah[\s\S]{0,100}?(?:xxix|29)[\s.:]+14\b",
+            r"\bIsa(?:\.|ah)[\s\S]{0,50}?(?:xxix|29)[\s.:]+14\b",
+        ],
         "patterns": [
             r"Corinthians[\s\S]{0,100}?(?:i|1)[\s.:]+19\b",
             r"\b1\s*Cor(?:\.|inthians)[\s\S]{0,50}?(?:i|1)[\s.:]+19\b",
             r"Isaiah[\s\S]{0,100}?(?:xxix|29)[\s.:]+14\b",
             r"\bIsa(?:\.|ah)[\s\S]{0,50}?(?:xxix|29)[\s.:]+14\b",
         ],
-        "expected_in_index": False,
-        "expected_description": "None (unindexed)",
     },
     "B001-9": {
         "name": "1 Cor 6:16 / Gen 2:24",
         "nt_target": "1 Corinthians 6:16",
         "ot_target": "Genesis 2:24",
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+        "book_headings": [
+            {
+                "book_regex": r"\bGenesis\b",
+                "verse_patterns": [r"(?:ii|2)[\s.:]+24\b", r"\(\s*(?:ii|2)\.\s*24\s*\)"],
+            },
+            {
+                "book_regex": r"\bCorinthians\b",
+                "verse_patterns": [r"(?:vi|6)[\s.:]+16\b", r"\(\s*(?:vi|6)\.\s*16\s*\)"],
+            },
+        ],
+        "standalone_patterns": [
+            r"Corinthians[\s\S]{0,100}?(?:vi|6)[\s.:]+16\b",
+            r"\b1\s*Cor(?:\.|inthians)[\s\S]{0,50}?(?:vi|6)[\s.:]+16\b",
+            r"Genesis[\s\S]{0,100}?(?:ii|2)[\s.:]+24\b",
+            r"\bGen(?:\.|esis)[\s\S]{0,50}?(?:ii|2)[\s.:]+24\b",
+        ],
         "patterns": [
             r"Corinthians[\s\S]{0,100}?(?:vi|6)[\s.:]+16\b",
             r"\b1\s*Cor(?:\.|inthians)[\s\S]{0,50}?(?:vi|6)[\s.:]+16\b",
             r"Genesis[\s\S]{0,100}?(?:ii|2)[\s.:]+24\b",
             r"\bGen(?:\.|esis)[\s\S]{0,50}?(?:ii|2)[\s.:]+24\b",
         ],
-        "expected_in_index": False,
-        "expected_description": "None (unindexed)",
     },
     "B001-10": {
         "name": "1 Cor 9:9 / Deut 25:4",
         "nt_target": "1 Corinthians 9:9",
         "ot_target": "Deuteronomy 25:4",
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+        "book_headings": [
+            {
+                "book_regex": r"\bDeuteronomy\b",
+                "verse_patterns": [r"(?:xxv|25)[\s.:]+4\b", r"\(\s*(?:xxv|25)\.\s*4\s*\)"],
+            },
+            {
+                "book_regex": r"\bCorinthians\b",
+                "verse_patterns": [r"(?:ix|9)[\s.:]+9\b", r"\(\s*(?:ix|9)\.\s*9\s*\)"],
+            },
+        ],
+        "standalone_patterns": [
+            r"Corinthians[\s\S]{0,100}?(?:ix|9)[\s.:]+9\b",
+            r"\b1\s*Cor(?:\.|inthians)[\s\S]{0,50}?(?:ix|9)[\s.:]+9\b",
+            r"Deuteronomy[\s\S]{0,100}?(?:xxv|25)[\s.:]+4\b",
+            r"\bDeut(?:\.|eronomy)[\s\S]{0,50}?(?:xxv|25)[\s.:]+4\b",
+        ],
         "patterns": [
             r"Corinthians[\s\S]{0,100}?(?:ix|9)[\s.:]+9\b",
             r"\b1\s*Cor(?:\.|inthians)[\s\S]{0,50}?(?:ix|9)[\s.:]+9\b",
             r"Deuteronomy[\s\S]{0,100}?(?:xxv|25)[\s.:]+4\b",
             r"\bDeut(?:\.|eronomy)[\s\S]{0,50}?(?:xxv|25)[\s.:]+4\b",
         ],
-        "expected_in_index": False,
-        "expected_description": "None (unindexed)",
     },
     "B001-11": {
         "name": "1 Cor 10:7 / Exod 32:6",
         "nt_target": "1 Corinthians 10:7",
         "ot_target": "Exodus 32:6",
+        "expected_in_index": False,
+        "expected_description": "None (unindexed)",
+        "book_headings": [
+            {
+                "book_regex": r"\bExodus\b",
+                "verse_patterns": [r"(?:xxxii|32)[\s.:]+6\b", r"\(\s*(?:xxxii|32)\.\s*6\s*\)"],
+            },
+            {
+                "book_regex": r"\bCorinthians\b",
+                "verse_patterns": [r"(?:x|10)[\s.:]+7\b", r"\(\s*(?:x|10)\.\s*7\s*\)"],
+            },
+        ],
+        "standalone_patterns": [
+            r"Corinthians[\s\S]{0,100}?(?:x|10)[\s.:]+7\b",
+            r"\b1\s*Cor(?:\.|inthians)[\s\S]{0,50}?(?:x|10)[\s.:]+7\b",
+            r"Exodus[\s\S]{0,100}?(?:xxxii|32)[\s.:]+6\b",
+            r"\bExod(?:\.|us)[\s\S]{0,50}?(?:xxxii|32)[\s.:]+6\b",
+        ],
         "patterns": [
             r"Corinthians[\s\S]{0,100}?(?:x|10)[\s.:]+7\b",
             r"\b1\s*Cor(?:\.|inthians)[\s\S]{0,50}?(?:x|10)[\s.:]+7\b",
             r"Exodus[\s\S]{0,100}?(?:xxxii|32)[\s.:]+6\b",
             r"\bExod(?:\.|us)[\s\S]{0,50}?(?:xxxii|32)[\s.:]+6\b",
         ],
-        "expected_in_index": False,
-        "expected_description": "None (unindexed)",
     },
     "B001-12": {
         "name": "Gal 3:13 / Deut 21:23",
         "nt_target": "Galatians 3:13",
         "ot_target": "Deuteronomy 21:23",
+        "expected_in_index": True,
+        "expected_description": "Deuteronomy xxi. 23 commented on (p. 152 sq)",
+        "book_headings": [
+            {
+                "book_regex": r"\bDeuteronomy\b",
+                "verse_patterns": [r"(?:xxi|21)[\s.:]+23\b", r"\(\s*(?:xxi|21)\.\s*23\s*\)"],
+            },
+            {
+                "book_regex": r"\bGalatians\b",
+                "verse_patterns": [r"(?:iii|3)[\s.:]+13\b", r"\(\s*(?:iii|3)\.\s*13\s*\)"],
+            },
+        ],
+        "standalone_patterns": [
+            r"Deuteronomy[\s\S]{0,100}?\(?\s*xxi\.?\s*23\s*\)?",
+            r"\bDeut(?:\.|eronomy)[\s\S]{0,50}?(?:xxi|21)[\s.:]+23\b",
+            r"Galatians[\s\S]{0,100}?(?:iii|3)[\s.:]+13\b",
+            r"\bGal(?:\.|atians)[\s\S]{0,50}?(?:iii|3)[\s.:]+13\b",
+        ],
         "patterns": [
             r"Deuteronomy[\s\S]{0,100}?\(?\s*xxi\.?\s*23\s*\)?",
             r"\bDeut(?:\.|eronomy)[\s\S]{0,50}?(?:xxi|21)[\s.:]+23\b",
+            r"Galatians[\s\S]{0,100}?(?:iii|3)[\s.:]+13\b",
+            r"\bGal(?:\.|atians)[\s\S]{0,50}?(?:iii|3)[\s.:]+13\b",
         ],
-        "expected_in_index": True,
-        "expected_description": "Deuteronomy xxi. 23 commented on (p. 152 sq)",
     },
 }
 
@@ -486,10 +704,34 @@ def scan_matches(text: str, pattern: str) -> list[dict]:
     return results
 
 
+def extract_book_sections(index_text: str, book_regex: str) -> list[tuple[int, str]]:
+    """
+    Extract bounded index text chunks corresponding to a specific book heading.
+    Each chunk starts at the book heading and extends until the next major headword entry
+    (newline followed by an unindented word >= 3 chars and delimiter) or up to 2500 characters.
+    """
+    sections = []
+    for m in re.finditer(book_regex, index_text, re.IGNORECASE):
+        start = m.start()
+        chunk = index_text[start:start + 2500]
+        # Look for next top-level headword: newline followed by a word (length >= 3)
+        # and punctuation/space, excluding parenthesized subentries or lower-case text
+        m_next = re.search(r"\n(?:[A-Z][a-z]{2,}|[α-ωΑ-Ω]{2,})[,\s]", chunk[len(m.group(0)):])
+        if m_next:
+            end_offset = len(m.group(0)) + m_next.start()
+            sections.append((start, chunk[:end_offset]))
+        else:
+            sections.append((start, chunk))
+    return sections
+
+
 def verify_index_structure(full_text: str) -> dict:
     """
     Programmatically verify bounded authorial index structure, positive controls,
     and per-locus presence/absence across all twelve B001 targets.
+    Dual-mode evaluation:
+    1. Bounded book-section parsing (multi-entry lists under book headings)
+    2. Standalone citation typography patterns (across entire bounded index)
     """
     m_start = re.search(r"\n\x0cINDEX\.\n|INDEX\.\nApranaM", full_text)
     if not m_start:
@@ -538,12 +780,26 @@ def verify_index_structure(full_text: str) -> dict:
     target_results = {}
     for b001_id, t in B001_INDEX_PATTERNS.items():
         hits = []
-        for pat in t["patterns"]:
+
+        # 1. Bounded book-section parsing (multi-entry lists under book headings)
+        for bh in t.get("book_headings", []):
+            sections = extract_book_sections(bounded_index_text, bh["book_regex"])
+            for sec_start, sec_text in sections:
+                for vp in bh["verse_patterns"]:
+                    for m in re.finditer(vp, sec_text, re.IGNORECASE):
+                        snippet = sec_text[max(0, m.start() - 25):min(len(sec_text), m.end() + 25)].replace("\n", " ").strip()
+                        clean_match = m.group(0).replace("\n", " ").strip()
+                        abs_start = sec_start + m.start()
+                        if not any(abs_start == h["start"] or clean_match in h["match"] for h in hits):
+                            hits.append({"match": clean_match, "start": abs_start, "snippet": snippet, "type": "book_section"})
+
+        # 2. Standalone typography patterns across entire bounded index
+        for pat in t.get("standalone_patterns", t.get("patterns", [])):
             for m in re.finditer(pat, bounded_index_text, re.IGNORECASE):
                 snippet = bounded_index_text[max(0, m.start() - 25):min(len(bounded_index_text), m.end() + 25)].replace("\n", " ").strip()
                 clean_match = m.group(0).replace("\n", " ").strip()
-                if not any(clean_match in h["match"] or h["match"] in clean_match for h in hits):
-                    hits.append({"match": clean_match, "start": m.start(), "snippet": snippet})
+                if not any(m.start() == h["start"] or clean_match in h["match"] for h in hits):
+                    hits.append({"match": clean_match, "start": m.start(), "snippet": snippet, "type": "standalone"})
 
         has_hit = len(hits) > 0
         expected = t["expected_in_index"]
@@ -664,7 +920,7 @@ def build_markdown_report(
         lines.append("2. **B001-8 (1 Corinthians 1:19 / Isaiah 29:14):** 1 passing lexical citation on Galatians 2:21 (printed p. 120), citing 1 Cor 1:19 for the lexical meaning of ἀθετῶ ('to nullify'); no quotation analysis of Isaiah 29:14.")
         lines.append("3. **B001-11 (1 Corinthians 10:7 / Exodus 32:6):** 1 passing illustration citation in Dissertation III (*St Paul and the Three*, printed p. 311), citing 1 Cor 10:7–8 on the Balaam idolatry illustration; no commentary on Exodus 32:6.")
         lines.append("4. **Remaining Eight Loci (B001-2, B001-3, B001-4, B001-5, B001-6, B001-7, B001-9, B001-10):** **0 occurrences** detected for the enumerated search patterns across all 408 pages.")
-        lines.append("   - *Measured Methodological Scope:* Regex pattern searches detect specific book/chapter/verse citation typography in authentic 19th/20th-century formats. They do not constitute an exhaustive semantic proof of every unnumbered allusion or thematic discussion; however, authorial index validation confirms no dedicated entries for these scriptural loci exist in the volume's comprehensive index.")
+        lines.append("   - *Measured Methodological Scope:* Regex pattern searches detect specific book/chapter/verse citation typography in authentic 19th/20th-century formats, including Septuagint/MT alternate versifications (e.g. Joel 3:5 / iii. 5, Hos 2:25, Hos 2:1). They do not constitute an exhaustive semantic proof of every unnumbered allusion or thematic discussion; however, authorial index validation confirms no dedicated entries for these scriptural loci exist in the volume's comprehensive index under either bounded multi-entry book sections or standalone citation forms.")
         lines.append("")
 
     lines.append("---")
@@ -701,7 +957,9 @@ def build_markdown_report(
     lines.append("### Per-Locus Authorial Scripture Index Ledger")
     lines.append("")
     lines.append("Lightfoot's *Galatians* index combines subjects, persons, Greek words, and scriptural citations into a single comprehensive index (printed pp. 375–384), indexing scripture passages commented on directly under their respective biblical book names (e.g. *Genesis, passages commented on*, *Deuteronomy, passages commented on*).")
-    lines.append("Each B001 target is evaluated against the bounded index text using both Lightfoot's book-heading format and standard citation typography:")
+    lines.append("Each B001 target is evaluated against the bounded index text using dual-mode verification:")
+    lines.append("1. **Bounded Book-Section Parsing:** Extracts multi-entry citation lists following each book heading up to the next major headword entry (or up to 2,500 characters), detecting entries regardless of intervening citations or distance from the heading.")
+    lines.append("2. **Standalone Citation Typography:** Evaluates standard citation typography, abbreviations, and Septuagint/MT alternate versifications (e.g. Joel 3:5 / iii. 5, Hos 2:25, Hos 2:1) across the entire bounded index text.")
     lines.append("")
     lines.append("| B001 ID | Comparison | NT / OT Target | Expected in Index | Detected Index Matches | Index Verification Status |")
     lines.append("|:---|:---|:---|:---:|:---|:---:|")

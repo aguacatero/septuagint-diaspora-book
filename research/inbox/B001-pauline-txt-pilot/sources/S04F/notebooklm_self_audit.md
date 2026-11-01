@@ -43,6 +43,14 @@ An audit of the extractions against J. B. Lightfoot’s *Saint Paul's Epistle to
 - **Protection Against Unauthenticated Overwrite (F2):** Verifier script refuses to overwrite canonical report (`DEFAULT_OUT_PATH`) when `--allow-text-digest-mismatch` is active (exit code 9). Under unauthenticated execution, zero hits are classified as `UNVERIFIED_ZERO_MATCHES` and negative absence is never certified.
 - **Narrowed Negative Scope (M3):** Negative findings are explicitly stated as "zero occurrences for the enumerated search patterns in the pinned 1914 text layer; verified absent from authorial Scripture index" rather than speculative absolute claims.
 
+### 9. Per-Locus Index Parsing & Clean-Clone Portability (S04F-R2-F1, S04F-R3-F1, S04F-R3-M1)
+- **Per-Locus Scripture Reference Inventory (R2-F1):** Evaluates all 12 B001 targets against Lightfoot's authentic index (printed pp. 375–384), failing closed if expected entries (B001-1, B001-12) are missing or unexpected entries appear among negative targets.
+- **Dual-Mode Index Verification & LXX Versification (R3-F1):**
+  1. *Bounded Book-Section Parsing:* Implemented `extract_book_sections()` in `scripts/verify_s04f_negative_search.py` to extract multi-entry citation lists under book headings up to the next top-level index headword, detecting target verses regardless of intervening citations or distance from the heading.
+  2. *Standalone Citation Typography:* Covers standard index citation typography, abbreviations, and Septuagint/MT alternate versifications (Joel 3:5 / iii. 5 for B001-5, Hos 2:25 for B001-2, Hos 2:1 for B001-3).
+  3. *Adversarial Regression Tests:* Verified via deterministic tests in `tests/test_citation_ledger_crosswalk.py` injecting reviewer counterexamples: `Isa. xl. 13` (B001-6), `Joel iii. 5` (B001-5), and multi-entry `Deut xxv. 4` at distance > 100 characters (B001-10). All fail closed as required.
+- **Clean-Clone Test Portability (R3-M1):** Checked in versioned, provenance-labeled fixture `tests/fixtures/s04f_authorial_index_fixture.txt` (SHA-256: `8e89b1b9ecf61c9350aea2e1ff32f60135d834ebf9ff26cf6c1c68c848968d88`). Unit tests and adversarial suites run unconditionally against this tracked fixture, ensuring 91/91 tests pass on a fresh clone without reliance on machine-local `/tmp` files.
+
 ---
 
 ## Audit Verification Across the 7 Audit Checks

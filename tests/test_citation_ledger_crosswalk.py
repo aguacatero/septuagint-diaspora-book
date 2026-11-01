@@ -1139,16 +1139,15 @@ def test_s04f_authorial_qualifications_and_b001_11_sync():
 
 
 def test_s04f_index_per_locus_scripture_inventory():
-    """S04F-R2-F1 regression guard: Verify per-locus Scripture Index evaluation across all 12 B001 loci."""
+    """S04F-R2-F1 & S04F-R3-M1: Verify per-locus Scripture Index evaluation on clean-clone versioned fixture."""
     repo_root = Path(__file__).resolve().parent.parent
     import sys
     sys.path.insert(0, str(repo_root / "scripts"))
     import verify_s04f_negative_search as vns
 
-    text_path = Path("/tmp/lightfoot_full_text.txt")
-    if not text_path.exists():
-        text_path = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S04F/lightfoot_full_text.txt"
-    text = text_path.read_text(encoding="utf-8")
+    fixture_path = repo_root / "tests/fixtures/s04f_authorial_index_fixture.txt"
+    assert fixture_path.exists(), f"Tracked index fixture missing at {fixture_path}"
+    text = fixture_path.read_text(encoding="utf-8")
 
     index_res = vns.verify_index_structure(text)
     assert index_res["index_present"] is True
@@ -1179,42 +1178,79 @@ def test_s04f_index_per_locus_scripture_inventory():
 
 
 def test_s04f_index_counterexample_fails_closed():
-    """S04F-R2-F1 adversarial test: Reviewer counterexample (Isa. xl. 13 inserted) must fail index verification."""
+    """
+    S04F-R2-F1 & S04F-R3-F1 adversarial regression suite:
+    1. Reviewer R2 counterexample (Isa. xl. 13 inserted) fails closed under B001-6.
+    2. Reviewer R3-F1 counterexample (Joel iii. 5 inserted) fails closed under B001-5.
+    3. Multi-entry book-section entry beyond 100 characters (Deut xxv. 4 inserted) fails closed under B001-10.
+    """
     repo_root = Path(__file__).resolve().parent.parent
     import sys
     sys.path.insert(0, str(repo_root / "scripts"))
     import verify_s04f_negative_search as vns
 
-    text_path = Path("/tmp/lightfoot_full_text.txt")
-    if not text_path.exists():
-        text_path = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S04F/lightfoot_full_text.txt"
-    text = text_path.read_text(encoding="utf-8")
+    fixture_path = repo_root / "tests/fixtures/s04f_authorial_index_fixture.txt"
+    assert fixture_path.exists(), f"Tracked index fixture missing at {fixture_path}"
+    text = fixture_path.read_text(encoding="utf-8")
 
-    # Inject the reviewer's exact counterexample into the bounded index
-    # (just before the colophon delimiter)
     m_start = re.search(r"\n\x0cINDEX\.\n|INDEX\.\nApranaM", text)
-    assert m_start is not None
-    idx_start = m_start.start()
+    idx_start = m_start.start() if m_start else 0
     m_end = re.search(vns.INDEX_END_PATTERNS[0], text[idx_start:])
     assert m_end is not None
     insert_pos = idx_start + m_end.start()
-    adversarial_text = (
-        text[:insert_pos]
-        + "\nIII. PASSAGES OF SCRIPTURE\nIsa. xl. 13, p. 44\n"
-        + text[insert_pos:]
+
+    # Adversarial Case 1: Reviewer R2 counterexample (Isa. xl. 13, p. 44)
+    adv_isa = text[:insert_pos] + "\nIII. PASSAGES OF SCRIPTURE\nIsa. xl. 13, p. 44\n" + text[insert_pos:]
+    res_isa = vns.verify_index_structure(adv_isa)
+    assert res_isa["targets_passed"] is False, "Expected targets verification to fail on inserted Isa. xl. 13"
+    assert res_isa["passed"] is False, "Expected index verification to fail on inserted Isa. xl. 13"
+    assert res_isa["target_results"]["B001-6"]["passed"] is False
+    assert any("Isa. xl. 13" in h["match"] for h in res_isa["target_results"]["B001-6"]["hits"])
+
+    # Adversarial Case 2: Reviewer R3-F1 counterexample (Joel iii. 5, p. 44)
+    adv_joel = text[:insert_pos] + "\nJoel iii. 5, p. 44\n" + text[insert_pos:]
+    res_joel = vns.verify_index_structure(adv_joel)
+    assert res_joel["targets_passed"] is False, "Expected targets verification to fail on inserted Joel iii. 5"
+    assert res_joel["passed"] is False, "Expected index verification to fail on inserted Joel iii. 5"
+    assert res_joel["target_results"]["B001-5"]["passed"] is False
+    assert any("iii. 5" in h["match"] or "3:5" in h["match"] for h in res_joel["target_results"]["B001-5"]["hits"])
+
+    # Adversarial Case 3: Book-section entry beyond 100 characters from heading (Deut xxv. 4 inserted)
+    adv_deut = text.replace(
+        "Deuteronomy, passages commented on;",
+        "Deuteronomy, passages commented on; (iv. 1) p. 10; (v. 2) p. 20; (vi. 3) p. 30; (vii. 4) p. 40; (viii. 5) p. 50; (ix. 6) p. 60; (x. 7) p. 70; (xxv. 4) p. 80;"
+    )
+    res_deut = vns.verify_index_structure(adv_deut)
+    assert res_deut["targets_passed"] is False, "Expected targets verification to fail on inserted Deut xxv. 4"
+    assert res_deut["passed"] is False, "Expected index verification to fail on inserted Deut xxv. 4"
+    assert res_deut["target_results"]["B001-10"]["passed"] is False
+    assert any("xxv. 4" in h["match"] or "25:4" in h["match"] for h in res_deut["target_results"]["B001-10"]["hits"])
+
+
+def test_s04f_index_fixture_provenance_and_clean_clone_reproducibility():
+    """S04F-R3-M1 regression guard: Verify index fixture existence, provenance SHA, and clean-clone portability."""
+    import hashlib
+    repo_root = Path(__file__).resolve().parent.parent
+    import sys
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s04f_negative_search as vns
+
+    fixture_path = repo_root / "tests/fixtures/s04f_authorial_index_fixture.txt"
+    assert fixture_path.exists(), f"Fixture missing at {fixture_path}"
+
+    # Verify SHA-256 of the versioned fixture matches the authentic index layer
+    fixture_bytes = fixture_path.read_bytes()
+    fixture_sha = hashlib.sha256(fixture_bytes).hexdigest()
+    assert fixture_sha == "8e89b1b9ecf61c9350aea2e1ff32f60135d834ebf9ff26cf6c1c68c848968d88", (
+        f"Fixture SHA mismatch: expected 8e89b1b9..., got {fixture_sha}"
     )
 
-    adv_res = vns.verify_index_structure(adversarial_text)
-
-    # Must fail closed: targets_passed must be False and overall passed must be False
-    assert adv_res["targets_passed"] is False, "Expected index targets verification to fail on inserted Isa. xl. 13!"
-    assert adv_res["passed"] is False, "Expected overall index verification to fail on inserted Isa. xl. 13!"
-
-    # B001-6 must specifically register the unexpected hit
-    b001_6 = adv_res["target_results"]["B001-6"]
-    assert b001_6["passed"] is False
-    assert b001_6["hit_count"] >= 1
-    assert any("Isa. xl. 13" in h["match"] for h in b001_6["hits"])
+    # Verify that full index verification passes cleanly on the fixture alone
+    fixture_text = fixture_bytes.decode("utf-8")
+    res = vns.verify_index_structure(fixture_text)
+    assert res["passed"] is True
+    assert res["structural_passed"] is True
+    assert res["targets_passed"] is True
 
 
 

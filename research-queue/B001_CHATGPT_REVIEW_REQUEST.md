@@ -5,7 +5,7 @@ Antigravity rewrites this file for every source before requesting review.
 ## Current source
 
 - Source ID: `S04F`
-- Review Round: `Round 3 — Remediation of S04F-R2-F1, S04F-R2-L1, and S04F-R2-L2`
+- Review Round: `Round 4 — Remediation of S04F-R3-F1 and S04F-R3-M1`
 - Exact citation: J. B. Lightfoot, *Saint Paul's Epistle to the Galatians: A Revised Text with Introduction, Notes, and Dissertations* (London: Macmillan and Co., Limited, 1914 reprint of the tenth edition 1890).
 - Branch: `research/B001-notebooklm-serial`
 - Draft PR: `2`
@@ -14,6 +14,28 @@ Antigravity rewrites this file for every source before requesting review.
 - Previous source disposition: `S03F ACCEPTED` in Round 5 independent review ([#issuecomment-6460107612](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6460107612)) at commit `c518c27339c9f1df4e9c17154361b6944de35f2b`, and promoted to cumulative notebook `SDP-01 Paul`.
 - Round 1 Review Verdict: `SOURCE_PACKET: REVISE`, `MERGE: NO`, `REQUEST CHANGES: YES` ([#issuecomment-6546174969](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6546174969)) at commit `c7cb48f41a1c522af0aa3e01de484317625797c4`.
 - Round 2 Review Verdict: `SOURCE_PACKET: REVISE`, `MERGE: NO`, `REQUEST CHANGES: YES` ([#issuecomment-6548475674](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6548475674)) at commit `35e5415b6a98ff294d1a668464950c7dce7f9fc0`.
+- Round 3 Review Verdict: `SOURCE_PACKET: REVISE`, `MERGE: NO`, `REQUEST CHANGES: YES` ([#issuecomment-6553123090](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6553123090)) at commit `0f06e315012df1703b5e6794e150b2af68f9588b`.
+
+## Round 3 Findings Remediated in Round 4
+
+1. **S04F-R3-F1 [HIGH/BLOCKING] — Dual-Mode Index Parsing & Complete LXX Versification (Joel 3:5, Hos 2:25, Hos 2:1):**
+   - Extended `B001_INDEX_PATTERNS` in `scripts/verify_s04f_negative_search.py` to a dual-mode evaluation architecture:
+     1. *Bounded Book-Section Parsing (`extract_book_sections`):* Extracts multi-entry citation lists under book headings up to the next top-level index headword (or up to 2,500 characters), detecting entries regardless of intervening citations or distance from the heading.
+     2. *Standalone Citation Typography:* Evaluates standard citation typography, abbreviations, and Septuagint/MT alternate versifications across the entire bounded index text.
+   - Added recognized Septuagint versification patterns:
+     - `B001-5`: added `(?:iii|3)[\s.:]+5\b` (Joel 3:5 / LXX 3:5) alongside `2:32 / ii. 32`.
+     - `B001-2`: added `(?:ii|2)[\s.:]+25\b` (Hos 2:25 / LXX 2:25) alongside `2:23 / ii. 23`.
+     - `B001-3`: added `(?:ii|2)[\s.:]+1\b` (Hos 2:1 / LXX 2:1) alongside `1:10 / i. 10`.
+   - Added deterministic adversarial regression tests in `tests/test_citation_ledger_crosswalk.py`:
+     - `Isa. xl. 13` insertion (R2 counterexample) fails closed under B001-6.
+     - `Joel iii. 5` insertion (R3-F1 counterexample) fails closed under B001-5.
+     - Window-exceeding multi-entry `Deut xxv. 4` at distance > 100 characters fails closed under B001-10.
+   - Reconciled narrative assertions in `full_volume_search_log.md`, `relevance_scan.md`, `counterevidence.md`, and `notebooklm_self_audit.md`.
+2. **S04F-R3-M1 [MED] — Clean-Clone Test Portability & Tracked Index Fixture:**
+   - Created and tracked versioned fixture `tests/fixtures/s04f_authorial_index_fixture.txt` (SHA-256: `8e89b1b9ecf61c9350aea2e1ff32f60135d834ebf9ff26cf6c1c68c848968d88`), capturing the authentic text layer of printed pages 375–384 bounded between `INDEX.` and the Cambridge University Press colophon.
+   - Rewrote `test_s04f_index_per_locus_scripture_inventory` and `test_s04f_index_counterexample_fails_closed` to run unconditionally against this tracked fixture.
+   - Added `test_s04f_index_fixture_provenance_and_clean_clone_reproducibility` verifying fixture SHA and clean pass.
+   - Completely eliminated test dependencies on machine-local `/tmp/lightfoot_full_text.txt`. All 91 pytest tests pass on a fresh checkout.
 
 ## Round 2 Findings Remediated in Round 3
 
