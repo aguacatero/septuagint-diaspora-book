@@ -17,7 +17,7 @@ The **Septuagint** is the ancient Greek translation and collection of Jewish scr
 5. **Could the New Testament writings be later than usually thought?** We are testing the hypothesis that **all four Gospels and the surviving Pauline letters may have been written, substantially edited, or finalized after 70 CE**, when Roman forces destroyed Jerusalem's Second Temple. We will distinguish original composition from later editing and test this proposal against earlier dates and evidence for pre-70 traditions.
 6. **What remains of the historical Jesus?** After examining literary sources and cultural influences, which claims about a real person can be supported independently? The answer could be substantial, minimal, uncertain, or compatible with a literary-origin model. No outcome is decided in advance.
 
-These newer questions are recorded in the [Gospel origins research proposal](research-queue/proposals/2026-11-01-gospel-origins-mark-mazdean-post70.md) ([draft PR #4](https://github.com/aguacatero/septuagint-diaspora-book/pull/4)). **They are proposed investigations, not accepted findings or changes to the project's established research corpus.**
+These newer questions are recorded in the [Gospel origins research proposal](research-queue/proposals/2026-11-01-gospel-origins-mark-mazdean-post70.md) ([proposal and documentation PR #4](https://github.com/aguacatero/septuagint-diaspora-book/pull/4)). **They are proposed investigations, not accepted findings or changes to the project's established research corpus.**
 
 ## How we keep the research honest
 
@@ -66,7 +66,7 @@ The relay is used for review coordination, **not** as a replacement research aut
 
 See the [live B001 workflow and onboarding files on draft PR #2](https://github.com/aguacatero/septuagint-diaspora-book/pull/2), especially [START_HERE_ANTIGRAVITY.md](https://github.com/aguacatero/septuagint-diaspora-book/blob/research/B001-notebooklm-serial/START_HERE_ANTIGRAVITY.md), [CHATGPT_START_HERE.md](https://github.com/aguacatero/septuagint-diaspora-book/blob/research/B001-notebooklm-serial/CHATGPT_START_HERE.md), and the [serial research workflow](https://github.com/aguacatero/septuagint-diaspora-book/blob/research/B001-notebooklm-serial/docs/workflow/NOTEBOOKLM_ANTIGRAVITY_SERIAL.md).
 
-*Older tool-specific instructions elsewhere in the repository are retained for historical reference. They do not describe the current operating workflow.*
+*Superseded Hermes/OpenRouter and Open Notebook instructions are archived or clearly marked legacy. The active operating instructions are linked above.*
 
 ## How the book will unfold
 

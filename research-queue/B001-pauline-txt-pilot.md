@@ -4,7 +4,7 @@
 
 This is a workflow-validation batch, not the full Pauline census.
 
-The goal is to test whether Hermes + OpenRouter + Open Notebook can produce reviewable, source-grounded TXT research packets that comply with the project constitution and registry schema.
+The goal is to test whether the **current Antigravity/Gemini + NotebookLM + independent ChatGPT review** pipeline can produce reviewable, source-grounded TXT packets that comply with the Project Constitution and registry schema. This is a textual-method pilot; it does **not** decide Pauline authenticity or chronology.
 
 The batch is intentionally limited to twelve quotations across Romans, 1 Corinthians, and Galatians.
 
@@ -15,7 +15,7 @@ Before beginning, read:
 1. `docs/design/PROJECT_CONSTITUTION.md`
 2. `docs/workflow/RESEARCH_WORKFLOW.md`
 3. `docs/workflow/SOURCE_ACQUISITION.md`
-4. `docs/workflow/HERMES_INSTRUCTIONS.md`
+4. `research-queue/CURRENT_BATCH.md` and the live [B001 NotebookLM workflow](https://github.com/aguacatero/septuagint-diaspora-book/blob/research/B001-notebooklm-serial/docs/workflow/NOTEBOOKLM_ANTIGRAVITY_SERIAL.md)
 5. `research/registry/SCHEMA.md`
 6. `research/TXT/README.md`
 7. `research/TXT/textual_classifications.md`
@@ -25,9 +25,9 @@ If this batch file conflicts with those documents, the higher-level documents go
 
 ## Branch and output location
 
-Create branch:
+Active execution branch (draft/unmerged; do not recreate):
 
-`research/B001-pauline-txt-pilot`
+`research/B001-notebooklm-serial` ([PR #2](https://github.com/aguacatero/septuagint-diaspora-book/pull/2))
 
 Write outputs only under:
 
@@ -39,11 +39,11 @@ Do not edit canonical registry files.
 
 Do **not** assume the books and editions needed for this batch have already been collected.
 
-Hermes is responsible for locating and acquiring the strongest lawfully accessible source packet before final classification work begins.
+Antigravity/Gemini is responsible for locating and acquiring the strongest lawfully accessible source packet before final classification work begins.
 
 Follow `docs/workflow/SOURCE_ACQUISITION.md`.
 
-Use Internet Archive/Open Library where appropriate, especially for public-domain or unrestricted scans of older scholarship. Public-domain/open-access/authorized full-text files may be downloaded and imported into Open Notebook. Borrow-only or controlled-lending materials may only be accessed through the user's legitimate authorized access and must not be obtained by bypassing DRM, borrowing limits, or access controls.
+Use Internet Archive/Open Library where appropriate, especially for public-domain or unrestricted scans of older scholarship. Public-domain/open-access/authorized full-text files may be used in the approved NotebookLM source extraction workflow. Borrow-only or controlled-lending materials may only be accessed through the user's legitimate authorized access and must not be obtained by bypassing DRM, borrowing limits, or access controls.
 
 For B001, attempt to assemble at minimum:
 
@@ -62,15 +62,11 @@ Seek several strong general works on Paul's use of Scripture/Septuagint plus pas
 
 Do not require every desired book to be available before research can proceed. If an important item is unavailable, record it in `source_gaps.md`, identify the best lawful substitute, and state whether the gap limits classification.
 
-### Open Notebook ingestion gate
+### NotebookLM source gate
 
-Use or create:
+During serial B001 extraction, `SDP-B001-EXTRACT` contains **exactly one active source**; `SDP-01 Paul` is the cumulative notebook for independently accepted source packets only. Follow the active [NotebookLM source queue and extraction workflow](https://github.com/aguacatero/septuagint-diaspora-book/blob/research/B001-notebooklm-serial/docs/workflow/NOTEBOOKLM_ANTIGRAVITY_SERIAL.md). Verify exact edition, ingestion, citations and page mapping. Inspect original Greek/Hebrew or apparatus, rather than trusting OCR.
 
-`SDP-01 Paul`
-
-Import every full-text source actually relied upon. Verify edition identity and ingestion. For scans, verify page mapping and inspect page images rather than trusting OCR for Greek/Hebrew or textual apparatus.
-
-Before final passage classifications begin, the minimum source packet must either be ingested or its gaps explicitly documented.
+Before final classification, the minimum source packet must be verified or its gaps explicitly documented.
 
 ## Assigned passages
 
@@ -131,15 +127,9 @@ Prioritize:
 
 Tertiary summaries may be used to discover sources but should not anchor a candidate classification.
 
-## Open Notebook setup
+## Active source workflow
 
-Use or create:
-
-`SDP-01 Paul`
-
-Ingest sources actually used in the analysis. Keep enough bibliographic metadata to identify every source outside Open Notebook.
-
-If helpful, maintain `SDP-00 Method and Textual Traditions` for reusable methodological sources, but the B001 output must still list every source relied upon.
+Antigravity/Gemini processes one source in NotebookLM and stages a GitHub packet for exact-SHA independent ChatGPT review. Accepted packets are promoted to the cumulative `SDP-01 Paul` notebook; rejected packets are remediated and re-reviewed. Do not create a competing manual source queue or ingest multiple active extraction sources. Preserve bibliography outside NotebookLM.
 
 ## Required output structure
 
@@ -211,7 +201,7 @@ For all new candidates:
 
 ## Passage-report requirements
 
-Each passage report must follow `docs/workflow/HERMES_INSTRUCTIONS.md` and must include:
+Each passage report must follow the [current research workflow](../docs/workflow/RESEARCH_WORKFLOW.md) and the active branch's source-class-specific extraction requirements, and must include:
 
 1. research target;
 2. primary textual evidence;
