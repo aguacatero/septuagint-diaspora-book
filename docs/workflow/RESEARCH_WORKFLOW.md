@@ -1,169 +1,45 @@
-# Research Volley Workflow
+# Research Workflow — Antigravity, NotebookLM, GitHub, independent ChatGPT review
 
-This project uses a controlled research volley between GitHub, Hermes/OpenRouter, Open Notebook, and human/LLM review.
+This is the **current** operating workflow. It replaces the former Hermes/OpenRouter + Open Notebook setup, which is preserved only for historical reference in [legacy workflow archives](../archive/legacy-workflows/README.md).
 
-## Source of truth
+## Source of truth and boundaries
 
-**GitHub `main` is authoritative.**
+- [Project Constitution](../design/PROJECT_CONSTITUTION.md) sets scholarly and ethical requirements.
+- [Registry schema](../../research/registry/SCHEMA.md) and TXT/NAR/CUL/HIS module rules determine acceptable evidence.
+- `main` stores the accepted project state and [current batch contract](../../research-queue/CURRENT_BATCH.md).
+- Active B001 **execution** state and verified source packets are on [draft PR #2](https://github.com/aguacatero/septuagint-diaspora-book/pull/2); fetch the live PR HEAD before any operation.
+- [Proposed Gospel-origins investigations](../../research-queue/proposals/2026-11-01-gospel-origins-mark-mazdean-post70.md) are a future backlog, not active research or accepted results.
 
-Open Notebook is the persistent source warehouse. Hermes/OpenRouter is the research workforce. Neither may silently redefine the project thesis, methodology, corpus, classifications, or canonical registry.
+## One-source-at-a-time B001 loop
 
-The governing order is:
+1. **Read live state.** Antigravity/Gemini reads `START_HERE_ANTIGRAVITY.md`, `ANTIGRAVITY_START.md`, the serial NotebookLM workflow, source queue, and state JSON **from PR #2's live HEAD**. Do not restart or change the active source from a copied handoff.
+2. **Acquire lawfully.** Confirm edition, author, source integrity, page mapping, licenses/access restrictions, and record missing sources. Follow [source acquisition](SOURCE_ACQUISITION.md).
+3. **Extract one source.** Use `SDP-B001-EXTRACT` with exactly one source at a time. Run the source-class-specific prompts: a PRIMARY packet extracts the actual ancient texts/apparatus; a SECONDARY packet records scholar claims and locators. NotebookLM outputs are aids, not independent evidence.
+4. **Verify and stage.** Check citations against original texts and pages. Store candidate structured data and a readable packet in GitHub. Note omissions, contrary evidence, scope, uncertainties and all provenance.
+5. **Independent exact-SHA review.** ChatGPT reviews the named source packet at the **current live PR HEAD** using the review-loop controller. It responds `SOURCE_PACKET: ACCEPT` or `SOURCE_PACKET: REVISE` with a full SHA, time and specific supporting/revising reasons. The extractor may not review/approve its own packet.
+6. **Remediate or promote.** On REVISE, fix the packet and submit a fresh commit for fresh exact-SHA review. On ACCEPT, only the accepted source is promoted into cumulative NotebookLM `SDP-01 Paul` with retrieval verification, then the queue advances.
+7. **Do not merge automatically.** PR #2 remains draft/unmerged. Whole-batch acceptance, canonical registry promotion, and milestone checks are separate later decisions.
 
-1. `docs/design/PROJECT_CONSTITUTION.md`
-2. `research/registry/SCHEMA.md`
-3. module rules under `research/TXT/`, `research/NAR/`, `research/CUL/`, and `research/HIS/`
-4. the active contract in `research-queue/CURRENT_BATCH.md`
+The live specifications, extraction prompts, and browser-preflight documents are in the B001 branch: [current serial workflow](https://github.com/aguacatero/septuagint-diaspora-book/blob/research/B001-notebooklm-serial/docs/workflow/NOTEBOOKLM_ANTIGRAVITY_SERIAL.md).
 
-If any generated instruction conflicts with those files, the files above win in that order.
+## Required research packet standards
 
-## The volley
+For each candidate claim or passage, record:
 
-### 1. GitHub defines the research contract
+- source and edition identity, access/class, claim, exact primary passage, scholarly page/section/citation locator;
+- textual witnesses and variants relevant to the Greek/Hebrew comparison, without a simplistic LXX-versus-Masoretic binary;
+- separate quotations, allusions and thematic resemblance;
+- manuscript limitations, possible oral/liturgical transmission, authorial redaction, textual pluriformity, alternative readings and strong counterexamples;
+- claim-by-claim source support, confidence, competing interpretations, falsifier, unresolved items, and an adversarial pass.
 
-Each batch specifies:
+Never invent source pages, timestamps, quotations, apparatus readings, author positions or evidence IDs. If a source or page is inaccessible, label it explicitly. A video is a research lead until its actual transcript and claims are verified.
 
-- research question;
-- bounded corpus;
-- required primary witnesses;
-- minimum secondary-source requirements;
-- expected deliverables;
-- disallowed shortcuts;
-- falsification/counterevidence requirements;
-- completion gate.
+## Research phases and approval
 
-### 2. Hermes performs research on a batch branch
+The program remains sequential: **TXT textual audit → NAR narrative-generation analysis → CUL controlled cultural comparison → HIS historical evidence audit → book**, after the Foundation gate. Proposed Mark, Iranian/John, Pauline-authorship and universal post-70 chronology topics must pass their own contracts and reviews before changing canonical evidence or the Constitution.
 
-Hermes must:
+Only a reviewer/promoter with authorization can admit independently reviewed evidence to `research/registry/` and mark completed milestones. The README and `assets/progress.svg` must match accepted status; run `python3 scripts/update_progress.py --check`. Source-level acceptance on a draft branch is not approval of a whole milestone.
 
-1. pull the latest `main`;
-2. read the project constitution and current batch;
-3. create a branch named `research/<batch-id>-<short-name>`;
-4. use Open Notebook as the source library when available;
-5. use OpenRouter models for extraction, comparison, adversarial review, and synthesis;
-6. write all output under `research/inbox/<batch-id>-<short-name>/`;
-7. commit the batch branch;
-8. stop before modifying authoritative registry files.
+## Historical workflows
 
-Hermes must **not** merge its own branch into `main`.
-
-## 3. Open Notebook is the source warehouse
-
-Open Notebook should contain the actual primary texts, PDFs, articles, monographs, notes, and other source material used in a batch.
-
-For every source promoted into a batch deliverable, record enough information to recover it independently:
-
-- author/editor;
-- title;
-- publication/container;
-- year;
-- edition/volume where relevant;
-- page(s) or section used;
-- DOI/ISBN/stable URL where available;
-- local/Open Notebook source label if useful.
-
-A model-generated answer is **not a source**.
-
-Notebook summaries can guide discovery but must never substitute for checking the underlying source.
-
-## 4. OpenRouter is the analysis workforce
-
-The workflow is model-agnostic. When practical, use separate passes for different roles:
-
-- **Source scout:** identifies relevant primary and specialist secondary sources.
-- **Extractor:** records exact passage data, page references, variants, and author claims.
-- **Analyst:** applies project classifications without changing project rules.
-- **Adversary:** searches for the strongest counterevidence and alternative explanations.
-- **Verifier:** checks whether citations actually support the claims attributed to them.
-
-At least one adversarial pass must occur before a candidate classification is submitted.
-
-For consequential or disputed cases, prefer a second independent model-family review when available rather than asking the same model to approve its own work.
-
-## 5. Staging versus canonical evidence
-
-Hermes writes **candidate** evidence only.
-
-Allowed staging locations:
-
-- `research/inbox/<batch>/candidate_registry.csv`
-- `research/inbox/<batch>/passages/*.md`
-- `research/inbox/<batch>/source_manifest.csv`
-- `research/inbox/<batch>/adversarial_review.md`
-- `research/inbox/<batch>/unresolved_questions.md`
-- `research/inbox/<batch>/run_log.md`
-
-Hermes must not directly modify:
-
-- `research/registry/master_registry.csv`
-- `research/registry/allusions_registry.csv`
-- `research/registry/corrections_log.md`
-- `docs/design/PROJECT_CONSTITUTION.md`
-
-Promotion to the canonical registry happens only after review.
-
-## 6. Evidence discipline
-
-Every proposed result must preserve negative evidence.
-
-Do not:
-
-- infer Hebrew consultation merely from an MT-type agreement;
-- call a textual divergence a `mistranslation` unless the evidence demonstrates it;
-- treat an allusion as an explicit quotation;
-- count dependent Gospel repetitions as independent attestations;
-- turn absence of evidence into proof of linguistic incapacity;
-- use weak mythic resemblance as evidence of borrowing;
-- invent page numbers, critical-edition readings, manuscript evidence, or bibliographic entries.
-
-If a needed source cannot be obtained, mark the gap explicitly.
-
-## 7. Source hierarchy
-
-Prefer evidence in this order:
-
-1. **Primary textual witnesses / critical editions** — NT Greek, Old Greek/Septuagint witnesses, Hebrew witnesses, DSS, ancient authors.
-2. **Critical apparatuses and specialist reference works.**
-3. **Peer-reviewed articles and specialist monographs.**
-4. **Major academic handbooks and scholarly commentaries.**
-5. **Tertiary/web summaries** for discovery only, not final evidentiary support when stronger sources are reasonably available.
-
-A controversial claim should not rest only on Tier 5 material.
-
-## 8. Batch review
-
-A reviewer examines the branch for:
-
-- source existence and relevance;
-- page-level citation support;
-- accurate quotation/transcription;
-- textual-witness completeness;
-- missing counterevidence;
-- classification discipline;
-- confidence calibration;
-- unresolved ambiguity;
-- compliance with the batch contract.
-
-Possible outcomes for each candidate:
-
-- promote;
-- revise and resubmit;
-- dispute;
-- reject;
-- defer pending source acquisition.
-
-Rejected or corrected claims are preserved where methodologically useful.
-
-## Public-facing progress (required at promotion)
-
-All contributors and agents must follow the repository-root `AGENTS.md`. At the end of each task, check the `README.md` **Research progress** section. The public segmented SVG roadmap (`assets/progress.svg`) is generated from the six milestone checkboxes with `python3 scripts/update_progress.py`; use `python3 scripts/update_progress.py --check` to verify it.
-
-Research-batch output is **candidate work** and does not advance public milestones. After independent review and accepted promotion into `main`, the reviewer/promoter must update the README's **Current** label, mark any *fully completed* phase milestone, regenerate the SVG, and commit public status alongside the promotion. If no phase is complete, preserve the prior accepted-gate count and still update the active batch when applicable. Research agents must include a README progress assessment in their handoff, without changing public `main` on their own.
-
-## 9. Next volley
-
-After review, accepted findings are promoted into `main`, corrections are recorded, and `research-queue/CURRENT_BATCH.md` is advanced to the next task.
-
-The long-term goal is a repeatable loop:
-
-**GitHub contract → Hermes/OpenNotebook research → candidate branch → adversarial review → canonical promotion → next contract.**
+The prior Hermes operating instructions, Open Notebook manual, and related instructions are kept under [docs/archive/legacy-workflows](../archive/legacy-workflows/README.md). They must not be used to drive current B001 execution.

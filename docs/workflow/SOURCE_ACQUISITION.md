@@ -1,14 +1,14 @@
-# Source Acquisition and Open Notebook Ingestion
+# Source Acquisition and NotebookLM Verification
 
 This workflow defines **Phase 0** for every research batch in *Shaped by the Septuagint*.
 
-Hermes is allowed and expected to acquire the research corpus when it is not already present. Research should not begin from model memory or tertiary summaries simply because the relevant books have not yet been collected.
+The active Antigravity/Gemini research agent is responsible for locating and verifying the needed sources when they are not already present. Research should not begin from model memory or tertiary summaries simply because the relevant books have not yet been collected.
 
 ## Goal
 
-Before passage-level analysis begins, assemble the strongest legally accessible source packet needed for the batch, import the usable sources into Open Notebook, and document any gaps.
+Before passage-level analysis begins, assemble the strongest legally accessible source packet needed for the batch, stage lawfully accessible sources in the approved NotebookLM workflow, and document any gaps.
 
-GitHub remains the source of truth for project rules and research outputs. Open Notebook is the persistent local source warehouse.
+GitHub remains the durable source of truth for project rules and research packets. NotebookLM supports source retrieval and extraction; it is not canonical storage.
 
 ## Acquisition priority
 
@@ -28,28 +28,28 @@ Internet Archive is an approved discovery/acquisition route, subject to the acce
 
 ### Public-domain or unrestricted items
 
-Hermes may:
+The research agent may:
 
 - locate the correct edition;
 - download an openly available PDF or other usable full-text file;
 - preserve the Internet Archive item URL and identifier;
-- import the file into the appropriate Open Notebook notebook;
+- import the file into the appropriate NotebookLM notebook;
 - record scan quality, page-number mapping, and OCR limitations.
 
 Prefer page-image PDFs when exact pagination or original-language typography matters.
 
 ### Borrow-only / controlled-lending items
 
-Hermes may use only the access that the user's authorized Internet Archive/Open Library session legitimately provides.
+The research agent may use only the access that the user's authorized Internet Archive/Open Library session legitimately provides.
 
-Hermes must not:
+The research agent must not:
 
 - bypass lending limits;
 - remove or defeat DRM/access controls;
 - obtain restricted files through undocumented circumvention;
 - represent inaccessible pages as inspected.
 
-If the authorized lending flow does not yield a file or view that can be reliably analyzed/imported into Open Notebook, record the source as `BORROW_REQUIRED` or `MANUAL_ACCESS_REQUIRED`, look for another lawful copy, and continue the batch where possible.
+If the authorized lending flow does not yield a file or view that can be reliably analyzed/imported into NotebookLM, record the source as `BORROW_REQUIRED` or `MANUAL_ACCESS_REQUIRED`, look for another lawful copy, and continue the batch where possible.
 
 ## Edition identity
 
@@ -78,19 +78,18 @@ For scanned sources:
 
 For exact quotations, textual variants, and apparatus readings, inspect the page image or authoritative digital text rather than trusting machine OCR.
 
-## Open Notebook ingestion
+## NotebookLM ingestion (active B001)
 
-For each batch:
+For the active B001 serial pipeline:
 
-1. Create/reuse the notebook named in the batch contract.
-2. Import every full-text source actually used in analysis.
-3. Use stable, descriptive source labels, preferably `Author — Short Title — Year/Edition`.
-4. Keep source metadata in the batch `source_manifest.csv` even when Open Notebook stores its own metadata.
-5. Confirm ingestion completed successfully before querying the source.
-6. Test retrieval with a known phrase/page from the document.
-7. If page citations are important, verify that Open Notebook's extracted text can be traced back to the original scan/page.
+1. Fetch the live [PR #2](https://github.com/aguacatero/septuagint-diaspora-book/pull/2) state and source queue and use the authorized NotebookLM browser workflow. Do not use unofficial private APIs or bypass login and access controls.
+2. Keep **exactly one source** in `SDP-B001-EXTRACT` during extraction. Identify the edition unambiguously and preserve page/section mapping.
+3. Record verified source identity and metadata in the source packet and relevant manifests. Do not rely on NotebookLM's opaque source label.
+4. Confirm ingestion and retrieval with a known passage, then reopen citations in original source context. For primary Greek/Hebrew material and apparatus, inspect authoritative text/page images, not OCR alone.
+5. Stage the packet in GitHub for independent review. **Only after exact-SHA ACCEPT** may the source be promoted to cumulative `SDP-01 Paul`.
+6. Record source gaps honestly; do not claim access when a work is unavailable.
 
-Open Notebook-generated answers are navigation and synthesis aids. The underlying source remains the evidence.
+NotebookLM-generated answers are navigation and extraction aids. The underlying source and verified GitHub packet are the evidence. For later batches, follow their own approved contracts.
 
 ## Required acquisition manifest
 
@@ -98,7 +97,7 @@ Every batch that performs source acquisition must create:
 
 `research/inbox/<batch>/acquisition_manifest.csv`
 
-Minimum fields:
+Minimum fields (the legacy `open_notebook_label` column name is retained for compatibility, but now records the corresponding NotebookLM source label where used):
 
 ```csv
 acquisition_id,requested_source,author_or_editor,title,year,edition_or_volume,provider,provider_identifier,provider_url,access_class,local_filename,open_notebook_label,ingestion_status,page_mapping_verified,ocr_quality,notes
@@ -144,4 +143,4 @@ Do not begin final passage classifications until the minimum source packet defin
 - acquired and ingested; or
 - explicitly marked unavailable with a documented substitute/limitation.
 
-Source acquisition is part of the research process, not a prerequisite the user is expected to complete manually.
+Source acquisition is part of the research process, not a prerequisite the user is expected to complete manually. See [current workflow](RESEARCH_WORKFLOW.md); superseded Open Notebook procedures are archived.

@@ -12,9 +12,9 @@ Twelve Pauline quotations used to validate source acquisition, passage reports, 
 
 ## Phase 1 — Complete TXT corpus
 
-### B002 — Undisputed Paul complete quotation census
+### B002 — Conventionally 'undisputed' Pauline letters: complete quotation census
 
-Expand from the B001 pilot to every explicit or strongly identifiable scriptural quotation in the seven undisputed Pauline letters.
+Expand from the B001 pilot to every explicit or strongly identifiable scriptural quotation in the seven letters conventionally described by scholars as 'undisputed' (an operational corpus label, **not an authenticity verdict**).
 
 Deliverable: complete Pauline TXT candidate census, with allusions kept separate.
 
@@ -87,6 +87,10 @@ Build the evidence inventory for Paul, Gospel traditions after dependence correc
 Begin from zero assumed biography and audit propositions independently.
 
 Possible conclusions remain open under the Project Constitution.
+
+## Registered future investigations (unreviewed)
+
+The [November 1, 2026 Gospel-origins proposal](proposals/2026-11-01-gospel-origins-mark-mazdean-post70.md) records four investigations: a timecoded source analysis of the Mark video after transcript verification; the potential Mazdean religious context of John's Prologue; individual authenticity and redaction alternatives for the conventionally undisputed Pauline letters; and the hypothesis that the extant Pauline letters and all four Gospels may have been composed or finalized after 70 CE. **All remain unreviewed proposals**, and none should be inserted into the active B001 queue or treated as canonical evidence. Schedule them with appropriate TXT/NAR/CUL/HIS methods and review gates when dependencies permit.
 
 ## Book-writing gate
 
