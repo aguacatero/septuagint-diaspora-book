@@ -1,7 +1,9 @@
 # Current Research Batch — B001 Pauline textual pilot
 
 **Active batch:** `B001-pauline-txt-pilot`  
-**Module:** `TXT` — textual comparison  
+**Module:** TXT
+
+*Textual comparison — the six-stage roadmap's active research module.*
 **Canonical research objective:** Test twelve selected Pauline quotations against Greek and Hebrew textual traditions before expanding to a full quotation census. This pilot does **not** pre-judge authorship or chronology of Paul's letters.  
 **Active execution branch:** `research/B001-notebooklm-serial` ([draft PR #2](https://github.com/aguacatero/septuagint-diaspora-book/pull/2)) — **DRAFT / UNMERGED**.
 
