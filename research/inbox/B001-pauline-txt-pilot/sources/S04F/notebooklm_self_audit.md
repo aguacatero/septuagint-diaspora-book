@@ -1,8 +1,8 @@
 # S04F — NotebookLM Self Audit & Review Remediation
 
-## Itemized Audit Findings & Corrections (Rounds 1, 2, & 3)
+## Itemized Audit Findings & Corrections (Rounds 1, 2, 3, & 4)
 
-An audit of the extractions against J. B. Lightfoot’s *Saint Paul's Epistle to the Galatians* (Macmillan 1914 reprint of 10th ed. 1890) confirms that all extracted claims, page locators, quotations, and bibliographic references are directly grounded in the printed text, with all independent review findings (S04F-R1-F1–F4, M1–M3, and S04F-R2-F1, L1, L2) fully remediated.
+An audit of the extractions against J. B. Lightfoot’s *Saint Paul's Epistle to the Galatians* (Macmillan 1914 reprint of 10th ed. 1890) confirms that all extracted claims, page locators, quotations, and bibliographic references are directly grounded in the printed text, with all independent review findings (S04F-R1-F1–F4, M1–M3; S04F-R2-F1, L1, L2; S04F-R3-F1, M1; and S04F-R4-F1) fully remediated.
 
 ### 1. Bounded Scripture Index Inventory & Per-Locus Verification (S04F-R2-F1)
 - **Observation:** Reviewer identified that generic structural controls on the index heading did not prove absence of the eight negative B001 targets in Index III / scripture index, and demonstrated a synthetic counterexample where `Isa. xl. 13` inserted into the index text would pass undetected.
@@ -49,7 +49,17 @@ An audit of the extractions against J. B. Lightfoot’s *Saint Paul's Epistle to
   1. *Bounded Book-Section Parsing:* Implemented `extract_book_sections()` in `scripts/verify_s04f_negative_search.py` to extract multi-entry citation lists under book headings up to the next top-level index headword, detecting target verses regardless of intervening citations or distance from the heading.
   2. *Standalone Citation Typography:* Covers standard index citation typography, abbreviations, and Septuagint/MT alternate versifications (Joel 3:5 / iii. 5 for B001-5, Hos 2:25 for B001-2, Hos 2:1 for B001-3).
   3. *Adversarial Regression Tests:* Verified via deterministic tests in `tests/test_citation_ledger_crosswalk.py` injecting reviewer counterexamples: `Isa. xl. 13` (B001-6), `Joel iii. 5` (B001-5), and multi-entry `Deut xxv. 4` at distance > 100 characters (B001-10). All fail closed as required.
-- **Clean-Clone Test Portability (R3-M1):** Checked in versioned, provenance-labeled fixture `tests/fixtures/s04f_authorial_index_fixture.txt` (SHA-256: `8e89b1b9ecf61c9350aea2e1ff32f60135d834ebf9ff26cf6c1c68c848968d88`). Unit tests and adversarial suites run unconditionally against this tracked fixture, ensuring 91/91 tests pass on a fresh clone without reliance on machine-local `/tmp` files.
+- **Clean-Clone Test Portability (R3-M1):** Checked in versioned, provenance-labeled fixture `tests/fixtures/s04f_authorial_index_fixture.txt` (SHA-256: `8e89b1b9ecf61c9350aea2e1ff32f60135d834ebf9ff26cf6c1c68c848968d88`). Unit tests and adversarial suites run unconditionally against this tracked fixture, ensuring clean-clone reproducibility without reliance on machine-local `/tmp` files.
+
+### 10. Two-Column OCR Continuation Binding & Authorial Scripture Index Census (S04F-R4-F1)
+- **Displaced Two-Column OCR Continuation Parsing:** In pdftotext extraction of the two-column index, page 377 column 1 was extracted before page 376 column 2. The entry `Corinthians, 1st Epistle to the, when written, p. 38; compared with Galatiams, p. 51 sq, 64; passages com-` (p. 376 col. 2) continues across the column break at `mented on, (i. 12) p. 372, (ii. g) p. 334, (Vili. 1—13, X. 14—22) p. 308` (p. 377 col. 1). `extract_book_sections()` in `scripts/verify_s04f_negative_search.py` was enhanced to detect and bind this displaced continuation fragment to the Corinthians book section.
+- **Authorial Scripture Index Census Ledger:** Created and versioned `tests/fixtures/s04f_authorial_index_scripture_ledger.json` (SHA-256: `cecc38b8c7f3043eb4650a1bd509827348fab55816b514ee9c7d11dbb50a5599`) establishing an exhaustive census of all 13 scriptural book entries from printed pp. 375–384 (Acts, 1 Cor, 2 Cor, Deut, Exod, Eph, Gen, Hab, John, 1 Macc, Rev, Rom, 2 Tim).
+- **Nuanced Index Absence Statuses:** Both `full_volume_search_log.md` and `verify_index_structure()` now explicitly differentiate `UNINDEXED BOOK (NO AUTHORIAL HEADING)` (for Hosea, Joel, Isaiah, which have no heading in Lightfoot's index) from `VERIFIED ABSENT (BOOK INDEXED; TARGET ABSENT)` (for 1 Corinthians, Genesis, Deuteronomy, Exodus, Romans).
+- **Adversarial Regression & Boundary Unit Tests:**
+  1. `test_s04f_index_reordered_continuation_counterexample_fails_closed()`: verifies that reviewer's R4 counterexample (inserting `(ix. 9) p. 80;` into `mented on...`) fails closed and is caught by B001-10.
+  2. `test_s04f_index_unqualified_verse_after_intervening_headword_boundary()`: verifies that an unqualified citation under an intervening major headword (`Damascenus`) does not leak into the Corinthians section, documenting boundary behavior.
+  3. `test_s04f_authorial_index_scripture_ledger_complete()`: verifies 13 scriptural book entries, presence of positive controls (Gen 15:6, Deut 21:23), unindexed status of Hosea/Joel/Isaiah, and target absence of negative B001 targets.
+- All 94 pytest tests pass.
 
 ---
 

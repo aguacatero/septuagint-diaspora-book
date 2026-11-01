@@ -61,23 +61,24 @@ Total Positive Controls Evaluated: **6**
 ### Per-Locus Authorial Scripture Index Ledger
 
 Lightfoot's *Galatians* index combines subjects, persons, Greek words, and scriptural citations into a single comprehensive index (printed pp. 375–384), indexing scripture passages commented on directly under their respective biblical book names (e.g. *Genesis, passages commented on*, *Deuteronomy, passages commented on*).
-Each B001 target is evaluated against the bounded index text using dual-mode verification:
-1. **Bounded Book-Section Parsing:** Extracts multi-entry citation lists following each book heading up to the next major headword entry (or up to 2,500 characters), detecting entries regardless of intervening citations or distance from the heading.
+Each B001 target is evaluated against the bounded index text using dual-mode verification and authorial census cross-checking:
+1. **Bounded Book-Section Parsing:** Extracts multi-entry citation lists following each book heading up to the next major headword entry (or up to 2,500 characters), detecting entries regardless of intervening citations or distance from the heading. Specifically binds reordered two-column OCR continuations (such as the column-break split between pp. 376 col. 2 and 377 col. 1 for *Corinthians, 1st Epistle to the*).
 2. **Standalone Citation Typography:** Evaluates standard citation typography, abbreviations, and Septuagint/MT alternate versifications (e.g. Joel 3:5 / iii. 5, Hos 2:25, Hos 2:1) across the entire bounded index text.
+3. **Authorial Scripture Census Cross-Check:** Verified against the exhaustive 13-entry scriptural book census (`tests/fixtures/s04f_authorial_index_scripture_ledger.json`). Book headings present in index: Acts, 1 Cor, 2 Cor, Deut, Exod, Eph, Gen, Hab, John, 1 Macc, Rev, Rom, 2 Tim. Unindexed books: Hosea, Joel, Isaiah.
 
 | B001 ID | Comparison | NT / OT Target | Expected in Index | Detected Index Matches | Index Verification Status |
 |:---|:---|:---|:---:|:---|:---:|
 | `B001-1` | Rom 4:3 / Gen 15:6 | Romans 4:3 / Genesis 15:6 | **YES** | `xv.  6`; `(xv.  6)`; `Genesis, passages commented  on, (xv.  6)` | **VERIFIED INDEX ENTRY** |
-| `B001-2` | Rom 9:25 / Hos 2:23 (LXX 2:25) | Romans 9:25 / Hosea 2:23 (LXX 2:25) | NO | *None (0 entries)* | **VERIFIED ABSENT** |
-| `B001-3` | Rom 9:26 / Hos 1:10 (LXX 2:1) | Romans 9:26 / Hosea 1:10 (LXX 2:1) | NO | *None (0 entries)* | **VERIFIED ABSENT** |
-| `B001-4` | Rom 10:11 / Isa 28:16 | Romans 10:11 / Isaiah 28:16 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
-| `B001-5` | Rom 10:13 / Joel 2:32 (LXX 3:5) | Romans 10:13 / Joel 2:32 (LXX 3:5) | NO | *None (0 entries)* | **VERIFIED ABSENT** |
-| `B001-6` | Rom 11:34 / Isa 40:13 | Romans 11:34 / Isaiah 40:13 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
-| `B001-7` | Rom 15:12 / Isa 11:10 | Romans 15:12 / Isaiah 11:10 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
-| `B001-8` | 1 Cor 1:19 / Isa 29:14 | 1 Corinthians 1:19 / Isaiah 29:14 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
-| `B001-9` | 1 Cor 6:16 / Gen 2:24 | 1 Corinthians 6:16 / Genesis 2:24 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
-| `B001-10` | 1 Cor 9:9 / Deut 25:4 | 1 Corinthians 9:9 / Deuteronomy 25:4 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
-| `B001-11` | 1 Cor 10:7 / Exod 32:6 | 1 Corinthians 10:7 / Exodus 32:6 | NO | *None (0 entries)* | **VERIFIED ABSENT** |
+| `B001-2` | Rom 9:25 / Hos 2:23 (LXX 2:25) | Romans 9:25 / Hosea 2:23 (LXX 2:25) | NO | *None (0 entries)* | **UNINDEXED BOOK (NO AUTHORIAL HEADING)** |
+| `B001-3` | Rom 9:26 / Hos 1:10 (LXX 2:1) | Romans 9:26 / Hosea 1:10 (LXX 2:1) | NO | *None (0 entries)* | **UNINDEXED BOOK (NO AUTHORIAL HEADING)** |
+| `B001-4` | Rom 10:11 / Isa 28:16 | Romans 10:11 / Isaiah 28:16 | NO | *None (0 entries)* | **UNINDEXED BOOK (NO AUTHORIAL HEADING)** |
+| `B001-5` | Rom 10:13 / Joel 2:32 (LXX 3:5) | Romans 10:13 / Joel 2:32 (LXX 3:5) | NO | *None (0 entries)* | **UNINDEXED BOOK (NO AUTHORIAL HEADING)** |
+| `B001-6` | Rom 11:34 / Isa 40:13 | Romans 11:34 / Isaiah 40:13 | NO | *None (0 entries)* | **UNINDEXED BOOK (NO AUTHORIAL HEADING)** |
+| `B001-7` | Rom 15:12 / Isa 11:10 | Romans 15:12 / Isaiah 11:10 | NO | *None (0 entries)* | **UNINDEXED BOOK (NO AUTHORIAL HEADING)** |
+| `B001-8` | 1 Cor 1:19 / Isa 29:14 | 1 Corinthians 1:19 / Isaiah 29:14 | NO | *None (0 entries)* | **VERIFIED ABSENT (BOOK INDEXED; TARGET ABSENT)** |
+| `B001-9` | 1 Cor 6:16 / Gen 2:24 | 1 Corinthians 6:16 / Genesis 2:24 | NO | *None (0 entries)* | **VERIFIED ABSENT (BOOK INDEXED; TARGET ABSENT)** |
+| `B001-10` | 1 Cor 9:9 / Deut 25:4 | 1 Corinthians 9:9 / Deuteronomy 25:4 | NO | *None (0 entries)* | **VERIFIED ABSENT (BOOK INDEXED; TARGET ABSENT)** |
+| `B001-11` | 1 Cor 10:7 / Exod 32:6 | 1 Corinthians 10:7 / Exodus 32:6 | NO | *None (0 entries)* | **VERIFIED ABSENT (BOOK INDEXED; TARGET ABSENT)** |
 | `B001-12` | Gal 3:13 / Deut 21:23 | Galatians 3:13 / Deuteronomy 21:23 | **YES** | `xxi. 23`; `(xxi. 23)`; `Deuteronomy, passages commented on;  (xxi. 23)` | **VERIFIED INDEX ENTRY** |
 
 ---

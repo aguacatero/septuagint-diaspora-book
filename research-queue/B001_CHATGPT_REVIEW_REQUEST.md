@@ -5,7 +5,7 @@ Antigravity rewrites this file for every source before requesting review.
 ## Current source
 
 - Source ID: `S04F`
-- Review Round: `Round 4 — Remediation of S04F-R3-F1 and S04F-R3-M1`
+- Review Round: `Round 5 — Remediation of S04F-R4-F1`
 - Exact citation: J. B. Lightfoot, *Saint Paul's Epistle to the Galatians: A Revised Text with Introduction, Notes, and Dissertations* (London: Macmillan and Co., Limited, 1914 reprint of the tenth edition 1890).
 - Branch: `research/B001-notebooklm-serial`
 - Draft PR: `2`
@@ -15,6 +15,19 @@ Antigravity rewrites this file for every source before requesting review.
 - Round 1 Review Verdict: `SOURCE_PACKET: REVISE`, `MERGE: NO`, `REQUEST CHANGES: YES` ([#issuecomment-6546174969](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6546174969)) at commit `c7cb48f41a1c522af0aa3e01de484317625797c4`.
 - Round 2 Review Verdict: `SOURCE_PACKET: REVISE`, `MERGE: NO`, `REQUEST CHANGES: YES` ([#issuecomment-6548475674](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6548475674)) at commit `35e5415b6a98ff294d1a668464950c7dce7f9fc0`.
 - Round 3 Review Verdict: `SOURCE_PACKET: REVISE`, `MERGE: NO`, `REQUEST CHANGES: YES` ([#issuecomment-6553123090](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6553123090)) at commit `0f06e315012df1703b5e6794e150b2af68f9588b`.
+- Round 4 Review Verdict: `SOURCE_PACKET: REVISE`, `MERGE: NO`, `REQUEST CHANGES: YES` ([#issuecomment-6559247678](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6559247678)) at commit `4dac8a59b801a0e8be730ee30bf0e628e6f85d19`.
+
+## Round 4 Findings Remediated in Round 5
+
+1. **S04F-R4-F1 [HIGH/BLOCKING] — Two-Column OCR Continuation Binding & Authorial Scripture Index Census:**
+   - **Displaced Two-Column OCR Continuation Parsing:** In pdftotext extraction of the two-column index, page 377 column 1 was extracted before page 376 column 2. The entry `Corinthians, 1st Epistle to the, when written, p. 38; compared with Galatiams, p. 51 sq, 64; passages com-` (p. 376 col. 2) continues across the column break at `mented on, (i. 12) p. 372, (ii. g) p. 334, (Vili. 1—13, X. 14—22) p. 308` (p. 377 col. 1). `extract_book_sections()` in `scripts/verify_s04f_negative_search.py` now explicitly detects and binds this displaced continuation fragment to the Corinthians book section.
+   - **Authorial Scripture Index Census Ledger Fixture:** Created and tracked `tests/fixtures/s04f_authorial_index_scripture_ledger.json` (SHA-256: `cecc38b8c7f3043eb4650a1bd509827348fab55816b514ee9c7d11dbb50a5599`) establishing an exhaustive census of all 13 scriptural book entries from printed pp. 375–384 (Acts, 1 Cor, 2 Cor, Deut, Exod, Eph, Gen, Hab, John, 1 Macc, Rev, Rom, 2 Tim).
+   - **Nuanced Index Absence Statuses:** Both `full_volume_search_log.md` and `verify_index_structure()` now explicitly differentiate `UNINDEXED BOOK (NO AUTHORIAL HEADING)` (for Hosea, Joel, Isaiah, which have no heading in Lightfoot's index) from `VERIFIED ABSENT (BOOK INDEXED; TARGET ABSENT)` (for 1 Corinthians, Genesis, Deuteronomy, Exodus, Romans).
+   - **Adversarial Regression & Boundary Unit Tests:**
+     - `test_s04f_index_reordered_continuation_counterexample_fails_closed()`: verifies that reviewer's R4 counterexample (inserting `(ix. 9) p. 80;` into `mented on...`) fails closed and is caught by B001-10.
+     - `test_s04f_index_unqualified_verse_after_intervening_headword_boundary()`: verifies that an unqualified citation under an intervening major headword (`Damascenus`) does not leak into the Corinthians section, documenting boundary behavior.
+     - `test_s04f_authorial_index_scripture_ledger_complete()`: verifies 13 scriptural book entries, presence of positive controls (Gen 15:6, Deut 21:23), unindexed status of Hosea/Joel/Isaiah, and target absence of negative B001 targets.
+   - Reconciled narrative assertions in `full_volume_search_log.md`, `relevance_scan.md`, `counterevidence.md`, `notebooklm_self_audit.md`, and `provenance_manifest.json`. All 94 pytest tests pass.
 
 ## Round 3 Findings Remediated in Round 4
 
@@ -140,7 +153,7 @@ Plus governing method:
 
 ## Review task
 
-Independently audit the complete S04F evidence packet (Round 3 remediation). Verify that findings S04F-R2-F1, S04F-R2-L1, and S04F-R2-L2 are fully resolved.
+Independently audit the complete S04F evidence packet (Round 5 remediation). Verify that findings S04F-R4-F1 are fully resolved.
 
 Check:
 

@@ -1,0 +1,114 @@
+{
+  "source_id": "S04F",
+  "work": "J. B. Lightfoot, Saint Paul's Epistle to the Galatians (1914 reprint of 10th ed. 1890)",
+  "index_title": "INDEX",
+  "printed_pages": "375-384",
+  "description": "Exhaustive census of all scriptural book entries and passage citations in Lightfoot's comprehensive index, verifying two-column reading order and cross-column continuations.",
+  "total_scriptural_book_entries": 13,
+  "entries": [
+    {
+      "book": "Acts",
+      "printed_page": 375,
+      "column": 2,
+      "heading": "Acts, passages commented on;",
+      "raw_text": "Acts, passages commented on; (ix. 20—26) p. 89; (xv. 29) p. 305 sq; (xvi. 6) p. 20, 223; (xxviii. 21) p. 93",
+      "citations": ["(ix. 20-26)", "(xv. 29)", "(xvi. 6)", "(xxviii. 21)"]
+    },
+    {
+      "book": "1 Corinthians",
+      "printed_pages": "376-377",
+      "columns": "p. 376 col. 2 (heading ending 'passages com-') -> p. 377 col. 1 (continuation 'mented on, (i. 12)...')",
+      "heading": "Corinthians, 1st Epistle to the, when written, p. 38; compared with Galatians, p. 51 sq, 64; passages commented on,",
+      "raw_text": "Corinthians, 1st Epistle to the, when written, p. 38; compared with Galatiams, p. 51 sq, 64; passages com- [col. break] mented on, (i. 12) p. 372, (ii. 9) p. 334, (viii. 1—13, x. 14—22) p. 308",
+      "citations": ["(i. 12)", "(ii. 9)", "(viii. 1-13, x. 14-22)"]
+    },
+    {
+      "book": "2 Corinthians",
+      "printed_page": 377,
+      "column": 1,
+      "heading": "Corinthians, 2nd Epistle to the, when written, p. 39; tone of, p. 51; compared with Galatians, p. 44, 49, 64",
+      "raw_text": "Corinthians, 2nd Bpistle to the, when written, p. 39; tone of, p. 51; compared with Galatians, p. 44, 49, 64",
+      "citations": []
+    },
+    {
+      "book": "Deuteronomy",
+      "printed_page": 377,
+      "column": 2,
+      "heading": "Deuteronomy, passages commented on;",
+      "raw_text": "Deuteronomy, passages commented on; (xxi. 23) p. 152 sq; (xxvii. 26) iii. 10; (xxxiii. 2) iii. 19",
+      "citations": ["(xxi. 23)", "(xxvii. 26)", "(xxxiii. 2)"]
+    },
+    {
+      "book": "Exodus",
+      "printed_page": 378,
+      "column": 1,
+      "heading": "Exodus, xii. 40 commented on, iii. 17",
+      "raw_text": "Exodus, xii. 40 commented on, iii. 17",
+      "citations": ["xii. 40"]
+    },
+    {
+      "book": "Ephesians",
+      "printed_page": 378,
+      "column": 1,
+      "heading": "Ephesians, ii. 20, iii. 5, commented on, p. 97",
+      "raw_text": "Ephesians, ii. 20, iii. 5, commented on, p. 97",
+      "citations": ["ii. 20", "iii. 5"]
+    },
+    {
+      "book": "Genesis",
+      "printed_page": 379,
+      "column": 1,
+      "heading": "Genesis, passages commented on,",
+      "raw_text": "Genesis, passages commented on, (xv. 6) p. 159 sq; (xv. 13) iii. 17; (xxi. 9, 10) iv. 29, 30",
+      "citations": ["(xv. 6)", "(xv. 13)", "(xxi. 9, 10)"]
+    },
+    {
+      "book": "Habakkuk",
+      "printed_page": 379,
+      "column": 1,
+      "heading": "Habakkuk, ii. 4 commented on, p. 156, iii. 11",
+      "raw_text": "Habakkuk, ii. 4 commented on, p. 156, iii. 11",
+      "citations": ["ii. 4"]
+    },
+    {
+      "book": "John",
+      "printed_page": 381,
+      "column": 1,
+      "heading": "John, Gospel of, xix. 25 commented on, p. 264, 265",
+      "raw_text": "John, Gospel of, xix. 25 commented on, p. 264, 265",
+      "citations": ["xix. 25"]
+    },
+    {
+      "book": "1 Maccabees",
+      "printed_page": 381,
+      "column": 1,
+      "heading": "Maccabees, First Book of, viii. 2 commented on, p. 9",
+      "raw_text": "Maccabees, First Book of, viii. 2 commented on, p. 9",
+      "citations": ["viii. 2"]
+    },
+    {
+      "book": "Revelation",
+      "printed_page": 383,
+      "column": 1,
+      "heading": "Revelation ii. 24 commented on, p. 309",
+      "raw_text": "Revelation ii. 24 commented on, p. 309",
+      "citations": ["ii. 24"]
+    },
+    {
+      "book": "Romans",
+      "printed_page": 383,
+      "column": 1,
+      "heading": "Romans, epistle to the; when written, p. 40; resemblance to Galatians, p. 45 sq (passim); contrast to Galatians, p. 349; Romans xvi. 7 commented on, p. 96",
+      "raw_text": "Romans, epistle to the; when written, p. 40; resemblance to Galatians, p. 45 sq (passim); contrast to Galatians, p. 349; Romans xvi. 7 commented on, p. 96",
+      "citations": ["xvi. 7"]
+    },
+    {
+      "book": "2 Timothy",
+      "printed_page": 384,
+      "column": 1,
+      "heading": "Timothy, Second Epistle to, iv. 10 commented on, p. 3, 31",
+      "raw_text": "Timothy, Second Epistle to, iv. 10 commented on, p. 3, 31",
+      "citations": ["iv. 10"]
+    }
+  ]
+}

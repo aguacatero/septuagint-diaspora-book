@@ -1163,18 +1163,29 @@ def test_s04f_index_per_locus_scripture_inventory():
     assert target_res["B001-1"]["passed"] is True
     assert target_res["B001-1"]["expected_in_index"] is True
     assert target_res["B001-1"]["hit_count"] >= 1
+    assert target_res["B001-1"]["index_status"] == "VERIFIED INDEX ENTRY"
     assert any("Genesis" in h["match"] and "15" in h["match"] or "xv" in h["match"].lower() for h in target_res["B001-1"]["hits"])
 
     assert target_res["B001-12"]["passed"] is True
     assert target_res["B001-12"]["expected_in_index"] is True
     assert target_res["B001-12"]["hit_count"] >= 1
+    assert target_res["B001-12"]["index_status"] == "VERIFIED INDEX ENTRY"
     assert any("Deuteronomy" in h["match"] and "21" in h["match"] or "xxi" in h["match"].lower() for h in target_res["B001-12"]["hits"])
 
     # Negative index targets: B001-2 through B001-11 must have zero hits
-    for locus in ["B001-2", "B001-3", "B001-4", "B001-5", "B001-6", "B001-7", "B001-8", "B001-9", "B001-10", "B001-11"]:
+    # B001-2 through B001-7: Unindexed books without authorial headings (Hosea, Joel, Isaiah)
+    for locus in ["B001-2", "B001-3", "B001-4", "B001-5", "B001-6", "B001-7"]:
         assert target_res[locus]["passed"] is True, f"Target {locus} failed index verification"
         assert target_res[locus]["expected_in_index"] is False
         assert target_res[locus]["hit_count"] == 0, f"Expected 0 hits for {locus} in authentic index, got {target_res[locus]['hit_count']}: {target_res[locus]['hits']}"
+        assert target_res[locus]["index_status"] == "UNINDEXED BOOK (NO AUTHORIAL HEADING)"
+
+    # B001-8 through B001-11: Indexed books where specific target is absent (1 Cor, Gen, Deut, Exod)
+    for locus in ["B001-8", "B001-9", "B001-10", "B001-11"]:
+        assert target_res[locus]["passed"] is True, f"Target {locus} failed index verification"
+        assert target_res[locus]["expected_in_index"] is False
+        assert target_res[locus]["hit_count"] == 0, f"Expected 0 hits for {locus} in authentic index, got {target_res[locus]['hit_count']}: {target_res[locus]['hits']}"
+        assert target_res[locus]["index_status"] == "VERIFIED ABSENT (BOOK INDEXED; TARGET ABSENT)"
 
 
 def test_s04f_index_counterexample_fails_closed():
@@ -1251,6 +1262,135 @@ def test_s04f_index_fixture_provenance_and_clean_clone_reproducibility():
     assert res["passed"] is True
     assert res["structural_passed"] is True
     assert res["targets_passed"] is True
+
+
+def test_s04f_index_reordered_continuation_counterexample_fails_closed():
+    """
+    S04F-R4-F1 adversarial regression test:
+    Reviewer R4 counterexample: In the two-column OCR layout of Lightfoot's index,
+    'Corinthians, 1st Epistle to the, ... passages com-' (p. 376 col. 2) continues
+    at 'mented on, (i. 12) p. 372, (ii. g) p. 334...' (p. 377 col. 1).
+    If an adversary or OCR displacement inserts a target like '(ix. 9) p. 80;' into
+    this continuation fragment, verify_index_structure must detect it under B001-10
+    and fail closed.
+    """
+    repo_root = Path(__file__).resolve().parent.parent
+    import sys
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s04f_negative_search as vns
+
+    fixture_path = repo_root / "tests/fixtures/s04f_authorial_index_fixture.txt"
+    assert fixture_path.exists(), f"Tracked index fixture missing at {fixture_path}"
+    text = fixture_path.read_text(encoding="utf-8")
+
+    # Baseline: fixture passes cleanly
+    res_base = vns.verify_index_structure(text)
+    assert res_base["passed"] is True
+    assert res_base["target_results"]["B001-10"]["passed"] is True
+    assert res_base["target_results"]["B001-10"]["index_status"] == "VERIFIED ABSENT (BOOK INDEXED; TARGET ABSENT)"
+
+    # Adversarial injection into reordered continuation: (ix. 9) p. 80; (i. 12) p. 372
+    adv_text = text.replace(
+        "mented on, (i. 12) p. 372",
+        "mented on, (ix. 9) p. 80; (i. 12) p. 372",
+    )
+    assert adv_text != text, "Substitution target not found in fixture"
+
+    res_adv = vns.verify_index_structure(adv_text)
+    assert res_adv["targets_passed"] is False, "Expected targets verification to fail on inserted 1 Cor 9:9 in continuation"
+    assert res_adv["passed"] is False, "Expected index verification to fail closed"
+
+    b10_res = res_adv["target_results"]["B001-10"]
+    assert b10_res["passed"] is False
+    assert b10_res["index_status"] == "UNEXPECTED INDEX HIT"
+    assert b10_res["hit_count"] >= 1
+    assert any("ix. 9" in h["match"] or "9. 9" in h["match"] for h in b10_res["hits"])
+
+
+def test_s04f_index_unqualified_verse_after_intervening_headword_boundary():
+    """
+    S04F-R4-F1 boundary characterization test:
+    Verify that extract_book_sections strictly respects headword boundaries.
+    If an unqualified verse citation like '(ix. 9) p. 80' appears after an intervening
+    major headword (e.g. under 'Damascenus (Johannes)'), it must NOT be mistakenly
+    attributed to Corinthians.
+    """
+    repo_root = Path(__file__).resolve().parent.parent
+    import sys
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s04f_negative_search as vns
+
+    fixture_path = repo_root / "tests/fixtures/s04f_authorial_index_fixture.txt"
+    text = fixture_path.read_text(encoding="utf-8")
+
+    # Inject unqualified (ix. 9) under Damascenus headword
+    adv_dam = text.replace(
+        "Damascenus (Johannes), his commentary on St Paul",
+        "Damascenus (Johannes), (ix. 9) p. 80; his commentary on St Paul",
+    )
+    assert adv_dam != text
+
+    # Extract book sections for Corinthians
+    sections = vns.extract_book_sections(adv_dam, r"\bCorinthians\b")
+    # Verify that the injected verse does NOT appear in any Corinthians section
+    for start_off, sec_chunk in sections:
+        assert "(ix. 9)" not in sec_chunk, "Unqualified verse under intervening headword leaked into Corinthians section"
+
+
+def test_s04f_authorial_index_scripture_ledger_complete():
+    """
+    S04F-R4-F1 & S04F-R4 ledger verification:
+    Verify that tests/fixtures/s04f_authorial_index_scripture_ledger.json provides
+    an exhaustive census of all 13 scriptural book entries from printed pages 375-384,
+    confirming positive presence of B001-1 (Gen 15:6) and B001-12 (Deut 21:23),
+    unindexed status for B001-2..B001-7 (Hosea, Joel, Isaiah), and target absence
+    for B001-8..B001-11 in the indexed books.
+    """
+    import json
+    repo_root = Path(__file__).resolve().parent.parent
+    ledger_path = repo_root / "tests/fixtures/s04f_authorial_index_scripture_ledger.json"
+    assert ledger_path.exists(), f"Authorial Scripture index ledger missing at {ledger_path}"
+
+    with open(ledger_path, encoding="utf-8") as f:
+        ledger = json.load(f)
+
+    assert ledger["source_id"] == "S04F"
+    assert ledger["total_scriptural_book_entries"] == 13
+    entries = ledger["entries"]
+    assert len(entries) == 13
+
+    book_names = [e["book"] for e in entries]
+    expected_books = [
+        "Acts", "1 Corinthians", "2 Corinthians", "Deuteronomy", "Exodus",
+        "Ephesians", "Genesis", "Habakkuk", "John", "1 Maccabees",
+        "Revelation", "Romans", "2 Timothy"
+    ]
+    assert book_names == expected_books
+
+    # Positive controls
+    gen_entry = next(e for e in entries if e["book"] == "Genesis")
+    assert any("xv. 6" in c or "15" in c for c in gen_entry["citations"])
+
+    deut_entry = next(e for e in entries if e["book"] == "Deuteronomy")
+    assert any("xxi. 23" in c or "21" in c for c in deut_entry["citations"])
+
+    # Unindexed books: Hosea, Joel, Isaiah must NOT appear in the authorial book headings
+    assert "Hosea" not in book_names
+    assert "Joel" not in book_names
+    assert "Isaiah" not in book_names
+
+    # Target absence in indexed books:
+    cor1_entry = next(e for e in entries if e["book"] == "1 Corinthians")
+    # 1 Cor 1:19, 6:16, 9:9, 10:7 must not be in 1 Cor citations
+    for target_verse in ["i. 19", "vi. 16", "ix. 9", "x. 7"]:
+        assert not any(target_verse in c for c in cor1_entry["citations"]), f"Unexpected hit {target_verse} in 1 Cor citations"
+
+    exod_entry = next(e for e in entries if e["book"] == "Exodus")
+    assert not any("xxxii. 6" in c or "32:6" in c for c in exod_entry["citations"])
+
+    # Deuteronomy 25:4 absent
+    assert not any("xxv. 4" in c or "25:4" in c for c in deut_entry["citations"])
+
 
 
 

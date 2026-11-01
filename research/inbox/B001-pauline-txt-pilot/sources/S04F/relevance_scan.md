@@ -34,7 +34,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; unindexed book in authorial index without authorial heading)
 
 
 3. Romans 9:26 / Hosea 1:10
@@ -45,7 +45,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; unindexed book in authorial index without authorial heading)
 
 
 4. Romans 10:11 / Isaiah 28:16
@@ -56,7 +56,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; unindexed book in authorial index without authorial heading)
 
 
 5. Romans 10:13 / Joel 2:32
@@ -67,7 +67,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; unindexed book in authorial index without authorial heading)
 
 
 6. Romans 11:34 / Isaiah 40:13
@@ -78,7 +78,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; unindexed book in authorial index without authorial heading)
 
 
 7. Romans 15:12 / Isaiah 11:10
@@ -89,7 +89,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; unindexed book in authorial index without authorial heading)
 
 
 8. 1 Corinthians 1:19 / Isaiah 29:14
@@ -111,7 +111,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from indexed book headings and standalone typography in authorial index)
 
 
 10. 1 Corinthians 9:9 / Deuteronomy 25:4
@@ -122,7 +122,7 @@ N/A
 	
 N/A
 	
-ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from authorial index across book headings and standalone typography)
+ZERO TARGET-PATTERN MATCHES; NO SUBSTANTIVE DISCUSSION IDENTIFIED (Zero occurrences for enumerated search patterns in authenticated text layer; verified absent from indexed book headings and standalone typography in authorial index)
 
 
 11. 1 Corinthians 10:7 / Exodus 32:6

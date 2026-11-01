@@ -34,7 +34,7 @@
       "gal_3_complete": "Derivative pp. 35-66 (Raw scan pp. 153-184: Printed pp. 133-164: Commentary on Gal 3:1-29 including 3:6 on Gen 15:6 / Rom 4:3, 3:13 on Deut 21:23, Excursus 'The interpretation of Deut. xxi. 23' pp. 152-154, Excursus 'The words denoting Faith' pp. 154-158, Excursus 'The Faith of Abraham' pp. 158-164)",
       "gal_4_21_31": "Derivative pp. 67-73 (Raw scan pp. 199-205: Printed pp. 179-185: Commentary on Gal 4:21-31 allegory of Hagar and Sarah)",
       "hagar_philo_excursuses": "Derivative pp. 74-81 (Raw scan pp. 213-220: Printed pp. 193-200: Excursuses 'The Name and Office of an Apostle' and 'St Paul and the Three')",
-      "indexes": "Derivative pp. 82-91 (Raw scan pp. 395-404: Printed pp. 375-384: Comprehensive General Index combining Subjects, Persons, Greek words, and Passages of Scripture commented on under book headings; checked-in test fixture at tests/fixtures/s04f_authorial_index_fixture.txt, SHA-256: 8e89b1b9ecf61c9350aea2e1ff32f60135d834ebf9ff26cf6c1c68c848968d88)"
+      "indexes": "Derivative pp. 82-91 (Raw scan pp. 395-404: Printed pp. 375-384: Comprehensive General Index combining Subjects, Persons, Greek words, and Passages of Scripture commented on under book headings; checked-in test fixture at tests/fixtures/s04f_authorial_index_fixture.txt, SHA-256: 8e89b1b9ecf61c9350aea2e1ff32f60135d834ebf9ff26cf6c1c68c848968d88; authorial scripture ledger census fixture at tests/fixtures/s04f_authorial_index_scripture_ledger.json, SHA-256: cecc38b8c7f3043eb4650a1bd509827348fab55816b514ee9c7d11dbb50a5599)"
     }
   }
 }
