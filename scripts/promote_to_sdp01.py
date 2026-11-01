@@ -24,6 +24,7 @@ PROBE_QUERIES = {
     "S01F": "In Aageson's Paul's Use of Scripture, what is his primary methodology for identifying Pauline scriptural quotations?",
     "S02F": "In Sanday and Headlam's commentary on Romans, what is their discussion in the Excursus on St. Paul's Use of the Old Testament regarding whether Paul quotes from memory or from a manuscript roll?",
     "S03F": "In Robertson and Plummer's commentary on 1 Corinthians, what is their discussion in the Introduction regarding Paul's quotations from the Old Testament and agreement with the Septuagint?",
+    "S04F": "In Lightfoot's commentary on Galatians, what is his discussion in the note on Galatians 3:13 or the detached note regarding the interpretation of Deuteronomy 21:23 and the omission of hypo Theou?",
     "P01F": "In this Greek New Testament edition, what text is printed for 1 Corinthians 1:19?",
     "P02F": "In this Septuagint edition, what Greek text is printed for Genesis 15:6?",
     "P03F": "In this Septuagint edition, what Greek text is printed for Isaiah 29:14?",
