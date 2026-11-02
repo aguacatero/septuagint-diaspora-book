@@ -92,12 +92,12 @@
 ### S05-E006 — Qualified Hypothesis of Pauline Insertion of `ἤ` Matching Rom 11:33 Doxological Structure
 - **Passage Target:** Romans 11:34 / Isaiah 40:13
 - **Claim Type:** Textual-Critical / Literary
-- **Printed Page:** Page 308 (also pp. 307–311, 358–359)
-- **Source Locator:** Teil III.2.3.1b, S. 308
-- **NotebookLM Citation:** `wilk_1998_jesaja_paulus.pdf [PDF p. 320; printed p. 308]`
+- **Printed Page:** Page 307 (also pp. 308–311, 358–359)
+- **Source Locator:** Teil III.2.3.1b, S. 307 Anm. 23 (vgl. S. 308–311)
+- **NotebookLM Citation:** `wilk_1998_jesaja_paulus.pdf [PDF p. 319; printed p. 307]`
 - **Author's Position:** In Romans 11:34, Paul quotes Isaiah 40:13 LXX; Wilk hypothesizes that Paul likely inserted `ἤ` before `τίς σύμβουλος` to divide the citation into two distinct, balanced rhetorical questions matching the paired concepts of God's wisdom (`σοφία`) and knowledge (`γνῶσις`) in Romans 11:33.
 - **Supporting Quotation:**
-  > „Angesichts der schwachen Bezeugung von ἤ in der 𝔊-Tradition steht zu vermuten, daß Paulus es in Rom 1134, zur Angleichung an 1135, selbst eingefügt hat.“ (p. 308)
+  > „Angesichts der schwachen Bezeugung von ἤ in der 𝔊-Tradition steht zu vermuten, daß Paulus es in Rom 1134, zur Angleichung an 1135, selbst eingefügt hat.“ (p. 307)
 - **Textual Evidence Invoked:** Textual insertion of `ἤ` in Rom 11:34 vs. `καί` in LXX Isa 40:13; correspondence to the dual exclamation in Rom 11:33.
 - **Qualifications:** Wilk qualifies this as a probabilistic scholarly inference („steht zu vermuten, daß Paulus es... selbst eingefügt hat“) based on the weak attestation of `ἤ` in the Greek manuscript tradition of Isa 40:13, recognizing this as a secondary-author hypothesis rather than a direct primary-text certainty.
 - **Confidence:** HIGH
@@ -105,12 +105,12 @@
 ### S05-E007 — The Unsearchable Wisdom of Israel's Salvation
 - **Passage Target:** Romans 11:34 / Isaiah 40:13
 - **Claim Type:** Exegetical / Theological
-- **Printed Page:** Page 394 (also pp. 307–311)
-- **Source Locator:** Teil V.2.1.4, S. 394
-- **NotebookLM Citation:** `wilk_1998_jesaja_paulus.pdf [PDF p. 406; printed p. 394]`
+- **Printed Page:** Page 397 (also pp. 307–311, 394)
+- **Source Locator:** Teil V.2.1.4, S. 397 (vgl. S. 307–311, 394)
+- **NotebookLM Citation:** `wilk_1998_jesaja_paulus.pdf [PDF p. 409; printed p. 397]`
 - **Author's Position:** Paul incorporates Isaiah 40:13 at the culmination of Romans 11 to celebrate that God's paradoxical and sovereign plan for Israel's salvation—involving temporary hardening alongside Gentile inclusion—completely transcends human understanding and counsel.
 - **Supporting Quotation:**
-  > „...bringt es den wunderbaren Charakter des — von Menschen nur demütig nach- und mitzuvollziehenden — Heilshandelns Gottes an Israel gebündelt zur Sprache.“ (p. 394)
+  > „...bringt es den wunderbaren Charakter des — von Menschen nur demütig nach- und mitzuvollziehenden — Heilshandelns Gottes an Israel gebündelt zur Sprache.“ (p. 397)
 - **Textual Evidence Invoked:** Integration of Isa 40:13 into the concluding hymn of Romans 11:33–36.
 - **Qualifications:** The first clause of Rom 11:34 reflects upon God's merciful decree, while the second reflects upon His execution of that decree in history.
 - **Confidence:** HIGH

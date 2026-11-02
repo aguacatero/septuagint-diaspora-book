@@ -95,16 +95,16 @@
 - **QUESTION:** Why does Paul cite Isaiah 40:13 in Romans 11:34, and why does he insert `ἤ` into the text?
 - **EVIDENCE:**
   - *Explicit Source Statement:* In Rom 11:34, Paul cites Isa 40:13 LXX: `τίς γὰρ ἔγνω νοῦν κυρίου; ἢ τίς σύμβουλος αὐτοῦ ἐγένετο;` (pp. 307–311).
-  - *Explicit Source Statement:* In LXX Isaiah 40:13, the majority witness reads `τίς ἔγνω νοῦν κυρίου, καὶ τίς σύμβουλος αὐτοῦ ἐγένετο...` (reading `καί` rather than `ἤ`) (p. 308).
-  - *Explicit Source Statement:* Romans 11:33 opens with paired attributes: `ὦ βάθος πλούτου καὶ σοφίας καὶ γνώσεως θεοῦ` (p. 308).
+  - *Explicit Source Statement:* In LXX Isaiah 40:13, the majority witness reads `τίς ἔγνω νοῦν κυρίου, καὶ τίς σύμβουλος αὐτοῦ ἐγένετο...` (reading `καί` rather than `ἤ`) (p. 307 Anm. 23).
+  - *Explicit Source Statement:* Romans 11:33 opens with paired attributes: `ὦ βάθος πλούτου καὶ σοφίας καὶ γνώσεως θεοῦ` (pp. 307–308).
 - **INFERENCE:**
   - *Structural Paraphrase:* Paul intentionally substitutes `ἤ` for `καί` to convert the passage into two sharp, balanced rhetorical questions matching the bipartite praise of God's wisdom (`σοφία` -> `σύμβουλος`) and knowledge (`γνῶσις` -> `νοῦς`) in v. 33.
 - **CONCLUSION:**
-  - *Explicit Source Statement:* Isaiah 40:13 serves as a citation-like scriptural allusion celebrating the unsearchable depths of God's salvation plan for both Gentiles and all Israel (pp. 307–311, 394).
+  - *Explicit Source Statement:* Isaiah 40:13 serves as a citation-like scriptural allusion celebrating the unsearchable depths of God's salvation plan for both Gentiles and all Israel (pp. 307–311, 397).
 
 ### Analytical Breakdown
 - **Assumptions Explicitly Acknowledged:** The concluding doxology of Romans 11 is Paul's own authorial composition reflecting upon the entire mystery of Rom 9–11 (p. 307).
-- **Alternative Explanations Considered:** Wilk considers whether `ἤ` stood in Paul's Septuagint exemplar; given its weak attestation in Greek Isaiah witnesses, he offers the qualified hypothesis that it likely derives from Paul („steht zu vermuten, daß Paulus es... selbst eingefügt hat“, p. 308), while acknowledging this remains a secondary-author scholar inference rather than direct primary-text certainty.
+- **Alternative Explanations Considered:** Wilk considers whether `ἤ` stood in Paul's Septuagint exemplar; given its weak attestation in Greek Isaiah witnesses, he offers the qualified hypothesis that it likely derives from Paul („steht zu vermuten, daß Paulus es... selbst eingefügt hat“, p. 307 Anm. 23), while acknowledging this remains a secondary-author scholar inference rather than direct primary-text certainty.
 - **Alternative Explanations Not Addressed:** Wilk does not discuss whether Paul's Hebrew knowledge of Isaiah 40:13 (`מִי־תִכֵּן אֶת־רוּחַ יְהוָה וְאִישׁ עֲצָתוֹ יוֹדִיעֶנּוּ`) influenced his understanding of `νοῦς` vs. `רוּחַ`.
 - **Falsification / Weakening Evidence:** Finding an early Septuagint papyrus of Isaiah 40:13 containing `ἤ` would falsify the claim that `ἤ` represents Paul's individual redactional creation.
 

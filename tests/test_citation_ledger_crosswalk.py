@@ -1860,7 +1860,131 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
     )
     assert adj_unfound["passed"] is False
     assert adj_unfound["classification"] == "EVIDENCE_LEDGER_MISMATCH"
-    assert "quote not found in source text" in adj_unfound["summary"]
+    assert "quote not found in source text" in adj_unfound["summary"] or "quotation verification failed" in adj_unfound["summary"]
+
+    # Case 4c (S05-R4-F1): >= threshold incidental citations WITH generic scholarly phrase on unrelated pages (pp. 10, 20, 30) fail hit-witness correlation
+    target_def_b2 = {
+        "id": "B001-2",
+        "name": "Romans 9:25 / Hosea 2:23",
+        "nt_target": "Rom 9:25",
+        "ot_target": "Hos 2:23",
+        "expected_classification": "SUBSTANTIVE_DISCUSSION",
+        "evidence_ids": ["S05-E001"],
+        "min_substantive_hits": 3,
+        "expected_printed_pages": [130],
+        "substantive_analytical_phrases": ["Auszeichnungen verheißend zuspricht", "Erbarmensgefäße"],
+    }
+    valid_b2_ledger = {
+        "S05-E001": {
+            "evidence_id": "S05-E001",
+            "b001_id": "B001-2",
+            "verification_status": "VERIFIED",
+            "printed_page": "130",
+            "notebooklm_citation": "wilk [PDF p. 142; printed p. 130]",
+            "short_quote": "Indem es Heiden diejenigen „Auszeichnungen“ verheißend zuspricht...",
+            "author_claim": "Valid claim",
+        }
+    }
+    # Mock text with 142 pages for page-bounded quote verification
+    mock_pages = ["Dummy page text\n"] * 200
+    mock_pages[141] = "Indem es Heiden diejenigen 'Auszeichnungen' verheißend zuspricht, die Israel besaß..."
+    mock_full_text = "\x0c".join(mock_pages)
+
+    unrelated_hits_4c = [
+        {"start": 100, "printed_page": 10, "match": "Hos 225", "snippet": "Hier ist ein Mischzitat zu finden."},
+        {"start": 200, "printed_page": 20, "match": "Hos 225", "snippet": "Hier ist ein Mischzitat zu finden."},
+        {"start": 300, "printed_page": 30, "match": "Hos 225", "snippet": "Hier ist ein Mischzitat zu finden."},
+    ]
+    adj_4c = vns.adjudicate_target(
+        target_def_b2, unrelated_hits_4c, {"passed": True}, ledger=valid_b2_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_4c["passed"] is False
+    assert adj_4c["classification"] == "HIT_WITNESS_PAGE_MISMATCH"
+    assert "none intersect argument witness discussion loci" in adj_4c["summary"]
+
+    # Case 4d (S05-R4-F1): Hits with contrary context ('wird von Paulus nicht diskutiert') fail adjudication
+    contrary_hits_4d = [
+        {"start": 100, "printed_page": 130, "match": "Hos 225", "snippet": "Hos 225 wird von Paulus nicht diskutiert."},
+        {"start": 200, "printed_page": 130, "match": "Hos 225", "snippet": "Auszeichnungen verheißend zuspricht"},
+        {"start": 300, "printed_page": 130, "match": "Hos 225", "snippet": "Erbarmensgefäße"},
+    ]
+    adj_4d = vns.adjudicate_target(
+        target_def_b2, contrary_hits_4d, {"passed": True}, ledger=valid_b2_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_4d["passed"] is False
+    assert adj_4d["classification"] == "CONTRARY_CONTEXT_FOUND"
+    assert "contrary context" in adj_4d["summary"]
+
+    # Case 4e (S05-R4-F1): Single unrelated context hit among incidental hits (below min threshold) fails
+    single_ctx_hits_4e = [
+        {"start": 100, "printed_page": 10, "match": "Hos 225", "snippet": "Auszeichnungen verheißend zuspricht"},
+        {"start": 200, "printed_page": 20, "match": "Hos 225", "snippet": "nur ein beiläufiger Verweis"},
+        {"start": 300, "printed_page": 30, "match": "Hos 225", "snippet": "ein weiterer Verweis"},
+    ]
+    adj_4e = vns.adjudicate_target(
+        target_def_b2, single_ctx_hits_4e, {"passed": True}, ledger=valid_b2_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_4e["passed"] is False
+    assert adj_4e["classification"] == "INSUFFICIENT_SUBSTANTIVE_HITS"
+    assert "below required substantive threshold" in adj_4e["summary"]
+
+    # Case 7b (S05-R4-F2): Authentic opening + fabricated suffix in short_quote fails page-bounded verification
+    fab_suffix_ledger = {
+        "S05-E001": {
+            "evidence_id": "S05-E001",
+            "b001_id": "B001-2",
+            "verification_status": "VERIFIED",
+            "printed_page": "130",
+            "notebooklm_citation": "wilk [PDF p. 142; printed p. 130]",
+            "short_quote": "Indem es Heiden diejenigen „Auszeichnungen“ verheißend zuspricht FABRICATED_SUFFIX_HERE",
+            "author_claim": "Claim with fabricated suffix",
+        }
+    }
+    adj_7b = vns.adjudicate_target(
+        target_def_b2, substantive_hits, {"passed": True}, ledger=fab_suffix_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_7b["passed"] is False
+    assert adj_7b["classification"] == "EVIDENCE_LEDGER_MISMATCH"
+    assert "fabricated suffix or text mismatch" in adj_7b["summary"]
+
+    # Case 7c (S05-R4-F2): Authentic quote attributed to wrong page fails
+    wrong_page_ledger = {
+        "S05-E001": {
+            "evidence_id": "S05-E001",
+            "b001_id": "B001-2",
+            "verification_status": "VERIFIED",
+            "printed_page": "131",
+            "notebooklm_citation": "wilk [PDF p. 143; printed p. 131]",
+            "short_quote": "Indem es Heiden diejenigen „Auszeichnungen“ verheißend zuspricht...",
+            "author_claim": "Claim on wrong page",
+        }
+    }
+    target_def_b2_p131 = dict(target_def_b2, expected_printed_pages=[131])
+    adj_7c = vns.adjudicate_target(
+        target_def_b2_p131, substantive_hits, {"passed": True}, ledger=wrong_page_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_7c["passed"] is False
+    assert adj_7c["classification"] == "EVIDENCE_LEDGER_MISMATCH"
+    assert "not found on printed page 131" in adj_7c["summary"]
+
+    # Case 7d (S05-R4-F2): Missing quotation or all-short-token quotation fails fail-closed
+    short_token_ledger = {
+        "S05-E001": {
+            "evidence_id": "S05-E001",
+            "b001_id": "B001-2",
+            "verification_status": "VERIFIED",
+            "printed_page": "130",
+            "notebooklm_citation": "wilk [PDF p. 142; printed p. 130]",
+            "short_quote": "a b c d",
+            "author_claim": "Short token claim",
+        }
+    }
+    adj_7d = vns.adjudicate_target(
+        target_def_b2, substantive_hits, {"passed": True}, ledger=short_token_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_7d["passed"] is False
+    assert adj_7d["classification"] == "EVIDENCE_LEDGER_MISMATCH"
+    assert "no qualifying words of length >= 2" in adj_7d["summary"]
 
 
 def test_s05_qualifications_and_locators_discipline():
@@ -1894,10 +2018,17 @@ def test_s05_qualifications_and_locators_discipline():
             printed_num = int(first_printed.group(0))
             assert pdf_p == printed_num + 12, f"Row {eid} locator offset mismatch: PDF {pdf_p} != printed {printed_num} + 12"
 
-    # 2. S05-E006 secondary-author hypothesis and probabilistic qualification (S05-R2-M1 & S05-R3-M1)
+    # 2. S05-E006 secondary-author hypothesis and probabilistic qualification (S05-R2-M1, S05-R3-M1 & S05-R4-F2)
     e006 = next(r for r in reader if r["evidence_id"] == "S05-E006")
     assert "secondary-author" in e006["qualification"].lower() or "secondary-author" in e006["author_claim"].lower()
     assert "steht zu vermuten" in e006["qualification"] or "steht zu vermuten" in e006["short_quote"]
+    assert e006["printed_page"] == "307"
+    assert "PDF p. 319" in e006["notebooklm_citation"]
+
+    # 2b. S05-E007 page-bounded locator (S05-R4-F2)
+    e007 = next(r for r in reader if r["evidence_id"] == "S05-E007")
+    assert e007["printed_page"] == "397"
+    assert "PDF p. 409" in e007["notebooklm_citation"]
 
     # 3. S05-E008 secondary-author hypothesis and textual reservation (S05-R2-M1)
     e008 = next(r for r in reader if r["evidence_id"] == "S05-E008")

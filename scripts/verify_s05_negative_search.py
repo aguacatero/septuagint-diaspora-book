@@ -28,6 +28,7 @@ localized book-section index controls, dynamic per-hit evidence ledger, and meas
 from __future__ import annotations
 
 import argparse
+import bisect
 import csv
 import hashlib
 import os
@@ -78,20 +79,22 @@ REQUIRED_INDEX_SECTIONS = [
 ]
 
 GENERAL_SCHOLARLY_TERMS = [
-    "septuaginta",
-    "vorlage",
-    "wortlaut",
-    "modifikation",
-    "textform",
-    "angleichung",
-    "zitatenkomplex",
-    "zitatkombination",
-    "redaktionell",
-    "handschriften",
-    "bezeugung",
-    "konflation",
     "aus dem hebräischen",
     "mischzitat",
+    "zitatenkomplex",
+    "zitatkombination",
+    "redaktionelle änderung",
+    "stilistische modifikation",
+    "textkritische bezeugung",
+]
+
+CONTRARY_CONTEXT_PHRASES = [
+    "wird von paulus nicht diskutiert",
+    "spielt für paulus keine rolle",
+    "wird nicht diskutiert",
+    "nicht von paulus erörtert",
+    "keine paulinische bedeutung",
+    "wird von paulus übergangen",
 ]
 
 
@@ -99,6 +102,87 @@ def strip_accents(s: str) -> str:
     """Normalize and strip diacritical marks for fault-tolerant Greek/Latin matching."""
     nfkd = unicodedata.normalize("NFKD", s)
     return "".join(c for c in nfkd if not unicodedata.combining(c))
+
+
+def clean_ocr_page(page: str) -> str:
+    """Normalize typographic quotes, dashes, and whitespace in OCR page text."""
+    cleaned = re.sub(r"[„“”\"«»’‘']", "'", page)
+    cleaned = re.sub(r"[—–\-]", "-", cleaned)
+    cleaned = re.sub(r"\s+", " ", cleaned)
+    return cleaned
+
+
+def clean_quote(quote: str) -> str:
+    """Normalize typographic quotes, dashes, and whitespace in citation ledger quote."""
+    q = re.sub(r"[„“”\"«»’‘']", "'", quote)
+    q = re.sub(r"[—–\-]", "-", q)
+    q = q.replace("Röm", "Rom")
+    q = re.sub(r"\s+", " ", q)
+    return q
+
+
+def make_word_pat(w: str) -> str:
+    """Handle German Sperrsatz (letter-spaced words e.g. 'v e r m u t e n') in OCR text."""
+    return r"\s*".join(re.escape(c) for c in w)
+
+
+def verify_page_bounded_quote(
+    quote: str, page_text: str, printed_page: int
+) -> tuple[bool, str, list[dict]]:
+    """
+    S05-R4-F2: Page-bounded verbatim quotation verifier.
+    Enforces that every segment of `quote` (split by ellipses) matches verbatim in order
+    on `page_text` (the text of printed_page).
+    Fails closed on:
+    - Empty or whitespace quote
+    - Segments with no qualifying words (length >= 2)
+    - Authentic opening followed by fabricated suffix
+    - Quote only present on a different page
+    """
+    if not quote or not quote.strip():
+        return False, "Quote is empty", []
+
+    clean_p = clean_ocr_page(page_text)
+    clean_q = clean_quote(quote)
+
+    raw_segs = re.split(r"\.{3,}|\u2026", clean_q)
+    segs = [s.strip(" \t\n\r\'\"—–-") for s in raw_segs if len(s.strip(" \t\n\r\'\"—–-")) > 0]
+
+    if not segs or not any(len(s.strip()) > 3 for s in segs):
+        return False, "Quote has no non-empty segments after ellipsis splitting", []
+
+    witnesses = []
+    last_offset = 0
+
+    for s_idx, seg in enumerate(segs):
+        words = re.findall(r"[a-zA-ZäöüÄÖÜß]+", seg)
+        sig_words = [w for w in words if len(w) >= 2]
+        if not sig_words:
+            return False, f"Segment {s_idx+1} has no qualifying words of length >= 2: '{seg}'", []
+
+        pat = r"\b" + r"\b[\s\S]{1,60}\b".join(make_word_pat(w) for w in sig_words) + r"\b"
+        m = re.search(pat, clean_p[last_offset:], re.IGNORECASE)
+        if not m:
+            first_pat = r"\b" + make_word_pat(sig_words[0]) + r"\b"
+            if re.search(first_pat, clean_p, re.IGNORECASE):
+                return False, f"Segment {s_idx+1} opening found on printed page {printed_page} but complete verbatim sequence failed (fabricated suffix or text mismatch): '{seg[:40]}...'", []
+            return False, f"Segment {s_idx+1} not found on printed page {printed_page}: '{seg[:40]}...'", []
+
+        start_pos = last_offset + m.start()
+        end_pos = last_offset + m.end()
+        matched = clean_p[start_pos:end_pos]
+        witnesses.append({
+            "segment_index": s_idx + 1,
+            "segment_quote": seg,
+            "matched_text": matched,
+            "page_offset_start": start_pos,
+            "page_offset_end": end_pos,
+            "printed_page": printed_page,
+            "pdf_page": printed_page + 12,
+        })
+        last_offset = end_pos
+
+    return True, f"All {len(segs)} segments verified on printed page {printed_page}", witnesses
 
 
 def get_sha256(path: Path) -> str:
@@ -119,47 +203,101 @@ def load_citation_ledger(ledger_path: Path) -> dict[str, dict]:
 
 
 def quote_exists_in_text(quote: str, text: str) -> bool:
-    if not quote:
+    """Retained for backwards compatibility; delegates to page/segment normalization."""
+    if not quote or not quote.strip():
         return False
-    q_clean = re.sub(r"^[\s\.\'\"»«—]+|[\s\.\'\"»«—]+$", "", quote)
-    words = [w for w in re.split(r"[^\w]+", q_clean) if len(w) > 3]
-    if not words:
-        return True
-    probe_words = words[:min(4, len(words))]
-    pat = r"\b" + r"\b[\s\S]{1,60}\b".join(re.escape(w) for w in probe_words) + r"\b"
-    return bool(re.search(pat, text, re.IGNORECASE))
+    clean_p = clean_ocr_page(text)
+    clean_q = clean_quote(quote)
+    raw_segs = re.split(r"\.{3,}|\u2026", clean_q)
+    segs = [s.strip(" \t\n\r\'\"—–-") for s in raw_segs if len(s.strip(" \t\n\r\'\"—–-")) > 0]
+    if not segs:
+        return False
+    for seg in segs:
+        words = [w for w in re.findall(r"[a-zA-ZäöüÄÖÜß]+", seg) if len(w) >= 2]
+        if words:
+            pat = r"\b" + r"\b[\s\S]{1,60}\b".join(make_word_pat(w) for w in words) + r"\b"
+            if not re.search(pat, clean_p, re.IGNORECASE):
+                return False
+    return True
 
 
 def verify_evidence_ledger_integrity(
-    target_def: dict, ledger: dict[str, dict], full_text: str | None = None
-) -> tuple[bool, str]:
+    target_def: dict,
+    ledger: dict[str, dict],
+    pages: list[str] | None = None,
+    full_text: str | None = None,
+) -> tuple[bool, str, list[dict]]:
     """
     Verify referential integrity between target definition, citation_ledger.csv, and authenticated text:
     - Every required evidence ID must exist in the ledger
     - b001_id must match the target ID
     - verification_status must be VERIFIED
     - printed_page must match one of the expected printed pages
-    - short_quote must exist in full_text when provided
+    - short_quote must match verbatim on its specific printed page (pages[pdf_page - 1])
     """
     eids = target_def.get("evidence_ids", [])
     tid = target_def["id"]
+    verified_witnesses = []
+
     for eid in eids:
         if eid not in ledger:
-            return False, f"Required evidence ID {eid} not found in citation_ledger.csv"
+            return False, f"Required evidence ID {eid} not found in citation_ledger.csv", []
         rec = ledger[eid]
         if rec.get("b001_id") != tid:
-            return False, f"Evidence ID {eid} mapped to {rec.get('b001_id')}, expected {tid}"
+            return False, f"Evidence ID {eid} mapped to {rec.get('b001_id')}, expected {tid}", []
         if rec.get("verification_status") != "VERIFIED":
-            return False, f"Evidence ID {eid} status is {rec.get('verification_status')}, expected VERIFIED"
+            return False, f"Evidence ID {eid} status is {rec.get('verification_status')}, expected VERIFIED", []
         page_val = int(rec["printed_page"]) if rec.get("printed_page", "").isdigit() else -1
         expected_pages = target_def.get("expected_printed_pages", [])
         if expected_pages and page_val not in expected_pages:
-            return False, f"Evidence ID {eid} printed page {page_val} not in expected pages {expected_pages}"
-        if full_text:
-            quote = rec.get("short_quote", "")
-            if not quote_exists_in_text(quote, full_text):
-                return False, f"Evidence ID {eid} quote not found in source text: {quote[:40]}..."
-    return True, "Referential integrity and ledger records verified"
+            return False, f"Evidence ID {eid} printed page {page_val} not in expected pages {expected_pages}", []
+
+        quote = rec.get("short_quote", "")
+        if pages is not None:
+            pdf_page = page_val + 12
+            if pdf_page < 1 or pdf_page > len(pages):
+                return False, f"Evidence ID {eid} calculated PDF page {pdf_page} out of bounds (1..{len(pages)})", []
+            p_text = pages[pdf_page - 1]
+            ok, msg, wits = verify_page_bounded_quote(quote, p_text, page_val)
+            if not ok:
+                return False, f"Evidence ID {eid} page-bounded quotation verification failed on printed page {page_val}: {msg}", []
+            verified_witnesses.append({
+                "evidence_id": eid,
+                "printed_page": page_val,
+                "pdf_page": pdf_page,
+                "quote": quote,
+                "author_claim": rec.get("author_claim", ""),
+                "witnesses": wits,
+            })
+        elif full_text is not None:
+            full_pages = full_text.split("\x0c")
+            pdf_page = page_val + 12
+            if len(full_pages) >= pdf_page:
+                p_text = full_pages[pdf_page - 1]
+                ok, msg, wits = verify_page_bounded_quote(quote, p_text, page_val)
+                if not ok:
+                    return False, f"Evidence ID {eid} page-bounded quotation verification failed on printed page {page_val}: {msg}", []
+                verified_witnesses.append({
+                    "evidence_id": eid,
+                    "printed_page": page_val,
+                    "pdf_page": pdf_page,
+                    "quote": quote,
+                    "author_claim": rec.get("author_claim", ""),
+                    "witnesses": wits,
+                })
+            else:
+                if not quote_exists_in_text(quote, full_text):
+                    return False, f"Evidence ID {eid} quote not found in source text: {quote[:40]}...", []
+                verified_witnesses.append({
+                    "evidence_id": eid,
+                    "printed_page": page_val,
+                    "pdf_page": pdf_page,
+                    "quote": quote,
+                    "author_claim": rec.get("author_claim", ""),
+                    "witnesses": [],
+                })
+
+    return True, "Referential integrity and ledger records verified", verified_witnesses
 
 
 # Positive controls: citations and headings known to exist in the volume in authentic typography.
@@ -248,13 +386,20 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 3,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
-        "substantive_analytical_phrases": ["Auszeichnungen", "Erbarmensgefäße", "Befund", "Vorlage", "Wortlaut", "Heiden", "Zitate", "Heil", "berufen", "Septuaginta", "Zitatenkombination", "konflation"],
+        "substantive_analytical_phrases": [
+            "Auszeichnungen verheißend zuspricht",
+            "Erbarmensgefäße",
+            "Rede über Heiden",
+            "Zitatenkombination",
+            "Berechtigung der paulinischen Darstellung",
+            "Übertragung auf die Heiden",
+        ],
         "expected_printed_pages": [130],
         "patterns": [
-            r"\b(?:Rom|Röm)\b\.?\s*9\s*[:\.,]\s*25\b",
-            r"\b(?:Rom|Röm)\s+925\b",
-            r"\b(?:Hos|Hosea)\b\.?\s*2\s*[:\.,]\s*(?:23|25)\b",
-            r"\bHos\s+225\b",
+            r"\b(?:Rom|Röm)\b\.?\s*(?:9\s*[:\.,]?\s*(?:25|25f)|925f?)\b",
+            r"\b(?:in|v\.)\s*9?25f?\b",
+            r"\b(?:Hos|Hosea)\b\.?\s*(?:2\s*[:\.,]?\s*(?:23|25)[a-zα-ωΑ-Ω]*|225[a-zα-ωΑ-Ω]*|223[a-zα-ωΑ-Ω]*)",
+            r"\bHos\s*225\b",
         ],
     },
     "B001-3": {
@@ -267,13 +412,20 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 2,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
-        "substantive_analytical_phrases": ["Zitatkombination", "Wortlaut", "Kette", "Gottessöhne", "Vorlage", "Zitate", "Anwendung", "Septuaginta", "Heidenchristen", "Verheißung"],
+        "substantive_analytical_phrases": [
+            "Zitatkombination ihrem Wortlaut",
+            "Gottessöhne",
+            "Heidenchristen",
+            "Rede über Heiden",
+            "Söhne des lebendigen Gottes",
+            "Anwendung auf die Heiden",
+        ],
         "expected_printed_pages": [129],
         "patterns": [
-            r"\b(?:Rom|Röm)\b\.?\s*9\s*[:\.,]\s*26\b",
-            r"\b(?:Rom|Röm)\s+926\b",
-            r"\b(?:Hos|Hosea)\b\.?\s*(?:1\s*[:\.,]\s*10|2\s*[:\.,]\s*1)\b",
-            r"\bHos\s+21\b",
+            r"\b(?:Rom|Röm)\b\.?\s*(?:9\s*[:\.,]?\s*26|926)\b",
+            r"\b(?:in|v\.)\s*926\b",
+            r"\b(?:Hos|Hosea)\b\.?\s*(?:1\s*[:\.,]?\s*10|2\s*[:\.,]?\s*[1l][a-zα-ωΑ-Ω]*|2[1l][a-zα-ωΑ-Ω]*|110)\b",
+            r"\bHos\s*2[1l]\b",
         ],
     },
     "B001-4": {
@@ -286,11 +438,18 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 5,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
-        "substantive_analytical_phrases": ["Modifikation", "καταισχυνθήσεται", "Umfeld", "Futura", "Zitatenkomplex", "Stein", "Zion", "Septuaginta", "stilistische"],
+        "substantive_analytical_phrases": [
+            "rein stilistische Modifikation",
+            "von Futura durchzogene Umfeld",
+            "Hinweise auf Christus",
+            "Stein in Zion",
+            "Glaube und Scham",
+            "nicht zuschanden werden",
+        ],
         "expected_printed_pages": [45, 164],
         "patterns": [
-            r"\b(?:Rom|Röm)\b\.?\s*(?:10\s*[:\.,]\s*11|1011|lOll)\b",
-            r"\b(?:Jes|Jesaja)\b\.?\s*(?:28\s*[:\.,]\s*16|2816)\b",
+            r"\b(?:Rom|Röm)\b\.?\s*(?:10\s*[:\.,]?\s*11|1011|lOll)\b",
+            r"\b(?:Jes|Jesaja)\b\.?\s*(?:28\s*[:\.,]?\s*16[a-zα-ωΑ-Ω]*|2816[a-zα-ωΑ-Ω]*)\b",
         ],
     },
     "B001-5": {
@@ -303,11 +462,20 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 2,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
-        "substantive_analytical_phrases": ["Homologie", "Anspielung", "Rettung", "Differenzierung", "Schlußsatz", "korrespondiert", "entlehnten"],
+        "substantive_analytical_phrases": [
+            "Homologie und Rettung",
+            "Verbindung von",
+            "Differenzierung zwischen",
+            "Anspielung auf Joel",
+            "Homologie",
+            "Herrschaft Christi und Rettung",
+            "bekräftigen sollen",
+            "Schriftstellen gemeinsam",
+        ],
         "expected_printed_pages": [61],
         "patterns": [
-            r"\b(?:Rom|Röm)\b\.?\s*(?:10\s*[:\.,]\s*13|1013)\b",
-            r"\b(?:Joel)\b\.?\s*(?:2\s*[:\.,]\s*32|3\s*[:\.,]\s*5|35)\b",
+            r"\b(?:Rom|Röm)\b\.?\s*(?:10\s*[:\.,]?\s*13|1013)\b",
+            r"\b(?:Joel)\b\.?\s*(?:2\s*[:\.,]?\s*32[a-z]?|3\s*[:\.,]?\s*5[a-z]?|35[a-z]?)\b",
         ],
     },
     "B001-6": {
@@ -317,14 +485,24 @@ VERIFIED_MATCH_CATALOG = {
         "ot_target": "Isa 40:13",
         "expected_classification": "SUBSTANTIVE_DISCUSSION",
         "evidence_ids": ["S05-E006", "S05-E007"],
-        "min_substantive_hits": 5,
+        "min_substantive_hits": 2,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
-        "substantive_analytical_phrases": ["Bezeugung", "vermuten", "Struktur", "Textform", "Angleichung", "Fragen", "rhetorische"],
-        "expected_printed_pages": [308, 394],
+        "substantive_analytical_phrases": [
+            "schwachen Bezeugung",
+            "steht zu vermuten",
+            "Angleichung an 1135",
+            "wunderbaren Charakter",
+            "Heilshandelns Gottes an Israel",
+            "unergründlichen Ratschlüsse",
+            "Schlußteil des Argumentationsgangs",
+            "Lobpreises Rom 1133-36",
+            "rhetorische Fragen",
+        ],
+        "expected_printed_pages": [307, 397],
         "patterns": [
-            r"\b(?:Rom|Röm)\b\.?\s*(?:11\s*[:\.,]\s*34|1134)\b",
-            r"\b(?:Jes|Jesaja)\b\.?\s*(?:40\s*[:\.,]\s*13|4013)\b",
+            r"\b(?:Rom|Röm)\b\.?\s*(?:11\s*[:\.,]?\s*34|1134)\b",
+            r"\b(?:Jes|Jesaja)\b\.?\s*(?:40\s*[:\.,]?\s*13[a-z]?|4013[a-z]?)\b",
         ],
     },
     "B001-7": {
@@ -334,14 +512,23 @@ VERIFIED_MATCH_CATALOG = {
         "ot_target": "Isa 11:10",
         "expected_classification": "SUBSTANTIVE_DISCUSSION",
         "evidence_ids": ["S05-E008", "S05-E009"],
-        "min_substantive_hits": 5,
+        "min_substantive_hits": 2,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
-        "substantive_analytical_phrases": ["Zeitangabe", "entfallen", "Vorlage", "Wurzel", "Garant", "Gemeinschaft", "Erfüllung"],
+        "substantive_analytical_phrases": [
+            "Zeitangabe kann entfallen",
+            "Wurzel Isais bereits erschienen",
+            "Garanten der Gemeinschaft",
+            "Heilserwartung",
+            "Gemeinschaft von Juden- und Heidenchristen",
+            "Glied der Zitatkette",
+            "Zitate in Rom 159-12",
+            "Lobpreis der Völker",
+        ],
         "expected_printed_pages": [46, 394],
         "patterns": [
-            r"\b(?:Rom|Röm)\b\.?\s*(?:15\s*[:\.,]\s*12|1512|15i2)\b",
-            r"\b(?:Jes|Jesaja)\b\.?\s*(?:11\s*[:\.,]\s*10|1110|llio)\b",
+            r"\b(?:Rom|Röm)\b\.?\s*(?:15\s*[:\.,]?\s*12|1512|15i2)\b",
+            r"\b(?:Jes|Jesaja)\b\.?\s*(?:11\s*[:\.,]?\s*10[a-z]?|1110[a-z]?|llio[a-z]?)\b",
         ],
     },
     "B001-8": {
@@ -351,14 +538,23 @@ VERIFIED_MATCH_CATALOG = {
         "ot_target": "Isa 29:14",
         "expected_classification": "SUBSTANTIVE_DISCUSSION",
         "evidence_ids": ["S05-E010", "S05-E011"],
-        "min_substantive_hits": 5,
+        "min_substantive_hits": 2,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
-        "substantive_analytical_phrases": ["ä^EtEiv", "ἀθετεῖν", "vielleicht", "Ps 32", "Prophetie", "Kreuz", "Gericht", "Zitate", "clarification"],
+        "substantive_analytical_phrases": [
+            "Wort ἀθετεῖν",
+            "Gericht Gottes über die Weisheit",
+            "Zerstörung der menschlichen",
+            "Sinn der jesajanischen Prophetie",
+            "Kreuz und Auferstehung",
+            "Weisheit der Welt",
+            "Gewichtung der Zitate",
+            "Leitthese",
+        ],
         "expected_printed_pages": [45, 393],
         "patterns": [
-            r"\b(?:1\s*Kor|IKor)\b\.?\s*(?:1\s*[:\.,]\s*19|119)\b",
-            r"\b(?:Jes|Jesaja)\b\.?\s*(?:29\s*[:\.,]\s*14|2914)\b",
+            r"\b(?:1\s*Kor|IKor)\b\.?\s*(?:1\s*[:\.,]?\s*19|119)\b",
+            r"\b(?:Jes|Jesaja)\b\.?\s*(?:29\s*[:\.,]?\s*14[a-z]?|2914[a-z]?)\b",
         ],
     },
     "B001-9": {
@@ -389,7 +585,7 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 1,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
-        "substantive_analytical_phrases": ["Analogie", "Zitierformel", "Formel", "Dreschen", "Ochse"],
+        "substantive_analytical_phrases": ["Analogie zur Zitierformel", "Ochsen beim Dreschen", "Zitierformel"],
         "expected_printed_pages": [112],
         "patterns": [
             r"\b(?:1\s*Kor|IKor)\b\.?\s*(?:9\s*[:\.,]\s*9|99)\b",
@@ -406,7 +602,7 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 1,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
-        "substantive_analytical_phrases": ["phagein", "piein", "Götzendienst", "Götzen", "Essen und Trinken"],
+        "substantive_analytical_phrases": ["phagein kai piein", "Götzendienst"],
         "expected_printed_pages": [319],
         "patterns": [
             r"\b(?:1\s*Kor|IKor)\b\.?\s*(?:10\s*[:\.,]\s*7|107)\b",
@@ -423,11 +619,11 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 1,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
-        "substantive_analytical_phrases": ["Analogie", "Angleichung", "austauscht", "kekateramenos", "epikataratos", "Fluch"],
+        "substantive_analytical_phrases": ["Angleichung an Gal 3,10", "kekateramenos", "epikataratos", "Fluch am Holz"],
         "expected_printed_pages": [47],
         "patterns": [
-            r"\b(?:Gal|Galater)\b\.?\s*(?:3\s*[:\.,]\s*13|313)\b",
-            r"\b(?:Deut|Deuteronomium|Dtn)\b\.?\s*(?:21\s*[:\.,]\s*23|2123)\b",
+            r"\b(?:Gal|Galater)\b\.?\s*(?:3\s*[:\.,]?\s*[1l]3f?|3[1l]3f?)\b",
+            r"\b(?:Deut|Deuteronomium|Dtn)\b\.?\s*(?:21\s*[:\.,]?\s*23|2123)\b",
         ],
     },
 }
@@ -854,6 +1050,7 @@ def adjudicate_target(
     hits: list[dict],
     index_target_res: dict,
     ledger: dict[str, dict] | None = None,
+    pages: list[str] | None = None,
     full_text: str | None = None,
 ) -> dict:
     """
@@ -862,9 +1059,11 @@ def adjudicate_target(
       1. Numerical hit count thresholds
       2. Context verification: hits must contain substantive scholarly analytical phrases
          (with matched citation tokens stripped before evaluation)
-      3. Referential integrity: required evidence records must exist in citation_ledger.csv,
-         match target, and short quotes must match authentic text layer
-      4. Book-section index presence or absence with verified boundaries
+      3. Absence of contrary context ('wird von Paulus nicht diskutiert', etc.)
+      4. Referential integrity: required evidence records must exist in citation_ledger.csv,
+         match target, and short quotes must match authentic text layer in page-bounded spans
+      5. Argument witness locality: substantive context hits must correlate with argument witness loci
+      6. Book-section index presence or absence with verified boundaries
     Prevents synthetic or incidental hits from inheriting substantive verdicts.
     """
     tid = target_def["id"]
@@ -878,8 +1077,10 @@ def adjudicate_target(
     if ledger is None:
         ledger = load_citation_ledger(DEFAULT_LEDGER_PATH)
 
-    # 1. Evaluate ledger referential integrity and quotation match
-    ledger_ok, ledger_msg = verify_evidence_ledger_integrity(target_def, ledger, full_text)
+    # 1. Evaluate ledger referential integrity, page-bounded verbatim quote matching, and extract argument witnesses
+    ledger_ok, ledger_msg, verified_witnesses = verify_evidence_ledger_integrity(
+        target_def, ledger, pages=pages, full_text=full_text
+    )
     if not ledger_ok:
         return {
             "id": tid,
@@ -896,7 +1097,27 @@ def adjudicate_target(
             "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
         }
 
-    # 2. Evaluate hit context against substantive scholarly analytical phrases
+    # 2. Check for contrary context in hits
+    for h in hits:
+        snip = h.get("snippet", "")
+        clean_snip = re.sub(re.escape(h.get("match", "")), " ", snip, flags=re.IGNORECASE)
+        if any(c in clean_snip.lower() for c in CONTRARY_CONTEXT_PHRASES):
+            return {
+                "id": tid,
+                "name": target_def["name"],
+                "nt_target": target_def["nt_target"],
+                "ot_target": target_def["ot_target"],
+                "count": hit_count,
+                "classification": "CONTRARY_CONTEXT_FOUND",
+                "evidence_ids": expected_eids,
+                "summary": f"FAIL: Hit contains contrary context denying Pauline discussion or relevance: '{clean_snip[:60]}...'",
+                "passed": False,
+                "hits": hits,
+                "substantive_context_hits": 0,
+                "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+            }
+
+    # 3. Evaluate hit context against substantive scholarly analytical phrases
     substantive_hits = []
     for h in hits:
         snip = h.get("snippet", "")
@@ -908,7 +1129,7 @@ def adjudicate_target(
             substantive_hits.append(h)
     substantive_context_count = len(substantive_hits)
 
-    # 3. Check index result
+    # 4. Check index result
     if not index_target_res.get("passed", False):
         return {
             "id": tid,
@@ -925,7 +1146,7 @@ def adjudicate_target(
             "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
         }
 
-    # 4. Classification-specific logic with dynamic summary generation
+    # 5. Classification-specific logic with dynamic summary generation
     if expected_cls == "NOT DISCUSSED":
         if hit_count > allowed_incidental_max:
             return {
@@ -1009,10 +1230,47 @@ def adjudicate_target(
                 "substantive_context_hits": 0,
                 "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
             }
+        if substantive_context_count < min_substantive:
+            return {
+                "id": tid,
+                "name": target_def["name"],
+                "nt_target": target_def["nt_target"],
+                "ot_target": target_def["ot_target"],
+                "count": hit_count,
+                "classification": "INSUFFICIENT_SUBSTANTIVE_HITS",
+                "evidence_ids": expected_eids,
+                "summary": f"FAIL: Found {substantive_context_count} substantive context hits, below required substantive threshold of {min_substantive}.",
+                "passed": False,
+                "hits": hits,
+                "substantive_context_hits": substantive_context_count,
+                "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+            }
+
+        # Witness page correlation / locality guard:
+        witness_pages = {w["printed_page"] for w in verified_witnesses}
+        locus_pages = set(target_def.get("expected_printed_pages", [])) | witness_pages
+        locus_hits = [h for h in substantive_hits if any(abs(h.get("printed_page", -999) - wp) <= 2 for wp in locus_pages)]
+        if not locus_hits:
+            hit_pages = sorted(list({h.get("printed_page", -999) for h in substantive_hits}))
+            return {
+                "id": tid,
+                "name": target_def["name"],
+                "nt_target": target_def["nt_target"],
+                "ot_target": target_def["ot_target"],
+                "count": hit_count,
+                "classification": "HIT_WITNESS_PAGE_MISMATCH",
+                "evidence_ids": expected_eids,
+                "summary": f"FAIL: Substantive hits occurred on pages {hit_pages} but none intersect argument witness discussion loci (pp. {sorted(locus_pages)}).",
+                "passed": False,
+                "hits": hits,
+                "substantive_context_hits": substantive_context_count,
+                "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+            }
+
         dynamic_classification = "SUBSTANTIVE_DISCUSSION"
         eids_str = ", ".join(expected_eids)
-        pages = sorted({str(ledger[eid]["printed_page"]) for eid in expected_eids if eid in ledger}, key=lambda p: int(p) if p.isdigit() else 999)
-        pages_str = ", ".join(pages)
+        pages_list = sorted({str(ledger[eid]["printed_page"]) for eid in expected_eids if eid in ledger}, key=lambda p: int(p) if p.isdigit() else 999)
+        pages_str = ", ".join(pages_list)
         claims = [ledger[eid]["author_claim"].rstrip(".") for eid in expected_eids if eid in ledger]
         claims_summary = "; ".join(claims)
         summary = (
@@ -1082,16 +1340,32 @@ def run_search(
     text: str,
     index_results: dict,
     ledger: dict[str, dict] | None = None,
+    pages: list[str] | None = None,
 ) -> list[dict]:
     results = []
     target_idx_res = index_results.get("target_results", {})
     if ledger is None:
         ledger = load_citation_ledger(DEFAULT_LEDGER_PATH)
 
+    if pages is None:
+        pages = text.split("\x0c")
+
+    offsets = []
+    curr = 0
+    for p in pages:
+        offsets.append(curr)
+        curr += len(p) + 1
+
+    def get_printed_page(pos: int) -> int:
+        pdf_p = bisect.bisect_right(offsets, pos)
+        return pdf_p - 12
+
     for tid, target_def in TARGET_QUERIES.items():
         all_hits = []
         for pat in target_def["patterns"]:
             matches = scan_matches(text, pat)
+            for m in matches:
+                m["printed_page"] = get_printed_page(m["start"])
             all_hits.extend(matches)
 
         unique_hits = []
@@ -1102,7 +1376,14 @@ def run_search(
                 unique_hits.append(h)
         unique_hits.sort(key=lambda x: x["start"])
 
-        adjudicated = adjudicate_target(target_def, unique_hits, target_idx_res.get(tid, {}), ledger=ledger, full_text=text)
+        adjudicated = adjudicate_target(
+            target_def,
+            unique_hits,
+            target_idx_res.get(tid, {}),
+            ledger=ledger,
+            pages=pages,
+            full_text=text,
+        )
         results.append(adjudicated)
 
     return results
