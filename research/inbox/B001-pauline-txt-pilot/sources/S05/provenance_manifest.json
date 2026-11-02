@@ -1,0 +1,40 @@
+{
+  "source_id": "S05",
+  "work": {
+    "authors": [
+      "Florian Wilk"
+    ],
+    "title": "Die Bedeutung des Jesajabuches für Paulus",
+    "series": "Forschungen zur Religion und Literatur des Alten und Neuen Testaments (FRLANT)",
+    "volume": "Heft 179",
+    "edition": "1998 first edition (Diss. Theologische Fakultät der Friedrich-Schiller-Universität Jena, 1996)",
+    "imprint": "Göttingen: Vandenhoeck & Ruprecht, 1998",
+    "isbn": "3-525-53863-4",
+    "urn": "urn:nbn:de:bvb:12-bsb00044375-3",
+    "mdz_item_url": "https://www.digitale-sammlungen.de/en/view/bsb00044375",
+    "mdz_item_id": "bsb00044375",
+    "worldcat_id": "38839997"
+  },
+  "raw_volume_scan": {
+    "filename": "wilk_1998_jesaja_paulus_mdz_raw.pdf",
+    "local_path": "/Users/chrisrodriguez/Downloads/wilk_1998_jesaja_paulus_mdz_raw.pdf",
+    "pages": 476,
+    "size_bytes": 96225856,
+    "sha256": "700323565f6687163dc92f410779b054b763ee10bf3f745f5c2370b5455aa1b3",
+    "verification_command": "stat -f '%z' /Users/chrisrodriguez/Downloads/wilk_1998_jesaja_paulus_mdz_raw.pdf && shasum -a 256 /Users/chrisrodriguez/Downloads/wilk_1998_jesaja_paulus_mdz_raw.pdf"
+  },
+  "ingested_volume": {
+    "filename": "wilk_1998_jesaja_paulus.pdf",
+    "local_path": "/Users/chrisrodriguez/Downloads/wilk_1998_jesaja_paulus.pdf",
+    "pages": 476,
+    "size_bytes": 96225856,
+    "sha256": "700323565f6687163dc92f410779b054b763ee10bf3f745f5c2370b5455aa1b3",
+    "verification_command": "stat -f '%z' /Users/chrisrodriguez/Downloads/wilk_1998_jesaja_paulus.pdf && shasum -a 256 /Users/chrisrodriguez/Downloads/wilk_1998_jesaja_paulus.pdf",
+    "page_mapping": {
+      "formula": "Printed page p = PDF page (p + 12); PDF page = Printed page + 12 for all printed pages 1-461",
+      "front_matter": "PDF pp. 1-12 (BSB cover, dedication, title, CIP, Vorwort pp. V-VI, Inhalt pp. VII-XII)",
+      "main_text": "PDF pp. 13-473 (Printed pp. 1-461: Teil I pp. 1-15, Teil II pp. 16-206, Teil III pp. 207-339, Teil IV pp. 340-380, Teil V pp. 381-408, Literaturverzeichnis pp. 409-442, Stellenregister pp. 443-461)",
+      "back_matter": "PDF pp. 474-476 (Series list and BSB back leaf)"
+    }
+  }
+}

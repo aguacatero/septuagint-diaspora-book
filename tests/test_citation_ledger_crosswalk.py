@@ -1392,6 +1392,173 @@ def test_s04f_authorial_index_scripture_ledger_complete():
     assert not any("xxv. 4" in c or "25:4" in c for c in deut_entry["citations"])
 
 
+def test_s05_citation_ledger_crosswalk_integrity():
+    repo_root = Path(__file__).resolve().parent.parent
+    s05_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S05"
+    csv_path = s05_dir / "citation_ledger.csv"
+
+    assert csv_path.is_file(), f"Missing citation_ledger.csv for S05 at {csv_path}"
+
+    with open(csv_path, encoding="utf-8") as f:
+        reader = list(csv.DictReader(f))
+
+    assert len(reader) == 11, f"Expected exactly 11 ledger rows for S05, found {len(reader)}"
+
+    for idx, row in enumerate(reader, 1):
+        expected_eid = f"S05-E{idx:03d}"
+        assert row["evidence_id"] == expected_eid, f"Expected {expected_eid}, got {row['evidence_id']}"
+        assert row["source_id"] == "S05"
+        assert row["verification_status"] == "VERIFIED", f"Row {expected_eid} status not VERIFIED: {row['verification_status']}"
+        assert len(row["short_quote"]) > 5, f"Short quote too short for {expected_eid}"
+        assert len(row["author_claim"]) > 10, f"Author claim too short for {expected_eid}"
+        assert row["printed_page"].isdigit(), f"Invalid printed_page for {expected_eid}: {row['printed_page']}"
+        assert "S." in row["source_locator"], f"Invalid source_locator for {expected_eid}: {row['source_locator']}"
+
+
+def test_s05_self_audit_corrections_incorporated():
+    repo_root = Path(__file__).resolve().parent.parent
+    s05_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S05"
+    csv_path = s05_dir / "citation_ledger.csv"
+
+    with open(csv_path, encoding="utf-8") as f:
+        rows = {r["evidence_id"]: r for r in csv.DictReader(f)}
+
+    # Check 1: S05-E008 preserves Wilk's explicit text-critical reservation on page 238 note 28
+    e008 = rows["S05-E008"]
+    assert "238" in e008["source_locator"]
+    assert "238" in e008["qualification"] and "28" in e008["qualification"]
+    assert "hebraizing" in e008["qualification"].lower() or "hebraisierend" in e008["qualification"].lower()
+
+    # Check 2: S05-E004 preserves distinction between dual-aspect stumbling stone in Rom 9:33 and unmixed positive promise in Rom 10:11
+    e004 = rows["S05-E004"]
+    claim_004 = e004["author_claim"].lower()
+    assert "9:33" in claim_004
+    assert "10:11" in claim_004
+    assert "dual" in claim_004 or "stumbling" in claim_004
+
+
+def test_s05_provenance_and_hash_integrity():
+    import hashlib
+    import os
+    repo_root = Path(__file__).resolve().parent.parent
+    prov_path = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S05/provenance_manifest.json"
+    assert prov_path.is_file(), "Missing provenance_manifest.json for S05"
+
+    with open(prov_path, encoding="utf-8") as f:
+        prov = json.load(f)
+
+    assert prov["source_id"] == "S05"
+    assert prov["raw_volume_scan"]["size_bytes"] == 96225856
+    assert prov["raw_volume_scan"]["sha256"] == "700323565f6687163dc92f410779b054b763ee10bf3f745f5c2370b5455aa1b3"
+    assert prov["ingested_volume"]["size_bytes"] == 96225856
+    assert prov["ingested_volume"]["sha256"] == "700323565f6687163dc92f410779b054b763ee10bf3f745f5c2370b5455aa1b3"
+
+    # If physical files exist in local environment, verify stats
+    local_raw = Path("/Users/chrisrodriguez/Downloads/wilk_1998_jesaja_paulus_mdz_raw.pdf")
+    if local_raw.is_file():
+        assert os.path.getsize(local_raw) == 96225856
+        h = hashlib.sha256(local_raw.read_bytes()).hexdigest()
+        assert h == "700323565f6687163dc92f410779b054b763ee10bf3f745f5c2370b5455aa1b3"
+
+
+def test_s05_negative_search_evidence_discipline():
+    repo_root = Path(__file__).resolve().parent.parent
+    s05_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S05"
+
+    script_path = repo_root / "scripts/verify_s05_negative_search.py"
+    log_path = s05_dir / "full_volume_search_log.md"
+    assert script_path.is_file(), "Missing verify_s05_negative_search.py"
+    assert log_path.is_file(), "Missing full_volume_search_log.md"
+
+    with open(log_path, encoding="utf-8") as f:
+        log_text = f.read()
+
+    # Log covers all 12 B001 loci
+    for i in range(1, 13):
+        locus = f"B001-{i}"
+        assert locus in log_text
+
+    # Positive controls validated
+    assert "Positive Control Verification" in log_text
+    assert "PASSED" in log_text
+
+    # Stellenregister sections verified
+    assert "8/8 passed" in log_text
+
+    # Negative non-prophetic loci B001-1 and B001-9 must be NOT DISCUSSED
+    assert "| B001-1 | Romans 4:3 / Genesis 15:6 | 1 | NOT DISCUSSED |" in log_text
+    assert "| B001-9 | 1 Corinthians 6:16 / Genesis 2:24 | 0 | NOT DISCUSSED |" in log_text
+
+    # Substantive loci
+    for sub_id in ["B001-2", "B001-3", "B001-4", "B001-5", "B001-6", "B001-7", "B001-8"]:
+        assert f"| {sub_id} |" in log_text
+        assert "SUBSTANTIVE_DISCUSSION" in log_text
+
+    # Passing loci
+    assert "| B001-10 |" in log_text
+    assert "PASSING_REFERENCE" in log_text
+    assert "| B001-11 |" in log_text
+    assert "| B001-12 |" in log_text
+    assert "PASSING_TEXT_CRITICAL_NOTE" in log_text
+
+
+def test_s05_negative_search_script_fail_closed_and_controls(tmp_path):
+    repo_root = Path(__file__).resolve().parent.parent
+    import subprocess
+    import sys
+
+    script = repo_root / "scripts/verify_s05_negative_search.py"
+
+    # Test 1: Nonexistent PDF fails closed (exit code 1)
+    fake_pdf = tmp_path / "nonexistent.pdf"
+    res = subprocess.run([sys.executable, str(script), "--pdf", str(fake_pdf)], capture_output=True, text=True)
+    assert res.returncode == 1, f"Expected exit code 1 for missing PDF, got {res.returncode}: {res.stderr}"
+    assert "Fail closed" in res.stderr
+
+    # Test 2: Dummy PDF with wrong byte size fails closed (exit code 2)
+    dummy_pdf = tmp_path / "corrupt.pdf"
+    dummy_pdf.write_bytes(b"not a valid 96mb pdf")
+    res = subprocess.run([sys.executable, str(script), "--pdf", str(dummy_pdf)], capture_output=True, text=True)
+    assert res.returncode == 2, f"Expected exit code 2 for size mismatch, got {res.returncode}: {res.stderr}"
+    assert "size mismatch" in res.stderr
+
+
+def test_s05_authorial_index_fixture_provenance_and_clean_clone_reproducibility():
+    import hashlib
+    repo_root = Path(__file__).resolve().parent.parent
+    fixture_path = repo_root / "tests/fixtures/s05_authorial_index_fixture.txt"
+    assert fixture_path.is_file(), f"Missing index fixture at {fixture_path}"
+
+    content = fixture_path.read_text(encoding="utf-8")
+    h = hashlib.sha256(content.encode("utf-8")).hexdigest()
+    assert h == "16f301c5be9320c07637ebf54025674a6a40e0911ebe6f9fee2e7a74d4f8ae24", f"SHA mismatch: {h}"
+    assert "Stellenregister" in content
+    assert "VERZEICHNIS DER UNTERSUCHTEN" in content or "V E R Z E I C H N I S" in content
+
+
+def test_s05_authorial_index_scripture_ledger_complete():
+    repo_root = Path(__file__).resolve().parent.parent
+    ledger_path = repo_root / "tests/fixtures/s05_authorial_index_scripture_ledger.json"
+    assert ledger_path.is_file(), f"Missing scripture ledger fixture at {ledger_path}"
+
+    with open(ledger_path, encoding="utf-8") as f:
+        ledger = json.load(f)
+
+    assert ledger["source_id"] == "S05"
+    assert ledger["year"] == 1998
+    census = ledger["b001_targets_census"]
+    assert len(census) == 12
+
+    # Verify classifications in ledger census
+    assert census["B001-1"]["status"] == "VERIFIED_ABSENT"
+    assert census["B001-9"]["status"] == "VERIFIED_ABSENT"
+    for tid in ["B001-2", "B001-3", "B001-4", "B001-5", "B001-6", "B001-7", "B001-8"]:
+        assert census[tid]["status"] == "VERIFIED_PRESENT"
+    for tid in ["B001-10", "B001-11", "B001-12"]:
+        assert census[tid]["status"] == "VERIFIED_PRESENT_PARTIAL"
+
+
+
 
 
 

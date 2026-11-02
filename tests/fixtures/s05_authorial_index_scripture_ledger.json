@@ -1,0 +1,89 @@
+{
+  "source_id": "S05",
+  "author": "Florian Wilk",
+  "title": "Die Bedeutung des Jesajabuches für Paulus",
+  "year": 1998,
+  "provenance": "Stellenregister printed pages 443-461 (PDF pages 455-473), MDZ URN urn:nbn:de:bvb:12-bsb00044375-3",
+  "sections": {
+    "1.1": "Verzeichnis der untersuchten Zitate und Anspielungen in der Ordnung des Jesajabuches (pp. 443-445)",
+    "1.2": "Verzeichnis der untersuchten Zitate und Anspielungen in der Ordnung der paulinischen Briefe (pp. 445-447)",
+    "2.1": "Verzeichnis der übrigen Stellen - Altes Testament (in Auswahl) (pp. 447-453)",
+    "2.2": "Verzeichnis der übrigen Stellen - Neues Testament (in Auswahl) (pp. 453-457)",
+    "2.3": "Verzeichnis der übrigen Stellen - Jüdische Texte (pp. 457-461)",
+    "2.4": "Verzeichnis der übrigen Stellen - Christliche Texte (p. 461)"
+  },
+  "b001_targets_census": {
+    "B001-1": {
+      "name": "Rom 4:3 / Gen 15:6",
+      "in_index": false,
+      "status": "VERIFIED_ABSENT",
+      "notes": "Both Rom 4:3 and Gen 15:6 absent from Stellenregister. Rom 4:1, 4:6, 4:9-12, 4:16, 4:24f. are indexed; Gen 1:1, 1:3, 2:21, 8:11, 8:16, 11:30, 15:12 are indexed."
+    },
+    "B001-2": {
+      "name": "Rom 9:25 / Hos 2:23",
+      "in_index": true,
+      "status": "VERIFIED_PRESENT",
+      "notes": "Hosea 2:25 LXX indexed on p. 448 citing pp. 34, 37, 51f., 128ff., 185, 187f., 208, 211-214, 393; Rom 9:25 indexed on p. 453."
+    },
+    "B001-3": {
+      "name": "Rom 9:26 / Hos 1:10",
+      "in_index": true,
+      "status": "VERIFIED_PRESENT",
+      "notes": "Hosea 2:1 LXX indexed on p. 448 citing pp. 37, 51f., 128ff., 185-188, 208, 211-214, 393; Rom 9:26 indexed on p. 453."
+    },
+    "B001-4": {
+      "name": "Rom 10:11 / Isa 28:16",
+      "in_index": true,
+      "status": "VERIFIED_PRESENT",
+      "notes": "Section 1.1 '2816 (Rom 1011)' p. 443; Section 1.2 'Rom 1011 (2816)' p. 445 citing pp. 6, 16, 31-34, 41f., 43, 47, 58, 60ff., 162-166, 204ff., 219f., 224ff., 266, 341, 346, 379, 382, 390, 399-402."
+    },
+    "B001-5": {
+      "name": "Rom 10:13 / Joel 2:32",
+      "in_index": true,
+      "status": "VERIFIED_PRESENT",
+      "notes": "Joel 3:5 LXX indexed on p. 448 citing pp. 24, 47, 61f., 164f., 175, 390; Rom 10:13 indexed on p. 453."
+    },
+    "B001-6": {
+      "name": "Rom 11:34 / Isa 40:13",
+      "in_index": true,
+      "status": "VERIFIED_PRESENT",
+      "notes": "Section 1.1 '4013 (Rom 1134)' p. 444; Section 1.2 'Rom 1134 (4013)' p. 445 citing pp. 268, 307-311, 341, 346, 358f., 379, 382, 396f., 399-402."
+    },
+    "B001-7": {
+      "name": "Rom 15:12 / Isa 11:10",
+      "in_index": true,
+      "status": "VERIFIED_PRESENT",
+      "notes": "Section 1.1 '1110 (Rom 1512)' p. 443; Section 1.2 'Rom 1512 (1110)' p. 446 citing pp. 16, 18f., 41, 43, 46, 58f., 146-158, 169-171, 204ff., 214f., 218ff., 237ff., 266, 341, 346f., 379, 382, 394, 399-402."
+    },
+    "B001-8": {
+      "name": "1 Cor 1:19 / Isa 29:14",
+      "in_index": true,
+      "status": "VERIFIED_PRESENT",
+      "notes": "Section 1.1 '2914 (1Kor 119)' p. 443; Section 1.2 '1Kor 119 (2914)' p. 446 citing pp. 16, 18f., 41, 43, 44f., 58, 101-105, 160ff., 204ff., 219, 246ff., 266, 275, 341, 346, 357f., 361f., 379, 382, 393, 399-402."
+    },
+    "B001-9": {
+      "name": "1 Cor 6:16 / Gen 2:24",
+      "in_index": false,
+      "status": "VERIFIED_ABSENT",
+      "notes": "Both 1 Cor 6:16 and Gen 2:24 absent from Stellenregister. 1 Cor 6:1, 6:4, 6:6 are indexed; Gen 2:21 is indexed."
+    },
+    "B001-10": {
+      "name": "1 Cor 9:9 / Deut 25:4",
+      "in_index": true,
+      "status": "VERIFIED_PRESENT_PARTIAL",
+      "notes": "1 Cor 9:9 indexed on p. 454 citing p. 112 (introductory formula note); Deut 25:4 absent from OT index on p. 447."
+    },
+    "B001-11": {
+      "name": "1 Cor 10:7 / Exodus 32:6",
+      "in_index": true,
+      "status": "VERIFIED_PRESENT_PARTIAL",
+      "notes": "1 Cor 10:7 indexed on p. 454 citing p. 319 (phrase phagein kai piein); Exod 32:6 absent from OT index on p. 447."
+    },
+    "B001-12": {
+      "name": "Gal 3:13 / Deut 21:23",
+      "in_index": true,
+      "status": "VERIFIED_PRESENT_PARTIAL",
+      "notes": "Gal 3:13 indexed on p. 456 citing p. 47 (text-critical footnote note on epikataratos); Deut 21:23 absent from OT index on p. 447."
+    }
+  }
+}
