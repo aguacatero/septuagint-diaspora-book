@@ -1402,17 +1402,44 @@ def test_s05_citation_ledger_crosswalk_integrity():
     with open(csv_path, encoding="utf-8") as f:
         reader = list(csv.DictReader(f))
 
-    assert len(reader) == 11, f"Expected exactly 11 ledger rows for S05, found {len(reader)}"
+    assert len(reader) == 12, f"Expected exactly 12 ledger rows for S05, found {len(reader)}"
+
+    expected_locus_map = {
+        "S05-E001": "B001-2",
+        "S05-E002": "B001-3",
+        "S05-E003": "B001-4",
+        "S05-E004": "B001-4",
+        "S05-E005": "B001-5",
+        "S05-E006": "B001-6",
+        "S05-E007": "B001-6",
+        "S05-E008": "B001-7",
+        "S05-E009": "B001-7",
+        "S05-E010": "B001-8",
+        "S05-E011": "B001-8",
+        "S05-E012": "B001-12",
+    }
 
     for idx, row in enumerate(reader, 1):
         expected_eid = f"S05-E{idx:03d}"
         assert row["evidence_id"] == expected_eid, f"Expected {expected_eid}, got {row['evidence_id']}"
         assert row["source_id"] == "S05"
+        assert row["b001_id"] == expected_locus_map[expected_eid], (
+            f"Referential integrity failure: {expected_eid} claimed locus {row['b001_id']} != expected {expected_locus_map[expected_eid]}"
+        )
         assert row["verification_status"] == "VERIFIED", f"Row {expected_eid} status not VERIFIED: {row['verification_status']}"
         assert len(row["short_quote"]) > 5, f"Short quote too short for {expected_eid}"
         assert len(row["author_claim"]) > 10, f"Author claim too short for {expected_eid}"
         assert row["printed_page"].isdigit(), f"Invalid printed_page for {expected_eid}: {row['printed_page']}"
         assert "S." in row["source_locator"], f"Invalid source_locator for {expected_eid}: {row['source_locator']}"
+
+    # Specific check for S05-E012
+    e012 = reader[11]
+    assert e012["evidence_id"] == "S05-E012"
+    assert e012["b001_id"] == "B001-12"
+    assert e012["printed_page"] == "47"
+    assert "Gal 313" in e012["short_quote"]
+    assert "epikataratos" in e012["author_claim"].lower() or "ἐπικατάρατος" in e012["author_claim"]
+    assert e012["claim_type"] == "TEXTUAL_CRITICAL"
 
 
 def test_s05_self_audit_corrections_incorporated():
@@ -1485,6 +1512,20 @@ def test_s05_negative_search_evidence_discipline():
     # Stellenregister sections verified
     assert "8/8 passed" in log_text
 
+    # Accurate text byte and character accounting (Fixes L1)
+    assert "`1470319` bytes" in log_text
+    assert "`1439712` characters" in log_text
+
+    # Exact evidence ID referential integrity crosswalk (Fixes F3)
+    assert "Extracted in S05-E001 (" in log_text
+    assert "Extracted in S05-E002 (" in log_text
+    assert "Extracted in S05-E003, S05-E004 (" in log_text
+    assert "Extracted in S05-E005 (" in log_text
+    assert "Extracted in S05-E006, S05-E007 (" in log_text
+    assert "Extracted in S05-E008, S05-E009 (" in log_text
+    assert "Extracted in S05-E010, S05-E011 (" in log_text
+    assert "Extracted in S05-E012 (" in log_text
+
     # Negative non-prophetic loci B001-1 and B001-9 must be NOT DISCUSSED
     assert "| B001-1 | Romans 4:3 / Genesis 15:6 | 1 | NOT DISCUSSED |" in log_text
     assert "| B001-9 | 1 Corinthians 6:16 / Genesis 2:24 | 0 | NOT DISCUSSED |" in log_text
@@ -1556,6 +1597,181 @@ def test_s05_authorial_index_scripture_ledger_complete():
         assert census[tid]["status"] == "VERIFIED_PRESENT"
     for tid in ["B001-10", "B001-11", "B001-12"]:
         assert census[tid]["status"] == "VERIFIED_PRESENT_PARTIAL"
+
+
+def test_s05_adversarial_index_failure_modes():
+    """
+    S05-R1-F2 adversarial regression test:
+    (a) Inject 4,3 into Römerbrief section fixture -> fail B001-1
+    (b) Inject 15,6 into Genesis section fixture -> fail B001-1
+    (c) Remove genuine B001-10 entry ('9 112') from 1. Korintherbrief -> fail B001-10
+    (d) Remove genuine B001-11 entry ('7 319') from 1. Korintherbrief -> fail B001-11
+    (e) Remove genuine B001-12 entry ('47') from Galaterbrief -> fail B001-12
+    (f) Inject 1 Cor 10:7 entry into Exodus section -> does NOT satisfy 1. Korintherbrief
+    """
+    import sys
+    repo_root = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s05_negative_search as vns
+
+    fixture_path = repo_root / "tests/fixtures/s05_authorial_index_fixture.txt"
+    assert fixture_path.exists(), f"Tracked index fixture missing at {fixture_path}"
+    text = fixture_path.read_text(encoding="utf-8")
+
+    # 0. Clean baseline fixture must pass
+    res_base = vns.verify_index_structure(text)
+    assert res_base["passed"] is True, f"Baseline fixture failed index verification: {res_base.get('error')}"
+    assert res_base["targets_passed"] is True
+
+    # 1. Adversarial Injection (a): Inject '4,3' into Römerbrief section fixture -> fail B001-1
+    adv_rom = text.replace("Römerbrief\n1-16\n1 1-7", "Römerbrief\n4,3\n1-16\n1 1-7")
+    assert adv_rom != text
+    res_adv_rom = vns.verify_index_structure(adv_rom)
+    assert res_adv_rom["targets_passed"] is False, "Expected targets verification to fail on inserted Rom 4,3"
+    assert res_adv_rom["target_results"]["B001-1"]["passed"] is False
+    assert res_adv_rom["target_results"]["B001-1"]["index_status"] == "UNEXPECTED INDEX HIT"
+
+    # 2. Adversarial Injection (b): Inject '15,6' into Genesis section fixture -> fail B001-1
+    adv_gen = text.replace("Genesis\n\n1 it.", "Genesis\n15,6\n1 it.")
+    assert adv_gen != text
+    res_adv_gen = vns.verify_index_structure(adv_gen)
+    assert res_adv_gen["targets_passed"] is False, "Expected targets verification to fail on inserted Gen 15,6"
+    assert res_adv_gen["target_results"]["B001-1"]["passed"] is False
+    assert res_adv_gen["target_results"]["B001-1"]["index_status"] == "UNEXPECTED INDEX HIT"
+
+    # 3. Adversarial Deletion (c): Remove genuine B001-10 entry ('9 112') from 1. Korintherbrief -> fail B001-10
+    adv_del_10 = text.replace("9\n112", "9\n999")
+    assert adv_del_10 != text
+    res_del_10 = vns.verify_index_structure(adv_del_10)
+    assert res_del_10["targets_passed"] is False, "Expected targets verification to fail when 1 Cor 9:9 entry is removed"
+    assert res_del_10["target_results"]["B001-10"]["passed"] is False
+    assert res_del_10["target_results"]["B001-10"]["index_status"] == "MISSING EXPECTED ENTRY"
+
+    # 4. Adversarial Deletion (d): Remove genuine B001-11 entry ('7\n319') from 1. Korintherbrief -> fail B001-11
+    adv_del_11 = text.replace("7\n319", "7\n999")
+    assert adv_del_11 != text
+    res_del_11 = vns.verify_index_structure(adv_del_11)
+    assert res_del_11["targets_passed"] is False, "Expected targets verification to fail when 1 Cor 10:7 entry is removed"
+    assert res_del_11["target_results"]["B001-11"]["passed"] is False
+    assert res_del_11["target_results"]["B001-11"]["index_status"] == "MISSING EXPECTED ENTRY"
+
+    # 5. Adversarial Deletion (e): Remove genuine B001-12 entry ('47') from Galaterbrief -> fail B001-12
+    adv_del_12 = text.replace("130, 191\n216, 247\n47\n94, 152", "130, 191\n216, 247\n999\n94, 152")
+    assert adv_del_12 != text
+    res_del_12 = vns.verify_index_structure(adv_del_12)
+    assert res_del_12["targets_passed"] is False, "Expected targets verification to fail when Gal 3:13 p. 47 is removed"
+    assert res_del_12["target_results"]["B001-12"]["passed"] is False
+    assert res_del_12["target_results"]["B001-12"]["index_status"] == "MISSING EXPECTED ENTRY"
+
+    # 6. Cross-Section Misplacement (f): Inject 1 Cor 10:7 entry into Exodus section -> does NOT satisfy 1. Korintherbrief
+    adv_cross = text.replace("7\n319", "7\n999").replace("Exodus\n3f.", "Exodus\n10 7 319\n3f.")
+    res_cross = vns.verify_index_structure(adv_cross)
+    assert res_cross["target_results"]["B001-11"]["passed"] is False, "Matches outside target book section must not satisfy verification"
+
+
+def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_hits():
+    """
+    S05-R1-F1 regression test:
+    Proves that zero-hit substantive queries cannot inherit substantive verdicts,
+    and uncataloged hits for NOT DISCUSSED targets cannot pass.
+    """
+    import sys
+    repo_root = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s05_negative_search as vns
+
+    # Case 1: Synthetic 0-hit substantive target definition
+    target_def_sub = {
+        "id": "B001-4",
+        "name": "Romans 10:11 / Isaiah 28:16",
+        "nt_target": "Rom 10:11",
+        "ot_target": "Isa 28:16",
+        "expected_classification": "SUBSTANTIVE_DISCUSSION",
+        "evidence_ids": ["S05-E003", "S05-E004"],
+        "min_substantive_hits": 5,
+    }
+    adj_zero = vns.adjudicate_target(target_def_sub, [], {"passed": True})
+    assert adj_zero["passed"] is False
+    assert adj_zero["classification"] == "UNEXPECTED_ZERO_HITS"
+    assert "FAIL" in adj_zero["summary"]
+
+    # Case 2: Insufficient hits for substantive target
+    adj_insuf = vns.adjudicate_target(target_def_sub, [{"start": 100}], {"passed": True})
+    assert adj_insuf["passed"] is False
+    assert adj_insuf["classification"] == "INSUFFICIENT_HITS"
+    assert "below required substantive threshold" in adj_insuf["summary"]
+
+    # Case 3: Synthetic uncataloged hit for NOT DISCUSSED target
+    target_def_neg = {
+        "id": "B001-9",
+        "name": "1 Corinthians 6:16 / Genesis 2:24",
+        "nt_target": "1 Cor 6:16",
+        "ot_target": "Gen 2:24",
+        "expected_classification": "NOT DISCUSSED",
+        "evidence_ids": [],
+        "allowed_incidental_max": 0,
+    }
+    adj_neg = vns.adjudicate_target(target_def_neg, [{"start": 500, "match": "1Kor 6:16"}], {"passed": True})
+    assert adj_neg["passed"] is False
+    assert adj_neg["classification"] == "UNEXPECTED_HITS"
+    assert "FAIL" in adj_neg["summary"]
+
+
+def test_s05_digest_override_suppresses_certification(tmp_path, monkeypatch):
+    """
+    S05-R1-F4 regression test:
+    Verifies that when text digest mismatches, canonical overwrite is refused (exit code 9),
+    and report generation explicitly marks status as UNAUTHENTICATED_OVERRIDE and suppresses VERIFIED_COMPLETE.
+    """
+    import sys
+    repo_root = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(repo_root / "scripts"))
+    import verify_s05_negative_search as vns
+
+    fake_pdf = tmp_path / "fake_wilk.pdf"
+    fake_pdf.write_bytes(b"0" * vns.EXPECTED_RAW_PDF_BYTES)
+    fake_text = tmp_path / "fake_wilk_text.txt"
+    fake_text.write_text("Dummy extracted text\n" * 100, encoding="utf-8")
+    noncanonical_out = tmp_path / "override_log.md"
+
+    monkeypatch.setattr(vns, "get_sha256", lambda p: vns.EXPECTED_RAW_PDF_SHA256)
+
+    def mock_subprocess_run(cmd, check=False):
+        class SubprocessResult:
+            returncode = 0
+        return SubprocessResult()
+
+    monkeypatch.setattr("subprocess.run", mock_subprocess_run)
+
+    # Check 1: Refuses canonical path under unauthenticated override (exit code 9)
+    ret_canon = vns.run_verification(
+        pdf_path=fake_pdf,
+        text_path=fake_text,
+        out_path=vns.DEFAULT_OUT_PATH,
+        allow_text_digest_mismatch=True,
+        quiet=True,
+    )
+    assert ret_canon == 9, f"Expected exit code 9 for canonical overwrite under digest mismatch, got {ret_canon}"
+
+    # Check 2: build_markdown_report with is_authenticated=False suppresses VERIFIED_COMPLETE
+    report = vns.build_markdown_report(
+        search_results=[],
+        pos_results=[],
+        index_results={},
+        pdf_path=fake_pdf,
+        pdf_bytes=vns.EXPECTED_RAW_PDF_BYTES,
+        pdf_sha=vns.EXPECTED_RAW_PDF_SHA256,
+        text_path=fake_text,
+        text_sha="mismatched_sha",
+        text_bytes=1000,
+        text_chars=1000,
+        text_lines=50,
+        is_authenticated=False,
+    )
+    assert "Verification Status:** `UNAUTHENTICATED_OVERRIDE (Digest mismatch)`" in report
+    assert "Verification Status:** `VERIFIED_COMPLETE`" not in report
+    assert "Confirmed against authentic MDZ Digi20 scan" not in report
+    assert "suppressed" in report.lower()
 
 
 

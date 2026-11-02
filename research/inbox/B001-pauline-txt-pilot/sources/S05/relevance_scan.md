@@ -19,9 +19,9 @@
 | `B001-7` | Romans 15:12 / Isaiah 11:10 | YES | pp. 18–19, 46, 146–158, 169–171, 214–216, 237–239, 394 | Extended | Comprehensive analysis of the climactic quotation in the Rom 15:9–12 catena; Wilk examines its text-critical agreement with LXX, Paul's christological interpretation (Christ as the Root of Jesse ruling Gentiles), and Jewish-Gentile unity in eschatological praise. |
 | `B001-8` | 1 Corinthians 1:19 / Isaiah 29:14 | YES | pp. 18, 44–45, 101–105, 160–162, 246–250, 393 | Extended | Extensive analysis of the opening quotation in 1 Corinthians; Wilk investigates the textual Vorlage (LXX with stylistic substitution of `ἀθετήσω` for `κρύψω`), its begründende function for the word of the Cross, and its destruction of worldly wisdom. |
 | `B001-9` | 1 Corinthians 6:16 / Genesis 2:24 | NO | N/A | NOT DISCUSSED | Not discussed or indexed in the monograph. |
-| `B001-10` | 1 Corinthians 9:9 / Deuteronomy 25:4 | NO | N/A | NOT DISCUSSED | Not discussed or indexed in the monograph. |
-| `B001-11` | 1 Corinthians 10:7 / Exodus 32:6 | NO | N/A | NOT DISCUSSED | Not discussed or indexed in the monograph. |
-| `B001-12` | Galatians 3:13 / Deuteronomy 21:23 | YES | p. 48 (footnote 1) | Passing | Passing note in footnote 1 on page 48; Wilk notes Paul's lexical exchange of `κεκατηραμένος` for `ἐπικατάρατος` to assimilate the citation to Deuteronomy 27:26 as cited in Galatians 3:10. |
+| `B001-10` | 1 Corinthians 9:9 / Deuteronomy 25:4 | YES | p. 112 (n. 58) | Passing | Passing citation-formula analogy; 1 Cor 9:9 cited on p. 112 n. 58 alongside formulaic parallels (indexed p. 454); Deut 25:4 mentioned without substantive discussion and absent from OT index. |
+| `B001-11` | 1 Corinthians 10:7 / Exodus 32:6 | YES | p. 319 (n. 11) | Passing | Passing illustration; 1 Cor 10:7 phrase 'phagein kai piein' cited on p. 319 n. 11 (indexed p. 454); Exod 32:6 has zero hits and is absent from OT index. |
+| `B001-12` | Galatians 3:13 / Deuteronomy 21:23 | YES | p. 47 (footnote 1) | Passing | Passing text-critical note in footnote 1 on printed page 47 (indexed under Galaterbrief as '13 47', continuing to p. 48; also cited p. 94 n. 32; p. 152 n. 43); Wilk notes Paul's lexical exchange of `κεκατηραμένος` for `ἐπικατάρατος` to assimilate the citation to Deuteronomy 27:26 as cited in Galatians 3:10. |
 
 ---
 

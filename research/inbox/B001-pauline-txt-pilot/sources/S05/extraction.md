@@ -174,3 +174,20 @@
 - **Textual Evidence Invoked:** Introductory formula `γέγραπται γάρ` in 1 Cor 1:19 grounding the discourse of 1 Cor 1:18–31.
 - **Qualifications:** Human wisdom in this passage embraces both Jewish scribal/legal pride and Hellenistic philosophical speculation.
 - **Confidence:** HIGH
+
+---
+
+## 8. B001-12: Galatians 3:13 / Deuteronomy 21:23
+
+### S05-E012 — Authorial Lexical Assimilation to Galatians 3:10
+- **Passage Target:** Galatians 3:13 / Deuteronomy 21:23
+- **Claim Type:** Textual-Critical
+- **Printed Page:** Page 47 (footnote 1; also p. 94 n. 32; p. 152 n. 43)
+- **Source Locator:** Teil II.1.2.1.3b, S. 47 Anm. 1 (vgl. S. 94 Anm. 32; S. 152 Anm. 43)
+- **NotebookLM Citation:** `wilk_1998_jesaja_paulus.pdf p. 47`
+- **Author's Position:** In Galatians 3:13, Paul substitutes ἐπικατάρατος for Old Greek κεκατηραμένος in Deuteronomy 21:23a to assimilate to the wording of Deuteronomy 27:26 as cited in Galatians 3:10. Wilk notes this intentional authorial assimilation as an analogy for Pauline adjustments of Old Testament quotations elsewhere.
+- **Supporting Quotation:**
+  > „Eine Analogie bietet Gal 313, wo Paulus — zur Angleichung an das Dtn-Zitat in Gal 310 — das Dtn 2123a eröffnende Wort κεκατηραμένος gegen ἐπικατάρατος austauscht...“ (p. 47 Anm. 1)
+- **Textual Evidence Invoked:** Substitution of ἐπικατάρατος for κεκατηραμένος in Gal 3:13 vs. LXX Deut 21:23a; catchword harmonization with Deut 27:26 in Gal 3:10.
+- **Qualifications:** Wilk cites Dietrich-Alex Koch (*Die Schrift als Zeuge des Evangeliums*, 165f.) for the textual observation and notes this intentional authorial assimilation as an analogy for Pauline adjustments elsewhere.
+- **Confidence:** HIGH

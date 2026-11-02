@@ -89,17 +89,27 @@
 
 ---
 
-## 9. Non-Discussed B001 Passages (B001-9, B001-10, B001-11)
-- **1 Corinthians 6:16 / Genesis 2:24 (B001-9):** `NONE FOUND IN THIS SOURCE`
-- **1 Corinthians 9:9 / Deuteronomy 25:4 (B001-10):** `NONE FOUND IN THIS SOURCE`
-- **1 Corinthians 10:7 / Exodus 32:6 (B001-11):** `NONE FOUND IN THIS SOURCE`
-- *Methodological note:* Wilk's research charter is strictly delimited to the reception of the Book of Isaiah. The absence of these Pentateuchal passages is confirmed by the monograph's exhaustive Stellenregister (pp. 439–461).
+## 9. Non-Discussed and Passing Pentateuchal References (B001-9, B001-10, B001-11)
+
+### 1 Corinthians 6:16 / Genesis 2:24 (B001-9)
+- **Result:** `NONE FOUND IN THIS SOURCE`
+- **Verification:** Zero occurrences in full volume text and absent from Stellenregister under both Genesis (pp. 446–447) and 1. Korintherbrief (pp. 454–455).
+
+### 1 Corinthians 9:9 / Deuteronomy 25:4 (B001-10)
+- **Result:** `PASSING REFERENCE`
+- **Locator:** p. 112 (n. 58)
+- **Verification:** 1 Cor 9:9 is cited on p. 112 n. 58 strictly as an introductory citation-formula parallel (`γράφειν ἐν τῷ νόμῳ`) and is indexed under 1. Korintherbrief (p. 454, citing p. 112); Deuteronomy 25:4 receives no substantive analysis and is absent from the Old Testament Stellenregister (p. 447).
+
+### 1 Corinthians 10:7 / Exodus 32:6 (B001-11)
+- **Result:** `PASSING REFERENCE`
+- **Locator:** p. 319 (n. 11)
+- **Verification:** 1 Cor 10:7 is cited on p. 319 n. 11 for the phrase `φαγεῖν καὶ πιεῖν` (and indexed under 1. Korintherbrief on p. 454, citing p. 319); Exodus 32:6 has zero hits in the text and is absent from the Old Testament Stellenregister (p. 447).
 
 ---
 
 ## 10. B001-12: Galatians 3:13 / Deuteronomy 21:23
-- **Locator:** p. 48 (footnote 1)
+- **Locator:** p. 47 (footnote 1; continuing to p. 48; indexed under Galaterbrief p. 456 as '13 47'; also cited p. 94 n. 32; p. 152 n. 43)
 - **Authorial Assimilation:**
   - LXX Deuteronomy 21:23 reads `κεκατηραμένος ὑπὸ θεοῦ πᾶς κρεμάμενος ἐπὶ ξύλου`.
   - Paul in Galatians 3:13 reads `ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου` (omitting `ὑπὸ θεοῦ` and substituting `ἐπικατάρατος` for `κεκατηραμένος`).
-  - Wilk notes that Paul substituted `ἐπικατάρατος` for `κεκατηραμένος` in order to assimilate the citation to Deuteronomy 27:26 as cited in Galatians 3:10 (`ἐπικατάρατος πᾶς ὃς οὐκ ἐμμένει...`).
+  - Wilk notes that Paul substituted `ἐπικατάρατος` for `κεκατηραμένος` in order to assimilate the citation to Deuteronomy 27:26 as cited in Galatians 3:10 (`ἐπικατάρατος πᾶς ὃς οὐκ ἐμμένει...`), following Koch (*Schrift*, 165f.). Extracted as S05-E012. Deut 21:23 is absent from the Old Testament Stellenregister.

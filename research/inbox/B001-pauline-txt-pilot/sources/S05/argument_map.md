@@ -151,3 +151,24 @@
 - **Alternative Explanations Considered:** Wilk explicitly evaluates and rejects the hypothesis that `ἀθετήσω` was an accidental slip of memory, arguing that its theological precision demonstrates deliberate choice (p. 45).
 - **Alternative Explanations Not Addressed:** Wilk does not explore whether an independent Jewish Greek translation tradition of Isaiah had translated `תִּסְתַּתָּר` with `ἀθετέω`.
 - **Falsification / Weakening Evidence:** Discovery of an ancient Greek Old Testament manuscript of Isaiah reading `ἀθετήσω` prior to Paul would demonstrate that Paul inherited the reading rather than creating it.
+
+---
+
+## 8. B001-12: Galatians 3:13 / Deuteronomy 21:23
+
+### Reasoning Map
+- **QUESTION:** Why does Paul substitute `ἐπικατάρατος` for Old Greek `κεκατηραμένος` in Galatians 3:13?
+- **EVIDENCE:**
+  - *Explicit Source Statement:* In Galatians 3:13, Paul cites Deuteronomy 21:23a with `ἐπικατάρατος πᾶς ὁ κρεμάμενος ἐπὶ ξύλου` (p. 47 n. 1).
+  - *Explicit Source Statement:* Old Greek Deuteronomy 21:23a reads `κεκατηραμένος ὑπὸ θεοῦ πᾶς κρεμάμενος ἐπὶ ξύλου` (p. 47 n. 1).
+  - *Explicit Source Statement:* In Galatians 3:10, Paul cites Deuteronomy 27:26 opening with `ἐπικατάρατος πᾶς ὃς οὐκ ἐμμένει...` (p. 47 n. 1).
+- **INFERENCE:**
+  - *Structural Paraphrase:* Paul intentionally exchanges `κεκατηραμένος` for `ἐπικατάρατος` to assimilate the wording of the curse in Gal 3:13 directly to the curse formula established in Gal 3:10.
+- **CONCLUSION:**
+  - *Explicit Source Statement:* Galatians 3:13 provides an authorial analogy for deliberate lexical adjustment and assimilation of Old Testament quotations across Paul's letters (p. 47 n. 1).
+
+### Analytical Breakdown
+- **Assumptions Explicitly Acknowledged:** Wilk follows Dietrich-Alex Koch (*Schrift*, 165f.) in treating the substitution as Paul's own stylistic/theological harmonization (p. 47 n. 1).
+- **Alternative Explanations Considered:** Wilk rejects viewing the lexical variation as indicative of a non-Septuagint Greek translation tradition.
+- **Alternative Explanations Not Addressed:** The theological nuance of omitting `ὑπὸ θεοῦ` in Gal 3:13 (which Wilk does not treat in detail, focusing strictly on the lexical substitution as an analogy).
+- **Falsification / Weakening Evidence:** Proof of a pre-Pauline Greek Pentateuch witness reading `ἐπικατάρατος` in Deuteronomy 21:23a.
