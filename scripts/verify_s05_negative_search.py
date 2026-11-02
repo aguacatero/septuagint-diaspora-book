@@ -6,8 +6,8 @@ to the source volume (verifying EXPECTED_TEXT_SHA256 with exit code 8 on mismatc
 forbids canonical log overwrites when unauthenticated (exit code 9), fails closed on failed
 positive controls (exit code 4) or failed index validation (exit code 5), runs positive-control
 validation against authentic German scholarly citation typography, validates bounded authorial
-index structure (Stellenregister pp. 443-461) with bounded book-section parsing, and executes
-evidence-grounded per-hit dynamic adjudication across all twelve B001 passage targets:
+index structure (Stellenregister pp. 443-461) with fail-closed book-section coverage parsing, and executes
+context-based, evidence-ledger-verified dynamic adjudication across all twelve B001 passage targets:
   - B001-1:  Rom 4:3 / Gen 15:6 (NOT DISCUSSED: zero Gen 15:6 hits, incidental formula note on Gal 4:30 p. 94 n. 29, unindexed)
   - B001-2:  Rom 9:25 / Hos 2:23 [LXX 2:25] (SUBSTANTIVE DISCUSSION: pp. 34, 187, 211-214; S05-E001)
   - B001-3:  Rom 9:26 / Hos 1:10 [LXX 2:1] (SUBSTANTIVE DISCUSSION: pp. 37, 51f., 185-188, 208, 211-214; S05-E002)
@@ -18,16 +18,17 @@ evidence-grounded per-hit dynamic adjudication across all twelve B001 passage ta
   - B001-8:  1 Cor 1:19 / Isa 29:14 (SUBSTANTIVE DISCUSSION: pp. 101-105, 160-162, 246-248; S05-E010, S05-E011)
   - B001-9:  1 Cor 6:16 / Gen 2:24 (NOT DISCUSSED: zero hits in entire volume, unindexed)
   - B001-10: 1 Cor 9:9 / Deut 25:4 (PASSING REFERENCE: citation formula analogy on p. 112 n. 58, 1 Cor 9:9 indexed p. 112, Deut 25:4 absent from OT index)
-  - B001-11: 1 Cor 10:7 / Exod 32:6 (PASSING REFERENCE: phrase 'phagein kai piein' on p. 319 n. 11 and pp. 52, 157; Exod 32:6 zero hits, absent from OT index)
+  - B001-11: 1 Cor 10:7 / Exod 32:6 (PASSING REFERENCE: phrase 'phagein kai piein' on p. 319 n. 11; Exod 32:6 zero hits, absent from OT index)
   - B001-12: Gal 3:13 / Deut 21:23 (PASSING TEXT-CRITICAL NOTE: assimilation of Deut 21:23a kekateramenos to Gal 3:10 epikataratos on p. 47 n. 1, Gal 3:13 indexed p. 47, Deut 21:23 absent from OT index; S05-E012)
 
 Outputs a verified markdown search log documenting patterns, positive controls,
-localized index controls, dynamic per-hit evidence ledger, and measured scholarly evaluation.
+localized book-section index controls, dynamic per-hit evidence ledger, and measured scholarly evaluation.
 """
 
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import os
 import re
@@ -47,6 +48,7 @@ RAW_PDF_DEFAULT = Path("/Users/chrisrodriguez/Downloads/wilk_1998_jesaja_paulus_
 DERIVATIVE_PDF_DEFAULT = Path("/Users/chrisrodriguez/Downloads/wilk_1998_jesaja_paulus.pdf")
 DEFAULT_TEXT_PATH = Path("/tmp/wilk_full_text.txt")
 DEFAULT_OUT_PATH = Path("research/inbox/B001-pauline-txt-pilot/sources/S05/full_volume_search_log.md")
+DEFAULT_LEDGER_PATH = Path("research/inbox/B001-pauline-txt-pilot/sources/S05/citation_ledger.csv")
 
 INDEX_START_PATTERNS = [
     r"(?:^|\n)\s*Stellenregister\s*\n\s*Im\s+Register\s+bleiben",
@@ -57,6 +59,22 @@ INDEX_END_PATTERNS = [
     r"\n\s*461\s*\n",
     r"461\s*\n\x0c",
     r"\bFRLANT\b",
+]
+
+REQUIRED_INDEX_SECTIONS = [
+    "sec_1_1",
+    "sec_1_2",
+    "sec_ot",
+    "sec_nt",
+    "Genesis",
+    "Exodus",
+    "Deuteronomium",
+    "Hosea",
+    "Joel",
+    "Jesaja",
+    "Römerbrief",
+    "1. Korintherbrief",
+    "Galaterbrief",
 ]
 
 
@@ -72,6 +90,40 @@ def get_sha256(path: Path) -> str:
         while chunk := f.read(65536):
             h.update(chunk)
     return h.hexdigest()
+
+
+def load_citation_ledger(ledger_path: Path) -> dict[str, dict]:
+    """Load citation_ledger.csv into an evidence_id keyed mapping."""
+    if not ledger_path.exists():
+        return {}
+    with open(ledger_path, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        return {r["evidence_id"]: r for r in reader}
+
+
+def verify_evidence_ledger_integrity(target_def: dict, ledger: dict[str, dict]) -> tuple[bool, str]:
+    """
+    Verify referential integrity between target definition and citation_ledger.csv:
+    - Every required evidence ID must exist in the ledger
+    - b001_id must match the target ID
+    - verification_status must be VERIFIED
+    - printed_page must match one of the expected printed pages
+    """
+    eids = target_def.get("evidence_ids", [])
+    tid = target_def["id"]
+    for eid in eids:
+        if eid not in ledger:
+            return False, f"Required evidence ID {eid} not found in citation_ledger.csv"
+        rec = ledger[eid]
+        if rec.get("b001_id") != tid:
+            return False, f"Evidence ID {eid} mapped to {rec.get('b001_id')}, expected {tid}"
+        if rec.get("verification_status") != "VERIFIED":
+            return False, f"Evidence ID {eid} status is {rec.get('verification_status')}, expected VERIFIED"
+        page_val = int(rec["printed_page"]) if rec.get("printed_page", "").isdigit() else -1
+        expected_pages = target_def.get("expected_printed_pages", [])
+        if expected_pages and page_val not in expected_pages:
+            return False, f"Evidence ID {eid} printed page {page_val} not in expected pages {expected_pages}"
+    return True, "Referential integrity and ledger records verified"
 
 
 # Positive controls: citations and headings known to exist in the volume in authentic typography.
@@ -141,6 +193,8 @@ VERIFIED_MATCH_CATALOG = {
         "allowed_incidental_max": 1,
         "ot_hits_max": 0,
         "expected_in_index": False,
+        "substantive_context_keywords": ["Gen 15", "Genesis 15", "Glaube", "Gerechtigkeit", "Abraham"],
+        "expected_printed_pages": [],
         "patterns": [
             r"\b(?:Rom|Röm)\b\.?\s*4\s*[:\.,]\s*3\b",
             r"\b(?:Rom|Röm)\s+43\b",
@@ -158,6 +212,8 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 3,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
+        "substantive_context_keywords": ["Heiden", "Hosea", "Hos 2", "λαός", "Auszeichnungen", "Berufung", "Israel"],
+        "expected_printed_pages": [130],
         "patterns": [
             r"\b(?:Rom|Röm)\b\.?\s*9\s*[:\.,]\s*25\b",
             r"\b(?:Rom|Röm)\s+925\b",
@@ -175,6 +231,8 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 2,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
+        "substantive_context_keywords": ["Heiden", "Hosea", "Hos 2", "Gottessöhne", "Söhne", "κληθήσονται", "Zitatkombination"],
+        "expected_printed_pages": [129],
         "patterns": [
             r"\b(?:Rom|Röm)\b\.?\s*9\s*[:\.,]\s*26\b",
             r"\b(?:Rom|Röm)\s+926\b",
@@ -192,6 +250,8 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 5,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
+        "substantive_context_keywords": ["Jes 28", "καταισχυνθῇ", "καταισχυνθήσεται", "πᾶς", "Christus", "Stein", "Zion"],
+        "expected_printed_pages": [45, 164],
         "patterns": [
             r"\b(?:Rom|Röm)\b\.?\s*(?:10\s*[:\.,]\s*11|1011|lOll)\b",
             r"\b(?:Jes|Jesaja)\b\.?\s*(?:28\s*[:\.,]\s*16|2816)\b",
@@ -207,6 +267,8 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 2,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
+        "substantive_context_keywords": ["Joel", "κύριος", "Anspielung", "Homologie", "Rettung", "πᾶς"],
+        "expected_printed_pages": [61],
         "patterns": [
             r"\b(?:Rom|Röm)\b\.?\s*(?:10\s*[:\.,]\s*13|1013)\b",
             r"\b(?:Joel)\b\.?\s*(?:2\s*[:\.,]\s*32|3\s*[:\.,]\s*5|35)\b",
@@ -222,6 +284,8 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 5,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
+        "substantive_context_keywords": ["Jes 40", "Bezeugung", "Handschriften", "Überlieferung", "Paulus", "Weisheit", "Heilshandeln"],
+        "expected_printed_pages": [308, 394],
         "patterns": [
             r"\b(?:Rom|Röm)\b\.?\s*(?:11\s*[:\.,]\s*34|1134)\b",
             r"\b(?:Jes|Jesaja)\b\.?\s*(?:40\s*[:\.,]\s*13|4013)\b",
@@ -237,6 +301,8 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 5,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
+        "substantive_context_keywords": ["Jes 11", "Wurzel Isais", "Zeitangabe", "Christus", "Heiden", "Garant", "Gemeinschaft"],
+        "expected_printed_pages": [46, 394],
         "patterns": [
             r"\b(?:Rom|Röm)\b\.?\s*(?:15\s*[:\.,]\s*12|1512|15i2)\b",
             r"\b(?:Jes|Jesaja)\b\.?\s*(?:11\s*[:\.,]\s*10|1110|llio)\b",
@@ -252,6 +318,8 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 5,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
+        "substantive_context_keywords": ["Jes 29", "ἀθετεῖν", "ἀθετήσω", "κρύψω", "Ps 32", "Weisheit", "Kreuz", "Gericht"],
+        "expected_printed_pages": [45, 393],
         "patterns": [
             r"\b(?:1\s*Kor|IKor)\b\.?\s*(?:1\s*[:\.,]\s*19|119)\b",
             r"\b(?:Jes|Jesaja)\b\.?\s*(?:29\s*[:\.,]\s*14|2914)\b",
@@ -268,6 +336,8 @@ VERIFIED_MATCH_CATALOG = {
         "allowed_incidental_max": 0,
         "ot_hits_max": 0,
         "expected_in_index": False,
+        "substantive_context_keywords": ["Gen 2", "Genesis 2", "Fleisch", "Hure", "Leib"],
+        "expected_printed_pages": [],
         "patterns": [
             r"\b(?:1\s*Kor|IKor)\b\.?\s*(?:6\s*[:\.,]\s*16|616)\b",
             r"\b(?:Gen|Genesis)\b\.?\s*(?:2\s*[:\.,]\s*24|224)\b",
@@ -283,6 +353,8 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 1,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
+        "substantive_context_keywords": ["Ochse", "Dreschen", "Maulkorb", "Formel", "Zitierformel"],
+        "expected_printed_pages": [112],
         "patterns": [
             r"\b(?:1\s*Kor|IKor)\b\.?\s*(?:9\s*[:\.,]\s*9|99)\b",
             r"\b(?:Deut|Deuteronomium|Dtn)\b\.?\s*(?:25\s*[:\.,]\s*4|254)\b",
@@ -298,6 +370,8 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 1,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
+        "substantive_context_keywords": ["Götzendienst", "Kalb", "phagein", "piein", "Götzenopfer"],
+        "expected_printed_pages": [319],
         "patterns": [
             r"\b(?:1\s*Kor|IKor)\b\.?\s*(?:10\s*[:\.,]\s*7|107)\b",
             r"\b(?:Exod|Exodus|Ex)\b\.?\s*(?:32\s*[:\.,]\s*6|326)\b",
@@ -313,12 +387,16 @@ VERIFIED_MATCH_CATALOG = {
         "min_substantive_hits": 1,
         "allowed_incidental_max": 999,
         "expected_in_index": True,
+        "substantive_context_keywords": ["Gal 3", "κεκατηραμένος", "ἐπικατάρατος", "Dtn 21", "Angleichung", "Fluch"],
+        "expected_printed_pages": [47],
         "patterns": [
             r"\b(?:Gal|Galater)\b\.?\s*(?:3\s*[:\.,]\s*13|313)\b",
             r"\b(?:Deut|Deuteronomium|Dtn)\b\.?\s*(?:21\s*[:\.,]\s*23|2123)\b",
         ],
     },
 }
+
+TARGET_QUERIES = VERIFIED_MATCH_CATALOG
 
 
 def extract_and_validate_text(
@@ -372,10 +450,11 @@ def scan_matches(text: str, pattern: str) -> list[dict]:
     return results
 
 
-def extract_book_sections(index_text: str) -> dict[str, str]:
+def extract_book_sections(index_text: str) -> tuple[dict[str, str], list[str]]:
     """
     Parse bounded authorial Stellenregister text into isolated, bounded book chunks.
     Dissects Section 1 (Zitate) and Section 2 (Altes und Neues Testament).
+    Enforces that all 13 required sections exist and are non-empty; returns (sections_dict, missing_sections).
     """
     def slice_between(start_pat: str, end_pat: str, src: str) -> str:
         m1 = re.search(start_pat, src, re.IGNORECASE)
@@ -422,13 +501,19 @@ def extract_book_sections(index_text: str) -> dict[str, str]:
         "1. Korintherbrief": slice_book(r"\n\s*(?:1\.\s*)?Korintherbrief\b", [r"\n\s*2\.\s*Korintherbrief\b", r"\n\s*Galaterbrief\b"], sec_nt),
         "Galaterbrief": slice_book(r"\n\s*Galaterbrief\b", [r"\n\s*Epheserbrief\b", r"\n\s*Philipperbrief\b"], sec_nt),
     }
-    return sections
+
+    missing_sections = [
+        k for k in REQUIRED_INDEX_SECTIONS
+        if not sections.get(k) or len(sections[k].strip()) < 20
+    ]
+    return sections, missing_sections
 
 
 def verify_index_structure(full_text: str) -> dict:
     """
     Programmatically verify bounded authorial Stellenregister structure, positive controls,
     and per-locus presence/absence across all twelve B001 targets using bounded book-section parsing.
+    Fails closed if index coverage is missing or truncated.
     """
     m_start = None
     for p in INDEX_START_PATTERNS:
@@ -479,26 +564,30 @@ def verify_index_structure(full_text: str) -> dict:
         "Christliche Texte heading": bool(re.search(r"Christliche\s+Texte", bounded_index_text, re.IGNORECASE)),
     }
 
-    # Extract bounded book sections
-    book_secs = extract_book_sections(bounded_index_text)
+    # Extract bounded book sections with coverage verification
+    book_secs, missing_secs = extract_book_sections(bounded_index_text)
+    coverage_passed = (len(missing_secs) == 0)
 
     # Per-locus bounded evaluation
     target_results = {}
 
-    # Helper function to check absence / presence
     def eval_locus(tid: str, expected_in_index: bool, check_fn, expected_desc: str):
-        hits, is_present = check_fn(book_secs, bounded_index_text)
-        has_hit = is_present
-        passed = (has_hit == expected_in_index)
-
-        if expected_in_index and has_hit:
-            status = "VERIFIED INDEX ENTRY"
-        elif not expected_in_index and not has_hit:
-            status = "VERIFIED ABSENT (BOOK INDEXED; TARGET ABSENT)"
-        elif not expected_in_index and has_hit:
-            status = "UNEXPECTED INDEX HIT"
+        hits, is_present = check_fn(book_secs, missing_secs)
+        if is_present is None:
+            status = "INDETERMINATE / MISSING BOOK SECTION (Coverage verification failed)"
+            passed = False
         else:
-            status = "MISSING EXPECTED ENTRY"
+            has_hit = is_present
+            passed = (has_hit == expected_in_index)
+
+            if expected_in_index and has_hit:
+                status = "VERIFIED INDEX ENTRY"
+            elif not expected_in_index and not has_hit:
+                status = "VERIFIED ABSENT (BOOK INDEXED; TARGET ABSENT)"
+            elif not expected_in_index and has_hit:
+                status = "UNEXPECTED INDEX HIT"
+            else:
+                status = "MISSING EXPECTED ENTRY"
 
         target_results[tid] = {
             "name": VERIFIED_MATCH_CATALOG[tid]["name"],
@@ -512,17 +601,17 @@ def verify_index_structure(full_text: str) -> dict:
             "passed": passed,
         }
 
-    # B001-1: Rom 4:3 / Gen 15:6 (Absent from both Gen and Rom sections)
-    def check_b001_1(bsecs, full_idx):
+    # B001-1: Rom 4:3 / Gen 15:6 (Absent from both Gen and Rom sections; both must exist)
+    def check_b001_1(bsecs, missing):
+        if "Genesis" in missing or "Römerbrief" in missing:
+            return [], None
         hits = []
         gen_m = re.findall(r"\b15\s*[:\.,]?\s*6\b|\b156\b", bsecs["Genesis"])
         if gen_m:
             hits.extend([{"match": m, "section": "Genesis"} for m in gen_m])
-        # In Romans chapter 4, check for verse 3
         rom_m = re.findall(r"\b4\s*[:\.,]\s*3\b|\b43\b|\bRom\s*4\s*[:\.,]?\s*3\b", bsecs["Römerbrief"])
         if rom_m:
             hits.extend([{"match": m, "section": "Römerbrief"} for m in rom_m])
-        # Also check for verse 3 specifically under chapter 4 heading
         m_ch4 = re.search(r"\n\s*4\s*\n\s*4\s*[l1]\b[\s\S]*?(?=\n\s*(?:5|6-8)\b|\Z)", bsecs["Römerbrief"])
         if m_ch4 and re.search(r"\n\s*3\b", m_ch4.group(0)):
             hits.append({"match": "4:3 under ch4", "section": "Römerbrief"})
@@ -531,7 +620,9 @@ def verify_index_structure(full_text: str) -> dict:
     eval_locus("B001-1", False, check_b001_1, "None (unindexed; Rom 4:1, 4:6, 4:9-12 indexed, 4:3 absent; Gen 15:12 indexed, 15:6 absent)")
 
     # B001-2: Rom 9:25 / Hos 2:23 [LXX 2:25] (Present in Hosea and Römerbrief)
-    def check_b001_2(bsecs, full_idx):
+    def check_b001_2(bsecs, missing):
+        if "Hosea" in missing or "Römerbrief" in missing:
+            return [], None
         hits = []
         hos_m = re.findall(r"\b2\s*25\b|\b225\b|\b2\s*23\b|\b223\b|\b2\s*1[\s\S]{0,30}\b25\b", bsecs["Hosea"])
         rom_m = re.findall(r"\b9\s*25\b|\b925\b", bsecs["Römerbrief"])
@@ -544,7 +635,9 @@ def verify_index_structure(full_text: str) -> dict:
     eval_locus("B001-2", True, check_b001_2, "Hosea 2:25 LXX indexed p. 448 (citing pp. 34, 37, 51f., 128ff., 185, 187f., 208, 211-214, 393); Rom 9:25 indexed p. 453")
 
     # B001-3: Rom 9:26 / Hos 1:10 [LXX 2:1] (Present in Hosea and Römerbrief)
-    def check_b001_3(bsecs, full_idx):
+    def check_b001_3(bsecs, missing):
+        if "Hosea" in missing or "Römerbrief" in missing:
+            return [], None
         hits = []
         hos_m = re.findall(r"\b2\s*1\b|\b21\b|\b1\s*10\b|\b110\b", bsecs["Hosea"])
         rom_m = re.findall(r"\b9\s*26\b|\b926\b|\b925[\s\S]{0,40}\b26\b", bsecs["Römerbrief"])
@@ -556,18 +649,22 @@ def verify_index_structure(full_text: str) -> dict:
 
     eval_locus("B001-3", True, check_b001_3, "Hosea 2:1 LXX indexed p. 448 (citing pp. 37, 51f., 128ff., 185-188, 208, 211-214, 393); Rom 9:26 indexed p. 453")
 
-    # B001-4: Rom 10:11 / Isa 28:16 (Section 1.1 / 1.2)
-    def check_b001_4(bsecs, full_idx):
+    # B001-4: Rom 10:11 / Isa 28:16 (Section 1.1)
+    def check_b001_4(bsecs, missing):
+        if "sec_1_1" in missing:
+            return [], None
         hits = []
-        m1 = re.findall(r"(?:2816[\s\S]{0,35}(?:lOll|1011)|(?:lOll|1011)[\s\S]{0,35}2816)", full_idx)
+        m1 = re.findall(r"2816[\s\S]{0,35}(?:lOll|1011|10\s*11)", bsecs["sec_1_1"])
         if m1:
-            hits.extend([{"match": m, "section": "Section 1"} for m in m1])
+            hits.extend([{"match": m, "section": "Section 1.1"} for m in m1])
         return hits, len(hits) > 0
 
     eval_locus("B001-4", True, check_b001_4, "Section 1.1 '2816 (Rom lOll)' p. 443; Section 1.2 'Rom lOll (2816)' p. 445")
 
     # B001-5: Rom 10:13 / Joel 2:32 [LXX 3:5] (Present in Joel and Römerbrief)
-    def check_b001_5(bsecs, full_idx):
+    def check_b001_5(bsecs, missing):
+        if "Joel" in missing or "Römerbrief" in missing:
+            return [], None
         hits = []
         joel_m = re.findall(r"\b3\s*5\b|\b35\b", bsecs["Joel"])
         rom_m = re.findall(r"\b10\s*13\b|\b1013\b", bsecs["Römerbrief"])
@@ -579,38 +676,46 @@ def verify_index_structure(full_text: str) -> dict:
 
     eval_locus("B001-5", True, check_b001_5, "Joel 3:5 LXX indexed p. 448 (citing pp. 24, 47, 61f., 164f., 175, 390); Rom 10:13 indexed p. 453")
 
-    # B001-6: Rom 11:34 / Isa 40:13 (Section 1.1 / 1.2)
-    def check_b001_6(bsecs, full_idx):
+    # B001-6: Rom 11:34 / Isa 40:13 (Section 1.1)
+    def check_b001_6(bsecs, missing):
+        if "sec_1_1" in missing:
+            return [], None
         hits = []
-        m1 = re.findall(r"4013[\s\S]{0,150}1134", full_idx)
+        m1 = re.findall(r"4013[\s\S]{0,150}1134", bsecs["sec_1_1"])
         if m1:
-            hits.extend([{"match": m, "section": "Section 1"} for m in m1])
+            hits.extend([{"match": m, "section": "Section 1.1"} for m in m1])
         return hits, len(hits) > 0
 
     eval_locus("B001-6", True, check_b001_6, "Section 1.1 '4013 (Rom 1134)' p. 444; Section 1.2 'Rom 1134 (4013)' p. 445")
 
-    # B001-7: Rom 15:12 / Isa 11:10 (Section 1.1 / 1.2)
-    def check_b001_7(bsecs, full_idx):
+    # B001-7: Rom 15:12 / Isa 11:10 (Section 1.1)
+    def check_b001_7(bsecs, missing):
+        if "sec_1_1" in missing:
+            return [], None
         hits = []
-        m1 = re.findall(r"(?:llio[\s\S]{0,25}15i2|15i2[\s\S]{0,25}llio|1110[\s\S]{0,25}1512)", full_idx)
+        m1 = re.findall(r"(?:llio|1110)[\s\S]{0,25}(?:15i2|1512)", bsecs["sec_1_1"])
         if m1:
-            hits.extend([{"match": m, "section": "Section 1"} for m in m1])
+            hits.extend([{"match": m, "section": "Section 1.1"} for m in m1])
         return hits, len(hits) > 0
 
     eval_locus("B001-7", True, check_b001_7, "Section 1.1 'llio (Rom 15i2)' p. 443; Section 1.2 'Rom 15i2 (llio)' p. 446")
 
-    # B001-8: 1 Cor 1:19 / Isa 29:14 (Section 1.1 / 1.2)
-    def check_b001_8(bsecs, full_idx):
+    # B001-8: 1 Cor 1:19 / Isa 29:14 (Section 1.1)
+    def check_b001_8(bsecs, missing):
+        if "sec_1_1" in missing:
+            return [], None
         hits = []
-        m1 = re.findall(r"(?:2914[\s\S]{0,25}119|119[\s\S]{0,25}2914)", full_idx)
+        m1 = re.findall(r"2914[\s\S]{0,25}(?:IKor|1Kor)?\s*119", bsecs["sec_1_1"])
         if m1:
-            hits.extend([{"match": m, "section": "Section 1"} for m in m1])
+            hits.extend([{"match": m, "section": "Section 1.1"} for m in m1])
         return hits, len(hits) > 0
 
     eval_locus("B001-8", True, check_b001_8, "Section 1.1 '2914 (IKor 119)' p. 443; Section 1.2 'IKor 119 (2914)' p. 446")
 
-    # B001-9: 1 Cor 6:16 / Gen 2:24 (Absent from Genesis and 1. Korintherbrief)
-    def check_b001_9(bsecs, full_idx):
+    # B001-9: 1 Cor 6:16 / Gen 2:24 (Absent from Genesis and 1. Korintherbrief; both must exist)
+    def check_b001_9(bsecs, missing):
+        if "Genesis" in missing or "1. Korintherbrief" in missing:
+            return [], None
         hits = []
         gen_m = re.findall(r"\b2\s*[:\.,]?\s*24\b|\b224\b", bsecs["Genesis"])
         cor_m = re.findall(r"\b6\s*[:\.,]?\s*16\b|\b616\b", bsecs["1. Korintherbrief"])
@@ -623,20 +728,23 @@ def verify_index_structure(full_text: str) -> dict:
     eval_locus("B001-9", False, check_b001_9, "None (unindexed; 1 Cor 6:1, 6:4, 6:6 indexed, 6:16 absent; Gen 2:21 indexed, 2:24 absent)")
 
     # B001-10: 1 Cor 9:9 / Deut 25:4 (Present in 1. Korinther; absent from Deut)
-    def check_b001_10(bsecs, full_idx):
+    def check_b001_10(bsecs, missing):
+        if "1. Korintherbrief" in missing or "Deuteronomium" in missing:
+            return [], None
         hits = []
         cor_m = re.findall(r"\b9\s*[l1]\b[\s\S]{0,35}\b9\s*\n\s*112\b|\b9\s*[:\.,]\s*9\b[\s\S]{0,30}\b112\b", bsecs["1. Korintherbrief"])
         deut_m = re.findall(r"\b25\s*[:\.,]?\s*4\b|\b254\b", bsecs["Deuteronomium"])
         if cor_m:
             hits.extend([{"match": m, "section": "1. Korintherbrief"} for m in cor_m])
-        # Deut 25:4 must be absent from Deuteronomium section
         has_entry = len(cor_m) > 0 and len(deut_m) == 0
         return hits, has_entry
 
     eval_locus("B001-10", True, check_b001_10, "1 Cor 9:9 indexed p. 454 (citing p. 112); Deut 25:4 absent from OT index p. 447")
 
     # B001-11: 1 Cor 10:7 / Exodus 32:6 (Present in 1. Korinther; absent from Exod)
-    def check_b001_11(bsecs, full_idx):
+    def check_b001_11(bsecs, missing):
+        if "1. Korintherbrief" in missing or "Exodus" in missing:
+            return [], None
         hits = []
         cor_m = re.findall(r"\b10\s*4\b[\s\S]{0,25}\b7\s*\n\s*319\b|\b10\s*[:\.,]\s*7\b[\s\S]{0,30}\b319\b", bsecs["1. Korintherbrief"])
         exod_m = re.findall(r"\b32\s*[:\.,]?\s*6\b|\b326\b", bsecs["Exodus"])
@@ -648,7 +756,9 @@ def verify_index_structure(full_text: str) -> dict:
     eval_locus("B001-11", True, check_b001_11, "1 Cor 10:7 indexed p. 454 (citing p. 319); Exod 32:6 absent from OT index p. 447")
 
     # B001-12: Gal 3:13 / Deut 21:23 (Present in Galaterbrief; absent from Deut)
-    def check_b001_12(bsecs, full_idx):
+    def check_b001_12(bsecs, missing):
+        if "Galaterbrief" in missing or "Deuteronomium" in missing:
+            return [], None
         hits = []
         gal_m = re.findall(r"\b3\s*1\b[\s\S]{0,60}\b13\s*\n\s*13f\b[\s\S]{0,300}\b47\b|\bGalaterbrief[\s\S]{0,250}\b3\s*13\b", bsecs["Galaterbrief"])
         deut_m = re.findall(r"\b21\s*[:\.,]?\s*23\b|\b2123\b", bsecs["Deuteronomium"])
@@ -659,12 +769,14 @@ def verify_index_structure(full_text: str) -> dict:
 
     eval_locus("B001-12", True, check_b001_12, "Gal 3:13 indexed p. 456 (citing p. 47); Deut 21:23 absent from OT index p. 447")
 
-    structural_passed = all(pc_entries.values())
+    structural_passed = all(pc_entries.values()) and coverage_passed
     targets_passed = all(tr["passed"] for tr in target_results.values())
     overall_index_passed = structural_passed and targets_passed
 
     error_msg = None
-    if not structural_passed:
+    if not coverage_passed:
+        error_msg = f"Stellenregister coverage verification failed; missing required book sections: {missing_secs}"
+    elif not all(pc_entries.values()):
         missing_structural = [k for k, v in pc_entries.items() if not v]
         error_msg = f"Missing structural index controls: {missing_structural}"
     elif not targets_passed:
@@ -678,6 +790,8 @@ def verify_index_structure(full_text: str) -> dict:
         "has_end_marker": True,
         "positive_controls": pc_entries,
         "book_sections": book_secs,
+        "missing_sections": missing_secs,
+        "coverage_passed": coverage_passed,
         "target_results": target_results,
         "targets_passed": targets_passed,
         "structural_passed": structural_passed,
@@ -686,86 +800,217 @@ def verify_index_structure(full_text: str) -> dict:
     }
 
 
-def adjudicate_target(target_def: dict, hits: list[dict], index_target_res: dict) -> dict:
+def adjudicate_target(
+    target_def: dict,
+    hits: list[dict],
+    index_target_res: dict,
+    ledger: dict[str, dict] | None = None,
+) -> dict:
     """
-    Dynamically adjudicate hits and evidence classification for a given B001 target.
-    Prevents synthetic zero-hit substantive queries from inheriting pre-declared verdicts.
+    Dynamically adjudicate hits, scholarly context, and evidence classification for a given B001 target.
+    Requires:
+      1. Numerical hit count thresholds
+      2. Context verification: hits must contain substantive scholarly discussion keywords
+      3. Referential integrity: required evidence records must exist in citation_ledger.csv and match target
+      4. Book-section index presence or absence
+    Prevents synthetic or incidental hits from inheriting substantive verdicts.
     """
     tid = target_def["id"]
     hit_count = len(hits)
     expected_cls = target_def["expected_classification"]
-    expected_eids = target_def["evidence_ids"]
+    expected_eids = target_def.get("evidence_ids", [])
     allowed_incidental_max = target_def.get("allowed_incidental_max", 0)
     min_substantive = target_def.get("min_substantive_hits", 1)
+    kw_list = target_def.get("substantive_context_keywords", [])
 
-    passed = True
-    dynamic_classification = expected_cls
-    summary = ""
+    if ledger is None:
+        ledger = load_citation_ledger(DEFAULT_LEDGER_PATH)
 
+    # 1. Evaluate ledger referential integrity
+    ledger_ok, ledger_msg = verify_evidence_ledger_integrity(target_def, ledger)
+    if not ledger_ok:
+        return {
+            "id": tid,
+            "name": target_def["name"],
+            "nt_target": target_def["nt_target"],
+            "ot_target": target_def["ot_target"],
+            "count": hit_count,
+            "classification": "EVIDENCE_LEDGER_MISMATCH",
+            "evidence_ids": expected_eids,
+            "summary": f"FAIL: {ledger_msg}",
+            "passed": False,
+            "hits": hits,
+            "substantive_context_hits": 0,
+            "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+        }
+
+    # 2. Evaluate hit context against substantive scholarly keywords
+    substantive_hits = []
+    for h in hits:
+        snip = h.get("snippet", "")
+        if any(kw.lower() in snip.lower() for kw in kw_list):
+            substantive_hits.append(h)
+    substantive_context_count = len(substantive_hits)
+
+    # 3. Check index result
+    if not index_target_res.get("passed", False):
+        return {
+            "id": tid,
+            "name": target_def["name"],
+            "nt_target": target_def["nt_target"],
+            "ot_target": target_def["ot_target"],
+            "count": hit_count,
+            "classification": "INDEX_VERIFICATION_FAILED",
+            "evidence_ids": expected_eids,
+            "summary": f"FAIL: Index check failed for {tid}: {index_target_res.get('index_status')}",
+            "passed": False,
+            "hits": hits,
+            "substantive_context_hits": substantive_context_count,
+            "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+        }
+
+    # 4. Classification-specific logic
     if expected_cls == "NOT DISCUSSED":
-        if hit_count > allowed_incidental_max or not index_target_res.get("passed", False):
-            dynamic_classification = "UNEXPECTED_HITS"
-            passed = False
-            summary = f"FAIL: Expected NOT DISCUSSED but found {hit_count} hits (max allowed: {allowed_incidental_max}) or unexpected index entry."
+        if hit_count > allowed_incidental_max:
+            return {
+                "id": tid,
+                "name": target_def["name"],
+                "nt_target": target_def["nt_target"],
+                "ot_target": target_def["ot_target"],
+                "count": hit_count,
+                "classification": "UNEXPECTED_HITS",
+                "evidence_ids": expected_eids,
+                "summary": f"FAIL: Expected NOT DISCUSSED but found {hit_count} hits (max allowed: {allowed_incidental_max}).",
+                "passed": False,
+                "hits": hits,
+                "substantive_context_hits": substantive_context_count,
+                "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+            }
+        if substantive_context_count > 0:
+            return {
+                "id": tid,
+                "name": target_def["name"],
+                "nt_target": target_def["nt_target"],
+                "ot_target": target_def["ot_target"],
+                "count": hit_count,
+                "classification": "UNEXPECTED_SUBSTANTIVE_HITS",
+                "evidence_ids": expected_eids,
+                "summary": f"FAIL: Expected NOT DISCUSSED but found {substantive_context_count} substantive context hits.",
+                "passed": False,
+                "hits": hits,
+                "substantive_context_hits": substantive_context_count,
+                "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+            }
+        dynamic_classification = "NOT DISCUSSED"
+        if tid == "B001-1":
+            summary = "NOT DISCUSSED. Zero hits for Gen 15:6 anywhere in volume. Rom 4:3 appears once as incidental citation formula example (p. 94 n. 29). Both verified absent from respective Stellenregister sections."
         else:
-            dynamic_classification = "NOT DISCUSSED"
-            passed = True
-            if tid == "B001-1":
-                summary = "NOT DISCUSSED. Zero hits for Gen 15:6 anywhere in volume. Rom 4:3 appears once as incidental citation formula example (p. 94 n. 29). Unindexed."
-            else:
-                summary = "NOT DISCUSSED. Zero hits for 1 Cor 6:16 or Gen 2:24 in the entire volume. Unindexed."
+            summary = "NOT DISCUSSED. Zero hits for 1 Cor 6:16 or Gen 2:24 in the entire volume. Both verified absent from respective Stellenregister sections."
 
     elif expected_cls == "SUBSTANTIVE_DISCUSSION":
         if hit_count == 0:
-            dynamic_classification = "UNEXPECTED_ZERO_HITS"
-            passed = False
-            summary = f"FAIL: Expected substantive discussion for {tid} but found 0 matches."
-        elif hit_count < min_substantive:
-            dynamic_classification = "INSUFFICIENT_HITS"
-            passed = False
-            summary = f"FAIL: Found {hit_count} hits, below required substantive threshold of {min_substantive}."
-        else:
-            dynamic_classification = "SUBSTANTIVE_DISCUSSION"
-            passed = True
-            eids_str = ", ".join(expected_eids)
-            if tid == "B001-2":
-                summary = f"SUBSTANTIVE DISCUSSION. Extracted in {eids_str} (pp. 34, 187, 211-214). Paul conflates Hos 2:25 and 2:1 LXX with chiasm and vocabulary assimilation."
-            elif tid == "B001-3":
-                summary = f"SUBSTANTIVE DISCUSSION. Extracted in {eids_str} (pp. 37, 51f., 185-188, 208, 211-214). Conflated Hosea citation applied to Gentiles and Israel remnant."
-            elif tid == "B001-4":
-                summary = f"SUBSTANTIVE EXTENDED DISCUSSION. Extracted in {eids_str} (pp. 47, 60-64, 162-166, 224-226). G-R text with authorial pas prefix and indicative substitution."
-            elif tid == "B001-5":
-                summary = f"SUBSTANTIVE DISCUSSION. Extracted in {eids_str} (pp. 47, 61-64, 164f., 175). Verbatim OG Joel 3:5 linked with Isa 28:16 via pas catchword."
-            elif tid == "B001-6":
-                summary = f"SUBSTANTIVE EXTENDED DISCUSSION. Extracted in {eids_str} (pp. 268, 307-311, 358f.). Old Greek quotation with authorial e insertion splitting citation into two questions matching Rom 11:33."
-            elif tid == "B001-7":
-                summary = f"SUBSTANTIVE EXTENDED DISCUSSION. Extracted in {eids_str} (pp. 146-158, 169-171, 214f., 237-239). Verbatim Old Greek with deliberate theological omission of en te hemera ekeine."
-            elif tid == "B001-8":
-                summary = f"SUBSTANTIVE EXTENDED DISCUSSION. Extracted in {eids_str} (pp. 101-105, 160-162, 246-248). Old Greek with deliberate substitution of atheteso for krypso from Ps 32:10 LXX."
+            return {
+                "id": tid,
+                "name": target_def["name"],
+                "nt_target": target_def["nt_target"],
+                "ot_target": target_def["ot_target"],
+                "count": 0,
+                "classification": "UNEXPECTED_ZERO_HITS",
+                "evidence_ids": expected_eids,
+                "summary": f"FAIL: Expected substantive discussion for {tid} but found 0 matches.",
+                "passed": False,
+                "hits": hits,
+                "substantive_context_hits": 0,
+                "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+            }
+        if hit_count < min_substantive:
+            return {
+                "id": tid,
+                "name": target_def["name"],
+                "nt_target": target_def["nt_target"],
+                "ot_target": target_def["ot_target"],
+                "count": hit_count,
+                "classification": "INSUFFICIENT_HITS",
+                "evidence_ids": expected_eids,
+                "summary": f"FAIL: Found {hit_count} hits, below required substantive threshold of {min_substantive}.",
+                "passed": False,
+                "hits": hits,
+                "substantive_context_hits": substantive_context_count,
+                "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+            }
+        if substantive_context_count == 0:
+            return {
+                "id": tid,
+                "name": target_def["name"],
+                "nt_target": target_def["nt_target"],
+                "ot_target": target_def["ot_target"],
+                "count": hit_count,
+                "classification": "INCIDENTAL_ONLY_HITS",
+                "evidence_ids": expected_eids,
+                "summary": f"FAIL: Found {hit_count} hits, but 0 contain substantive scholarly context keywords.",
+                "passed": False,
+                "hits": hits,
+                "substantive_context_hits": 0,
+                "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+            }
+        dynamic_classification = "SUBSTANTIVE_DISCUSSION"
+        eids_str = ", ".join(expected_eids)
+        if tid == "B001-2":
+            summary = f"SUBSTANTIVE DISCUSSION. Verified by {substantive_context_count} contextual hits and crosswalked to {eids_str} (pp. 34, 187, 211-214). Paul conflates Hos 2:25 and 2:1 LXX with chiasm and vocabulary assimilation."
+        elif tid == "B001-3":
+            summary = f"SUBSTANTIVE DISCUSSION. Verified by {substantive_context_count} contextual hits and crosswalked to {eids_str} (pp. 37, 51f., 185-188, 208, 211-214). Conflated Hosea citation applied to Gentiles and Israel remnant."
+        elif tid == "B001-4":
+            summary = f"SUBSTANTIVE EXTENDED DISCUSSION. Verified by {substantive_context_count} contextual hits and crosswalked to {eids_str} (pp. 45, 164). G-R text with authorial pas prefix and indicative substitution."
+        elif tid == "B001-5":
+            summary = f"SUBSTANTIVE DISCUSSION. Verified by {substantive_context_count} contextual hits and crosswalked to {eids_str} (pp. 47, 61, 164f.). Verbatim OG Joel 3:5 linked with Isa 28:16 via pas catchword."
+        elif tid == "B001-6":
+            summary = f"SUBSTANTIVE EXTENDED DISCUSSION. Verified by {substantive_context_count} contextual hits and crosswalked to {eids_str} (pp. 308, 394). Qualified hypothesis of Pauline insertion of e splitting citation into two questions matching Rom 11:33."
+        elif tid == "B001-7":
+            summary = f"SUBSTANTIVE EXTENDED DISCUSSION. Verified by {substantive_context_count} contextual hits and crosswalked to {eids_str} (pp. 46, 394). Old Greek quotation with theological omission of en te hemera ekeine, under textual reservation on Vorlage (p. 238 n. 28)."
+        elif tid == "B001-8":
+            summary = f"SUBSTANTIVE EXTENDED DISCUSSION. Verified by {substantive_context_count} contextual hits and crosswalked to {eids_str} (pp. 45, 393). Old Greek with substitution of atheteso for krypso influenced by Ps 32:10 LXX."
 
     elif expected_cls == "PASSING_REFERENCE":
         if hit_count == 0:
-            dynamic_classification = "MISSING_PASSING_REFERENCE"
-            passed = False
-            summary = f"FAIL: Expected passing reference for {tid} but found 0 matches."
-        else:
-            dynamic_classification = "PASSING_REFERENCE"
-            passed = True
-            if tid == "B001-10":
-                summary = "PASSING REFERENCE. 1 Cor 9:9 and Deut 25:4 cited on p. 112 n. 58 strictly as introductory citation-formula analogy; no substantive textual analysis. Deut 25:4 absent from OT index."
-            elif tid == "B001-11":
-                summary = "PASSING REFERENCE. 1 Cor 10:7 cited on p. 319 n. 11 for phrase 'phagein kai piein'; Exod 32:6 has zero hits, absent from OT index."
+            return {
+                "id": tid,
+                "name": target_def["name"],
+                "nt_target": target_def["nt_target"],
+                "ot_target": target_def["ot_target"],
+                "count": 0,
+                "classification": "MISSING_PASSING_REFERENCE",
+                "evidence_ids": expected_eids,
+                "summary": f"FAIL: Expected passing reference for {tid} but found 0 matches.",
+                "passed": False,
+                "hits": hits,
+                "substantive_context_hits": 0,
+                "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+            }
+        dynamic_classification = "PASSING_REFERENCE"
+        if tid == "B001-10":
+            summary = "PASSING REFERENCE. 1 Cor 9:9 and Deut 25:4 cited on p. 112 n. 58 strictly as introductory citation-formula analogy; no substantive textual analysis. Deut 25:4 absent from OT index."
+        elif tid == "B001-11":
+            summary = "PASSING REFERENCE. 1 Cor 10:7 cited on p. 319 n. 11 for phrase 'phagein kai piein'; Exod 32:6 has zero hits, absent from OT index."
 
     elif expected_cls == "PASSING_TEXT_CRITICAL_NOTE":
         if hit_count == 0:
-            dynamic_classification = "MISSING_PASSING_NOTE"
-            passed = False
-            summary = f"FAIL: Expected text-critical note for {tid} but found 0 matches."
-        else:
-            dynamic_classification = "PASSING_TEXT_CRITICAL_NOTE"
-            passed = True
-            eids_str = ", ".join(expected_eids)
-            summary = f"PASSING TEXT-CRITICAL NOTE. Extracted in {eids_str} (p. 47 n. 1). Paul assimilated Deut 21:23a kekateramenos to Gal 3:10 epikataratos. Deut 21:23 absent from OT index."
+            return {
+                "id": tid,
+                "name": target_def["name"],
+                "nt_target": target_def["nt_target"],
+                "ot_target": target_def["ot_target"],
+                "count": 0,
+                "classification": "MISSING_PASSING_NOTE",
+                "evidence_ids": expected_eids,
+                "summary": f"FAIL: Expected text-critical note for {tid} but found 0 matches.",
+                "passed": False,
+                "hits": hits,
+                "substantive_context_hits": 0,
+                "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+            }
+        dynamic_classification = "PASSING_TEXT_CRITICAL_NOTE"
+        eids_str = ", ".join(expected_eids)
+        summary = f"PASSING TEXT-CRITICAL NOTE. Crosswalked to {eids_str} (p. 47 n. 1). Paul assimilated Deut 21:23a kekateramenos to Gal 3:10 epikataratos. Deut 21:23 absent from OT index."
 
     return {
         "id": tid,
@@ -776,33 +1021,38 @@ def adjudicate_target(target_def: dict, hits: list[dict], index_target_res: dict
         "classification": dynamic_classification,
         "evidence_ids": expected_eids,
         "summary": summary,
-        "passed": passed,
+        "passed": True,
         "hits": hits,
+        "substantive_context_hits": substantive_context_count,
+        "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
     }
 
 
-def run_search(text: str, index_results: dict | None = None) -> list[dict]:
-    """Execute target search and dynamic adjudication across all 12 B001 targets."""
-    if index_results is None:
-        index_results = verify_index_structure(text)
-
+def run_search(
+    text: str,
+    index_results: dict,
+    ledger: dict[str, dict] | None = None,
+) -> list[dict]:
     results = []
     target_idx_res = index_results.get("target_results", {})
+    if ledger is None:
+        ledger = load_citation_ledger(DEFAULT_LEDGER_PATH)
 
-    for tid, target_def in VERIFIED_MATCH_CATALOG.items():
-        hits = []
-        for pattern in target_def["patterns"]:
-            hits.extend(scan_matches(text, pattern))
-        # Deduplicate hits by start offset
+    for tid, target_def in TARGET_QUERIES.items():
+        all_hits = []
+        for pat in target_def["patterns"]:
+            matches = scan_matches(text, pat)
+            all_hits.extend(matches)
+
         unique_hits = []
         seen = set()
-        for h in hits:
+        for h in all_hits:
             if h["start"] not in seen:
                 seen.add(h["start"])
                 unique_hits.append(h)
         unique_hits.sort(key=lambda x: x["start"])
 
-        adjudicated = adjudicate_target(target_def, unique_hits, target_idx_res.get(tid, {}))
+        adjudicated = adjudicate_target(target_def, unique_hits, target_idx_res.get(tid, {}), ledger=ledger)
         results.append(adjudicated)
 
     return results
@@ -855,6 +1105,7 @@ def build_markdown_report(
     lines.append(f"- **Stellenregister Start Offset:** `{index_results.get('index_offset')}`")
     lines.append(f"- **Stellenregister End Offset:** `{index_results.get('index_end_offset')}`")
     lines.append(f"- **Structural Sections Verified:** {len(index_results.get('positive_controls', {}))}/8 passed")
+    lines.append(f"- **Book Sections Coverage:** {len(REQUIRED_INDEX_SECTIONS) - len(index_results.get('missing_sections', []))}/{len(REQUIRED_INDEX_SECTIONS)} required sections exhaustively bounded")
     lines.append("")
     lines.append("### Structural Sections Ledger")
     lines.append("")
@@ -873,22 +1124,25 @@ def build_markdown_report(
     lines.append("")
     lines.append("## 4. Full-Volume Search & Dynamic Locus Adjudication")
     lines.append("")
-    lines.append("| Target ID | Passage Locus | Full-Volume Hits | Research Classification | Summary of Scholarly Findings |")
-    lines.append("| :--- | :--- | :---: | :--- | :--- |")
+    lines.append("| Target ID | Passage Locus | Total Hits | Context Hits | Research Classification | Summary of Scholarly Findings |")
+    lines.append("| :--- | :--- | :---: | :---: | :--- | :--- |")
     for sr in search_results:
         tid = sr["id"]
         name = sr["name"]
         cnt = sr["count"]
+        ctx_cnt = sr.get("substantive_context_hits", 0)
         cls = sr["classification"]
         desc = sr["summary"]
-        lines.append(f"| {tid} | {name} | {cnt} | {cls} | {desc} |")
+        lines.append(f"| {tid} | {name} | {cnt} | {ctx_cnt} | {cls} | {desc} |")
     lines.append("")
     lines.append("## 5. Certification of Verification")
     lines.append("")
     if is_authenticated:
         lines.append("- **Verification Status:** `VERIFIED_COMPLETE`")
+        lines.append("- **Adjudication Method:** `SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION`")
         lines.append("- **Cryptographic Consistency:** Confirmed against authentic MDZ Digi20 scan.")
-        lines.append("- **Negative Search Discipline:** Zero unsupported negative claims. Non-prophetic loci B001-1 (Rom 4:3 / Gen 15:6) and B001-9 (1 Cor 6:16 / Gen 2:24) are confirmed absent from authorial index and substantive discussion; passing references (B001-10, B001-11, B001-12) are precisely localized.")
+        lines.append(f"- **Stellenregister Coverage:** {len(REQUIRED_INDEX_SECTIONS)}/{len(REQUIRED_INDEX_SECTIONS)} required book/testament sections exhaustively bounded and verified non-empty.")
+        lines.append("- **Negative Search Discipline:** Zero unsupported negative claims. Non-prophetic loci B001-1 (Rom 4:3 / Gen 15:6) and B001-9 (1 Cor 6:16 / Gen 2:24) are confirmed absent from both authorial index and substantive discussion; passing references (B001-10, B001-11, B001-12) are precisely localized.")
     else:
         lines.append("- **Verification Status:** `UNAUTHENTICATED_OVERRIDE (Digest mismatch)`")
         lines.append("- **Cryptographic Consistency:** UNVERIFIED (Digest mismatch under --allow-text-digest-mismatch override). Certified negative search guarantees are explicitly suppressed.")
@@ -902,6 +1156,7 @@ def run_verification(
     text_path: Path,
     out_path: Path,
     allow_text_digest_mismatch: bool = False,
+    ledger_path: Path = DEFAULT_LEDGER_PATH,
     quiet: bool = False,
 ) -> int:
     """Execute verification gates, failing closed on missing inputs, gate failures, or unauthenticated writes."""
@@ -957,15 +1212,16 @@ def run_verification(
         print(f"ERROR: Fail closed: Positive control validation failed: {failed_pcs}", file=sys.stderr)
         return 4
 
-    # Step 4: Verify Stellenregister structure
+    # Step 4: Verify Stellenregister structure & book coverage
     index_results = verify_index_structure(text)
     if not index_results.get("passed", False):
         err = index_results.get("error", "control missing")
         print(f"ERROR: Fail closed: Bounded Stellenregister verification failed: {err}", file=sys.stderr)
         return 5
 
-    # Step 5: Run target search and dynamic adjudication
-    search_results = run_search(text, index_results)
+    # Step 5: Load ledger and run target search and dynamic adjudication
+    ledger = load_citation_ledger(ledger_path)
+    search_results = run_search(text, index_results, ledger=ledger)
     adjudication_passed = all(sr["passed"] for sr in search_results)
     if not adjudication_passed:
         failed_targets = [sr["id"] for sr in search_results if not sr["passed"]]
@@ -1012,6 +1268,7 @@ def main():
     parser.add_argument("--pdf", type=Path, default=RAW_PDF_DEFAULT, help="Path to raw volume PDF scan")
     parser.add_argument("--text", type=Path, default=DEFAULT_TEXT_PATH, help="Path to extracted text layer")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT_PATH, help="Path to output markdown search log")
+    parser.add_argument("--ledger", type=Path, default=DEFAULT_LEDGER_PATH, help="Path to citation_ledger.csv")
     parser.add_argument("--allow-text-digest-mismatch", action="store_true", help="Permit execution on non-matching text digest")
     parser.add_argument("--quiet", action="store_true", help="Suppress non-essential output")
 
@@ -1022,6 +1279,7 @@ def main():
         args.text,
         args.out,
         allow_text_digest_mismatch=args.allow_text_digest_mismatch,
+        ledger_path=args.ledger,
         quiet=args.quiet,
     )
 

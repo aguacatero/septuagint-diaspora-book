@@ -36,6 +36,7 @@
 - **Stellenregister Start Offset:** `1406338`
 - **Stellenregister End Offset:** `1435186`
 - **Structural Sections Verified:** 8/8 passed
+- **Book Sections Coverage:** 13/13 required sections exhaustively bounded
 
 ### Structural Sections Ledger
 
@@ -69,23 +70,25 @@
 
 ## 4. Full-Volume Search & Dynamic Locus Adjudication
 
-| Target ID | Passage Locus | Full-Volume Hits | Research Classification | Summary of Scholarly Findings |
-| :--- | :--- | :---: | :--- | :--- |
-| B001-1 | Romans 4:3 / Genesis 15:6 | 1 | NOT DISCUSSED | NOT DISCUSSED. Zero hits for Gen 15:6 anywhere in volume. Rom 4:3 appears once as incidental citation formula example (p. 94 n. 29). Unindexed. |
-| B001-2 | Romans 9:25 / Hosea 2:23 | 17 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Extracted in S05-E001 (pp. 34, 187, 211-214). Paul conflates Hos 2:25 and 2:1 LXX with chiasm and vocabulary assimilation. |
-| B001-3 | Romans 9:26 / Hosea 1:10 | 6 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Extracted in S05-E002 (pp. 37, 51f., 185-188, 208, 211-214). Conflated Hosea citation applied to Gentiles and Israel remnant. |
-| B001-4 | Romans 10:11 / Isaiah 28:16 | 53 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE EXTENDED DISCUSSION. Extracted in S05-E003, S05-E004 (pp. 47, 60-64, 162-166, 224-226). G-R text with authorial pas prefix and indicative substitution. |
-| B001-5 | Romans 10:13 / Joel 2:32 | 4 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Extracted in S05-E005 (pp. 47, 61-64, 164f., 175). Verbatim OG Joel 3:5 linked with Isa 28:16 via pas catchword. |
-| B001-6 | Romans 11:34 / Isaiah 40:13 | 28 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE EXTENDED DISCUSSION. Extracted in S05-E006, S05-E007 (pp. 268, 307-311, 358f.). Old Greek quotation with authorial e insertion splitting citation into two questions matching Rom 11:33. |
-| B001-7 | Romans 15:12 / Isaiah 11:10 | 39 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE EXTENDED DISCUSSION. Extracted in S05-E008, S05-E009 (pp. 146-158, 169-171, 214f., 237-239). Verbatim Old Greek with deliberate theological omission of en te hemera ekeine. |
-| B001-8 | 1 Corinthians 1:19 / Isaiah 29:14 | 41 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE EXTENDED DISCUSSION. Extracted in S05-E010, S05-E011 (pp. 101-105, 160-162, 246-248). Old Greek with deliberate substitution of atheteso for krypso from Ps 32:10 LXX. |
-| B001-9 | 1 Corinthians 6:16 / Genesis 2:24 | 0 | NOT DISCUSSED | NOT DISCUSSED. Zero hits for 1 Cor 6:16 or Gen 2:24 in the entire volume. Unindexed. |
-| B001-10 | 1 Corinthians 9:9 / Deuteronomy 25:4 | 1 | PASSING_REFERENCE | PASSING REFERENCE. 1 Cor 9:9 and Deut 25:4 cited on p. 112 n. 58 strictly as introductory citation-formula analogy; no substantive textual analysis. Deut 25:4 absent from OT index. |
-| B001-11 | 1 Corinthians 10:7 / Exodus 32:6 | 2 | PASSING_REFERENCE | PASSING REFERENCE. 1 Cor 10:7 cited on p. 319 n. 11 for phrase 'phagein kai piein'; Exod 32:6 has zero hits, absent from OT index. |
-| B001-12 | Galatians 3:13 / Deuteronomy 21:23 | 1 | PASSING_TEXT_CRITICAL_NOTE | PASSING TEXT-CRITICAL NOTE. Extracted in S05-E012 (p. 47 n. 1). Paul assimilated Deut 21:23a kekateramenos to Gal 3:10 epikataratos. Deut 21:23 absent from OT index. |
+| Target ID | Passage Locus | Total Hits | Context Hits | Research Classification | Summary of Scholarly Findings |
+| :--- | :--- | :---: | :---: | :--- | :--- |
+| B001-1 | Romans 4:3 / Genesis 15:6 | 1 | 0 | NOT DISCUSSED | NOT DISCUSSED. Zero hits for Gen 15:6 anywhere in volume. Rom 4:3 appears once as incidental citation formula example (p. 94 n. 29). Both verified absent from respective Stellenregister sections. |
+| B001-2 | Romans 9:25 / Hosea 2:23 | 17 | 9 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Verified by 9 contextual hits and crosswalked to S05-E001 (pp. 34, 187, 211-214). Paul conflates Hos 2:25 and 2:1 LXX with chiasm and vocabulary assimilation. |
+| B001-3 | Romans 9:26 / Hosea 1:10 | 6 | 5 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Verified by 5 contextual hits and crosswalked to S05-E002 (pp. 37, 51f., 185-188, 208, 211-214). Conflated Hosea citation applied to Gentiles and Israel remnant. |
+| B001-4 | Romans 10:11 / Isaiah 28:16 | 53 | 42 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE EXTENDED DISCUSSION. Verified by 42 contextual hits and crosswalked to S05-E003, S05-E004 (pp. 45, 164). G-R text with authorial pas prefix and indicative substitution. |
+| B001-5 | Romans 10:13 / Joel 2:32 | 4 | 1 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Verified by 1 contextual hits and crosswalked to S05-E005 (pp. 47, 61, 164f.). Verbatim OG Joel 3:5 linked with Isa 28:16 via pas catchword. |
+| B001-6 | Romans 11:34 / Isaiah 40:13 | 28 | 21 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE EXTENDED DISCUSSION. Verified by 21 contextual hits and crosswalked to S05-E006, S05-E007 (pp. 308, 394). Qualified hypothesis of Pauline insertion of e splitting citation into two questions matching Rom 11:33. |
+| B001-7 | Romans 15:12 / Isaiah 11:10 | 39 | 19 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE EXTENDED DISCUSSION. Verified by 19 contextual hits and crosswalked to S05-E008, S05-E009 (pp. 46, 394). Old Greek quotation with theological omission of en te hemera ekeine, under textual reservation on Vorlage (p. 238 n. 28). |
+| B001-8 | 1 Corinthians 1:19 / Isaiah 29:14 | 41 | 19 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE EXTENDED DISCUSSION. Verified by 19 contextual hits and crosswalked to S05-E010, S05-E011 (pp. 45, 393). Old Greek with substitution of atheteso for krypso influenced by Ps 32:10 LXX. |
+| B001-9 | 1 Corinthians 6:16 / Genesis 2:24 | 0 | 0 | NOT DISCUSSED | NOT DISCUSSED. Zero hits for 1 Cor 6:16 or Gen 2:24 in the entire volume. Both verified absent from respective Stellenregister sections. |
+| B001-10 | 1 Corinthians 9:9 / Deuteronomy 25:4 | 1 | 0 | PASSING_REFERENCE | PASSING REFERENCE. 1 Cor 9:9 and Deut 25:4 cited on p. 112 n. 58 strictly as introductory citation-formula analogy; no substantive textual analysis. Deut 25:4 absent from OT index. |
+| B001-11 | 1 Corinthians 10:7 / Exodus 32:6 | 2 | 0 | PASSING_REFERENCE | PASSING REFERENCE. 1 Cor 10:7 cited on p. 319 n. 11 for phrase 'phagein kai piein'; Exod 32:6 has zero hits, absent from OT index. |
+| B001-12 | Galatians 3:13 / Deuteronomy 21:23 | 1 | 1 | PASSING_TEXT_CRITICAL_NOTE | PASSING TEXT-CRITICAL NOTE. Crosswalked to S05-E012 (p. 47 n. 1). Paul assimilated Deut 21:23a kekateramenos to Gal 3:10 epikataratos. Deut 21:23 absent from OT index. |
 
 ## 5. Certification of Verification
 
 - **Verification Status:** `VERIFIED_COMPLETE`
+- **Adjudication Method:** `SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION`
 - **Cryptographic Consistency:** Confirmed against authentic MDZ Digi20 scan.
-- **Negative Search Discipline:** Zero unsupported negative claims. Non-prophetic loci B001-1 (Rom 4:3 / Gen 15:6) and B001-9 (1 Cor 6:16 / Gen 2:24) are confirmed absent from authorial index and substantive discussion; passing references (B001-10, B001-11, B001-12) are precisely localized.
+- **Stellenregister Coverage:** 13/13 required book/testament sections exhaustively bounded and verified non-empty.
+- **Negative Search Discipline:** Zero unsupported negative claims. Non-prophetic loci B001-1 (Rom 4:3 / Gen 15:6) and B001-9 (1 Cor 6:16 / Gen 2:24) are confirmed absent from both authorial index and substantive discussion; passing references (B001-10, B001-11, B001-12) are precisely localized.

@@ -1511,24 +1511,25 @@ def test_s05_negative_search_evidence_discipline():
 
     # Stellenregister sections verified
     assert "8/8 passed" in log_text
+    assert "13/13 required book/testament sections exhaustively bounded" in log_text
 
     # Accurate text byte and character accounting (Fixes L1)
     assert "`1470319` bytes" in log_text
     assert "`1439712` characters" in log_text
 
     # Exact evidence ID referential integrity crosswalk (Fixes F3)
-    assert "Extracted in S05-E001 (" in log_text
-    assert "Extracted in S05-E002 (" in log_text
-    assert "Extracted in S05-E003, S05-E004 (" in log_text
-    assert "Extracted in S05-E005 (" in log_text
-    assert "Extracted in S05-E006, S05-E007 (" in log_text
-    assert "Extracted in S05-E008, S05-E009 (" in log_text
-    assert "Extracted in S05-E010, S05-E011 (" in log_text
-    assert "Extracted in S05-E012 (" in log_text
+    assert "crosswalked to S05-E001 (" in log_text
+    assert "crosswalked to S05-E002 (" in log_text
+    assert "crosswalked to S05-E003, S05-E004 (" in log_text
+    assert "crosswalked to S05-E005 (" in log_text
+    assert "crosswalked to S05-E006, S05-E007 (" in log_text
+    assert "crosswalked to S05-E008, S05-E009 (" in log_text
+    assert "crosswalked to S05-E010, S05-E011 (" in log_text
+    assert "Crosswalked to S05-E012 (" in log_text or "crosswalked to S05-E012 (" in log_text
 
     # Negative non-prophetic loci B001-1 and B001-9 must be NOT DISCUSSED
-    assert "| B001-1 | Romans 4:3 / Genesis 15:6 | 1 | NOT DISCUSSED |" in log_text
-    assert "| B001-9 | 1 Corinthians 6:16 / Genesis 2:24 | 0 | NOT DISCUSSED |" in log_text
+    assert "| B001-1 | Romans 4:3 / Genesis 15:6 | 1 | 0 | NOT DISCUSSED |" in log_text
+    assert "| B001-9 | 1 Corinthians 6:16 / Genesis 2:24 | 0 | 0 | NOT DISCUSSED |" in log_text
 
     # Substantive loci
     for sub_id in ["B001-2", "B001-3", "B001-4", "B001-5", "B001-6", "B001-7", "B001-8"]:
@@ -1601,13 +1602,15 @@ def test_s05_authorial_index_scripture_ledger_complete():
 
 def test_s05_adversarial_index_failure_modes():
     """
-    S05-R1-F2 adversarial regression test:
+    S05-R1-F2 & S05-R2-F2 adversarial regression test:
     (a) Inject 4,3 into Römerbrief section fixture -> fail B001-1
     (b) Inject 15,6 into Genesis section fixture -> fail B001-1
     (c) Remove genuine B001-10 entry ('9 112') from 1. Korintherbrief -> fail B001-10
     (d) Remove genuine B001-11 entry ('7 319') from 1. Korintherbrief -> fail B001-11
     (e) Remove genuine B001-12 entry ('47') from Galaterbrief -> fail B001-12
     (f) Inject 1 Cor 10:7 entry into Exodus section -> does NOT satisfy 1. Korintherbrief
+    (g) Missing/corrupted book section (e.g. Genesis) -> fails coverage, marks negative targets INDETERMINATE
+    (h) Inject Isaiah 28:16 into Genesis -> does NOT satisfy Section 1.1 scoped Isaiah check
     """
     import sys
     repo_root = Path(__file__).resolve().parent.parent
@@ -1668,6 +1671,25 @@ def test_s05_adversarial_index_failure_modes():
     res_cross = vns.verify_index_structure(adv_cross)
     assert res_cross["target_results"]["B001-11"]["passed"] is False, "Matches outside target book section must not satisfy verification"
 
+    # 7. S05-R2-F2: Fail-closed book coverage when a required heading is missing or corrupted
+    adv_missing_gen = text.replace("Genesis\n", "UNKNOWN_BOOK\n")
+    assert adv_missing_gen != text
+    res_missing_gen = vns.verify_index_structure(adv_missing_gen)
+    assert res_missing_gen["passed"] is False, "Expected index verification to fail when Genesis heading is missing"
+    assert res_missing_gen["coverage_passed"] is False
+    assert "Genesis" in res_missing_gen["missing_sections"]
+    assert res_missing_gen["target_results"]["B001-1"]["passed"] is False
+    assert "INDETERMINATE" in res_missing_gen["target_results"]["B001-1"]["index_status"]
+    assert res_missing_gen["target_results"]["B001-9"]["passed"] is False
+    assert "INDETERMINATE" in res_missing_gen["target_results"]["B001-9"]["index_status"]
+
+    # 8. S05-R2-F2: Section 1.1 scoping discipline - matches outside sec_1_1 do not satisfy Isaiah checks
+    target_isa = "2816\n\n(Rom\n\n933\n\n(Rom\n\nlOll"
+    assert target_isa in text
+    adv_isa_cross = text.replace(target_isa, "9999\n\n(Rom\n\n999").replace("Genesis\n", f"Genesis\n{target_isa}\n")
+    res_isa_cross = vns.verify_index_structure(adv_isa_cross)
+    assert res_isa_cross["target_results"]["B001-4"]["passed"] is False, "Section 1.1 matches placed in Genesis must not satisfy B001-4"
+
 
 def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_hits():
     """
@@ -1715,6 +1737,109 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
     assert adj_neg["passed"] is False
     assert adj_neg["classification"] == "UNEXPECTED_HITS"
     assert "FAIL" in adj_neg["summary"]
+
+    # Case 4 (S05-R2-F1): 5 threshold-satisfying synthetic incidental-only hits without substantive context keywords fail
+    incidental_hits = [
+        {"start": i * 100, "match": "Rom 10:11", "snippet": "incidental mention of Rom 10:11 without substantive scholarly keywords"}
+        for i in range(5)
+    ]
+    adj_inc = vns.adjudicate_target(target_def_sub, incidental_hits, {"passed": True})
+    assert adj_inc["passed"] is False
+    assert adj_inc["classification"] == "INCIDENTAL_ONLY_HITS"
+    assert "FAIL" in adj_inc["summary"]
+    assert "contain substantive scholarly context" in adj_inc["summary"]
+
+    # Case 5 (S05-R2-F1): Substantive target with missing evidence record in ledger fails fail-closed
+    substantive_hits = [
+        {"start": i * 100, "match": "Rom 10:11", "snippet": "Untersuchung des Zitats Rom 10:11 Textform Vorlage Septuaginta"}
+        for i in range(5)
+    ]
+    incomplete_ledger = {
+        "S05-E003": {
+            "evidence_id": "S05-E003",
+            "b001_id": "B001-4",
+            "verification_status": "VERIFIED",
+            "printed_page": "45",
+            "notebooklm_citation": "wilk [PDF p. 57; printed p. 45]",
+        }
+    }
+    adj_miss = vns.adjudicate_target(target_def_sub, substantive_hits, {"passed": True}, ledger=incomplete_ledger)
+    assert adj_miss["passed"] is False
+    assert adj_miss["classification"] == "EVIDENCE_LEDGER_MISMATCH"
+    assert "FAIL" in adj_miss["summary"]
+    assert "Required evidence ID S05-E004 not found" in adj_miss["summary"]
+
+    # Case 6 (S05-R2-F1): Substantive target with mismatched target_id in ledger fails fail-closed
+    mismatched_ledger = {
+        "S05-E003": {
+            "evidence_id": "S05-E003",
+            "b001_id": "B001-4",
+            "verification_status": "VERIFIED",
+            "printed_page": "45",
+            "notebooklm_citation": "wilk [PDF p. 57; printed p. 45]",
+        },
+        "S05-E004": {
+            "evidence_id": "S05-E004",
+            "b001_id": "B001-99",
+            "verification_status": "VERIFIED",
+            "printed_page": "164",
+            "notebooklm_citation": "wilk [PDF p. 176; printed p. 164]",
+        },
+    }
+    adj_mism = vns.adjudicate_target(target_def_sub, substantive_hits, {"passed": True}, ledger=mismatched_ledger)
+    assert adj_mism["passed"] is False
+    assert adj_mism["classification"] == "EVIDENCE_LEDGER_MISMATCH"
+    assert "FAIL" in adj_mism["summary"]
+    assert "mapped to B001-99, expected B001-4" in adj_mism["summary"]
+
+
+def test_s05_qualifications_and_locators_discipline():
+    """
+    S05-R2-M1 & S05-R2-L1 regression test:
+    - Verifies S05-E006 preserves Wilk's qualified probabilistic judgment ('dürfte das Wort auf Paulus zurückgehen', p. 308)
+      and labels it as secondary-author hypothesis.
+    - Verifies S05-E008 preserves Wilk's explicit textual reservation (p. 238 n. 28) regarding a possible pre-Pauline Hebraizing Vorlage.
+    - Verifies all 12 rows of citation_ledger.csv contain dual locators [PDF p. X; printed p. Y].
+    - Verifies relevance_scan.md bounds Part V to pp. 381–408.
+    """
+    repo_root = Path(__file__).resolve().parent.parent
+    s05_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S05"
+
+    # 1. Dual locators in citation_ledger.csv
+    csv_path = s05_dir / "citation_ledger.csv"
+    with open(csv_path, encoding="utf-8") as f:
+        reader = list(csv.DictReader(f))
+    assert len(reader) == 12
+
+    locator_pattern = re.compile(r"\[PDF p\.\s*(\d+);\s*printed p\.\s*([^\]]+)\]")
+    for row in reader:
+        eid = row["evidence_id"]
+        cit = row["notebooklm_citation"]
+        m = locator_pattern.search(cit)
+        assert m, f"Row {eid} missing dual locator format '[PDF p. X; printed p. Y]': {cit}"
+        pdf_p = int(m.group(1))
+        # Validate PDF = printed + 12 formula for integer printed pages
+        first_printed = re.search(r"\d+", m.group(2))
+        if first_printed:
+            printed_num = int(first_printed.group(0))
+            assert pdf_p == printed_num + 12, f"Row {eid} locator offset mismatch: PDF {pdf_p} != printed {printed_num} + 12"
+
+    # 2. S05-E006 secondary-author hypothesis and probabilistic qualification (S05-R2-M1)
+    e006 = next(r for r in reader if r["evidence_id"] == "S05-E006")
+    assert "secondary-author" in e006["qualification"].lower() or "secondary-author" in e006["author_claim"].lower()
+    assert "dürfte das Wort auf Paulus zurückgehen" in e006["qualification"]
+
+    # 3. S05-E008 secondary-author hypothesis and textual reservation (S05-R2-M1)
+    e008 = next(r for r in reader if r["evidence_id"] == "S05-E008")
+    assert "secondary-author" in e008["qualification"].lower() or "secondary-author" in e008["author_claim"].lower()
+    assert "238 n. 28" in e008["qualification"]
+    assert "hebraizing" in e008["qualification"].lower() or "vorlage" in e008["qualification"].lower()
+
+    # 4. relevance_scan.md bounds Part V to pp. 381–408 (S05-R2-L1)
+    rel_path = s05_dir / "relevance_scan.md"
+    rel_text = rel_path.read_text(encoding="utf-8")
+    assert "381–408" in rel_text or "381-408" in rel_text
+    assert "409–442" in rel_text or "409-442" in rel_text
 
 
 def test_s05_digest_override_suppresses_certification(tmp_path, monkeypatch):

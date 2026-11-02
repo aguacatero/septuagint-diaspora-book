@@ -104,7 +104,7 @@
 
 ### Analytical Breakdown
 - **Assumptions Explicitly Acknowledged:** The concluding doxology of Romans 11 is Paul's own authorial composition reflecting upon the entire mystery of Rom 9–11 (p. 307).
-- **Alternative Explanations Considered:** Wilk considers whether `ἤ` stood in Paul's Septuagint exemplar, but notes its negligible manuscript support in Greek Isaiah witnesses, concluding it is Paul's own stylistic modification (p. 308).
+- **Alternative Explanations Considered:** Wilk considers whether `ἤ` stood in Paul's Septuagint exemplar; given its weak attestation in Greek Isaiah witnesses, he offers the qualified hypothesis that it likely derives from Paul („dürfte das Wort auf Paulus zurückgehen“, p. 308), while acknowledging this remains a secondary-author scholar inference rather than direct primary-text certainty.
 - **Alternative Explanations Not Addressed:** Wilk does not discuss whether Paul's Hebrew knowledge of Isaiah 40:13 (`מִי־תִכֵּן אֶת־רוּחַ יְהוָה וְאִישׁ עֲצָתוֹ יוֹדִיעֶנּוּ`) influenced his understanding of `νοῦς` vs. `רוּחַ`.
 - **Falsification / Weakening Evidence:** Finding an early Septuagint papyrus of Isaiah 40:13 containing `ἤ` would falsify the claim that `ἤ` represents Paul's individual redactional creation.
 
@@ -116,7 +116,7 @@
 - **QUESTION:** What is the textual form and function of the Isaiah 11:10 citation in Romans 15:12?
 - **EVIDENCE:**
   - *Explicit Source Statement:* Paul cites Isaiah 11:10a LXX: `ἔσται ἡ ῥίζα τοῦ Ἰεσσαί, καὶ ὁ ἀνιστάμενος ἄρχειν ἐθνῶν, ἐπ' αὐτῷ ἔθνη ἐλπιοῦσιν` (pp. 18–19, 46, 146–158).
-  - *Explicit Source Statement:* The citation reproduces the Old Greek ($\mathfrak{G}^*$) verbatim, except for the deliberate omission of the temporal marker `ἐν τῇ ἡμέρᾳ ἐκείνῃ` (p. 46).
+  - *Explicit Source Statement:* The citation reproduces the substantive clauses of Old Greek ($\mathfrak{G}^*$ Isa 11:10a) verbatim, while omitting the introductory temporal marker `ἐν τῇ ἡμέρᾳ ἐκείνῃ` (p. 46); Wilk explicitly records on p. 238 n. 28 the textual reservation that a pre-Pauline Hebraizing revision cannot be excluded due to lack of direct evidence.
   - *Explicit Source Statement:* It forms the fourth and climactic quotation in the catena of Rom 15:9–12 (Ps 17:50; Deut 32:43; Ps 116:1; Isa 11:10) (pp. 146–158).
 - **INFERENCE:**
   - *Structural Paraphrase:* The omission of `ἐν τῇ ἡμέρᾳ ἐκείνῃ` removes the purely future-eschatological horizon of the prophecy: for Paul, the Root of Jesse has already arisen in Jesus Christ.

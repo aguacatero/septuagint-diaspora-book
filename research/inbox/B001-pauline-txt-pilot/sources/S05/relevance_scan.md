@@ -30,4 +30,4 @@
 Beyond individual locus discussions, Wilk provides foundational chapters directly relevant to the B001 inquiry:
 - **Part II.1 (pp. 16–59):** Exhaustive text-critical analysis of Paul's textual Vorlage across all Isaiah citations, classifying them into original Old Greek ($\mathfrak{G}^*$), revised Greek ($\mathfrak{G}^R$), and Paul's own deliberate modifications (accentuation, clarification, assimilation, appropriation).
 - **Part IV (pp. 340–380):** Paul's hermeneutics and understanding of the Book of Isaiah as a unified prophetic book, comparing citation techniques with Qumran, Philo, and early Christian writers.
-- **Part V (pp. 381–420):** Synthesis of the theological distribution and weighting of Isaiah across the Pauline corpus.
+- **Part V (pp. 381–408):** Synthesis of the theological distribution and weighting of Isaiah across the Pauline corpus (followed by Literaturverzeichnis pp. 409–442 and Stellenregister pp. 443–461).

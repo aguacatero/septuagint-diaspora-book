@@ -56,7 +56,7 @@
 - **Textual Addition (`ἤ`):**
   - LXX Isaiah 40:13 reads: `τίς ἔγνω νοῦν κυρίου, καὶ τίς σύμβουλος αὐτοῦ ἐγένετο...` (reading `καί`).
   - Paul in Romans 11:34 reads: `τίς γὰρ ἔγνω νοῦν κυρίου; ἢ τίς σύμβουλος αὐτοῦ ἐγένετο;` (inserting `ἤ`).
-  - *Counterevidence & Manuscript Evidence:* Wilk surveys Greek manuscript witnesses of Isaiah 40:13 and demonstrates that `ἤ` has virtually no independent Septuagint support; it represents Paul's own deliberate editorial insertion to bipartite the quotation in parallel with `σοφία` and `γνῶσις` in Rom 11:33.
+  - *Counterevidence & Manuscript Evidence:* Wilk surveys Greek manuscript witnesses of Isaiah 40:13 and demonstrates that `ἤ` has virtually no independent Septuagint support; Wilk therefore concludes it likely represents Paul's own editorial insertion („dürfte das Wort auf Paulus zurückgehen“), offered as a qualified secondary-author hypothesis rather than an established primary-text certainty.
 - **Genre Classification:** Wilk classifies Rom 11:34 not as a formal citation (since it lacks an introductory formula like `γέγραπται`), but as an embedded "citation-like allusion" (`zitatähnliche Anspielung`) serving a hymn-doxology function.
 
 ---
@@ -67,7 +67,7 @@
   - LXX Isaiah 11:10a reads: `καὶ ἔσται ἐν τῇ ἡμέρᾳ ἐκείνῃ ἡ ῥίζα τοῦ Ἰεσσαί...`
   - Romans 15:12 reads: `καὶ πάλιν Ἠσαΐας λέγει, Ἔσται ἡ ῥίζα τοῦ Ἰεσσαί...`
   - Paul omits `ἐν τῇ ἡμέρᾳ ἐκείνῃ` ("in that day"). Wilk notes that this omission is an intentional theological appropriation (`Aneignung`): for Paul, the eschatological Davidic ruler has already arrived in Jesus Christ (Rom 15:8).
-- **Hebraizing Revision Uncertainty:** Wilk explores whether Rom 15:7–9a reflects a Hebraizing LXX text (`δόξα` for `תִּפְאֶרֶת` in Isa 11:10b), but cautiously notes that direct manuscript evidence for a pre-Pauline Hebraizing revision of Isaiah 11 remains uncertain and must be held with scholarly reserve.
+- **Hebraizing Revision Uncertainty:** Wilk explores whether Rom 15:7–9a reflects a Hebraizing LXX text (`δόξα` for `תִּפְאֶרֶת` in Isa 11:10b), but cautiously notes on p. 238 n. 28 that direct manuscript evidence for a pre-Pauline Hebraizing revision of Isaiah 11 remains uncertain; this possibility cannot be ruled out, and Wilk's hypothesis of Pauline omission of `ἐν τῇ ἡμέρᾳ ἐκείνῃ` remains a secondary-author claim subject to textual reservation.
 
 ---
 
