@@ -1528,8 +1528,8 @@ def test_s05_negative_search_evidence_discipline():
     assert "Crosswalked to S05-E012 (" in log_text or "crosswalked to S05-E012 (" in log_text
 
     # Negative non-prophetic loci B001-1 and B001-9 must be NOT DISCUSSED
-    assert "| B001-1 | Romans 4:3 / Genesis 15:6 | 1 | 0 | NOT DISCUSSED |" in log_text
-    assert "| B001-9 | 1 Corinthians 6:16 / Genesis 2:24 | 0 | 0 | NOT DISCUSSED |" in log_text
+    assert "| B001-1 | Romans 4:3 / Genesis 15:6 | 1 | 0 | 0 | NOT DISCUSSED |" in log_text
+    assert "| B001-9 | 1 Corinthians 6:16 / Genesis 2:24 | 0 | 0 | 0 | NOT DISCUSSED |" in log_text
 
     # Substantive loci
     for sub_id in ["B001-2", "B001-3", "B001-4", "B001-5", "B001-6", "B001-7", "B001-8"]:
@@ -1803,6 +1803,7 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
             "verification_status": "VERIFIED",
             "printed_page": "45",
             "notebooklm_citation": "wilk [PDF p. 57; printed p. 45]",
+            "source_locator": "Teil II.1.2.1.3a, S. 45",
         }
     }
     adj_miss = vns.adjudicate_target(target_def_sub, substantive_hits, {"passed": True}, ledger=incomplete_ledger)
@@ -1819,6 +1820,7 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
             "verification_status": "VERIFIED",
             "printed_page": "45",
             "notebooklm_citation": "wilk [PDF p. 57; printed p. 45]",
+            "source_locator": "Teil II.1.2.1.3a, S. 45",
         },
         "S05-E004": {
             "evidence_id": "S05-E004",
@@ -1826,6 +1828,7 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
             "verification_status": "VERIFIED",
             "printed_page": "164",
             "notebooklm_citation": "wilk [PDF p. 176; printed p. 164]",
+            "source_locator": "Teil II.3.1b, S. 164",
         },
     }
     adj_mism = vns.adjudicate_target(target_def_sub, substantive_hits, {"passed": True}, ledger=mismatched_ledger)
@@ -1842,6 +1845,7 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
             "verification_status": "VERIFIED",
             "printed_page": "45",
             "notebooklm_citation": "wilk [PDF p. 57; printed p. 45]",
+            "source_locator": "Teil II.1.2.1.3a, S. 45",
             "short_quote": "FABRICATED_QUOTE_NOT_IN_SOURCE_TEXT_12345",
             "author_claim": "Fabricated claim",
         },
@@ -1851,6 +1855,7 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
             "verification_status": "VERIFIED",
             "printed_page": "164",
             "notebooklm_citation": "wilk [PDF p. 176; printed p. 164]",
+            "source_locator": "Teil II.3.1b, S. 164",
             "short_quote": "ANOTHER_FABRICATED_QUOTE_67890",
             "author_claim": "Fabricated claim 2",
         },
@@ -1881,6 +1886,7 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
             "verification_status": "VERIFIED",
             "printed_page": "130",
             "notebooklm_citation": "wilk [PDF p. 142; printed p. 130]",
+            "source_locator": "Teil II.2.2a, S. 130",
             "short_quote": "Indem es Heiden diejenigen „Auszeichnungen“ verheißend zuspricht...",
             "author_claim": "Valid claim",
         }
@@ -1891,9 +1897,9 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
     mock_full_text = "\x0c".join(mock_pages)
 
     unrelated_hits_4c = [
-        {"start": 100, "printed_page": 10, "match": "Hos 225", "snippet": "Hier ist ein Mischzitat zu finden."},
-        {"start": 200, "printed_page": 20, "match": "Hos 225", "snippet": "Hier ist ein Mischzitat zu finden."},
-        {"start": 300, "printed_page": 30, "match": "Hos 225", "snippet": "Hier ist ein Mischzitat zu finden."},
+        {"start": 100, "printed_page": 10, "match": "Hos 225", "snippet": "Hier ist ein Mischzitat aus Jesaja zu finden."},
+        {"start": 200, "printed_page": 20, "match": "Hos 225", "snippet": "Hier ist ein Mischzitat aus Jesaja zu finden."},
+        {"start": 300, "printed_page": 30, "match": "Hos 225", "snippet": "Hier ist ein Mischzitat aus Jesaja zu finden."},
     ]
     adj_4c = vns.adjudicate_target(
         target_def_b2, unrelated_hits_4c, {"passed": True}, ledger=valid_b2_ledger, pages=mock_pages, full_text=mock_full_text
@@ -1936,6 +1942,7 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
             "verification_status": "VERIFIED",
             "printed_page": "130",
             "notebooklm_citation": "wilk [PDF p. 142; printed p. 130]",
+            "source_locator": "Teil II.2.2a, S. 130",
             "short_quote": "Indem es Heiden diejenigen „Auszeichnungen“ verheißend zuspricht FABRICATED_SUFFIX_HERE",
             "author_claim": "Claim with fabricated suffix",
         }
@@ -1945,7 +1952,7 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
     )
     assert adj_7b["passed"] is False
     assert adj_7b["classification"] == "EVIDENCE_LEDGER_MISMATCH"
-    assert "fabricated suffix or text mismatch" in adj_7b["summary"]
+    assert "fabricated suffix, altered Greek, or altered numeral" in adj_7b["summary"]
 
     # Case 7c (S05-R4-F2): Authentic quote attributed to wrong page fails
     wrong_page_ledger = {
@@ -1955,6 +1962,7 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
             "verification_status": "VERIFIED",
             "printed_page": "131",
             "notebooklm_citation": "wilk [PDF p. 143; printed p. 131]",
+            "source_locator": "Teil II.2.2a, S. 131",
             "short_quote": "Indem es Heiden diejenigen „Auszeichnungen“ verheißend zuspricht...",
             "author_claim": "Claim on wrong page",
         }
@@ -1975,6 +1983,7 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
             "verification_status": "VERIFIED",
             "printed_page": "130",
             "notebooklm_citation": "wilk [PDF p. 142; printed p. 130]",
+            "source_locator": "Teil II.2.2a, S. 130",
             "short_quote": "a b c d",
             "author_claim": "Short token claim",
         }
@@ -1984,7 +1993,156 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
     )
     assert adj_7d["passed"] is False
     assert adj_7d["classification"] == "EVIDENCE_LEDGER_MISMATCH"
-    assert "no qualifying words of length >= 2" in adj_7d["summary"]
+    assert "no qualifying tokens" in adj_7d["summary"]
+
+    # Case 7e (S05-R5-F1): Authentic German with altered Greek tokens in quote fails page-bounded verification
+    target_def_b4 = {
+        "id": "B001-4",
+        "name": "Romans 10:11 / Isaiah 28:16",
+        "nt_target": "Rom 10:11",
+        "ot_target": "Isa 28:16",
+        "expected_classification": "SUBSTANTIVE_DISCUSSION",
+        "evidence_ids": ["S05-E003"],
+        "min_substantive_hits": 2,
+        "expected_printed_pages": [45],
+        "substantive_analytical_phrases": ["rein stilistische Modifikation", "von Futura durchzogene Umfeld"],
+    }
+    mock_b4_pages = ["Dummy\n"] * 100
+    mock_b4_pages[57 - 1] = (
+        "Die rein stilistische Modifikation — Paulus schreibt 'οὐ καταισχυνθήσεται' "
+        "statt 'οὐ μὴ καταισχυνθῇ' — dürfte in dem Bestreben begründet sein, das Zitat "
+        "in das von Futura durchzogene Umfeld einzupassen."
+    )
+    mock_b4_text = "\x0c".join(mock_b4_pages)
+    altered_greek_ledger = {
+        "S05-E003": {
+            "evidence_id": "S05-E003",
+            "b001_id": "B001-4",
+            "verification_status": "VERIFIED",
+            "printed_page": "45",
+            "notebooklm_citation": "wilk [PDF p. 57; printed p. 45]",
+            "source_locator": "Teil II.1.2.1.3a, S. 45",
+            "short_quote": "Die rein stilistische Modifikation — Paulus schreibt 'λόγος' statt 'πνεῦμα' — dürfte in dem Bestreben begründet sein, das Zitat in das von Futura durchzogene Umfeld einzupassen.",
+            "author_claim": "Altered Greek claim",
+        }
+    }
+    b4_hits = [
+        {"start": 100, "printed_page": 45, "match": "Rom 10:11", "snippet": "rein stilistische Modifikation im Umfeld"},
+        {"start": 200, "printed_page": 45, "match": "Rom 10:11", "snippet": "von Futura durchzogene Umfeld"},
+    ]
+    adj_7e = vns.adjudicate_target(
+        target_def_b4, b4_hits, {"passed": True}, ledger=altered_greek_ledger, pages=mock_b4_pages, full_text=mock_b4_text
+    )
+    assert adj_7e["passed"] is False
+    assert adj_7e["classification"] == "EVIDENCE_LEDGER_MISMATCH"
+    assert "fabricated suffix, altered Greek, or altered numeral" in adj_7e["summary"]
+
+    # Case 7f (S05-R5-F1): Altered verse numeral in quote fails page-bounded verification
+    mock_b6_pages = ["Dummy\n"] * 350
+    mock_b6_pages[319 - 1] = (
+        "Angesichts der schwachen Bezeugung von ἤ in der Tradition steht zu vermuten, "
+        "daß Paulus es in Rom 1134, zur Angleichung an 1135, selbst eingefügt hat."
+    )
+    mock_b6_text = "\x0c".join(mock_b6_pages)
+    target_def_b6 = {
+        "id": "B001-6",
+        "name": "Romans 11:34 / Isaiah 40:13",
+        "nt_target": "Rom 11:34",
+        "ot_target": "Isa 40:13",
+        "expected_classification": "SUBSTANTIVE_DISCUSSION",
+        "evidence_ids": ["S05-E006"],
+        "min_substantive_hits": 2,
+        "expected_printed_pages": [307],
+        "substantive_analytical_phrases": ["schwachen Bezeugung", "steht zu vermuten"],
+    }
+    altered_num_ledger = {
+        "S05-E006": {
+            "evidence_id": "S05-E006",
+            "b001_id": "B001-6",
+            "verification_status": "VERIFIED",
+            "printed_page": "307",
+            "notebooklm_citation": "wilk [PDF p. 319; printed p. 307]",
+            "source_locator": "Teil III.2.3.1b, S. 307 Anm. 23",
+            "short_quote": "Angesichts der schwachen Bezeugung von ἤ in der Tradition steht zu vermuten, daß Paulus es in Rom 9999, zur Angleichung an 1135, selbst eingefügt hat.",
+            "author_claim": "Altered numeral claim",
+        }
+    }
+    b6_hits = [
+        {"start": 100, "printed_page": 307, "match": "Rom 11:34", "snippet": "schwachen Bezeugung von in der Tradition"},
+        {"start": 200, "printed_page": 307, "match": "Rom 11:34", "snippet": "steht zu vermuten daß Paulus"},
+    ]
+    adj_7f = vns.adjudicate_target(
+        target_def_b6, b6_hits, {"passed": True}, ledger=altered_num_ledger, pages=mock_b6_pages, full_text=mock_b6_text
+    )
+    assert adj_7f["passed"] is False
+    assert adj_7f["classification"] == "EVIDENCE_LEDGER_MISMATCH"
+    assert "fabricated suffix, altered Greek, or altered numeral" in adj_7f["summary"]
+
+    # Case 4f (S05-R5-F2): Same-page incidental citations with generic terms fail as INCIDENTAL_ONLY_HITS
+    incidental_same_page_hits = [
+        {"start": 100, "printed_page": 130, "match": "Hos 225", "snippet": "Hier wird Hos 225 zitiert ohne Analyse."},
+        {"start": 200, "printed_page": 130, "match": "Hos 225", "snippet": "Ein weiterer beiläufiger Beleg für Hos 225."},
+        {"start": 300, "printed_page": 130, "match": "Hos 225", "snippet": "Dritter beiläufiger Verweis auf Hos 225."},
+    ]
+    adj_4f = vns.adjudicate_target(
+        target_def_b2, incidental_same_page_hits, {"passed": True}, ledger=valid_b2_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_4f["passed"] is False
+    assert adj_4f["classification"] == "INCIDENTAL_ONLY_HITS"
+    assert "contain substantive scholarly context" in adj_4f["summary"]
+
+    # Case 4g (S05-R5-F2): One local hit + two distant hits fails INSUFFICIENT_LOCAL_SUBSTANTIVE_HITS
+    one_local_two_distant_hits = [
+        {"start": 100, "printed_page": 130, "match": "Hos 225", "snippet": "Auszeichnungen verheißend zuspricht"},
+        {"start": 200, "printed_page": 10, "match": "Hos 225", "snippet": "Auszeichnungen verheißend zuspricht"},
+        {"start": 300, "printed_page": 20, "match": "Hos 225", "snippet": "Auszeichnungen verheißend zuspricht"},
+    ]
+    adj_4g = vns.adjudicate_target(
+        target_def_b2, one_local_two_distant_hits, {"passed": True}, ledger=valid_b2_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_4g["passed"] is False
+    assert adj_4g["classification"] == "INSUFFICIENT_LOCAL_SUBSTANTIVE_HITS"
+    assert "local substantive hits in discussion loci" in adj_4g["summary"]
+
+    # Case 8a (S05-R5-F3): Inconsistent notebooklm_citation ([PDF p. 999; printed p. 130]) fails ledger integrity
+    inconsistent_nlm_ledger = {
+        "S05-E001": {
+            "evidence_id": "S05-E001",
+            "b001_id": "B001-2",
+            "verification_status": "VERIFIED",
+            "printed_page": "130",
+            "notebooklm_citation": "wilk [PDF p. 999; printed p. 130]",
+            "source_locator": "Teil II.2.2a, S. 130",
+            "short_quote": "Indem es Heiden diejenigen „Auszeichnungen“ verheißend zuspricht...",
+            "author_claim": "Claim with bad PDF locator",
+        }
+    }
+    adj_8a = vns.adjudicate_target(
+        target_def_b2, substantive_hits, {"passed": True}, ledger=inconsistent_nlm_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_8a["passed"] is False
+    assert adj_8a["classification"] == "EVIDENCE_LEDGER_MISMATCH"
+    assert "offset formula +12" in adj_8a["summary"]
+
+    # Case 8b (S05-R5-F3): Inconsistent source_locator (pointing to wrong page) fails ledger integrity
+    inconsistent_loc_ledger = {
+        "S05-E001": {
+            "evidence_id": "S05-E001",
+            "b001_id": "B001-2",
+            "verification_status": "VERIFIED",
+            "printed_page": "130",
+            "notebooklm_citation": "wilk [PDF p. 142; printed p. 130]",
+            "source_locator": "Teil II.2.2a, S. 999",
+            "short_quote": "Indem es Heiden diejenigen „Auszeichnungen“ verheißend zuspricht...",
+            "author_claim": "Claim with bad locator page",
+        }
+    }
+    adj_8b = vns.adjudicate_target(
+        target_def_b2, substantive_hits, {"passed": True}, ledger=inconsistent_loc_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_8b["passed"] is False
+    assert adj_8b["classification"] == "EVIDENCE_LEDGER_MISMATCH"
+    assert "does not contain expected printed page 130" in adj_8b["summary"]
 
 
 def test_s05_qualifications_and_locators_discipline():
