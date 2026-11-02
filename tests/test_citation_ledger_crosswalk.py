@@ -1511,7 +1511,7 @@ def test_s05_negative_search_evidence_discipline():
 
     # Stellenregister sections verified
     assert "8/8 passed" in log_text
-    assert "13/13 required book/testament sections exhaustively bounded" in log_text
+    assert "13/13 required book/testament sections pattern-bounded with verified start and end delimiters" in log_text
 
     # Accurate text byte and character accounting (Fixes L1)
     assert "`1470319` bytes" in log_text
@@ -1690,6 +1690,27 @@ def test_s05_adversarial_index_failure_modes():
     res_isa_cross = vns.verify_index_structure(adv_isa_cross)
     assert res_isa_cross["target_results"]["B001-4"]["passed"] is False, "Section 1.1 matches placed in Genesis must not satisfy B001-4"
 
+    # 9. S05-R3-F2: Fail-closed boundary failure when end delimiter '2.3. Jüdische' is mutated
+    adv_del_boundary = text.replace("2.3. Jüdische", "2.3. UNKNOWN_SECTION")
+    assert adv_del_boundary != text
+    res_del_boundary = vns.verify_index_structure(adv_del_boundary)
+    assert res_del_boundary["passed"] is False, "Expected index verification to fail when 2.3 end delimiter is mutated"
+    assert res_del_boundary["coverage_passed"] is False
+    assert len(res_del_boundary["boundary_failures"]) > 0
+    assert any("2.3." in f or "sec_nt" in f for f in res_del_boundary["boundary_failures"])
+    assert res_del_boundary["target_results"]["B001-1"]["passed"] is False
+    assert "BOUNDARY VERIFICATION FAILED" in res_del_boundary["target_results"]["B001-1"]["index_status"]
+
+    # 10. S05-R3-F2: Fail-closed boundary failure when next-book delimiter in OT is mutated
+    adv_book_boundary = text.replace("Exodus\n", "UNKNOWN_BOOK\n")
+    assert adv_book_boundary != text
+    res_book_boundary = vns.verify_index_structure(adv_book_boundary)
+    assert res_book_boundary["passed"] is False, "Expected index verification to fail when Exodus boundary is mutated"
+    assert res_book_boundary["coverage_passed"] is False
+    assert any("Genesis" in f for f in res_book_boundary["boundary_failures"])
+    assert res_book_boundary["target_results"]["B001-1"]["passed"] is False
+    assert "BOUNDARY VERIFICATION FAILED" in res_book_boundary["target_results"]["B001-1"]["index_status"]
+
 
 def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_hits():
     """
@@ -1738,9 +1759,9 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
     assert adj_neg["classification"] == "UNEXPECTED_HITS"
     assert "FAIL" in adj_neg["summary"]
 
-    # Case 4 (S05-R2-F1): 5 threshold-satisfying synthetic incidental-only hits without substantive context keywords fail
+    # Case 4 (S05-R2-F1 & S05-R3-F1): 5 threshold-satisfying synthetic incidental-only hits without substantive scholarly phrases fail
     incidental_hits = [
-        {"start": i * 100, "match": "Rom 10:11", "snippet": "incidental mention of Rom 10:11 without substantive scholarly keywords"}
+        {"start": i * 100, "match": "Rom 10:11", "snippet": "incidental mention of Rom 10:11 in Hosea and Paulus context"}
         for i in range(5)
     ]
     adj_inc = vns.adjudicate_target(target_def_sub, incidental_hits, {"passed": True})
@@ -1748,6 +1769,27 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
     assert adj_inc["classification"] == "INCIDENTAL_ONLY_HITS"
     assert "FAIL" in adj_inc["summary"]
     assert "contain substantive scholarly context" in adj_inc["summary"]
+
+    # Case 4b (S05-R3-F1): Incidental Hosea hits containing book name keywords but without scholarly analytical phrases fail
+    target_def_hos = {
+        "id": "B001-2",
+        "name": "Romans 9:25 / Hosea 2:23",
+        "nt_target": "Rom 9:25",
+        "ot_target": "Hos 2:23",
+        "expected_classification": "SUBSTANTIVE_DISCUSSION",
+        "evidence_ids": ["S05-E001"],
+        "min_substantive_hits": 3,
+        "substantive_analytical_phrases": ["Auszeichnungen", "Erbarmensgefäße", "Befund", "Vorlage", "Wortlaut"],
+    }
+    incidental_book_hits = [
+        {"start": i * 100, "match": "Hosea 2:25", "snippet": "incidental mention of Hosea 2:25 in book of Hosea and Paulus context"}
+        for i in range(5)
+    ]
+    adj_inc_book = vns.adjudicate_target(target_def_hos, incidental_book_hits, {"passed": True})
+    assert adj_inc_book["passed"] is False
+    assert adj_inc_book["classification"] == "INCIDENTAL_ONLY_HITS"
+    assert "FAIL" in adj_inc_book["summary"]
+    assert "contain substantive scholarly context" in adj_inc_book["summary"]
 
     # Case 5 (S05-R2-F1): Substantive target with missing evidence record in ledger fails fail-closed
     substantive_hits = [
@@ -1792,6 +1834,34 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
     assert "FAIL" in adj_mism["summary"]
     assert "mapped to B001-99, expected B001-4" in adj_mism["summary"]
 
+    # Case 7 (S05-R3-F1): Evidence row with short quote not found in authenticated text layer fails fail-closed
+    unfound_quote_ledger = {
+        "S05-E003": {
+            "evidence_id": "S05-E003",
+            "b001_id": "B001-4",
+            "verification_status": "VERIFIED",
+            "printed_page": "45",
+            "notebooklm_citation": "wilk [PDF p. 57; printed p. 45]",
+            "short_quote": "FABRICATED_QUOTE_NOT_IN_SOURCE_TEXT_12345",
+            "author_claim": "Fabricated claim",
+        },
+        "S05-E004": {
+            "evidence_id": "S05-E004",
+            "b001_id": "B001-4",
+            "verification_status": "VERIFIED",
+            "printed_page": "164",
+            "notebooklm_citation": "wilk [PDF p. 176; printed p. 164]",
+            "short_quote": "ANOTHER_FABRICATED_QUOTE_67890",
+            "author_claim": "Fabricated claim 2",
+        },
+    }
+    adj_unfound = vns.adjudicate_target(
+        target_def_sub, substantive_hits, {"passed": True}, ledger=unfound_quote_ledger, full_text="Authentic source text here."
+    )
+    assert adj_unfound["passed"] is False
+    assert adj_unfound["classification"] == "EVIDENCE_LEDGER_MISMATCH"
+    assert "quote not found in source text" in adj_unfound["summary"]
+
 
 def test_s05_qualifications_and_locators_discipline():
     """
@@ -1824,10 +1894,10 @@ def test_s05_qualifications_and_locators_discipline():
             printed_num = int(first_printed.group(0))
             assert pdf_p == printed_num + 12, f"Row {eid} locator offset mismatch: PDF {pdf_p} != printed {printed_num} + 12"
 
-    # 2. S05-E006 secondary-author hypothesis and probabilistic qualification (S05-R2-M1)
+    # 2. S05-E006 secondary-author hypothesis and probabilistic qualification (S05-R2-M1 & S05-R3-M1)
     e006 = next(r for r in reader if r["evidence_id"] == "S05-E006")
     assert "secondary-author" in e006["qualification"].lower() or "secondary-author" in e006["author_claim"].lower()
-    assert "dürfte das Wort auf Paulus zurückgehen" in e006["qualification"]
+    assert "steht zu vermuten" in e006["qualification"] or "steht zu vermuten" in e006["short_quote"]
 
     # 3. S05-E008 secondary-author hypothesis and textual reservation (S05-R2-M1)
     e008 = next(r for r in reader if r["evidence_id"] == "S05-E008")
@@ -1897,6 +1967,45 @@ def test_s05_digest_override_suppresses_certification(tmp_path, monkeypatch):
     assert "Verification Status:** `VERIFIED_COMPLETE`" not in report
     assert "Confirmed against authentic MDZ Digi20 scan" not in report
     assert "suppressed" in report.lower()
+
+
+def test_s05_greek_script_integrity_and_confusables():
+    """
+    S05-R3-M1 regression test:
+    Verifies that Greek transcriptions across narrative and ledger files are pure Greek
+    (no Latin confusables like 'καταισchυνθῇ' or 'ἀθεteῖν').
+    """
+    repo_root = Path(__file__).resolve().parent.parent
+    s05_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S05"
+
+    # 1. Check citation_ledger.csv
+    ledger_path = s05_dir / "citation_ledger.csv"
+    with open(ledger_path, encoding="utf-8") as f:
+        reader = list(csv.DictReader(f))
+    e003 = next(r for r in reader if r["evidence_id"] == "S05-E003")
+    e010 = next(r for r in reader if r["evidence_id"] == "S05-E010")
+
+    # Pure Greek assertions
+    assert "καταισχυνθῇ" in e003["author_claim"]
+    assert "καταισchυνθῇ" not in e003["author_claim"]
+    assert "ἀθετεῖν" in e010["short_quote"]
+    assert "ἀθεteῖν" not in e010["short_quote"]
+    assert "läßt" in e010["short_quote"]
+
+    # 2. Check extraction.md
+    ext_path = s05_dir / "extraction.md"
+    ext_text = ext_path.read_text(encoding="utf-8")
+    assert "ἀθετεῖν" in ext_text
+    assert "ἀθεteῖν" not in ext_text
+    assert "καταισχυνθῇ" in ext_text
+    assert "καταισchυνθῇ" not in ext_text
+    assert "steht zu vermuten" in ext_text
+
+    # 3. Confusable detector: check that no Latin letters are embedded inside Greek words
+    confusable_pat = re.compile(r"[\u0370-\u03ff\u1f00-\u1fff]+[a-zA-Z]+[\u0370-\u03ff\u1f00-\u1fff]+")
+    matches = confusable_pat.findall(ext_text)
+    assert not matches, f"Corrupted mixed-script confusable found: {matches}"
+
 
 
 

@@ -97,9 +97,9 @@
 - **NotebookLM Citation:** `wilk_1998_jesaja_paulus.pdf [PDF p. 320; printed p. 308]`
 - **Author's Position:** In Romans 11:34, Paul quotes Isaiah 40:13 LXX; Wilk hypothesizes that Paul likely inserted `ἤ` before `τίς σύμβουλος` to divide the citation into two distinct, balanced rhetorical questions matching the paired concepts of God's wisdom (`σοφία`) and knowledge (`γνῶσις`) in Romans 11:33.
 - **Supporting Quotation:**
-  > „Angesichts der schwachen Bezeugung von ἤ in der handschriftlichen Überlieferung von Jes 4013... dürfte das Wort auf Paulus zurückgehen...“ (p. 308)
+  > „Angesichts der schwachen Bezeugung von ἤ in der 𝔊-Tradition steht zu vermuten, daß Paulus es in Rom 1134, zur Angleichung an 1135, selbst eingefügt hat.“ (p. 308)
 - **Textual Evidence Invoked:** Textual insertion of `ἤ` in Rom 11:34 vs. `καί` in LXX Isa 40:13; correspondence to the dual exclamation in Rom 11:33.
-- **Qualifications:** Wilk qualifies this as a probabilistic scholarly inference („dürfte das Wort auf Paulus zurückgehen“) based on the weak attestation of `ἤ` in the Greek manuscript tradition of Isa 40:13, recognizing this as a secondary-author hypothesis rather than a direct primary-text certainty.
+- **Qualifications:** Wilk qualifies this as a probabilistic scholarly inference („steht zu vermuten, daß Paulus es... selbst eingefügt hat“) based on the weak attestation of `ἤ` in the Greek manuscript tradition of Isa 40:13, recognizing this as a secondary-author hypothesis rather than a direct primary-text certainty.
 - **Confidence:** HIGH
 
 ### S05-E007 — The Unsearchable Wisdom of Israel's Salvation
@@ -157,7 +157,7 @@
 - **NotebookLM Citation:** `wilk_1998_jesaja_paulus.pdf [PDF p. 57; printed p. 45]`
 - **Author's Position:** In 1 Corinthians 1:19, Paul cites Isaiah 29:14b LXX, substituting `ἀθετήσω` ("I will set aside / nullify") for the Septuagint's `κρύψω` ("I will hide"). Wilk argues that this substitution was an intentional authorial clarification (`Verdeutlichung`), likely influenced by Psalm 32:10 LXX (`κύριος... ἀθετεῖ βουλὰς ἀρχόντων`), designed to emphasize that God actively invalidates worldly wisdom rather than merely concealing it.
 - **Supporting Quotation:**
-  > „Demgegenüber lässt das — vielleicht durch Ps 3210(𝔊) vermittelte — Wort ἀθεteῖν... den Sinn der jesajanischen Prophetie in ihrer paulinischen Deutung deutlicher zutage treten.“ (p. 45)
+  > „Demgegenüber läßt das — vielleicht durch Ps 3210(𝔊) vermittelte — Wort ἀθετεῖν... den Sinn der jesajanischen Prophetie in ihrer paulinischen Deutung deutlicher zutage treten.“ (p. 45)
 - **Textual Evidence Invoked:** Substitution of `ἀθετήσω` for `κρύψω` in 1 Cor 1:19 vs. LXX Isa 29:14b; lexical parallel in Ps 32:10 LXX.
 - **Qualifications:** Wilk refutes the claim that `ἀθετήσω` was an accidental memory slip, proving from context that it accurately reflects Paul's theology of the Cross.
 - **Confidence:** HIGH

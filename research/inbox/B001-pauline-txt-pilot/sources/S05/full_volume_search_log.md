@@ -8,7 +8,7 @@
 
 ## 1. Cryptographic Invariants & Source Integrity
 
-- **Raw Scan Path:** `/Users/chrisrodriguez/Downloads/wilk_1998_jesaja_paulus_mdz_raw.pdf`
+- **Raw Scan Path:** `.tmp_uploads/wilk_1998_jesaja_paulus.pdf`
 - **Raw Scan Bytes:** `96225856` (matches expected `96225856`)
 - **Raw Scan SHA-256:** `700323565f6687163dc92f410779b054b763ee10bf3f745f5c2370b5455aa1b3` (matches expected `700323565f6687163dc92f410779b054b763ee10bf3f745f5c2370b5455aa1b3`)
 - **Extracted Text Path:** `/tmp/wilk_full_text.txt`
@@ -36,7 +36,7 @@
 - **Stellenregister Start Offset:** `1406338`
 - **Stellenregister End Offset:** `1435186`
 - **Structural Sections Verified:** 8/8 passed
-- **Book Sections Coverage:** 13/13 required sections exhaustively bounded
+- **Book Sections Coverage:** 13/13 required book/testament sections pattern-bounded with verified start and end delimiters (zero unbounded spillovers)
 
 ### Structural Sections Ledger
 
@@ -73,15 +73,15 @@
 | Target ID | Passage Locus | Total Hits | Context Hits | Research Classification | Summary of Scholarly Findings |
 | :--- | :--- | :---: | :---: | :--- | :--- |
 | B001-1 | Romans 4:3 / Genesis 15:6 | 1 | 0 | NOT DISCUSSED | NOT DISCUSSED. Zero hits for Gen 15:6 anywhere in volume. Rom 4:3 appears once as incidental citation formula example (p. 94 n. 29). Both verified absent from respective Stellenregister sections. |
-| B001-2 | Romans 9:25 / Hosea 2:23 | 17 | 9 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Verified by 9 contextual hits and crosswalked to S05-E001 (pp. 34, 187, 211-214). Paul conflates Hos 2:25 and 2:1 LXX with chiasm and vocabulary assimilation. |
-| B001-3 | Romans 9:26 / Hosea 1:10 | 6 | 5 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Verified by 5 contextual hits and crosswalked to S05-E002 (pp. 37, 51f., 185-188, 208, 211-214). Conflated Hosea citation applied to Gentiles and Israel remnant. |
-| B001-4 | Romans 10:11 / Isaiah 28:16 | 53 | 42 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE EXTENDED DISCUSSION. Verified by 42 contextual hits and crosswalked to S05-E003, S05-E004 (pp. 45, 164). G-R text with authorial pas prefix and indicative substitution. |
-| B001-5 | Romans 10:13 / Joel 2:32 | 4 | 1 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Verified by 1 contextual hits and crosswalked to S05-E005 (pp. 47, 61, 164f.). Verbatim OG Joel 3:5 linked with Isa 28:16 via pas catchword. |
-| B001-6 | Romans 11:34 / Isaiah 40:13 | 28 | 21 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE EXTENDED DISCUSSION. Verified by 21 contextual hits and crosswalked to S05-E006, S05-E007 (pp. 308, 394). Qualified hypothesis of Pauline insertion of e splitting citation into two questions matching Rom 11:33. |
-| B001-7 | Romans 15:12 / Isaiah 11:10 | 39 | 19 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE EXTENDED DISCUSSION. Verified by 19 contextual hits and crosswalked to S05-E008, S05-E009 (pp. 46, 394). Old Greek quotation with theological omission of en te hemera ekeine, under textual reservation on Vorlage (p. 238 n. 28). |
-| B001-8 | 1 Corinthians 1:19 / Isaiah 29:14 | 41 | 19 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE EXTENDED DISCUSSION. Verified by 19 contextual hits and crosswalked to S05-E010, S05-E011 (pp. 45, 393). Old Greek with substitution of atheteso for krypso influenced by Ps 32:10 LXX. |
+| B001-2 | Romans 9:25 / Hosea 2:23 | 17 | 6 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Verified by 6 contextual hits and crosswalked to S05-E001 (pp. 130): In Romans 9:25, Paul quotes Hosea 2:25 LXX, applying future promise verbs to Gentile believers to demonstrate that their calling into God's mercy aligns with scriptural prophecy. |
+| B001-3 | Romans 9:26 / Hosea 1:10 | 6 | 4 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Verified by 4 contextual hits and crosswalked to S05-E002 (pp. 129): Paul combines Hosea 2:1 LXX with Hosea 2:25 LXX in Romans 9:25-26 to establish that Gentiles receive divine sonship in the very location of their former alienation. |
+| B001-4 | Romans 10:11 / Isaiah 28:16 | 53 | 20 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Verified by 20 contextual hits and crosswalked to S05-E003, S05-E004 (pp. 45, 164): In Romans 10:11, Paul modifies Isaiah 28:16bβ LXX by changing οὐ μὴ καταισχυνθῇ to οὐ καταισχυνθήσεται to harmonize with the future-tense framework of the surrounding context, and prefixes πᾶς to emphasize universal salvation; Paul interprets the 'stone in Zion' (Isaiah 28:16) christologically: in Romans 9:33 as a dual stumbling-stone/salvation figure, and in Romans 10:11 as an unmixed universal promise of vindication for all who believe. |
+| B001-5 | Romans 10:13 / Joel 2:32 | 4 | 1 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Verified by 1 contextual hits and crosswalked to S05-E005 (pp. 61): In Romans 10:13, Paul quotes Joel 3:5a LXX verbatim, using πᾶς to connect with Isaiah 28:16 in Rom 10:11 and transferring the Old Testament formula for calling on the Lord God to the confession of Jesus as Lord. |
+| B001-6 | Romans 11:34 / Isaiah 40:13 | 28 | 2 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Verified by 2 contextual hits and crosswalked to S05-E006, S05-E007 (pp. 308, 394): In Romans 11:34, Paul quotes Isaiah 40:13 LXX; Wilk hypothesizes that Paul likely inserted ἤ before τίς σύμβουλος to split the citation into a two-part rhetorical question matching the paired concepts of God's wisdom and knowledge in Romans 11:33; Paul uses Isaiah 40:13 in Romans 11:34 to highlight that God's sovereign and unexpected plan for Israel's salvation—encompassing temporary hardening and Gentile inclusion—transcends human comprehension. |
+| B001-7 | Romans 15:12 / Isaiah 11:10 | 39 | 10 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Verified by 10 contextual hits and crosswalked to S05-E008, S05-E009 (pp. 46, 394): In Romans 15:12, Paul quotes the substantive clauses of Isaiah 11:10a LXX verbatim, deliberately omitting ἐν τῇ ἡμέρᾳ ἐκείνῃ because he considers the promised 'Root of Jesse' to have already appeared in Jesus Christ; Wilk notes textual reservations on a possible Hebraizing Vorlage; Paul places Isaiah 11:10 at the climax of his quotation chain in Romans 15:9–12 to demonstrate that Christ's reign over the Gentiles grounds the united praise of Jewish and Gentile believers. |
+| B001-8 | 1 Corinthians 1:19 / Isaiah 29:14 | 41 | 21 | SUBSTANTIVE_DISCUSSION | SUBSTANTIVE DISCUSSION. Verified by 21 contextual hits and crosswalked to S05-E010, S05-E011 (pp. 45, 393): In 1 Corinthians 1:19, Paul cites Isaiah 29:14b LXX, substituting ἀθετήσω ('I will set aside') for LXX κρύψω ('I will hide'), possibly influenced by Psalm 32:10 LXX, to express that God actively invalidates human wisdom; Paul uses Isaiah 29:14 in 1 Corinthians 1:19 as scriptural proof that God's saving act in the cross of Christ intentionally destroys human intellectual self-reliance as a means of knowing God. |
 | B001-9 | 1 Corinthians 6:16 / Genesis 2:24 | 0 | 0 | NOT DISCUSSED | NOT DISCUSSED. Zero hits for 1 Cor 6:16 or Gen 2:24 in the entire volume. Both verified absent from respective Stellenregister sections. |
-| B001-10 | 1 Corinthians 9:9 / Deuteronomy 25:4 | 1 | 0 | PASSING_REFERENCE | PASSING REFERENCE. 1 Cor 9:9 and Deut 25:4 cited on p. 112 n. 58 strictly as introductory citation-formula analogy; no substantive textual analysis. Deut 25:4 absent from OT index. |
+| B001-10 | 1 Corinthians 9:9 / Deuteronomy 25:4 | 1 | 1 | PASSING_REFERENCE | PASSING REFERENCE. 1 Cor 9:9 and Deut 25:4 cited on p. 112 n. 58 strictly as introductory citation-formula analogy; no substantive textual analysis. Deut 25:4 absent from OT index. |
 | B001-11 | 1 Corinthians 10:7 / Exodus 32:6 | 2 | 0 | PASSING_REFERENCE | PASSING REFERENCE. 1 Cor 10:7 cited on p. 319 n. 11 for phrase 'phagein kai piein'; Exod 32:6 has zero hits, absent from OT index. |
 | B001-12 | Galatians 3:13 / Deuteronomy 21:23 | 1 | 1 | PASSING_TEXT_CRITICAL_NOTE | PASSING TEXT-CRITICAL NOTE. Crosswalked to S05-E012 (p. 47 n. 1). Paul assimilated Deut 21:23a kekateramenos to Gal 3:10 epikataratos. Deut 21:23 absent from OT index. |
 
@@ -90,5 +90,5 @@
 - **Verification Status:** `VERIFIED_COMPLETE`
 - **Adjudication Method:** `SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION`
 - **Cryptographic Consistency:** Confirmed against authentic MDZ Digi20 scan.
-- **Stellenregister Coverage:** 13/13 required book/testament sections exhaustively bounded and verified non-empty.
+- **Stellenregister Coverage:** 13/13 required book/testament sections pattern-bounded with verified start and end delimiters and verified non-empty (zero unbounded spillovers).
 - **Negative Search Discipline:** Zero unsupported negative claims. Non-prophetic loci B001-1 (Rom 4:3 / Gen 15:6) and B001-9 (1 Cor 6:16 / Gen 2:24) are confirmed absent from both authorial index and substantive discussion; passing references (B001-10, B001-11, B001-12) are precisely localized.

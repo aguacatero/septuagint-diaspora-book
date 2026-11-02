@@ -8,7 +8,7 @@
   "active_source_id": "S05",
   "active_phase": "AWAITING_REVIEW",
   "last_accepted_source_id": "S04F",
-  "last_reviewed_sha": "46f8274f712434cb77476dba57699fa1e3bb69c2",
+  "last_reviewed_sha": "85c46c08a12f5f82695b9f22622832f959e482e9",
   "chatgpt_relay_mode": "REVIEW_LOOP_ONLY",
   "allow_legacy_relay_worker": false,
   "allow_paid_api": false,

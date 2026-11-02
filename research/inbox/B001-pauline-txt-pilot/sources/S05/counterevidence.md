@@ -56,7 +56,7 @@
 - **Textual Addition (`ἤ`):**
   - LXX Isaiah 40:13 reads: `τίς ἔγνω νοῦν κυρίου, καὶ τίς σύμβουλος αὐτοῦ ἐγένετο...` (reading `καί`).
   - Paul in Romans 11:34 reads: `τίς γὰρ ἔγνω νοῦν κυρίου; ἢ τίς σύμβουλος αὐτοῦ ἐγένετο;` (inserting `ἤ`).
-  - *Counterevidence & Manuscript Evidence:* Wilk surveys Greek manuscript witnesses of Isaiah 40:13 and demonstrates that `ἤ` has virtually no independent Septuagint support; Wilk therefore concludes it likely represents Paul's own editorial insertion („dürfte das Wort auf Paulus zurückgehen“), offered as a qualified secondary-author hypothesis rather than an established primary-text certainty.
+  - *Counterevidence & Manuscript Evidence:* Wilk surveys Greek manuscript witnesses of Isaiah 40:13 and demonstrates that `ἤ` has virtually no independent Septuagint support; Wilk therefore concludes it likely represents Paul's own editorial insertion („steht zu vermuten, daß Paulus es... selbst eingefügt hat“, p. 308), offered as a qualified secondary-author hypothesis rather than an established primary-text certainty.
 - **Genre Classification:** Wilk classifies Rom 11:34 not as a formal citation (since it lacks an introductory formula like `γέγραπται`), but as an embedded "citation-like allusion" (`zitatähnliche Anspielung`) serving a hymn-doxology function.
 
 ---
