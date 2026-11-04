@@ -2144,6 +2144,79 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
     assert adj_8b["classification"] == "EVIDENCE_LEDGER_MISMATCH"
     assert "does not contain expected printed page 130" in adj_8b["summary"]
 
+    # Case 8c (S05-R6-F3): Primary wrong page with secondary vgl. ('S. 999 (vgl. S. 130)') fails primary locator verification
+    secondary_vgl_loc_ledger = {
+        "S05-E001": {
+            "evidence_id": "S05-E001",
+            "b001_id": "B001-2",
+            "verification_status": "VERIFIED",
+            "printed_page": "130",
+            "notebooklm_citation": "wilk [PDF p. 142; printed p. 130]",
+            "source_locator": "Teil II.2.2a, S. 999 (vgl. S. 130)",
+            "short_quote": "Indem es Heiden diejenigen „Auszeichnungen“ verheißend zuspricht...",
+            "author_claim": "Claim with wrong primary page masked by secondary vgl.",
+        }
+    }
+    adj_8c = vns.adjudicate_target(
+        target_def_b2, substantive_hits, {"passed": True}, ledger=secondary_vgl_loc_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_8c["passed"] is False
+    assert adj_8c["classification"] == "EVIDENCE_LEDGER_MISMATCH"
+    assert "primary source_locator" in adj_8c["summary"]
+
+    # Case 7g (S05-R6-F1): Altered single-digit numbers fail page-bounded verbatim verification
+    ok_7g, msg_7g, _ = vns.verify_page_bounded_quote(
+        "Wilk treats chapter 1 and verse 2.", "Wilk treats chapter 9 and verse 8.", 1
+    )
+    assert ok_7g is False
+    assert "complete verbatim sequence failed" in msg_7g
+
+    # Case 7h (S05-R6-F1): Adjacent numeral insertion ('11134' vs '1134') fails page-bounded verbatim verification
+    ok_7h, msg_7h, _ = vns.verify_page_bounded_quote(
+        "Rom 1134 steht zu vermuten", "Rom 11134 steht zu vermuten", 1
+    )
+    assert ok_7h is False
+    assert "complete verbatim sequence failed" in msg_7h
+
+    # Case 7i (S05-R6-F1): Swapped critical Greek forms fail page-bounded verbatim verification
+    ok_7i, msg_7i, _ = vns.verify_page_bounded_quote(
+        "Paulus schreibt οὐ καταισχυνθήσεται statt οὐ μὴ καταισχυνθῇ.",
+        "Paulus schreibt οὐ καταισχυνθῇ statt οὐ μὴ καταισχυνθήσεται.",
+        45,
+    )
+    assert ok_7i is False
+    assert "complete verbatim sequence failed" in msg_7i
+
+    # Case 7j (S05-R6-F1): Swapped Greek OCR signatures fail page-bounded verbatim verification
+    ok_7j, msg_7j, _ = vns.verify_page_bounded_quote(
+        "Paulus schreibt οὐ καταισχυνθήσεται statt οὐ μὴ καταισχυνθῇ.",
+        "Paulus schreibt οὐ xaTaiGvuVTTrj statt οὐ μὴ xaTaiov_uvv-f|GETat.",
+        45,
+    )
+    assert ok_7j is False
+    assert "complete verbatim sequence failed" in msg_7j
+
+    # Case 7k (S05-R6-F1): Arbitrary OCR prefix ('xaTaiWRONG' / 'xaTaiOTHER') fails page-bounded verbatim verification
+    ok_7k, msg_7k, _ = vns.verify_page_bounded_quote(
+        "Paulus schreibt οὐ καταισχυνθήσεται statt οὐ μὴ καταισχυνθῇ.",
+        "Paulus schreibt οὐ xaTaiWRONG statt οὐ μὴ xaTaiOTHER.",
+        45,
+    )
+    assert ok_7k is False
+    assert "complete verbatim sequence failed" in msg_7k
+
+    # Case 4h (S05-R6-F2): Same-page hits containing multi-word phrase only in incidental bibliographic context fail
+    incidental_bib_hits = [
+        {"start": 100, "printed_page": 130, "match": "Rom 9,25", "snippet": "Vgl. Rom 9,25; siehe Miller (1990) S. 42: Auszeichnungen verheißend zuspricht."},
+        {"start": 200, "printed_page": 130, "match": "Rom 9,25", "snippet": "Siehe Rom 9,25; vgl. Schmidt (1985) S. 12: Auszeichnungen verheißend zuspricht."},
+        {"start": 300, "printed_page": 130, "match": "Rom 9,25", "snippet": "Literatur: Rom 9,25; vgl. Weber (1992) S. 88: Auszeichnungen verheißend zuspricht."},
+    ]
+    adj_4h = vns.adjudicate_target(
+        target_def_b2, incidental_bib_hits, {"passed": True}, ledger=valid_b2_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_4h["passed"] is False
+    assert adj_4h["classification"] == "INCIDENTAL_ONLY_HITS"
+
 
 def test_s05_qualifications_and_locators_discipline():
     """
