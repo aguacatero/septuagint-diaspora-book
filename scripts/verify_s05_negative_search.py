@@ -531,6 +531,7 @@ VERIFIED_MATCH_CATALOG = {
             r"\b(?:in|v\.)\s*9?2[56]f?\b",
             r"\b(?:Hos|Hosea)\b\.?\s*(?:1\s*[:\.,]?\s*10|2\s*[:\.,]?\s*[1l][a-zα-ωΑ-Ω]*|2[1l][a-zα-ωΑ-Ω]*|110)\b",
             r"\bHos\s*2[1l]\b",
+            r"oü\s+Xaö[cq]",
         ],
     },
     "B001-4": {
@@ -548,6 +549,7 @@ VERIFIED_MATCH_CATALOG = {
             "von Futura durchzogene Umfeld",
             "Glaube an Jesus",
             "Juden wie Heiden Gerechtigkeit",
+            "Juden und Heiden Gerechtigkeit",
             "Hinweise auf Christus",
             "Erregung von Ärgernis",
             "Verknüpfung von Jes 2816",
@@ -556,8 +558,9 @@ VERIFIED_MATCH_CATALOG = {
         ],
         "expected_printed_pages": [45, 164],
         "patterns": [
-            r"\b(?:Rom|Röm)\b\.?\s*(?:10\s*[:\.,]?\s*11|1011|lOll)\b",
-            r"\b(?:Jes|Jesaja)\b\.?\s*(?:28\s*[:\.,]?\s*16[a-zα-ωΑ-Ω]*|2816[a-zα-ωΑ-Ω]*)\b",
+            r"\b(?:Rom|Röm)\b\.?\s*(?:10\s*[:\.,]?\s*11|1011|lOll|Wll)\b",
+            r"\b(?:Jes|Jesaja)\b\.?\s*(?:28\s*[:\.,]?\s*[1l]6[a-zα-ωΑ-Ωß]*|28[1l]6[a-zα-ωΑ-Ωß]*)\b",
+            r"\b28[1l]6(?:bß)?\b",
         ],
     },
     "B001-5": {
@@ -650,6 +653,8 @@ VERIFIED_MATCH_CATALOG = {
         "expected_in_index": True,
         "substantive_analytical_phrases": [
             "Wort ἀθετεῖν",
+            "Wort ä^EtEiv",
+            "außer Kraft setzen",
             "Gericht Gottes über die Weisheit",
             "Zerstörung der menschlichen",
             "Sinn der jesajanischen Prophetie",
@@ -660,8 +665,9 @@ VERIFIED_MATCH_CATALOG = {
         ],
         "expected_printed_pages": [45, 393],
         "patterns": [
-            r"\b(?:1\s*Kor|IKor)\b\.?\s*(?:1\s*[:\.,]?\s*19|119)\b",
-            r"\b(?:Jes|Jesaja)\b\.?\s*(?:29\s*[:\.,]?\s*14[a-z]?|2914[a-z]?)\b",
+            r"\b(?:1\s*Kor|IKor)\b\.?\s*(?:1\s*[:\.,]?\s*19|119|118-25)\b",
+            r"\b(?:Jes|Jesaja)\b\.?\s*(?:29\s*[:\.,]?\s*[1l]4[a-z]?|29[1l]4[a-z]?)\b",
+            r"ä\^EtEiv",
         ],
     },
     "B001-9": {
@@ -797,7 +803,7 @@ def scan_matches(text: str, pattern: str) -> list[dict]:
     regex = re.compile(pattern, re.IGNORECASE)
     for m in regex.finditer(text):
         start = max(0, m.start() - 300)
-        end = min(len(text), m.end() + 300)
+        end = min(len(text), m.end() + 450)
         snippet = text[start:end].replace("\n", " ").strip()
         results.append({
             "match": m.group(0),
@@ -1172,24 +1178,180 @@ def verify_index_structure(full_text: str) -> dict:
 
 def is_incidental_context(snip: str, match_text: str) -> bool:
     """
-    S05-R6-F2: Detect if a citation hit occurs purely in an incidental/bibliographic list
-    (e.g. preceded by 'vgl.', 'siehe', 's.', 'z.B.', 'Literatur:') without authorial analytical predicates.
+    S05-R6-F2 & S05-R7-F1: Detect if a citation hit occurs in an incidental/bibliographic list
+    (e.g. preceded by 'vgl.', 'siehe', 's.', 'z.B.', 'Literatur:', 's.o.', 's.u.', 'dazu', 'gegen', 'so z.B.',
+    including author-year references with parentheses, brackets, multi-line lists, or incidental quotations)
+    without authorial analytical predicates.
     """
     if not match_text:
         return False
     idx = snip.find(match_text)
     if idx >= 0:
         pre = snip[:idx].rstrip()
-        if re.search(r"\b(?:vgl\.|siehe|s\.|z\.B\.|Literatur:)\s*(?:[A-Za-z0-9,.:;–\-\s'\"]{0,30})$", pre, re.IGNORECASE):
-            post = snip[idx + len(match_text):]
-            clause = pre[-40:] + " " + match_text + " " + post[:60]
-            if not re.search(
-                r"\b(?:erweist|begründet|bezieht|greift|interpretiert|deutet|zitiert|ausdrückt|Modifikation|Angleichung|bereitet|bekräftigen)\b",
-                clause,
-                re.IGNORECASE,
-            ):
-                return True
+        # Allow up to 140 characters after the bibliographic cue, including parentheses (), brackets [],
+        # author-year citations like 'Müller (1990)', 'Weber (1992)', page/note markers, and multi-line whitespace.
+        bib_cue_pat = (
+            r"(?:^|[\s(\[;,.])"
+            r"(?:vgl\.|siehe|s\.o\.|s\.u\.|s\.|z\.B\.|dazu\s+s\.|Literatur:|gegen\s+[A-ZÄÖÜ]\w+|so\s+z\.B\.)"
+            r"(?P<between>[\s\S]{0,140})$"
+        )
+        m_cue = re.search(bib_cue_pat, pre, re.IGNORECASE)
+        if m_cue:
+            between = m_cue.group("between")
+            cue_to_match = pre[m_cue.start():]
+            # Strip common German abbreviations inside `between` before checking for sentence breaks
+            between_clean = re.sub(
+                r"\b(?:vgl|u\.a|z\.B|s\.o|s\.u|Anm|Bd|hrsg|ebd|f|ff)\.",
+                "",
+                between,
+                flags=re.IGNORECASE,
+            )
+            # Verify the cue belongs to the current sentence/section (no sentence boundary, closing paren+dot, or outline heading 'a)', '1.2.')
+            has_sentence_or_heading_break = bool(
+                re.search(r"[a-zäöüß]{2,}\.\s+[A-ZÄÖÜ]", between_clean)
+                or re.search(r"\)\.\s*(?:\d+\s*)*", between_clean)
+                or re.search(r"\b[a-z]\)\s*$", between_clean)
+                or re.search(r"\b\d+\.\d+\.\d+", between_clean)
+                or re.search(r"\.\s+\d+(?:\s+\d+)*\s+[A-ZÄÖÜa-z]", between_clean)
+            )
+            if not has_sentence_or_heading_break:
+                post = snip[idx + len(match_text):]
+                # Restrict post-match inspection up to the next clause/sentence boundary ('.', ';', ':')
+                post_clause = re.split(r"[.;:]\s+", post)[0][:60]
+                local_clause = cue_to_match[-50:] + " " + match_text + " " + post_clause
+                if not re.search(
+                    r"\b(?:Paulus|Apostel)\b[\s\S]{0,40}\b(?:erweist|begründet|bezieht|greift|interpretiert|deutet|zitiert|ausdrückt|ersetzt|schreibt|versteht|verbindet)\b",
+                    local_clause,
+                    re.IGNORECASE,
+                ):
+                    return True
     return False
+
+
+def authenticate_and_bind_hit(
+    h: dict,
+    pages: list[str] | None,
+    verified_witnesses: list[dict],
+) -> tuple[bool, dict | None]:
+    """
+    S05-R7-F2: Authenticate caller-provided hit against the page text layer and bind it
+    to a verified argument witness on the same page within the witness's local argument passage
+    (distance <= 500 chars) with shared semantic overlap between the hit's local context
+    and the verified witness quotation/claim.
+    """
+    hp = h.get("printed_page", -999)
+    if not isinstance(hp, int) or hp < 1:
+        return False, None
+
+    match_str = h.get("match", "")
+    snip = h.get("snippet", "")
+    if not match_str:
+        return False, None
+
+    # 1. Authenticate hit against pages[pdf_page - 1] when pages are provided
+    p_start = h.get("page_offset_start")
+    p_end = h.get("page_offset_end")
+    if pages is not None:
+        pdf_page = hp + 12
+        if pdf_page < 1 or pdf_page > len(pages):
+            return False, None
+        page_text = pages[pdf_page - 1]
+        if p_start is not None and p_end is not None:
+            if p_start < 0 or p_end > len(page_text) or p_start >= p_end:
+                return False, None
+            actual_slice = page_text[p_start:p_end]
+            if clean_ocr_page(actual_slice).lower() != clean_ocr_page(match_str).lower():
+                return False, None
+        else:
+            # Locate match_str on page_text and verify snippet correspondence
+            m_pos = page_text.find(match_str)
+            if m_pos < 0:
+                m_clean = re.search(re.escape(clean_ocr_page(match_str)), clean_ocr_page(page_text), re.IGNORECASE)
+                if not m_clean:
+                    return False, None
+                p_start = m_clean.start()
+                p_end = m_clean.end()
+            else:
+                p_start = m_pos
+                p_end = m_pos + len(match_str)
+        # Also verify that non-trivial snippet content actually comes from this page (or adjacent page boundary)
+        clean_page_norm = clean_ocr_page(page_text).lower()
+        snip_words = [w.lower() for w in re.findall(r"[a-zA-ZäöüÄÖÜß]{4,}", snip)]
+        if snip_words:
+            matched_page_words = sum(1 for w in snip_words if w in clean_page_norm)
+            if matched_page_words / len(snip_words) < 0.5:
+                return False, None
+
+    # 2. Bind hit to a verified witness on the SAME printed page within the same argument passage (distance <= 500 chars)
+    same_page_wits = [w for w in verified_witnesses if "evidence_id" in w and w.get("printed_page") == hp]
+    if not same_page_wits:
+        return False, None
+
+    best_wit = None
+    best_dist = 999999
+    best_seg = None
+    for w in same_page_wits:
+        segs = w.get("witnesses", [])
+        if segs and p_start is not None and p_end is not None:
+            for sw in segs:
+                ws = sw.get("page_offset_start", 0)
+                we = sw.get("page_offset_end", 0)
+                dist = max(0, ws - p_end, p_start - we)
+                if dist <= 500 and dist < best_dist:
+                    # Check semantic overlap between hit snippet and witness quote/matched_text
+                    wit_text_norm = clean_ocr_page(w.get("quote", "") + " " + sw.get("matched_text", "")).lower()
+                    wit_tokens = {
+                        t for t in re.findall(r"[a-zA-ZäöüÄÖÜß\u0370-\u03ff\u1f00-\u1fff]{4,}", wit_text_norm)
+                        if t not in {"paulus", "apostel", "zitat", "stelle", "vers", "wort", "jesaja", "hosea", "joel", "aber", "oder", "auch", "eine", "einer", "einem", "einen", "diese", "dieser", "diesem", "sich", "wird", "sind", "nicht", "durch", "nach", "über", "unter"}
+                    }
+                    snip_norm = clean_ocr_page(snip).lower()
+                    shared_tokens = sorted([t for t in wit_tokens if t in snip_norm])
+                    if shared_tokens:
+                        best_dist = dist
+                        best_wit = w
+                        best_seg = {
+                            "segment_index": sw.get("segment_index", 1),
+                            "wit_offset_start": ws,
+                            "wit_offset_end": we,
+                            "char_distance": dist,
+                            "shared_argument_tokens": shared_tokens[:8],
+                        }
+        else:
+            # Fallback when page offsets are not available (only if witness quote tokens appear directly in hit snippet)
+            wit_text_norm = clean_ocr_page(w.get("quote", "")).lower()
+            wit_tokens = {
+                t for t in re.findall(r"[a-zA-ZäöüÄÖÜß\u0370-\u03ff\u1f00-\u1fff]{4,}", wit_text_norm)
+                if t not in {"paulus", "apostel", "zitat", "stelle", "vers", "wort", "jesaja", "hosea", "joel", "aber", "oder", "auch", "eine", "einer", "einem", "einen", "diese", "dieser", "diesem", "sich", "wird", "sind", "nicht", "durch", "nach", "über", "unter"}
+            }
+            snip_norm = clean_ocr_page(snip).lower()
+            shared_tokens = sorted([t for t in wit_tokens if t in snip_norm])
+            if len(shared_tokens) >= 2:
+                best_wit = w
+                best_dist = 0
+                best_seg = {
+                    "segment_index": 1,
+                    "wit_offset_start": 0,
+                    "wit_offset_end": 0,
+                    "char_distance": 0,
+                    "shared_argument_tokens": shared_tokens[:8],
+                }
+                break
+
+    if best_wit is None:
+        return False, None
+
+    bound_hit = dict(h)
+    bound_hit["page_offset_start"] = p_start
+    bound_hit["page_offset_end"] = p_end
+    bound_hit["linked_evidence_id"] = best_wit["evidence_id"]
+    bound_hit["linked_author_claim"] = best_wit.get("author_claim", "")
+    bound_hit["witness_binding"] = best_seg
+    bound_hit["binding_rationale"] = (
+        f"Authenticated on printed p. {hp} [{p_start}..{p_end}] within {best_seg['char_distance']} chars "
+        f"of {best_wit['evidence_id']} [{best_seg['wit_offset_start']}..{best_seg['wit_offset_end']}]; "
+        f"shared argument tokens: {', '.join(best_seg['shared_argument_tokens'])}"
+    )
+    return True, bound_hit
 
 
 def adjudicate_target(
@@ -1400,10 +1562,10 @@ def adjudicate_target(
                 "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
             }
 
-        # Witness page correlation / locality guard (S05-R5-F2 & S05-R6-F2):
-        witness_pages = {w["printed_page"] for w in verified_witnesses}
+        # Witness page correlation / locality guard (S05-R5-F2, S05-R6-F2 & S05-R7-F2):
+        witness_pages = {w["printed_page"] for w in verified_witnesses if "evidence_id" in w}
         locus_pages = set(target_def.get("expected_printed_pages", [])) | witness_pages
-        locus_hits = [h for h in substantive_hits if any(abs(h.get("printed_page", -999) - wp) <= 2 for wp in locus_pages)]
+        locus_hits = [h for h in substantive_hits if h.get("printed_page", -999) in locus_pages]
         if not locus_hits:
             hit_pages = sorted(list({h.get("printed_page", -999) for h in substantive_hits}))
             return {
@@ -1425,7 +1587,7 @@ def adjudicate_target(
                 "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
             }
 
-        # Enforce that min_substantive threshold must be satisfied by LOCUS hits, not distant unrelated hits (S05-R5-F2)
+        # Enforce that min_substantive threshold must be satisfied by LOCUS hits on witness pages (S05-R5-F2)
         if len(locus_hits) < min_substantive:
             return {
                 "id": tid,
@@ -1442,8 +1604,8 @@ def adjudicate_target(
                 "passed": False,
                 "hits": hits,
                 "substantive_context_hits": substantive_context_count,
-                "local_substantive_hits": len(locus_hits),
-                "local_hit_records": locus_hits,
+                "local_substantive_hits": 0,
+                "local_hit_records": [],
                 "witness_records": verified_witnesses,
                 "reviewed_argument_judgment": reviewed_judgment,
                 "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
@@ -1462,22 +1624,21 @@ def adjudicate_target(
                 "passed": False,
                 "hits": hits,
                 "substantive_context_hits": substantive_context_count,
-                "local_substantive_hits": len(locus_hits),
-                "local_hit_records": locus_hits,
+                "local_substantive_hits": 0,
+                "local_hit_records": [],
                 "witness_records": [],
                 "reviewed_argument_judgment": reviewed_judgment,
                 "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
             }
 
-        # Bind each locus hit to verified argument witnesses and reviewed interpretation (S05-R6-F2)
+        # S05-R7-F2: Authenticate each locus hit against page text layer and bind to same-page verified witness
+        # within the same argument passage (distance <= 500 chars and shared semantic argument tokens)
         bound_locus_hits = []
         for h in locus_hits:
-            hp = h.get("printed_page", -999)
-            linked_wits = [w for w in verified_witnesses if abs(w["printed_page"] - hp) <= 2]
-            if linked_wits:
-                h["linked_evidence_id"] = linked_wits[0]["evidence_id"]
-                h["argument_judgment"] = reviewed_judgment
-                bound_locus_hits.append(h)
+            ok_bind, bound_h = authenticate_and_bind_hit(h, pages, verified_witnesses)
+            if ok_bind and bound_h is not None:
+                bound_h["argument_judgment"] = reviewed_judgment
+                bound_locus_hits.append(bound_h)
 
         if expected_eids and not bound_locus_hits:
             return {
@@ -1486,14 +1647,61 @@ def adjudicate_target(
                 "nt_target": target_def["nt_target"],
                 "ot_target": target_def["ot_target"],
                 "count": hit_count,
-                "classification": "HIT_WITNESS_PAGE_MISMATCH",
+                "classification": "MANUAL_REVIEW_REQUIRED",
                 "evidence_ids": expected_eids,
-                "summary": f"FAIL: Local hits on pages {[h.get('printed_page') for h in locus_hits]} could not be bound to any verified argument witness record.",
+                "summary": f"FAIL: Local hits on pages {[h.get('printed_page') for h in locus_hits]} could not be authenticated and semantically bound to any verified argument witness passage.",
                 "passed": False,
                 "hits": hits,
                 "substantive_context_hits": substantive_context_count,
-                "local_substantive_hits": len(locus_hits),
+                "local_substantive_hits": 0,
                 "local_hit_records": [],
+                "witness_records": verified_witnesses,
+                "reviewed_argument_judgment": reviewed_judgment,
+                "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+            }
+
+        # Enforce that min_substantive threshold must ALSO be satisfied by AUTHENTICATED & BOUND LOCUS HITS (S05-R7-F2)
+        if len(bound_locus_hits) < min_substantive:
+            return {
+                "id": tid,
+                "name": target_def["name"],
+                "nt_target": target_def["nt_target"],
+                "ot_target": target_def["ot_target"],
+                "count": hit_count,
+                "classification": "INSUFFICIENT_LOCAL_SUBSTANTIVE_HITS",
+                "evidence_ids": expected_eids,
+                "summary": (
+                    f"FAIL: Found {len(bound_locus_hits)} authenticated bound local argument hits in discussion loci (pp. {sorted(locus_pages)}), "
+                    f"below required threshold of {min_substantive} (total substantive hits: {substantive_context_count})."
+                ),
+                "passed": False,
+                "hits": hits,
+                "substantive_context_hits": substantive_context_count,
+                "local_substantive_hits": len(bound_locus_hits),
+                "local_hit_records": bound_locus_hits,
+                "witness_records": verified_witnesses,
+                "reviewed_argument_judgment": reviewed_judgment,
+                "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+            }
+
+        # Verify every required evidence witness has at least one bound local argument hit (S05-R7-F2)
+        bound_eids = {bh["linked_evidence_id"] for bh in bound_locus_hits}
+        missing_bound_eids = [eid for eid in expected_eids if eid not in bound_eids]
+        if missing_bound_eids:
+            return {
+                "id": tid,
+                "name": target_def["name"],
+                "nt_target": target_def["nt_target"],
+                "ot_target": target_def["ot_target"],
+                "count": hit_count,
+                "classification": "MANUAL_REVIEW_REQUIRED",
+                "evidence_ids": expected_eids,
+                "summary": f"FAIL: Verified evidence records {missing_bound_eids} lack bound local argument hits on their respective pages.",
+                "passed": False,
+                "hits": hits,
+                "substantive_context_hits": substantive_context_count,
+                "local_substantive_hits": len(bound_locus_hits),
+                "local_hit_records": bound_locus_hits,
                 "witness_records": verified_witnesses,
                 "reviewed_argument_judgment": reviewed_judgment,
                 "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
@@ -1506,7 +1714,7 @@ def adjudicate_target(
         claims = [ledger[eid]["author_claim"].rstrip(".") for eid in expected_eids if eid in ledger]
         claims_summary = "; ".join(claims)
         summary = (
-            f"SUBSTANTIVE DISCUSSION. Verified by {len(locus_hits)} local contextual hits "
+            f"SUBSTANTIVE DISCUSSION. Verified by {len(bound_locus_hits)} bound local argument hits "
             f"and crosswalked to {eids_str} (pp. {pages_str}): {claims_summary}."
         )
 
@@ -1530,7 +1738,30 @@ def adjudicate_target(
                 "reviewed_argument_judgment": reviewed_judgment,
                 "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
             }
-        
+
+        # S05-R5-M1 & S05-R7-M1: Verify no contradictory substantive discussion occurs elsewhere in the volume
+        expected_pages_set = set(target_def.get("expected_printed_pages", []))
+        elsewhere_substantive = [h for h in substantive_hits if h.get("printed_page", -999) not in expected_pages_set]
+        if elsewhere_substantive:
+            return {
+                "id": tid,
+                "name": target_def["name"],
+                "nt_target": target_def["nt_target"],
+                "ot_target": target_def["ot_target"],
+                "count": hit_count,
+                "classification": "UNEXPECTED_SUBSTANTIVE_HITS",
+                "evidence_ids": expected_eids,
+                "summary": f"FAIL: Expected bounded passing reference on {sorted(expected_pages_set)}, but found {len(elsewhere_substantive)} substantive hits elsewhere.",
+                "passed": False,
+                "hits": hits,
+                "substantive_context_hits": substantive_context_count,
+                "local_substantive_hits": 0,
+                "local_hit_records": [],
+                "witness_records": [],
+                "reviewed_argument_judgment": reviewed_judgment,
+                "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+            }
+
         # Verify grounded passing witness on target page (S05-R5-M1 & S05-R6-F4)
         if tid == "B001-10":
             p112_text = pages[124 - 1] if pages and len(pages) >= 124 else full_text or ""
@@ -1562,9 +1793,9 @@ def adjudicate_target(
                 "pdf_page": 124,
                 "witness_type": "PASSING_CITATION_FORMULA_ANALOGY",
                 "excerpt": p112_text[ctx_start:ctx_end].replace("\n", " ").strip(),
-                "negative_rationale": "Deut 25:4 absent from authorial Stellenregister (Deuteronomium section pp. 444-445); p. 112 n. 58 compares only introductory citation formula γέγραπται γάρ without Vorlage or textual variant discussion.",
+                "negative_rationale": "Bounded/source-reviewed judgment: Deut 25:4 absent from authorial Stellenregister (Deuteronomium section pp. 444-445); p. 112 n. 58 compares only introductory citation formula γέγραπται γάρ without Vorlage or textual variant discussion.",
             })
-            summary = "PASSING REFERENCE. 1 Cor 9:9 and Deut 25:4 cited on p. 112 n. 58 strictly as introductory citation-formula analogy; no substantive textual analysis. Deut 25:4 absent from OT index."
+            summary = "PASSING REFERENCE (bounded/source-reviewed judgment). 1 Cor 9:9 and Deut 25:4 cited on p. 112 n. 58 strictly as introductory citation-formula analogy; no substantive textual analysis. Deut 25:4 absent from OT index."
         elif tid == "B001-11":
             p319_text = pages[331 - 1] if pages and len(pages) >= 331 else full_text or ""
             m_wit = re.search(r"Gebrauch\s+des\s+Ausdrucks[\s\S]{1,40}in\s+107", p319_text, re.IGNORECASE)
@@ -1595,9 +1826,9 @@ def adjudicate_target(
                 "pdf_page": 331,
                 "witness_type": "PASSING_PHRASE_COMPARISON",
                 "excerpt": p319_text[ctx_start:ctx_end].replace("\n", " ").strip(),
-                "negative_rationale": "Exod 32:6 has zero occurrences in volume and is absent from authorial Stellenregister (Exodus section p. 444); p. 319 n. 11 compares only lexical phrase φαγεῖν καὶ πιεῖν with Isa 22:13.",
+                "negative_rationale": "Bounded/source-reviewed judgment: Exod 32:6 has zero occurrences in volume and is absent from authorial Stellenregister (Exodus section p. 444); p. 319 n. 11 compares only lexical phrase φαγεῖν καὶ πιεῖν with Isa 22:13.",
             })
-            summary = "PASSING REFERENCE. 1 Cor 10:7 cited on p. 319 n. 11 for phrase 'phagein kai piein'; Exod 32:6 has zero hits, absent from OT index."
+            summary = "PASSING REFERENCE (bounded/source-reviewed judgment). 1 Cor 10:7 cited on p. 319 n. 11 for phrase 'phagein kai piein'; Exod 32:6 has zero hits, absent from OT index."
         dynamic_classification = "PASSING_REFERENCE"
 
     elif expected_cls == "PASSING_TEXT_CRITICAL_NOTE":
@@ -1639,9 +1870,30 @@ def adjudicate_target(
                 "reviewed_argument_judgment": reviewed_judgment,
                 "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
             }
+        expected_pages_set = set(target_def.get("expected_printed_pages", []))
+        elsewhere_substantive = [h for h in substantive_hits if h.get("printed_page", -999) not in expected_pages_set]
+        if elsewhere_substantive:
+            return {
+                "id": tid,
+                "name": target_def["name"],
+                "nt_target": target_def["nt_target"],
+                "ot_target": target_def["ot_target"],
+                "count": hit_count,
+                "classification": "UNEXPECTED_SUBSTANTIVE_HITS",
+                "evidence_ids": expected_eids,
+                "summary": f"FAIL: Expected bounded text-critical note on {sorted(expected_pages_set)}, but found {len(elsewhere_substantive)} substantive hits elsewhere.",
+                "passed": False,
+                "hits": hits,
+                "substantive_context_hits": substantive_context_count,
+                "local_substantive_hits": 0,
+                "local_hit_records": [],
+                "witness_records": verified_witnesses,
+                "reviewed_argument_judgment": reviewed_judgment,
+                "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
+            }
         dynamic_classification = "PASSING_TEXT_CRITICAL_NOTE"
         eids_str = ", ".join(expected_eids)
-        summary = f"PASSING TEXT-CRITICAL NOTE. Crosswalked to {eids_str} (p. 47 n. 1). Paul assimilated Deut 21:23a kekateramenos to Gal 3:10 epikataratos. Deut 21:23 absent from OT index."
+        summary = f"PASSING TEXT-CRITICAL NOTE (bounded/source-reviewed judgment). Crosswalked to {eids_str} (p. 47 n. 1). Paul assimilated Deut 21:23a kekateramenos to Gal 3:10 epikataratos. Deut 21:23 absent from OT index."
 
     return {
         "id": tid,
@@ -1655,8 +1907,8 @@ def adjudicate_target(
         "passed": True,
         "hits": hits,
         "substantive_context_hits": substantive_context_count,
-        "local_substantive_hits": len(locus_hits) if 'locus_hits' in locals() else 0,
-        "local_hit_records": locus_hits if 'locus_hits' in locals() else [],
+        "local_substantive_hits": len(bound_locus_hits) if 'bound_locus_hits' in locals() else 0,
+        "local_hit_records": bound_locus_hits if 'bound_locus_hits' in locals() else [],
         "witness_records": verified_witnesses,
         "reviewed_argument_judgment": reviewed_judgment,
         "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
@@ -1837,25 +2089,33 @@ def build_markdown_report(
                 p_end = lh.get("page_offset_end", lh.get("end"))
                 m_phrases = ", ".join(lh.get("matched_phrases", []))
                 linked_eid = lh.get("linked_evidence_id", "N/A")
+                bind_rat = lh.get("binding_rationale", "")
                 snip_excerpt = lh.get("clean_snippet", lh.get("snippet", ""))[:160]
                 lines.append(
                     f"  - **Hit {idx_h} (Printed p. {hp}; PDF p. {pdf_p}; offset `[{p_start}..{p_end}]`):** "
                     f"matched `{lh.get('match')}` | analytical phrases: `{m_phrases}` | bound witness: `{linked_eid}` | "
-                    f"context: `»{snip_excerpt}...«`"
+                    f"binding: `{bind_rat}` | context: `»{snip_excerpt}...«`"
                 )
         lines.append("")
     lines.append("## 5. Certification of Verification")
     lines.append("")
-    if is_authenticated:
+    all_pos_ok = bool(pos_results) and all(pr.get("passed", False) for pr in pos_results)
+    idx_ok = bool(index_results.get("passed", False))
+    all_sr_ok = bool(search_results) and all(sr.get("passed", False) for sr in search_results)
+    if is_authenticated and all_pos_ok and idx_ok and all_sr_ok:
         lines.append("- **Verification Status:** `VERIFIED_COMPLETE`")
         lines.append("- **Adjudication Method:** `SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION`")
         lines.append("- **Cryptographic Consistency:** Confirmed against authentic MDZ Digi20 scan.")
         lines.append(f"- **Stellenregister Coverage:** {len(REQUIRED_INDEX_SECTIONS)}/{len(REQUIRED_INDEX_SECTIONS)} required book/testament sections pattern-bounded with verified start and end delimiters and verified non-empty (zero unbounded spillovers).")
-        lines.append("- **Negative Search Discipline:** Zero unsupported negative claims. Non-prophetic loci B001-1 (Rom 4:3 / Gen 15:6) and B001-9 (1 Cor 6:16 / Gen 2:24) are confirmed absent from both authorial index and substantive discussion; passing references (B001-10, B001-11, B001-12) are precisely localized.")
-    else:
+        lines.append("- **Negative Search Discipline:** Zero unsupported negative claims. Non-prophetic loci B001-1 (Rom 4:3 / Gen 15:6) and B001-9 (1 Cor 6:16 / Gen 2:24) are confirmed absent from both authorial index and substantive discussion; passing references (B001-10, B001-11, B001-12) are documented as bounded/source-reviewed judgments.")
+    elif not is_authenticated:
         lines.append("- **Verification Status:** `UNAUTHENTICATED_OVERRIDE (Digest mismatch)`")
         lines.append("- **Cryptographic Consistency:** UNVERIFIED (Digest mismatch under --allow-text-digest-mismatch override). Certified negative search guarantees are explicitly suppressed.")
         lines.append("- **Negative Search Discipline:** PROVISIONAL. Findings have not been certified against authentic source digest.")
+    else:
+        lines.append("- **Verification Status:** `MANUAL_REVIEW_REQUIRED`")
+        lines.append("- **Cryptographic Consistency:** Uncertified due to failing verification or adjudication predicates.")
+        lines.append("- **Negative Search Discipline:** INCOMPLETE. Scholarly argument support or index/control gates not established.")
     lines.append("")
     return "\n".join(lines)
 

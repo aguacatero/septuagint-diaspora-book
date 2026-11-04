@@ -2217,6 +2217,97 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
     assert adj_4h["passed"] is False
     assert adj_4h["classification"] == "INCIDENTAL_ONLY_HITS"
 
+    # Case 4i (S05-R7-F1): Reviewer exact counterexamples — author-year with parentheses BEFORE matched citation,
+    # multi-line bibliographic lists, and incidental quotations containing configured analytical phrases MUST be detected
+    # as incidental and rejected as INCIDENTAL_ONLY_HITS.
+    ex1 = "Literatur: Müller (1990), Rom 9,25; Auszeichnungen verheißend zuspricht."
+    ex2 = "Vgl. Weber (1992), Rom 9,25; Auszeichnungen verheißend zuspricht."
+    ex3 = "Siehe dazu:\n  1. Schmidt [1988] S. 14;\n  2. Bauer (1994), Rom 9,25: „Auszeichnungen verheißend zuspricht“."
+    assert vns.is_incidental_context(ex1, "Rom 9,25") is True
+    assert vns.is_incidental_context(ex2, "Rom 9,25") is True
+    assert vns.is_incidental_context(ex3, "Rom 9,25") is True
+
+    author_year_before_citation_hits = [
+        {"start": 100, "printed_page": 130, "match": "Rom 9,25", "snippet": ex1},
+        {"start": 200, "printed_page": 130, "match": "Rom 9,25", "snippet": ex2},
+        {"start": 300, "printed_page": 130, "match": "Rom 9,25", "snippet": ex3},
+    ]
+    adj_4i = vns.adjudicate_target(
+        target_def_b2, author_year_before_citation_hits, {"passed": True}, ledger=valid_b2_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_4i["passed"] is False
+    assert adj_4i["classification"] == "INCIDENTAL_ONLY_HITS"
+
+    # Case 4j (S05-R7-F2): Unauthenticated caller-provided hit offset/snippet on p. 130 fails authentication & binding
+    spoofed_offset_hits = [
+        {"start": 10, "printed_page": 130, "page_offset_start": 0, "page_offset_end": 8, "match": "Hos 225", "snippet": "Indem es Heiden diejenigen Auszeichnungen verheißend zuspricht, die Israel besaß"},
+        {"start": 20, "printed_page": 130, "page_offset_start": 10, "page_offset_end": 18, "match": "Hos 225", "snippet": "Indem es Heiden diejenigen Auszeichnungen verheißend zuspricht, die Israel besaß"},
+        {"start": 30, "printed_page": 130, "page_offset_start": 20, "page_offset_end": 28, "match": "Hos 225", "snippet": "Indem es Heiden diejenigen Auszeichnungen verheißend zuspricht, die Israel besaß"},
+    ]
+    adj_4j = vns.adjudicate_target(
+        target_def_b2, spoofed_offset_hits, {"passed": True}, ledger=valid_b2_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_4j["passed"] is False
+    assert adj_4j["classification"] == "MANUAL_REVIEW_REQUIRED"
+
+    # Case 4k (S05-R7-F2): Hit on same page p. 130 but far outside witness passage (distance > 500 chars) fails binding
+    far_page_text = (
+        "Indem es Heiden diejenigen 'Auszeichnungen' verheißend zuspricht, die Israel besaß und besitzt..."
+        + (" XxxUnrelatedFillerText" * 40)
+        + " Späterer Verweis auf Hos 225 mit Erbarmensgefäße am Seitenende."
+    )
+    mock_pages_far = list(mock_pages)
+    mock_pages_far[141] = far_page_text
+    far_pos = far_page_text.find("Hos 225")
+    assert far_pos > 700
+    distant_same_page_hits = [
+        {"start": far_pos, "printed_page": 130, "page_offset_start": far_pos, "page_offset_end": far_pos + 7, "match": "Hos 225", "snippet": "Späterer Verweis auf Hos 225 mit Erbarmensgefäße am Seitenende."},
+        {"start": far_pos, "printed_page": 130, "page_offset_start": far_pos, "page_offset_end": far_pos + 7, "match": "Hos 225", "snippet": "Späterer Verweis auf Hos 225 mit Erbarmensgefäße am Seitenende."},
+        {"start": far_pos, "printed_page": 130, "page_offset_start": far_pos, "page_offset_end": far_pos + 7, "match": "Hos 225", "snippet": "Späterer Verweis auf Hos 225 mit Erbarmensgefäße am Seitenende."},
+    ]
+    adj_4k = vns.adjudicate_target(
+        target_def_b2, distant_same_page_hits, {"passed": True}, ledger=valid_b2_ledger, pages=mock_pages_far, full_text="\x0c".join(mock_pages_far)
+    )
+    assert adj_4k["passed"] is False
+    assert adj_4k["classification"] == "MANUAL_REVIEW_REQUIRED"
+
+    # Case 4l (S05-R7-F2): Hit within 500 chars on same page but with zero semantic token overlap with witness quote fails binding
+    no_overlap_page_text = (
+        "Indem es Heiden diejenigen 'Auszeichnungen' verheißend zuspricht, die Israel besaß. "
+        "Hos 225 nennt Erbarmensgefäße im Kontext."
+    )
+    mock_pages_no_ov = list(mock_pages)
+    mock_pages_no_ov[141] = no_overlap_page_text
+    pos_h = no_overlap_page_text.find("Hos 225")
+    no_overlap_hits = [
+        {"start": pos_h, "printed_page": 130, "page_offset_start": pos_h, "page_offset_end": pos_h + 7, "match": "Hos 225", "snippet": "Hos 225 nennt Erbarmensgefäße im Kontext."},
+        {"start": pos_h, "printed_page": 130, "page_offset_start": pos_h, "page_offset_end": pos_h + 7, "match": "Hos 225", "snippet": "Hos 225 nennt Erbarmensgefäße im Kontext."},
+        {"start": pos_h, "printed_page": 130, "page_offset_start": pos_h, "page_offset_end": pos_h + 7, "match": "Hos 225", "snippet": "Hos 225 nennt Erbarmensgefäße im Kontext."},
+    ]
+    adj_4l = vns.adjudicate_target(
+        target_def_b2, no_overlap_hits, {"passed": True}, ledger=valid_b2_ledger, pages=mock_pages_no_ov, full_text="\x0c".join(mock_pages_no_ov)
+    )
+    assert adj_4l["passed"] is False
+    assert adj_4l["classification"] == "MANUAL_REVIEW_REQUIRED"
+
+    # Case 4m (S05-R7-F2): Report builder emits MANUAL_REVIEW_REQUIRED instead of VERIFIED_COMPLETE when any target fails
+    failed_report = vns.build_markdown_report(
+        search_results=[adj_4l],
+        pos_results=[{"name": "pc", "pattern": "p", "expected_min": 1, "count": 1, "passed": True}],
+        index_results={"passed": True, "positive_controls": {}, "missing_sections": [], "target_results": {}},
+        pdf_path=Path("dummy.pdf"),
+        pdf_bytes=vns.EXPECTED_RAW_PDF_BYTES,
+        pdf_sha=vns.EXPECTED_RAW_PDF_SHA256,
+        text_path=Path("dummy.txt"),
+        text_sha=vns.EXPECTED_TEXT_SHA256,
+        text_bytes=100,
+        text_chars=100,
+        text_lines=10,
+        is_authenticated=True,
+    )
+    assert "Verification Status:** `MANUAL_REVIEW_REQUIRED`" in failed_report
+    assert "Verification Status:** `VERIFIED_COMPLETE`" not in failed_report
+
 
 def test_s05_qualifications_and_locators_discipline():
     """
