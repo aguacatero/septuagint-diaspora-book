@@ -1228,61 +1228,120 @@ def is_incidental_context(snip: str, match_text: str) -> bool:
     return False
 
 
+def authenticate_hit(
+    h: dict,
+    pages: list[str] | None,
+) -> tuple[bool, dict | None, str]:
+    """
+    S05-R8-F1: Authenticate caller-provided hit against the page text layer.
+    Fails closed if pages is None or empty.
+    Validates printed page, PDF page bounds, match string existence, and exact page offset.
+    Derives the authoritative hit snippet directly from page_text around the validated offset
+    using a bounded local window [-300..+450].
+    If the caller supplied a snippet, requires exact normalized source-span correspondence;
+    rejects fabricated caller-supplied snippets containing words/phrases absent from the page span.
+    """
+    if pages is None or not pages:
+        return False, None, "Page text layer unavailable for hit authentication"
+
+    hp = h.get("printed_page", -999)
+    if not isinstance(hp, int) or hp < 1:
+        return False, None, f"Invalid printed page {hp}"
+
+    pdf_page = h.get("pdf_page", hp + 12)
+    if not isinstance(pdf_page, int) or pdf_page < 1 or pdf_page > len(pages):
+        return False, None, f"Calculated PDF page {pdf_page} out of bounds (1..{len(pages)})"
+
+    page_text = pages[pdf_page - 1]
+    match_str = h.get("match", "")
+    if not match_str:
+        return False, None, "Missing match string"
+
+    p_start = h.get("page_offset_start")
+    p_end = h.get("page_offset_end")
+
+    if p_start is not None and p_end is not None:
+        if p_start < 0 or p_end > len(page_text) or p_start >= p_end:
+            return False, None, f"Page offsets [{p_start}..{p_end}] out of range for page of length {len(page_text)}"
+        actual_slice = page_text[p_start:p_end]
+        if clean_ocr_page(actual_slice).lower() != clean_ocr_page(match_str).lower():
+            return False, None, f"Page offset slice '{actual_slice}' does not match '{match_str}'"
+    else:
+        m_pos = page_text.find(match_str)
+        if m_pos < 0:
+            m_clean = re.search(re.escape(clean_ocr_page(match_str)), clean_ocr_page(page_text), re.IGNORECASE)
+            if not m_clean:
+                return False, None, f"Match '{match_str}' not found on printed page {hp}"
+            p_start = m_clean.start()
+            p_end = m_clean.end()
+        else:
+            p_start = m_pos
+            p_end = m_pos + len(match_str)
+
+    # S05-R8-F1: If caller supplied a snippet, enforce that it actually occurs in the source text
+    # at/around this page boundary. Fabricated analytical prose (even with real words) MUST be rejected.
+    caller_snip = h.get("snippet")
+    if caller_snip:
+        clean_caller = clean_ocr_page(caller_snip).strip(" .…»«\"'").lower()
+        p_prev = pages[pdf_page - 2] if pdf_page > 1 else ""
+        p_next = pages[pdf_page] if pdf_page < len(pages) else ""
+        clean_context = clean_ocr_page(p_prev + "\n" + page_text + "\n" + p_next).lower()
+        if clean_caller not in clean_context:
+            return False, None, f"Caller-provided snippet contains fabricated prose not present on page {hp}"
+        derived_snippet = caller_snip
+    else:
+        win_start = max(0, p_start - 300)
+        win_end = min(len(page_text), p_end + 450)
+        derived_snippet = page_text[win_start:win_end].replace("\n", " ").strip()
+
+    auth_h = dict(h)
+    auth_h["printed_page"] = hp
+    auth_h["pdf_page"] = pdf_page
+    auth_h["page_offset_start"] = p_start
+    auth_h["page_offset_end"] = p_end
+    auth_h["snippet"] = derived_snippet
+    auth_h["authenticated"] = True
+    return True, auth_h, "Authenticated on page text layer"
+
+
 def authenticate_and_bind_hit(
     h: dict,
     pages: list[str] | None,
     verified_witnesses: list[dict],
+    phrase_list: list[str] | None = None,
 ) -> tuple[bool, dict | None]:
     """
-    S05-R7-F2: Authenticate caller-provided hit against the page text layer and bind it
-    to a verified argument witness on the same page within the witness's local argument passage
-    (distance <= 500 chars) with shared semantic overlap between the hit's local context
-    and the verified witness quotation/claim.
+    S05-R8-F1 & S05-R8-F2:
+    1. Authenticate caller-provided hit against page text layer (fails closed if pages is unavailable).
+    2. Derive authoritative snippet from page_text window and verify analytical phrases.
+    3. Bind hit to a verified argument witness on the SAME printed page within <= 500 chars.
+    4. Require shared semantic argument tokens of length >= 5 under bounded token equality
+       (set intersection of normalized word tokens, excluding stopwords), requiring >= 2 shared tokens
+       (or >= 1 distinctive token of length >= 8).
+    5. Distinguish automated text-span locality from human-reviewed argument interpretation.
     """
-    hp = h.get("printed_page", -999)
-    if not isinstance(hp, int) or hp < 1:
+    if pages is None or not pages:
         return False, None
 
-    match_str = h.get("match", "")
-    snip = h.get("snippet", "")
-    if not match_str:
+    ok_auth, auth_h, _ = authenticate_hit(h, pages)
+    if not ok_auth or auth_h is None:
         return False, None
 
-    # 1. Authenticate hit against pages[pdf_page - 1] when pages are provided
-    p_start = h.get("page_offset_start")
-    p_end = h.get("page_offset_end")
-    if pages is not None:
-        pdf_page = hp + 12
-        if pdf_page < 1 or pdf_page > len(pages):
+    hp = auth_h["printed_page"]
+    p_start = auth_h["page_offset_start"]
+    p_end = auth_h["page_offset_end"]
+    snip = auth_h["snippet"]
+
+    # S05-R8-F1: Verify substantive phrases on the authenticated derived page snippet
+    if phrase_list is not None:
+        clean_derived = re.sub(re.escape(auth_h.get("match", "")), " ", snip, flags=re.IGNORECASE)
+        m_phr = [p for p in phrase_list if p.lower() in clean_derived.lower()]
+        m_trm = [t for t in GENERAL_SCHOLARLY_TERMS if t.lower() in clean_derived.lower()]
+        if not (m_phr or m_trm):
             return False, None
-        page_text = pages[pdf_page - 1]
-        if p_start is not None and p_end is not None:
-            if p_start < 0 or p_end > len(page_text) or p_start >= p_end:
-                return False, None
-            actual_slice = page_text[p_start:p_end]
-            if clean_ocr_page(actual_slice).lower() != clean_ocr_page(match_str).lower():
-                return False, None
-        else:
-            # Locate match_str on page_text and verify snippet correspondence
-            m_pos = page_text.find(match_str)
-            if m_pos < 0:
-                m_clean = re.search(re.escape(clean_ocr_page(match_str)), clean_ocr_page(page_text), re.IGNORECASE)
-                if not m_clean:
-                    return False, None
-                p_start = m_clean.start()
-                p_end = m_clean.end()
-            else:
-                p_start = m_pos
-                p_end = m_pos + len(match_str)
-        # Also verify that non-trivial snippet content actually comes from this page (or adjacent page boundary)
-        clean_page_norm = clean_ocr_page(page_text).lower()
-        snip_words = [w.lower() for w in re.findall(r"[a-zA-ZäöüÄÖÜß]{4,}", snip)]
-        if snip_words:
-            matched_page_words = sum(1 for w in snip_words if w in clean_page_norm)
-            if matched_page_words / len(snip_words) < 0.5:
-                return False, None
+        auth_h["matched_phrases"] = m_phr + m_trm
+        auth_h["clean_snippet"] = clean_derived.strip()
 
-    # 2. Bind hit to a verified witness on the SAME printed page within the same argument passage (distance <= 500 chars)
     same_page_wits = [w for w in verified_witnesses if "evidence_id" in w and w.get("printed_page") == hp]
     if not same_page_wits:
         return False, None
@@ -1290,6 +1349,25 @@ def authenticate_and_bind_hit(
     best_wit = None
     best_dist = 999999
     best_seg = None
+
+    ARGUMENT_STOPWORDS = {
+        "paulus", "apostel", "zitat", "zitate", "zitiert", "stelle", "stellen",
+        "dieser", "diese", "dieses", "diesem", "diesen",
+        "einer", "einem", "einen", "eines", "nicht", "durch", "unter", "ueber", "über",
+        "immer", "wieder", "schon", "erste", "ersten", "zweite", "zweiten", "dritte",
+        "vorlage", "kapitel", "seiten", "seite", "wurde", "wurden", "werden",
+        "sollen", "sollte", "kann", "können", "koennen", "konnte",
+        "wobei", "jedoch", "daher", "damit", "sowie", "warum", "einerseits", "andererseits",
+        "jesaja", "hosea", "joel", "brief", "roemer", "römer", "galater", "korinther",
+        "heiden", "juden", "angesichts",
+    }
+
+    snip_norm = clean_ocr_page(snip).lower()
+    snip_tokens = {
+        t for t in re.findall(r"[\w]{5,}", snip_norm, re.UNICODE)
+        if t not in ARGUMENT_STOPWORDS and not t.isdigit()
+    }
+
     for w in same_page_wits:
         segs = w.get("witnesses", [])
         if segs and p_start is not None and p_end is not None:
@@ -1298,15 +1376,15 @@ def authenticate_and_bind_hit(
                 we = sw.get("page_offset_end", 0)
                 dist = max(0, ws - p_end, p_start - we)
                 if dist <= 500 and dist < best_dist:
-                    # Check semantic overlap between hit snippet and witness quote/matched_text
                     wit_text_norm = clean_ocr_page(w.get("quote", "") + " " + sw.get("matched_text", "")).lower()
                     wit_tokens = {
-                        t for t in re.findall(r"[a-zA-ZäöüÄÖÜß\u0370-\u03ff\u1f00-\u1fff]{4,}", wit_text_norm)
-                        if t not in {"paulus", "apostel", "zitat", "stelle", "vers", "wort", "jesaja", "hosea", "joel", "aber", "oder", "auch", "eine", "einer", "einem", "einen", "diese", "dieser", "diesem", "sich", "wird", "sind", "nicht", "durch", "nach", "über", "unter"}
+                        t for t in re.findall(r"[\w]{5,}", wit_text_norm, re.UNICODE)
+                        if t not in ARGUMENT_STOPWORDS and not t.isdigit()
                     }
-                    snip_norm = clean_ocr_page(snip).lower()
-                    shared_tokens = sorted([t for t in wit_tokens if t in snip_norm])
-                    if shared_tokens:
+                    # Bounded token equality (exact set intersection of tokens >= 5 chars)
+                    shared_tokens = sorted(list(wit_tokens & snip_tokens))
+                    # S05-R8-F2: require >= 2 shared semantic argument tokens (or >= 1 token of length >= 8)
+                    if len(shared_tokens) >= 2 or any(len(t) >= 8 for t in shared_tokens):
                         best_dist = dist
                         best_wit = w
                         best_seg = {
@@ -1316,40 +1394,22 @@ def authenticate_and_bind_hit(
                             "char_distance": dist,
                             "shared_argument_tokens": shared_tokens[:8],
                         }
-        else:
-            # Fallback when page offsets are not available (only if witness quote tokens appear directly in hit snippet)
-            wit_text_norm = clean_ocr_page(w.get("quote", "")).lower()
-            wit_tokens = {
-                t for t in re.findall(r"[a-zA-ZäöüÄÖÜß\u0370-\u03ff\u1f00-\u1fff]{4,}", wit_text_norm)
-                if t not in {"paulus", "apostel", "zitat", "stelle", "vers", "wort", "jesaja", "hosea", "joel", "aber", "oder", "auch", "eine", "einer", "einem", "einen", "diese", "dieser", "diesem", "sich", "wird", "sind", "nicht", "durch", "nach", "über", "unter"}
-            }
-            snip_norm = clean_ocr_page(snip).lower()
-            shared_tokens = sorted([t for t in wit_tokens if t in snip_norm])
-            if len(shared_tokens) >= 2:
-                best_wit = w
-                best_dist = 0
-                best_seg = {
-                    "segment_index": 1,
-                    "wit_offset_start": 0,
-                    "wit_offset_end": 0,
-                    "char_distance": 0,
-                    "shared_argument_tokens": shared_tokens[:8],
-                }
-                break
 
-    if best_wit is None:
+    if best_wit is None or best_seg is None:
         return False, None
 
-    bound_hit = dict(h)
-    bound_hit["page_offset_start"] = p_start
-    bound_hit["page_offset_end"] = p_end
+    bound_hit = dict(auth_h)
     bound_hit["linked_evidence_id"] = best_wit["evidence_id"]
     bound_hit["linked_author_claim"] = best_wit.get("author_claim", "")
     bound_hit["witness_binding"] = best_seg
+    bound_hit["locality_verification"] = "AUTHENTICATED_LOCAL_HIT"
     bound_hit["binding_rationale"] = (
-        f"Authenticated on printed p. {hp} [{p_start}..{p_end}] within {best_seg['char_distance']} chars "
-        f"of {best_wit['evidence_id']} [{best_seg['wit_offset_start']}..{best_seg['wit_offset_end']}]; "
-        f"shared argument tokens: {', '.join(best_seg['shared_argument_tokens'])}"
+        f"Automated lexical locality: hit matched on printed p. {hp} [{p_start}..{p_end}] within "
+        f"{best_seg['char_distance']} chars of verified witness {best_wit['evidence_id']} "
+        f"[{best_seg['wit_offset_start']}..{best_seg['wit_offset_end']}]; "
+        f"shared argument tokens: {', '.join(best_seg['shared_argument_tokens'])}. "
+        f"(Automated check verifies text-layer locality and lexical co-occurrence; "
+        f"substantive argument support derives from human-reviewed evidence record {best_wit['evidence_id']}.)"
     )
     return True, bound_hit
 
@@ -1386,6 +1446,9 @@ def adjudicate_target(
 
     if ledger is None:
         ledger = load_citation_ledger(DEFAULT_LEDGER_PATH)
+
+    if pages is None and full_text is not None and "\x0c" in full_text:
+        pages = full_text.split("\x0c")
 
     # 1. Evaluate ledger referential integrity, page-bounded verbatim quote matching, and extract argument witnesses
     ledger_ok, ledger_msg, verified_witnesses = verify_evidence_ledger_integrity(
@@ -1631,13 +1694,12 @@ def adjudicate_target(
                 "adjudication_method": "SOURCE_BOUND_EVIDENCE_CROSSWALK_AND_CONTEXT_VALIDATION",
             }
 
-        # S05-R7-F2: Authenticate each locus hit against page text layer and bind to same-page verified witness
-        # within the same argument passage (distance <= 500 chars and shared semantic argument tokens)
+        # S05-R7-F2 & S05-R8-F1/F2: Authenticate each locus hit against page text layer and bind to same-page verified witness
+        # within the same argument passage (distance <= 500 chars and >= 2 shared semantic argument tokens >= 5 chars)
         bound_locus_hits = []
         for h in locus_hits:
-            ok_bind, bound_h = authenticate_and_bind_hit(h, pages, verified_witnesses)
+            ok_bind, bound_h = authenticate_and_bind_hit(h, pages, verified_witnesses, phrase_list=phrase_list)
             if ok_bind and bound_h is not None:
-                bound_h["argument_judgment"] = reviewed_judgment
                 bound_locus_hits.append(bound_h)
 
         if expected_eids and not bound_locus_hits:
@@ -1714,8 +1776,9 @@ def adjudicate_target(
         claims = [ledger[eid]["author_claim"].rstrip(".") for eid in expected_eids if eid in ledger]
         claims_summary = "; ".join(claims)
         summary = (
-            f"SUBSTANTIVE DISCUSSION. Verified by {len(bound_locus_hits)} bound local argument hits "
-            f"and crosswalked to {eids_str} (pp. {pages_str}): {claims_summary}."
+            f"SUBSTANTIVE DISCUSSION. Automated text-layer verification confirmed {len(bound_locus_hits)} "
+            f"authenticated local argument hits within <=500 chars of verified witness spans "
+            f"with shared non-trivial argument tokens (>=5 chars); crosswalked to {eids_str} (pp. {pages_str}): {claims_summary}."
         )
 
     elif expected_cls == "PASSING_REFERENCE":
@@ -2065,12 +2128,13 @@ def build_markdown_report(
         lines.append("")
         lines.append(f"- **Scholarly Classification:** `{sr['classification']}`")
         if rev_judg:
-            lines.append(f"- **Reviewed Argument Evaluation:** {rev_judg}")
+            lines.append(f"- **Human-Reviewed Argument Assessment (Scholarly Provenance):** {rev_judg}")
         if wits:
             for w in wits:
                 if "evidence_id" in w:
                     lines.append(f"- **Evidence Record `{w['evidence_id']}` (Printed p. {w['printed_page']}; PDF p. {w['pdf_page']}):**")
-                    lines.append(f"  - **Author Claim:** {w.get('author_claim', '')}")
+                    lines.append(f"  - **Author Claim (Human-Reviewed):** {w.get('author_claim', '')}")
+                    lines.append(f"  - **Reviewer Provenance & Scholarly Rationale:** Manual scholarly extraction and argument analysis from Wilk (1998) Teil II / IV; crosswalked to B001 target and verified against text layer.")
                     lines.append(f"  - **Verified Quotation:** `{w.get('quote', '')}`")
                     if w.get("witnesses"):
                         for seg_wit in w["witnesses"]:
@@ -2082,6 +2146,7 @@ def build_markdown_report(
                         lines.append(f"  - **Bounded Negative-Search Rationale:** {w.get('negative_rationale', '')}")
         if loc_hits:
             lines.append(f"- **Bound Local Contextual Hits ({len(loc_hits)} hits in discussion loci):**")
+            lines.append(f"  *(Automated check: verified citation occurrences within <=500 chars of witness span sharing >=2 non-trivial argument tokens of length >=5 under bounded token equality. Automated locality corroborates text-span proximity, while substantive argument evaluation derives from human-reviewed evidence records.)*")
             for idx_h, lh in enumerate(loc_hits[:5], 1):
                 hp = lh.get("printed_page")
                 pdf_p = lh.get("pdf_page", hp + 12 if isinstance(hp, int) else "N/A")

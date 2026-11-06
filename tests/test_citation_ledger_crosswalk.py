@@ -2308,6 +2308,146 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
     assert "Verification Status:** `MANUAL_REVIEW_REQUIRED`" in failed_report
     assert "Verification Status:** `VERIFIED_COMPLETE`" not in failed_report
 
+    # Case 4n (S05-R8-F1): Valid citation offsets on p. 130 + fabricated snippet containing >50% real page words fails authentication
+    fab_snip_4n = "Indem es Heiden diejenigen Auszeichnungen verheißend zuspricht Paulus und Erbarmensgefäße hier erfunden"
+    p_pos_4n = mock_pages[141].find("Indem")
+    fab_snippet_hits = [
+        {"start": p_pos_4n, "printed_page": 130, "page_offset_start": p_pos_4n, "page_offset_end": p_pos_4n + 5, "match": "Indem", "snippet": fab_snip_4n},
+        {"start": p_pos_4n, "printed_page": 130, "page_offset_start": p_pos_4n, "page_offset_end": p_pos_4n + 5, "match": "Indem", "snippet": fab_snip_4n},
+        {"start": p_pos_4n, "printed_page": 130, "page_offset_start": p_pos_4n, "page_offset_end": p_pos_4n + 5, "match": "Indem", "snippet": fab_snip_4n},
+    ]
+    adj_4n = vns.adjudicate_target(
+        target_def_b2, fab_snippet_hits, {"passed": True}, ledger=valid_b2_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_4n["passed"] is False
+    assert adj_4n["classification"] == "MANUAL_REVIEW_REQUIRED"
+    assert "could not be authenticated and semantically bound" in adj_4n["summary"]
+
+    # Case 4o (S05-R8-F1): Fail-closed behavior when pages is None or empty list
+    ok_none, h_none, msg_none = vns.authenticate_hit({"printed_page": 130, "match": "Indem"}, pages=None)
+    assert ok_none is False and h_none is None
+    assert "unavailable" in msg_none.lower()
+
+    ok_bind_none, b_none = vns.authenticate_and_bind_hit(
+        {"printed_page": 130, "match": "Indem"}, pages=None, verified_witnesses=[]
+    )
+    assert ok_bind_none is False and b_none is None
+
+    ok_empty, h_empty, msg_empty = vns.authenticate_hit({"printed_page": 130, "match": "Indem"}, pages=[])
+    assert ok_empty is False and h_empty is None
+    assert "unavailable" in msg_empty.lower()
+
+    ok_bind_empty, b_empty = vns.authenticate_and_bind_hit(
+        {"printed_page": 130, "match": "Indem"}, pages=[], verified_witnesses=[]
+    )
+    assert ok_bind_empty is False and b_empty is None
+
+    # Case 4p (S05-R8-F2): Token integrity, bounded token equality, and threshold requirements
+    # 1. Stopwords-only overlap fails binding
+    wit_stopwords = {
+        "evidence_id": "S05-E001",
+        "printed_page": 130,
+        "quote": "Paulus zitiert Heiden und Juden an dieser Stelle.",
+        "author_claim": "Claim",
+        "witnesses": [{"segment_index": 1, "page_offset_start": 10, "page_offset_end": 55, "matched_text": "Paulus zitiert Heiden und Juden"}]
+    }
+    p130_stopwords = "A" * 10 + "Paulus zitiert Heiden und Juden" + " " * 5 + "An dieser Stelle spricht der Apostel über Heiden und Juden." + "B" * 50
+    pages_p = ["Dummy\n"] * 200
+    pages_p[141] = p130_stopwords
+    spricht_pos = p130_stopwords.find("spricht")
+    hit_stopwords = {
+        "printed_page": 130,
+        "match": "spricht",
+        "page_offset_start": spricht_pos,
+        "page_offset_end": spricht_pos + len("spricht"),
+    }
+    ok_stop, b_stop = vns.authenticate_and_bind_hit(hit_stopwords, pages=pages_p, verified_witnesses=[wit_stopwords])
+    assert ok_stop is False and b_stop is None
+
+    # 2. Substring non-containment: witness has "mitteilen", hit page text has "Urteil" (shared substring "teil")
+    wit_sub = {
+        "evidence_id": "S05-E001",
+        "printed_page": 130,
+        "quote": "Wir müssen mitteilen",
+        "author_claim": "Claim",
+        "witnesses": [{"segment_index": 1, "page_offset_start": 10, "page_offset_end": 30, "matched_text": "Wir müssen mitteilen"}]
+    }
+    p130_sub = "A" * 10 + "Ein hartes Urteil folgt hier ganz deutlich." + "B" * 50
+    pages_sub = ["Dummy\n"] * 200
+    pages_sub[141] = p130_sub
+    urteil_pos = p130_sub.find("Urteil")
+    hit_sub = {
+        "printed_page": 130,
+        "match": "Urteil",
+        "page_offset_start": urteil_pos,
+        "page_offset_end": urteil_pos + len("Urteil"),
+    }
+    ok_sub, b_sub = vns.authenticate_and_bind_hit(hit_sub, pages=pages_sub, verified_witnesses=[wit_sub])
+    assert ok_sub is False and b_sub is None
+
+    # 3. Exactly 1 shared token of length 6 fails (< 2 tokens, length < 8)
+    wit_single6 = {
+        "evidence_id": "S05-E001",
+        "printed_page": 130,
+        "quote": "Hier fremde.",
+        "author_claim": "Claim",
+        "witnesses": [{"segment_index": 1, "page_offset_start": 10, "page_offset_end": 22, "matched_text": "Hier fremde."}]
+    }
+    p130_single6 = "A" * 10 + "Hier fremde." + " " * 5 + "Nur fremde Belege folgen." + "B" * 50
+    pages_s6 = ["Dummy\n"] * 200
+    pages_s6[141] = p130_single6
+    fremde_pos = p130_single6.rfind("fremde")
+    hit_s6 = {
+        "printed_page": 130,
+        "match": "fremde",
+        "page_offset_start": fremde_pos,
+        "page_offset_end": fremde_pos + len("fremde"),
+    }
+    ok_s6, b_s6 = vns.authenticate_and_bind_hit(hit_s6, pages=pages_s6, verified_witnesses=[wit_single6])
+    assert ok_s6 is False and b_s6 is None
+
+    # 4. Exactly 2 shared tokens of length 6 pass
+    wit_two6 = {
+        "evidence_id": "S05-E001",
+        "printed_page": 130,
+        "quote": "fremde stimme",
+        "author_claim": "Claim",
+        "witnesses": [{"segment_index": 1, "page_offset_start": 10, "page_offset_end": 23, "matched_text": "fremde stimme"}]
+    }
+    p130_two6 = "A" * 10 + "fremde stimme" + " " * 5 + "Eine fremde stimme folgt." + "B" * 50
+    pages_t6 = ["Dummy\n"] * 200
+    pages_t6[141] = p130_two6
+    stimme_pos = p130_two6.rfind("stimme")
+    hit_t6 = {
+        "printed_page": 130,
+        "match": "stimme",
+        "page_offset_start": stimme_pos,
+        "page_offset_end": stimme_pos + len("stimme"),
+    }
+    ok_t6, b_t6 = vns.authenticate_and_bind_hit(hit_t6, pages=pages_t6, verified_witnesses=[wit_two6])
+    assert ok_t6 is True and b_t6 is not None
+
+    # 5. Exactly 1 distinctive token of length >= 8 passes
+    wit_one8 = {
+        "evidence_id": "S05-E001",
+        "printed_page": 130,
+        "quote": "Auszeichnungen",
+        "author_claim": "Claim",
+        "witnesses": [{"segment_index": 1, "page_offset_start": 10, "page_offset_end": 24, "matched_text": "Auszeichnungen"}]
+    }
+    p130_one8 = "A" * 10 + "Auszeichnungen" + " " * 5 + "Neue Auszeichnungen folgen." + "B" * 50
+    pages_o8 = ["Dummy\n"] * 200
+    pages_o8[141] = p130_one8
+    ausz_pos = p130_one8.rfind("Auszeichnungen")
+    hit_o8 = {
+        "printed_page": 130,
+        "match": "Auszeichnungen",
+        "page_offset_start": ausz_pos,
+        "page_offset_end": ausz_pos + len("Auszeichnungen"),
+    }
+    ok_o8, b_o8 = vns.authenticate_and_bind_hit(hit_o8, pages=pages_o8, verified_witnesses=[wit_one8])
+    assert ok_o8 is True and b_o8 is not None
+
 
 def test_s05_qualifications_and_locators_discipline():
     """
