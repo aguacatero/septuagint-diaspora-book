@@ -19,6 +19,18 @@ Use Google/Gemini models for Antigravity orchestration. Use the `aguacatero/chat
 Do not begin the next source until the current source packet is independently accepted.
 
 
+## Required definition of DONE
+
+**README reconciliation is part of the work, not an optional follow-up.** At the end of every interactive or scheduled task (including no-change polling), read `AGENTS.md` and check the README against the live state, queue, and latest independent review. After any source/state change run:
+
+```bash
+python3 scripts/sync_readme_checkpoint.py
+python3 scripts/sync_readme_checkpoint.py --check
+python3 scripts/update_progress.py --check
+```
+
+Commit and push README changes with the research state transition before declaring `DONE` or advancing the queue. Review-only/no-change polls still run the checks and explicitly state `README: CHECKED AND UNCHANGED` when true. If sync, review reconciliation, commit/push, or either check fails, task status is `BLOCKED`/`IN_PROGRESS`, **never `DONE`**; report the blocker. A source awaiting an independent review remains `AWAITING_REVIEW`, and draft source acceptance must not be recorded as an accepted milestone or merged to `main`.
+
 ## Background schedule
 
 After the first successful interactive smoke test of the NotebookLM browser flow, create an Antigravity recurring task that resumes this workflow **hourly**.
@@ -26,7 +38,7 @@ After the first successful interactive smoke test of the NotebookLM browser flow
 Scheduled-run instruction:
 
 ```text
-Open aguacatero/septuagint-diaspora-book on branch research/B001-notebooklm-serial. Read ANTIGRAVITY_START.md and resume B001 from research-queue/B001_NOTEBOOKLM_STATE.json. Work only on the single active source. If the source is awaiting independent ChatGPT review, check PR #2 comments through the chatgpt-relay review controller; apply required corrections when present or, after an accepted exact-SHA review, promote the source to SDP-01 Paul and advance to the next queue item. Stop at any login, source-access, citation-verification, owner-only, or review-pending gate. Never process two sources concurrently and never merge the PR.
+Open aguacatero/septuagint-diaspora-book on branch research/B001-notebooklm-serial. Read ANTIGRAVITY_START.md and resume B001 from research-queue/B001_NOTEBOOKLM_STATE.json. Work only on the single active source. If the source is awaiting independent ChatGPT review, check PR #2 comments through the chatgpt-relay review controller; apply required corrections when present or, after an accepted exact-SHA review, promote the source to SDP-01 Paul and advance to the next queue item. Stop at any login, source-access, citation-verification, owner-only, or review-pending gate. Never process two sources concurrently and never merge the PR. At the end of EVERY invocation, satisfy the Required definition of DONE in this file: sync/check the README and milestone graphic, commit/push necessary README changes before completing the task, or report BLOCKED/IN_PROGRESS. Include README: UPDATED or README: CHECKED AND UNCHANGED in the handoff.
 ```
 
 Use Antigravity's `/schedule` capability (or the equivalent scheduled-task UI). Hourly is intentionally conservative; the workflow is state-driven, not speed-driven.
