@@ -20,6 +20,14 @@ from scripts.queue_context import get_source_context
 EXTRACT_UUID = "b3cd453a-e164-4b72-8383-2bcb5ee075a5"
 TARGET_URL = f"https://notebook.google.com/notebook/{EXTRACT_UUID}"
 
+PROBE_QUERIES = {
+    "S02F": "In Sanday and Headlam's commentary on Romans, what is their discussion in the Excursus on St. Paul's Use of the Old Testament regarding whether Paul quotes from memory or from a manuscript roll?",
+    "S03F": "In Robertson and Plummer's commentary on 1 Corinthians, what is their discussion in the Introduction regarding Paul's quotations from the Old Testament and agreement with the Septuagint?",
+    "S04F": "In Lightfoot's commentary on Galatians, what is his discussion in the note on Galatians 3:13 or the detached note regarding the interpretation of Deuteronomy 21:23 and the omission of hypo Theou?",
+    "S05": "In Florian Wilk's Die Bedeutung des Jesajabuches für Paulus, what is his discussion regarding Romans 9:25 and the application of Hosea restoration prophecies to Gentiles as vessels of mercy?",
+    "S06F": "In Mireia Ryšková's The Reception of the Book of Isaiah in Paul's Letter to the Romans, how many direct quotations from Isaiah does the author state are analyzed in Romans?",
+}
+
 
 class CDPClient:
     def __init__(self, ws):
@@ -280,7 +288,10 @@ async def ingest_source(
                 if state.get("has_error"):
                     raise RuntimeError(f"Source {expected_filename} has error state")
                     
-                probe_query = "What is the exact title and author of this book, and what does it discuss regarding Paul's use of scripture?"
+                probe_query = PROBE_QUERIES.get(
+                    sid,
+                    "What is the exact title and author of this book, and what does it discuss regarding Paul's use of scripture?"
+                )
                 probe_ok = await prove_extraction_retrieval(client, expected_filename, probe_query, timeout=probe_timeout)
                 if not probe_ok:
                     raise RuntimeError(f"Source-attributed retrieval verification failed for '{expected_filename}'")
@@ -380,7 +391,10 @@ async def ingest_source(
                         raise RuntimeError(f"Invariant violation: expected sole source '{expected_filename}', got {sources}")
                     print(f"SUCCESS: {expected_filename} ingested and settled in SDP-B001-EXTRACT after {elapsed}s!")
                     
-                    probe_query = "What is the exact title and author of this book, and what does it discuss in the Introduction regarding Paul's quotations from the Old Testament?"
+                    probe_query = PROBE_QUERIES.get(
+                        sid,
+                        "What is the exact title and author of this book, and what does it discuss in the Introduction regarding Paul's quotations from the Old Testament?"
+                    )
                     probe_ok = await prove_extraction_retrieval(client, expected_filename, probe_query, timeout=probe_timeout)
                     if not probe_ok:
                         raise RuntimeError(f"Ingestion failed: source-attributed retrieval verification failed for '{expected_filename}'")

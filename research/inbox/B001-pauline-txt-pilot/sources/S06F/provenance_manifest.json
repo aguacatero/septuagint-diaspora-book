@@ -1,0 +1,30 @@
+{
+  "source_id": "S06F",
+  "work": {
+    "authors": [
+      "Mireia Ryšková"
+    ],
+    "title": "The Reception of the Book of Isaiah in Paul's Letter to the Romans",
+    "journal": "Acta Universitatis Carolinae Theologica",
+    "volume": "Vol. 9, No. 2",
+    "year": "2019",
+    "pages": "95–116",
+    "publisher": "Karolinum Press, Charles University",
+    "doi": "10.14712/23363398.2020.8",
+    "article_url": "https://karolinum.cz/casopis/auc-theologica/rocnik-9/cislo-2/rok-2019/clanek-8028",
+    "pdf_url": "https://karolinum.cz/data/clanek/8028/Theol_9_2_0095.pdf",
+    "license": "Creative Commons Attribution 4.0 International (CC-BY 4.0)"
+  },
+  "ingested_volume": {
+    "filename": "ryskova_2019_isaiah_romans.pdf",
+    "local_path": "/Users/chrisrodriguez/Downloads/ryskova_2019_isaiah_romans.pdf",
+    "pages": 22,
+    "size_bytes": 201323,
+    "sha256": "ae823536b0ac41a9b24bce0671cb083f350b4384ed97803bbe089d4564a8f0c7",
+    "verification_command": "stat -f '%z' /Users/chrisrodriguez/Downloads/ryskova_2019_isaiah_romans.pdf && shasum -a 256 /Users/chrisrodriguez/Downloads/ryskova_2019_isaiah_romans.pdf",
+    "page_mapping": {
+      "formula": "Printed page = PDF page + 94; PDF page = Printed page - 94 for all 22 pages (PDF pp. 1-22 correspond strictly to printed pp. 95-116)",
+      "article_structure": "Introduction & Methodology (pp. 95-101; PDF pp. 1-7); Part I: Chapters 1-8 (pp. 101-103; PDF pp. 7-9); Part II: Chapters 9-11 (pp. 103-112; PDF pp. 9-18); Part III: Chapters 12-15 (pp. 113-115; PDF pp. 19-21); Conclusion (pp. 115-116; PDF pp. 21-22)"
+    }
+  }
+}

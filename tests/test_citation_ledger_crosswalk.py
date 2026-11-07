@@ -2677,6 +2677,64 @@ def test_s05_greek_script_integrity_and_confusables():
     assert not matches, f"Corrupted mixed-script confusable found: {matches}"
 
 
+def test_s06f_citation_ledger_crosswalk_integrity():
+    """Verify S06F citation ledger schema, pagination mapping, and quote integrity."""
+    repo_root = Path(__file__).resolve().parent.parent
+    s06f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S06F"
+    csv_path = s06f_dir / "citation_ledger.csv"
+
+    assert csv_path.is_file(), f"Missing citation_ledger.csv at {csv_path}"
+    with open(csv_path, encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+
+    assert len(rows) == 9, f"Expected 9 ledger rows for S06F, found {len(rows)}"
+
+    for r in rows:
+        eid = r["evidence_id"]
+        assert r["source_id"] == "S06F"
+        assert r["verification_status"] == "VERIFIED"
+        assert r["extraction_confidence"] == "HIGH"
+        assert len(r["short_quote"].strip()) > 10
+
+        printed = int(r["printed_page"])
+        expected_pdf = printed - 94
+        assert expected_pdf >= 1 and expected_pdf <= 22, f"Invalid printed page {printed} for {eid}"
+        assert f"PDF p. {expected_pdf}; printed p. {printed}" in r["notebooklm_citation"]
+
+
+def test_s06f_provenance_manifest_and_pagination_invariant():
+    """Verify S06F provenance manifest and pagination invariant."""
+    repo_root = Path(__file__).resolve().parent.parent
+    manifest_path = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S06F/provenance_manifest.json"
+    assert manifest_path.is_file(), f"Missing manifest at {manifest_path}"
+
+    with open(manifest_path, encoding="utf-8") as f:
+        manifest = json.load(f)
+
+    assert manifest["source_id"] == "S06F"
+    assert manifest["work"]["authors"] == ["Mireia Ryšková"]
+    assert manifest["work"]["doi"] == "10.14712/23363398.2020.8"
+    assert manifest["ingested_volume"]["size_bytes"] == 201323
+    assert manifest["ingested_volume"]["pages"] == 22
+    assert manifest["ingested_volume"]["sha256"] == "ae823536b0ac41a9b24bce0671cb083f350b4384ed97803bbe089d4564a8f0c7"
+
+
+def test_s06f_negative_search_verification():
+    """Verify S06F negative search verification script passes with clean exit code."""
+    import subprocess
+    import sys
+    repo_root = Path(__file__).resolve().parent.parent
+    script_path = repo_root / "scripts/verify_s06f_negative_search.py"
+    res = subprocess.run(
+        [sys.executable, str(script_path), "--check-only"],
+        cwd=str(repo_root),
+        capture_output=True,
+        text=True
+    )
+    assert res.returncode == 0, f"verify_s06f_negative_search failed:\n{res.stderr}\n{res.stdout}"
+
+
+
 
 
 
