@@ -17,8 +17,8 @@
 |:-----------|:------------|:-------------|:---------|:-----------------------|
 | PC01 | Title and Author | p. 95 | PDF p. 1 | `AUC THEOLOGICA 2019 – Vol. 9, No. 2Pag. 95–116 THE RECEPTION OF THE BOOK OF ISA...` |
 | PC02 | 15 Direct Quotations Scope | p. 95 | PDF p. 1 | `to the structure of the letter (chapters 1–8; 9–11; 12–15). The exposition is co...` |
-| PC03 | Rom 9:25-26 Hosea Context | p. 104 | PDF p. 10 | `7–28 (Is 10:22–23; an echo of Is 28:22 is also possible 31) The quotation from I...` |
-| PC04 | Rom 9:33 Composite Stone Quotation | p. 105 | PDF p. 11 | `e and guarantees its application to the whole of Israel’.34 5. Rom 9:33 (Is 28:1...` |
+| PC03 | Rom 9:25–26 Hosea Context | p. 104 | PDF p. 10 | `7–28 (Is 10:22–23; an echo of Is 28:22 is also possible 31) The quotation from I...` |
+| PC04 | Rom 9:33 Composite Citation Heading | p. 105 | PDF p. 11 | `e and guarantees its application to the whole of Israel’.34 5. Rom 9:33 (Is 28:1...` |
 | PC05 | Rom 10:11 Addition of Pas | p. 106 | PDF p. 12 | `esurrection of Jesus Christ and faith in that resurrection. The universal aspect...` |
 | PC06 | Rom 10:13 Correspondence with Joel 2:32 | p. 106 | PDF p. 12 | `s redeeming work accomplished in the resurrection of Jesus. The verse from Isaia...` |
 | PC07 | Rom 11:34 Near Word-for-Word Isa 40:13 | p. 112 | PDF p. 18 | `the subject of God’s sovereignty. Without pointing it out, Paul quotes here almo...` |
@@ -76,25 +76,25 @@
     - **Extracted Author Claim:** In Romans 10:11, Paul quotes directly from LXX Isaiah 28:16 and prefixes the pronoun πᾶς to emphasize the universal availability of salvation through faith in Christ.
     - **Short Quote:** *"The universal aspect of the statement is emphasised by the pronoun ‘no one’ (πᾶς), which is missing from the quotation in Romans 9:33."*
     - **Locator:** [PDF p. 12; printed p. 106]
-    - **Authoritative Derived Snippet:** *"er a judge but the resurrection of Jesus Christ and faith in that resurrection. The universal aspect of the statement is..."*
+    - **Authoritative Derived Snippet:** *"er a judge but the resurrection of jesus christ and faith in that resurrection. the universal aspect of the statement is..."*
     - **Verification Status:** `VERIFIED`
   - **Evidence ID:** `S06F-E002` (EXEGETICAL)
     - **Extracted Author Claim:** In Romans 10:11, Paul shifts the metaphorical meaning of the 'stone' in Isaiah 28:16 from a judge causing legalistic stumbling to the resurrection of Jesus Christ and faith in that resurrection.
     - **Short Quote:** *"The stone is no longer a judge but the resurrection of Jesus Christ and faith in that resurrection."*
     - **Locator:** [PDF p. 12; printed p. 106]
-    - **Authoritative Derived Snippet:** *"s in Jesus and professes him as the resurrected Lord will ever be put to shame. The stone is no longer a judge but the r..."*
+    - **Authoritative Derived Snippet:** *"s in jesus and professes him as the resurrected lord will ever be put to shame. the stone is no longer a judge but the r..."*
     - **Verification Status:** `VERIFIED`
   - **Evidence ID:** `S06F-E003` (THEOLOGICAL)
     - **Extracted Author Claim:** Paul applies Isaiah's monotheistic statements in Isaiah 28:16 to both God the Father and Christ the Lord, presenting Christ as co-sovereign and co-unique with the Father.
     - **Short Quote:** *"Paul is applying Isaiah’s monotheistic statements both to God and to Christ, the Lord, who is co-sovereign and co-unique with God the Father."*
     - **Locator:** [PDF p. 12; printed p. 106]
-    - **Authoritative Derived Snippet:** *"issing from the quotation in Romans 9:33. It is clear from both quotations that Paul is applying Isaiah's monotheistic s..."*
+    - **Authoritative Derived Snippet:** *"issing from the quotation in romans 9:33. it is clear from both quotations that paul is applying isaiah's monotheistic s..."*
     - **Verification Status:** `VERIFIED`
   - **Evidence ID:** `S06F-E004` (TEXTUAL_CRITICAL)
-    - **Extracted Author Claim:** In Romans 9:33, Paul merges Isaiah 28:16 and Isaiah 8:14 into a composite 'stone' quotation to show that trusting in works caused Israel to stumble over Christ, while faith yields certainty.
-    - **Short Quote:** *"This verse is a composite of two passages from Isaiah with the common theme of ‘stone’..."*
+    - **Extracted Author Claim:** Romans 9:33 contains a composite quotation conflating Isaiah 28:16 and Isaiah 8:14; its immediate origin is contested in scholarship between a pre-Pauline oral/written composite tradition (Koch, Dodd) and Paul's direct compilation from an Isaiah scroll (Shum), functioning to show that Israel stumbled over Christ while faith yields certainty.
+    - **Short Quote:** *"This verse is a composite of two passages from Isaiah with the common theme of ‘stone’; a similar passage can be found in 1 Peter 2:6–8."*
     - **Locator:** [PDF p. 11; printed p. 105]
-    - **Authoritative Derived Snippet:** *"rantees its application to the whole of Israel'.34 5. Rom 9:33 (Is 28:16; 8:14) This verse is a composite of two passage..."*
+    - **Authoritative Derived Snippet:** *"rantees its application to the whole of israel'.34 5. rom 9:33 (is 28:16; 8:14) this verse is a composite of two passage..."*
     - **Verification Status:** `VERIFIED`
 
 ### B001-5: Romans 10:13 / Joel 2:32 [LXX 3:5]
@@ -110,7 +110,7 @@
     - **Extracted Author Claim:** The citation of Isaiah 28:16 in Romans 10:11 corresponds directly with the unmarked quotation of Joel 2:32 in Romans 10:13, united by πᾶς to establish faith as the universal criterion for salvation.
     - **Short Quote:** *"The verse from Isaiah corresponds to the unmarked quotation from Joel 2:32 (LXX 3:5) in Romans 10:13."*
     - **Locator:** [PDF p. 12; printed p. 106]
-    - **Authoritative Derived Snippet:** *"yed by faith in God's redeeming work accomplished in the resurrection of Jesus. The verse from Isaiah corresponds to the..."*
+    - **Authoritative Derived Snippet:** *"yed by faith in god's redeeming work accomplished in the resurrection of jesus. the verse from isaiah corresponds to the..."*
     - **Verification Status:** `VERIFIED`
 
 ### B001-6: Romans 11:34 / Isaiah 40:13
@@ -129,16 +129,16 @@
     - *(and 2 more hit(s) on this page)*
 - **Evidence Ledger Witnesses (`citation_ledger.csv`):**
   - **Evidence ID:** `S06F-E006` (LITERARY)
-    - **Extracted Author Claim:** In Romans 11:34, Paul quotes almost word-for-word from LXX Isaiah 40:13 without an introductory formula, incorporating it into a hymn-like doxology expressing the unsearchable sovereignty of God.
-    - **Short Quote:** *"Without pointing it out, Paul quotes here almost word for word from Isaiah 40:13 – with a possible echo of Job 41:11 (LXX 41:3) – in a hymn-like doxology that expresses the greatness of God..."*
+    - **Extracted Author Claim:** In Romans 11:34, Paul quotes almost word-for-word from LXX Isaiah 40:13 without an introductory formula—accompanied by a possible echo of Job 41:11 (LXX 41:3) in Rom 11:35—either quoting from memory or drawing automatically on biblical idiom to express God's unsearchable sovereignty.
+    - **Short Quote:** *"Without pointing it out, Paul quotes here almost word for word from Isaiah 40:13 – with a possible echo of Job 41:11 (LXX 41:3) – in a hymn-like doxology that expresses the greatness of God and the unsearchable nature of his ways."*
     - **Locator:** [PDF p. 18; printed p. 112]
-    - **Authoritative Derived Snippet:** *"final three - rhetorical - questions address the subject of God's sovereignty. Without pointing it out, Paul quotes here..."*
+    - **Authoritative Derived Snippet:** *"final three - rhetorical - questions address the subject of god's sovereignty. without pointing it out, paul quotes here..."*
     - **Verification Status:** `VERIFIED`
   - **Evidence ID:** `S06F-E007` (TEXTUAL_CRITICAL)
     - **Extracted Author Claim:** Paul adapts Isaiah 40:13 selectively according to his contextual purpose, omitting the end of the verse in Romans 11:35 while omitting its middle section in 1 Corinthians 2:16.
     - **Short Quote:** *"Elsewhere, in Romans 11:35, he omits the end of Isaiah 40:13; in 1 Corinthians 2:16, he leaves out the middle section."*
     - **Locator:** [PDF p. 18; printed p. 112]
-    - **Authoritative Derived Snippet:** *"ability to quote at will enables him to adapt Scriptures according his purpose. Elsewhere, in Romans 11:35, he omits the..."*
+    - **Authoritative Derived Snippet:** *"ability to quote at will enables him to adapt scriptures according his purpose. elsewhere, in romans 11:35, he omits the..."*
     - **Verification Status:** `VERIFIED`
 
 ### B001-7: Romans 15:12 / Isaiah 11:10
@@ -160,13 +160,13 @@
     - **Extracted Author Claim:** In Romans 15:12, Paul places Isaiah 11:10 as the culmination of the citation chain in Romans 15:9–12, marking an ideological shift from general praise to the 'root of Jesse' as the hope of the Gentiles.
     - **Short Quote:** *"There is something of a discontinuity – an ideological shift – between the quotations from Psalms/Deuteronomy and the verse from Isaiah. From explicit praise of the Lord, attention moves to the ‘root of Jesse’, who is the hope of the Gentiles."*
     - **Locator:** [PDF p. 20; printed p. 114]
-    - **Authoritative Derived Snippet:** *"d Deuteronomy which begin in verse 9 and give praise to the Lord for his mercy. There is something of a discontinuity - ..."*
+    - **Authoritative Derived Snippet:** *"d deuteronomy which begin in verse 9 and give praise to the lord for his mercy. there is something of a discontinuity - ..."*
     - **Verification Status:** `VERIFIED`
   - **Evidence ID:** `S06F-E009` (CHRISTOLOGICAL)
     - **Extracted Author Claim:** Paul uses Isaiah 11:10 in Romans 15:12 to present Jesus Christ as the promised messianic ruler over the nations who unites Jewish and Gentile believers in shared praise.
     - **Short Quote:** *"Jesus Christ is the promised shoot from the stump of Jesse, the Messiah, the sovereign Lord, the ruler over the nations and the hope of salvation for the Gentiles; he is the Christ who ‘did not please himself’ (verse 3), who unites all people."*
     - **Locator:** [PDF p. 20; printed p. 114]
-    - **Authoritative Derived Snippet:** *"priate manner. The quotations provide a positive motivation for Paul's readers: Jesus Christ is the promised shoot from ..."*
+    - **Authoritative Derived Snippet:** *"priate manner. the quotations provide a positive motivation for paul's readers: jesus christ is the promised shoot from ..."*
     - **Verification Status:** `VERIFIED`
 
 ### B001-8: 1 Corinthians 1:19 / Isaiah 29:14
@@ -200,12 +200,12 @@
 
 1. **Primary Focus of Volume:** Mireia Ryšková's study focuses exclusively on 15 direct quotations from the Book of Isaiah in Paul's Letter to the Romans (pp. 95–116).
 2. **Substantively Treated B001 Loci:**
-   - **B001-4 (Rom 10:11 / Isa 28:16 & Rom 9:33):** Detailed analysis across Sections 5 & 6 (pp. 105–106). Four ledger claims (`S06F-E001`–`S06F-E004`) covering insertion of πᾶς, christological stone re-contextualization, and monotheistic sovereignty.
+   - **B001-4 (Rom 10:11 / Isa 28:16 & Rom 9:33):** Detailed analysis across Sections 5 & 6 (pp. 105–106). Four ledger claims (`S06F-E001`–`S06F-E004`) covering insertion of πᾶς, christological stone re-contextualization, monotheistic sovereignty, and neutral presentation of contested composite origin.
    - **B001-5 (Rom 10:13 / Joel 2:32):** Direct correspondence analysis in Section 6 (p. 106). One ledger claim (`S06F-E005`) linking universal salvation to calling on Jesus as Lord.
-   - **B001-6 (Rom 11:34 / Isa 40:13):** Detailed analysis in Section 12 (p. 112). Two ledger claims (`S06F-E006`–`S06F-E007`) covering verbatim quotation in doxology and selective adaptation across Romans and 1 Corinthians.
+   - **B001-6 (Rom 11:34 / Isa 40:13):** Detailed analysis in Section 12 (p. 112). Two ledger claims (`S06F-E006`–`S06F-E007`) covering verbatim quotation in doxology, qualified Job echo, and selective adaptation across Romans and 1 Corinthians.
    - **B001-7 (Rom 15:12 / Isa 11:10):** Climax analysis in Section 14 (p. 114). Two ledger claims (`S06F-E008`–`S06F-E009`) covering ideological shift to the Root of Jesse and messianic hope of the Gentiles.
 3. **Passing Context Mentions:**
    - **B001-2 (Rom 9:25) & B001-3 (Rom 9:26):** Cited in passing on p. 104 [PDF p. 10] as the Hosea quotation context introducing Paul's subsequent Isaiah catena.
 4. **Confirmed Absent Loci (6 comparisons):**
    - **B001-1 (Rom 4:3 / Gen 15:6), B001-8 (1 Cor 1:19 / Isa 29:14), B001-9 (1 Cor 6:16 / Gen 2:24), B001-10 (1 Cor 9:9 / Deut 25:4), B001-11 (1 Cor 10:7 / Exod 32:6), B001-12 (Gal 3:13 / Deut 21:23):** Confirmed zero textual or theological analysis in this volume due to its strict focus on Isaiah in Romans.
-5. **Methodological Rigor:** Pinned pagination formula $printed = PDF + 94$ holds across all 22 pages; all 9 evidence claims verified against the born-digital text layer with authoritative derived snippets.
+5. **Methodological Rigor:** Pinned pagination formula $printed = PDF + 94$ holds across all 22 pages; all 9 evidence claims verified across their entire lengths against the born-digital text layer with authoritative derived snippets.

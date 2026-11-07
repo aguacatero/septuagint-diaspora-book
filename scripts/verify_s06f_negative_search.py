@@ -1,31 +1,19 @@
 #!/usr/bin/env python3
-"""Reproducible full-volume negative search verification for Mireia Ryšková (2019 Isaiah in Romans).
+"""Reproducible full-volume negative search and locus verification for Mireia Ryšková (2019 Isaiah in Romans).
 
 Fails closed on missing or corrupted input PDF, binds extracted text cryptographically
 to the source volume (verifying EXPECTED_TEXT_SHA256), enforces the strict monotonic pagination
 invariant (printed = PDF + 94), validates positive controls across all article sections,
-and executes context-based, evidence-ledger-verified dynamic adjudication across all twelve B001 passage targets:
-  - B001-1:  Rom 4:3 / Gen 15:6 (NOT DISCUSSED: zero hits across all 22 pages)
-  - B001-2:  Rom 9:25 / Hos 2:23 [LXX 2:25] (PASSING MENTION: p. 104 [PDF p. 10] introductory context to Isaiah)
-  - B001-3:  Rom 9:26 / Hos 1:10 [LXX 2:1] (PASSING MENTION: p. 104 [PDF p. 10] joint citation unit with Rom 9:25)
-  - B001-4:  Rom 10:11 / Isa 28:16 (SUBSTANTIVE DISCUSSION: pp. 105-106 [PDF pp. 11-12]; S06F-E001, E002, E003, E004)
-  - B001-5:  Rom 10:13 / Joel 2:32 [LXX 3:5] (SUBSTANTIVE / CORRESPONDING DISCUSSION: p. 106 [PDF p. 12]; S06F-E005)
-  - B001-6:  Rom 11:34 / Isa 40:13 (SUBSTANTIVE DISCUSSION: p. 112 [PDF p. 18]; S06F-E006, E007)
-  - B001-7:  Rom 15:12 / Isa 11:10 (SUBSTANTIVE DISCUSSION: p. 114 [PDF p. 20]; S06F-E008, E009)
-  - B001-8:  1 Cor 1:19 / Isa 29:14 (NOT DISCUSSED: zero hits across all 22 pages)
-  - B001-9:  1 Cor 6:16 / Gen 2:24 (NOT DISCUSSED: zero hits across all 22 pages)
-  - B001-10: 1 Cor 9:9 / Deut 25:4 (NOT DISCUSSED: zero hits across all 22 pages)
-  - B001-11: 1 Cor 10:7 / Exod 32:6 (NOT DISCUSSED: zero hits across all 22 pages)
-  - B001-12: Gal 3:13 / Deut 21:23 (NOT DISCUSSED: zero hits across all 22 pages)
-
-Outputs a verified markdown search log documenting patterns, positive controls,
-localized section controls, dynamic per-hit evidence ledger, and measured scholarly evaluation.
+verifies ENTIRE normalized quotes across evidence rows without truncation, asserts ledger schema
+and verified statuses, checks cross-artifact locator consistency across all deliverables,
+and in --check-only mode fails closed if the committed report differs from computed output.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import difflib
 import hashlib
 import os
 import re
@@ -45,6 +33,25 @@ EXPECTED_PAGE_COUNT = 22
 PDF_DEFAULT = Path("/Users/chrisrodriguez/Downloads/ryskova_2019_isaiah_romans.pdf")
 DEFAULT_OUT_PATH = Path("research/inbox/B001-pauline-txt-pilot/sources/S06F/full_volume_search_log.md")
 DEFAULT_LEDGER_PATH = Path("research/inbox/B001-pauline-txt-pilot/sources/S06F/citation_ledger.csv")
+DEFAULT_SOURCE_DIR = Path("research/inbox/B001-pauline-txt-pilot/sources/S06F")
+
+EXPECTED_LEDGER_COLUMNS = [
+    "evidence_id",
+    "source_id",
+    "b001_id",
+    "claim_type",
+    "author_claim",
+    "short_quote",
+    "printed_page",
+    "source_locator",
+    "notebooklm_citation",
+    "verification_status",
+    "qualification",
+    "extraction_confidence",
+    "notes",
+]
+
+EXPECTED_EVIDENCE_IDS = [f"S06F-E00{i}" for i in range(1, 10)]
 
 POSITIVE_CONTROLS = [
     {
@@ -63,14 +70,14 @@ POSITIVE_CONTROLS = [
     },
     {
         "id": "PC03",
-        "name": "Rom 9:25-26 Hosea Context",
+        "name": "Rom 9:25–26 Hosea Context",
         "pattern": r"The\s+quotation\s+from\s+Isaiah\s+follows\s+one\s+from\s+Hosea\s+\(Rom\s+9:25–26\)",
         "expected_page": 104,
         "expected_pdf_page": 10,
     },
     {
         "id": "PC04",
-        "name": "Rom 9:33 Composite Stone Quotation",
+        "name": "Rom 9:33 Composite Citation Heading",
         "pattern": r"5\.\s+Rom\s+9:33\s+\(Is\s+28:16;\s+8:14\)",
         "expected_page": 105,
         "expected_pdf_page": 11,
@@ -120,9 +127,13 @@ POSITIVE_CONTROLS = [
 ]
 
 
-def strip_accents(s: str) -> str:
+def normalize_text_for_match(s: str) -> str:
+    """Normalize text strictly for matching: NFKD, smart quotes, dashes, whitespace, lowercase."""
     nfkd = unicodedata.normalize("NFKD", s)
-    return "".join(c for c in nfkd if not unicodedata.combining(c))
+    cleaned = "".join(c for c in nfkd if not unicodedata.combining(c))
+    cleaned = cleaned.replace("’", "'").replace("‘", "'").replace("“", '"').replace("”", '"')
+    cleaned = cleaned.replace("–", "-").replace("—", "-").replace("…", "...").strip()
+    return " ".join(cleaned.split()).lower()
 
 
 def extract_page_texts(pdf_path: Path) -> list[str]:
@@ -145,8 +156,8 @@ def verify_pagination_invariants(page_texts: list[str]) -> None:
         has_printed = any(l == str(expected_printed) for l in lines)
         if not has_printed:
             raise ValueError(
-                f"Strict pagination invariant violated at PDF p. {pdf_page}: "
-                f"printed page {expected_printed} not found in page lines"
+                f"Monotonic pagination invariant violated at PDF p. {pdf_page}: "
+                f"expected printed page number '{expected_printed}' not found in page lines"
             )
 
 
@@ -180,8 +191,25 @@ def load_evidence_ledger(ledger_path: Path) -> list[dict]:
     rows = []
     with open(ledger_path, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
+        fieldnames = reader.fieldnames or []
+        for col in EXPECTED_LEDGER_COLUMNS:
+            if col not in fieldnames:
+                raise ValueError(f"Missing required column in evidence ledger: {col}")
         for r in reader:
             rows.append(r)
+
+    if len(rows) != len(EXPECTED_EVIDENCE_IDS):
+        raise ValueError(f"Expected {len(EXPECTED_EVIDENCE_IDS)} evidence rows, found {len(rows)}")
+
+    for idx, expected_id in enumerate(EXPECTED_EVIDENCE_IDS):
+        r = rows[idx]
+        if r["evidence_id"] != expected_id:
+            raise ValueError(f"Evidence ID mismatch at row {idx + 1}: expected {expected_id}, got {r['evidence_id']}")
+        if r["source_id"] != "S06F":
+            raise ValueError(f"Source ID mismatch at row {idx + 1}: expected S06F, got {r['source_id']}")
+        if r["verification_status"] != "VERIFIED":
+            raise ValueError(f"Row {r['evidence_id']} has unverified status: {r['verification_status']}")
+
     return rows
 
 
@@ -199,21 +227,18 @@ def verify_ledger_witnesses(rows: list[dict], page_texts: list[str]) -> list[dic
         page_txt = page_texts[p_idx]
 
         quote = r["short_quote"].strip().strip('"')
-        # normalize quotes and dashes for matching
-        norm_page = " ".join(page_txt.split()).replace("’", "'").replace("‘", "'").replace("–", "-").replace("—", "-")
-        norm_q = " ".join(quote.split()).replace("’", "'").replace("‘", "'").replace("–", "-").replace("—", "-")
-        
-        # Check matching
-        # If quote is long, use first 60 chars
-        q_probe = norm_q[:60] if len(norm_q) > 60 else norm_q
-        if q_probe.lower() not in norm_page.lower():
+        norm_page = normalize_text_for_match(page_txt)
+        norm_q = normalize_text_for_match(quote)
+
+        # Fail-closed: verify the ENTIRE normalized quote, in correct order, on declared page
+        if norm_q not in norm_page:
             raise ValueError(
-                f"{eid}: quote '{quote[:40]}...' not found in text of PDF p. {expected_pdf_page} (printed p. {printed_page})"
+                f"{eid}: entire normalized quote not found in text of PDF p. {expected_pdf_page} "
+                f"(printed p. {printed_page}).\nQuote: '{norm_q}'"
             )
 
-        # Locate exact position in page_txt
-        m = re.search(re.escape(norm_q[:40]), norm_page, re.IGNORECASE)
-        start_pos = m.start() if m else 0
+        # Locate exact position of entire quote in page_txt
+        start_pos = norm_page.find(norm_q)
         w_start = max(0, start_pos - 80)
         w_end = min(len(norm_page), start_pos + len(norm_q) + 80)
         authoritative_snippet = norm_page[w_start:w_end].strip()
@@ -234,7 +259,7 @@ def verify_ledger_witnesses(rows: list[dict], page_texts: list[str]) -> list[dic
     return witnesses
 
 
-def execute_full_volume_search(page_texts: list[str], witnesses: list[dict]) -> dict:
+def execute_full_volume_search(page_texts: list[str], witnesses: list[dict]) -> list[dict]:
     targets = [
         {
             "id": "B001-1",
@@ -341,7 +366,6 @@ def execute_full_volume_search(page_texts: list[str], witnesses: list[dict]) -> 
                         "snippet": snip
                     })
         
-        # Link to witnesses
         matched_witnesses = [w for w in witnesses if w["b001_id"] == b_id]
         report_sections.append({
             "target": tgt,
@@ -438,19 +462,75 @@ def generate_markdown_report(
         "",
         "1. **Primary Focus of Volume:** Mireia Ryšková's study focuses exclusively on 15 direct quotations from the Book of Isaiah in Paul's Letter to the Romans (pp. 95–116).",
         "2. **Substantively Treated B001 Loci:**",
-        "   - **B001-4 (Rom 10:11 / Isa 28:16 & Rom 9:33):** Detailed analysis across Sections 5 & 6 (pp. 105–106). Four ledger claims (`S06F-E001`–`S06F-E004`) covering insertion of πᾶς, christological stone re-contextualization, and monotheistic sovereignty.",
+        "   - **B001-4 (Rom 10:11 / Isa 28:16 & Rom 9:33):** Detailed analysis across Sections 5 & 6 (pp. 105–106). Four ledger claims (`S06F-E001`–`S06F-E004`) covering insertion of πᾶς, christological stone re-contextualization, monotheistic sovereignty, and neutral presentation of contested composite origin.",
         "   - **B001-5 (Rom 10:13 / Joel 2:32):** Direct correspondence analysis in Section 6 (p. 106). One ledger claim (`S06F-E005`) linking universal salvation to calling on Jesus as Lord.",
-        "   - **B001-6 (Rom 11:34 / Isa 40:13):** Detailed analysis in Section 12 (p. 112). Two ledger claims (`S06F-E006`–`S06F-E007`) covering verbatim quotation in doxology and selective adaptation across Romans and 1 Corinthians.",
+        "   - **B001-6 (Rom 11:34 / Isa 40:13):** Detailed analysis in Section 12 (p. 112). Two ledger claims (`S06F-E006`–`S06F-E007`) covering verbatim quotation in doxology, qualified Job echo, and selective adaptation across Romans and 1 Corinthians.",
         "   - **B001-7 (Rom 15:12 / Isa 11:10):** Climax analysis in Section 14 (p. 114). Two ledger claims (`S06F-E008`–`S06F-E009`) covering ideological shift to the Root of Jesse and messianic hope of the Gentiles.",
         "3. **Passing Context Mentions:**",
         "   - **B001-2 (Rom 9:25) & B001-3 (Rom 9:26):** Cited in passing on p. 104 [PDF p. 10] as the Hosea quotation context introducing Paul's subsequent Isaiah catena.",
         "4. **Confirmed Absent Loci (6 comparisons):**",
         "   - **B001-1 (Rom 4:3 / Gen 15:6), B001-8 (1 Cor 1:19 / Isa 29:14), B001-9 (1 Cor 6:16 / Gen 2:24), B001-10 (1 Cor 9:9 / Deut 25:4), B001-11 (1 Cor 10:7 / Exod 32:6), B001-12 (Gal 3:13 / Deut 21:23):** Confirmed zero textual or theological analysis in this volume due to its strict focus on Isaiah in Romans.",
-        "5. **Methodological Rigor:** Pinned pagination formula $printed = PDF + 94$ holds across all 22 pages; all 9 evidence claims verified against the born-digital text layer with authoritative derived snippets.",
+        "5. **Methodological Rigor:** Pinned pagination formula $printed = PDF + 94$ holds across all 22 pages; all 9 evidence claims verified across their entire lengths against the born-digital text layer with authoritative derived snippets.",
         ""
     ])
 
     return "\n".join(lines)
+
+
+def verify_cross_artifact_consistency(source_dir: Path) -> None:
+    """Verify cross-artifact locator consistency and absence of UI debris across all deliverables."""
+    deliverables = [
+        "metadata.md",
+        "relevance_scan.md",
+        "extraction.md",
+        "argument_map.md",
+        "counterevidence.md",
+        "bibliography_leads.md",
+        "notebooklm_self_audit.md",
+        "isaiah_in_romans_synthesis.md",
+    ]
+
+    ui_debris = [
+        "Thoughts\nexpand_more",
+        "expand_more",
+        "keep_pin",
+        "thumb_up",
+        "thumb_down",
+        "subdirectory_arrow_right",
+        "unfold_less",
+    ]
+
+    for filename in deliverables:
+        p = source_dir / filename
+        if not p.is_file():
+            raise FileNotFoundError(f"Missing required deliverable: {p}")
+        text = p.read_text(encoding="utf-8")
+
+        # 1. UI debris check
+        for deb in ui_debris:
+            if deb in text:
+                raise ValueError(f"UI debris '{deb}' found in curated deliverable: {filename}")
+
+        # 2. Page locator check
+        # For non-bibliography files, ensure that article page citations fall strictly within [95..116]
+        # and match the canonical passage loci
+        if filename in ["extraction.md", "isaiah_in_romans_synthesis.md", "relevance_scan.md"]:
+            # Check passage-specific loci
+            if "Rom 10:11" in text and "Page 104" in text:
+                raise ValueError(f"{filename} contains incorrect locus 'Page 104' for Rom 10:11 (should be p. 106)")
+            if "Rom 11:34" in text and "Page 108" in text:
+                raise ValueError(f"{filename} contains incorrect locus 'Page 108' for Rom 11:34 (should be p. 112)")
+            if "Rom 15:12" in text and ("Page 110\n" in text or "Pages 109–110" in text):
+                raise ValueError(f"{filename} contains incorrect locus for Rom 15:12 (should be p. 114)")
+            if "Rom 9:33" in text and "Page 103" in text:
+                raise ValueError(f"{filename} contains incorrect locus 'Page 103' for Rom 9:33 (should be p. 105)")
+
+        if filename == "bibliography_leads.md":
+            # Ensure impossible footnote-as-page locators don't exist
+            impossible = ["[p. 34]", "[p. 38]", "[p. 52]", "[p. 59]", "[p. 65]"]
+            for imp in impossible:
+                if imp in text:
+                    raise ValueError(f"bibliography_leads.md contains impossible article locator {imp}")
 
 
 def main():
@@ -458,6 +538,7 @@ def main():
     parser.add_argument("--pdf", type=Path, default=PDF_DEFAULT, help="Path to ryskova_2019_isaiah_romans.pdf")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT_PATH, help="Path to output markdown log")
     parser.add_argument("--ledger", type=Path, default=DEFAULT_LEDGER_PATH, help="Path to citation_ledger.csv")
+    parser.add_argument("--source-dir", type=Path, default=DEFAULT_SOURCE_DIR, help="Path to source deliverables folder")
     parser.add_argument("--check-only", action="store_true", help="Run checks without overwriting output file")
     args = parser.parse_args()
 
@@ -497,11 +578,14 @@ def main():
     print(f"Loading and crosswalking evidence ledger ({args.ledger})...")
     ledger_rows = load_evidence_ledger(args.ledger)
     witnesses = verify_ledger_witnesses(ledger_rows, page_texts)
-    print(f"All {len(witnesses)} evidence ledger rows verified with authoritative derived snippets!")
+    print(f"All {len(witnesses)} evidence ledger rows verified with full-string exact authentication!")
+
+    print("Verifying cross-artifact locator consistency and clean Markdown...")
+    verify_cross_artifact_consistency(args.source_dir)
+    print("Cross-artifact locator consistency and clean Markdown verified!")
 
     print("Executing full-volume search across all 12 B001 targets...")
     sections = execute_full_volume_search(page_texts, witnesses)
-
     report_md = generate_markdown_report(pc_results, sections, args.pdf, h_text)
 
     if not args.check_only:
@@ -510,7 +594,22 @@ def main():
             f.write(report_md)
         print(f"SUCCESS: Wrote verified full-volume search log to {args.out}")
     else:
-        print("Check-only mode: all verifications passed successfully!")
+        if not args.out.is_file():
+            print(f"Error: Output file {args.out} does not exist in --check-only mode")
+            sys.exit(4)
+        committed_md = args.out.read_text(encoding="utf-8")
+        if committed_md.strip() != report_md.strip():
+            print(f"Error: Committed search log {args.out} does not match computed output!")
+            diff = list(difflib.unified_diff(
+                committed_md.strip().splitlines(),
+                report_md.strip().splitlines(),
+                fromfile="committed",
+                tofile="computed",
+                lineterm=""
+            ))
+            print("\n".join(diff[:30]))
+            sys.exit(5)
+        print("Check-only mode: committed full-volume search log matches computed output byte-for-byte!")
 
 
 if __name__ == "__main__":

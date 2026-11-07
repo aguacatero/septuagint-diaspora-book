@@ -2734,6 +2734,164 @@ def test_s06f_negative_search_verification():
     assert res.returncode == 0, f"verify_s06f_negative_search failed:\n{res.stderr}\n{res.stdout}"
 
 
+def test_s06f_adversarial_quote_witness_tail_mutation_fails_closed():
+    """Verify that quote witness verification authenticates the ENTIRE quote, failing closed on tail mutations after char 60."""
+    import sys
+    import pytest
+    repo_root = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(repo_root))
+    from scripts.verify_s06f_negative_search import (
+        extract_page_texts,
+        load_evidence_ledger,
+        verify_ledger_witnesses,
+        PDF_DEFAULT,
+        DEFAULT_LEDGER_PATH
+    )
+
+    page_texts = extract_page_texts(PDF_DEFAULT)
+    rows = load_evidence_ledger(DEFAULT_LEDGER_PATH)
+
+    # Pick S06F-E001 (quote length 134 chars)
+    e001_quote = rows[0]["short_quote"]
+    assert len(e001_quote) > 80
+
+    mutations = [
+        # Negation after char 60
+        e001_quote[:60] + " but not in Christ or God.",
+        # Greek tokens after char 60
+        e001_quote[:60] + " (πᾶς οὐ μὴ καταισχυνθῇ).",
+        # Numerical reference after char 60
+        e001_quote[:60] + " in chapter 99 verse 100.",
+        # Arbitrary fabricated tail
+        e001_quote[:60] + " fabricated ending that does not occur on the page.",
+    ]
+
+    for mutated_quote in mutations:
+        test_rows = [dict(r) for r in rows]
+        test_rows[0]["short_quote"] = mutated_quote
+        with pytest.raises(ValueError) as excinfo:
+            verify_ledger_witnesses(test_rows, page_texts)
+        assert "entire normalized quote not found" in str(excinfo.value)
+
+
+def test_s06f_check_only_detects_tampered_search_log(tmp_path):
+    """Verify that --check-only compares committed bytes and fails closed on tampering."""
+    import subprocess
+    import sys
+    repo_root = Path(__file__).resolve().parent.parent
+    script_path = repo_root / "scripts/verify_s06f_negative_search.py"
+    committed_log = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S06F/full_volume_search_log.md"
+    assert committed_log.is_file()
+
+    # Tampering test cases
+    tampering_cases = [
+        # Alter category
+        ("`SUBSTANTIVE_DISCUSSION`", "`PASSING_MENTION`"),
+        # Alter locator
+        ("[PDF p. 12; printed p. 106]", "[PDF p. 99; printed p. 199]"),
+        # Alter claim
+        ("universal availability of salvation", "restricted salvation only for few"),
+    ]
+
+    for original, tampered in tampering_cases:
+        content = committed_log.read_text(encoding="utf-8")
+        assert original in content, f"Target string '{original}' not found in committed log"
+        tampered_content = content.replace(original, tampered, 1)
+
+        tampered_file = tmp_path / "tampered_log.md"
+        tampered_file.write_text(tampered_content, encoding="utf-8")
+
+        res = subprocess.run(
+            [sys.executable, str(script_path), "--check-only", "--out", str(tampered_file)],
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True
+        )
+        assert res.returncode != 0, f"Expected non-zero exit for tampering '{original}' -> '{tampered}'"
+        assert "does not match computed output" in res.stdout or "does not match computed output" in res.stderr
+
+
+def test_s06f_ledger_schema_and_verification_assertions_fail_closed(tmp_path):
+    """Verify that verifier asserts ledger schema, expected IDs, and VERIFIED statuses."""
+    import pytest
+    import sys
+    repo_root = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(repo_root))
+    from scripts.verify_s06f_negative_search import load_evidence_ledger, DEFAULT_LEDGER_PATH
+
+    # Valid load
+    valid_rows = load_evidence_ledger(DEFAULT_LEDGER_PATH)
+    assert len(valid_rows) == 9
+
+    # 1. Missing column
+    bad_csv = tmp_path / "bad_col.csv"
+    bad_csv.write_text("evidence_id,source_id,author_claim\nS06F-E001,S06F,claim\n", encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        load_evidence_ledger(bad_csv)
+    assert "Missing required column" in str(exc.value)
+
+    # 2. Missing ID / wrong count
+    bad_id_csv = tmp_path / "bad_id.csv"
+    with open(DEFAULT_LEDGER_PATH, encoding="utf-8") as f:
+        lines = f.readlines()
+    bad_id_csv.write_text("".join(lines[:5]), encoding="utf-8")  # only 4 rows
+    with pytest.raises(ValueError) as exc:
+        load_evidence_ledger(bad_id_csv)
+    assert "Expected 9 evidence rows" in str(exc.value)
+
+    # 3. Unverified status
+    unverified_csv = tmp_path / "unverified.csv"
+    unverified_lines = [l.replace("VERIFIED", "PENDING_REVIEW") if "S06F-E001" in l else l for l in lines]
+    unverified_csv.write_text("".join(unverified_lines), encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        load_evidence_ledger(unverified_csv)
+    assert "unverified status" in str(exc.value)
+
+
+def test_s06f_cross_artifact_consistency_fails_on_debris_or_bad_loci(tmp_path):
+    """Verify that cross-artifact check catches UI debris and invalid page locators."""
+    import pytest
+    import shutil
+    import sys
+    repo_root = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(repo_root))
+    from scripts.verify_s06f_negative_search import verify_cross_artifact_consistency, DEFAULT_SOURCE_DIR
+
+    # Valid check passes
+    verify_cross_artifact_consistency(DEFAULT_SOURCE_DIR)
+
+    # Copy files to temp dir
+    temp_sources = tmp_path / "sources_test"
+    shutil.copytree(DEFAULT_SOURCE_DIR, temp_sources)
+
+    # 1. Test UI debris detection
+    target_md = temp_sources / "metadata.md"
+    orig_text = target_md.read_text(encoding="utf-8")
+    target_md.write_text(orig_text + "\nexpand_more\n", encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "UI debris 'expand_more' found" in str(exc.value)
+    target_md.write_text(orig_text, encoding="utf-8")
+
+    # 2. Test bad locus detection for Rom 10:11 (Page 104 instead of 106)
+    extr_md = temp_sources / "extraction.md"
+    orig_extr = extr_md.read_text(encoding="utf-8")
+    extr_md.write_text(orig_extr.replace("Printed p. 106", "Page 104"), encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "contains incorrect locus 'Page 104' for Rom 10:11" in str(exc.value)
+    extr_md.write_text(orig_extr, encoding="utf-8")
+
+    # 3. Test impossible locator in bibliography_leads.md
+    bib_md = temp_sources / "bibliography_leads.md"
+    orig_bib = bib_md.read_text(encoding="utf-8")
+    bib_md.write_text(orig_bib + "\nKoch [p. 34]\n", encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "contains impossible article locator [p. 34]" in str(exc.value)
+
+
+
 
 
 
