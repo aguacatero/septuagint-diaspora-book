@@ -37,6 +37,18 @@ These instructions apply to **every AI assistant or human contributor** working 
 - **The reviewer/promoter (human or LLM with permission)** is responsible for updating `main`'s README and SVG **in the same promotion cycle** as the accepted batch/status change.
 - If you lack write access, provide an explicit README/progress handoff rather than claiming the public README was updated. Do not invent completion evidence.
 
+## Definition of task completion (Antigravity / agents)
+
+**A research task, source transition, revision, or scheduled checkpoint is NOT `DONE` until README reconciliation has passed.** Checking the README is part of the task's acceptance criteria, not a later documentation chore.
+
+1. Finish and validate the underlying research/state changes; verify any required independent exact-SHA review before source promotion.
+2. Run `python3 scripts/sync_readme_checkpoint.py` to update the **Research progress** and **Status** checkpoint blocks from the queue and state. Then run `python3 scripts/sync_readme_checkpoint.py --check` and `python3 scripts/update_progress.py --check`; both checks must exit 0.
+3. Independently compare the README narrative with the live PR review disposition, including any REVISE/blocker, and keep the draft-vs-main and six-milestone distinctions explicit. The generator checks queue/state facts, **not** whether a GitHub review is substantively current.
+4. Commit and push any changed `README.md` **with the state transition whenever feasible** (or in an immediate follow-up *before* declaring DONE or advancing sources). Keep `assets/progress.svg` synchronized only if the accepted milestone/current module actually changes. Never mark an unmerged source as an accepted TXT gate.
+5. End every report with `README: UPDATED <commit link>` or `README: CHECKED AND UNCHANGED (both checks passed)`. If the README cannot be updated, pushed, or verified, report `BLOCKED` or `IN_PROGRESS` with the reason; do **not** report `DONE`, `COMPLETE`, or advance the queue.
+
+A review-pending source is `WAITING_FOR_REVIEW`, not completed; an hourly no-change poll may finish only after it records that the README was checked and remains accurate. This requirement does not authorize merges to `main`.
+
 ## End-of-task report
 
 State whether README progress was **updated** or **checked and unchanged**. If updated, name the new count and link the commit/PR. If waiting on review or permission, state the blocker. This step also applies to future ChatGPT sessions that open this repository directly.
