@@ -2272,9 +2272,12 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
     assert adj_4k["classification"] == "MANUAL_REVIEW_REQUIRED"
 
     # Case 4l (S05-R7-F2): Hit within 500 chars on same page but with zero semantic token overlap with witness quote fails binding
+    wit_passage = "Indem es Heiden diejenigen 'Auszeichnungen' verheißend zuspricht, die Israel besaß. "
+    filler_4l = " NeutralerKontext" * 25  # ~400 chars, distance <= 500 chars from witness
     no_overlap_page_text = (
-        "Indem es Heiden diejenigen 'Auszeichnungen' verheißend zuspricht, die Israel besaß. "
-        "Hos 225 nennt Erbarmensgefäße im Kontext."
+        wit_passage
+        + filler_4l
+        + " Hos 225 nennt Erbarmensgefäße im Kontext."
     )
     mock_pages_no_ov = list(mock_pages)
     mock_pages_no_ov[141] = no_overlap_page_text
@@ -2447,6 +2450,80 @@ def test_s05_dynamic_adjudication_rejects_synthetic_substantive_or_uncataloged_h
     }
     ok_o8, b_o8 = vns.authenticate_and_bind_hit(hit_o8, pages=pages_o8, verified_witnesses=[wit_one8])
     assert ok_o8 is True and b_o8 is not None
+
+    # Case 4q (S05-R9-F1): Correct citation offset paired with authentic but distant snippet (>1,000 chars away)
+    # containing configured analytical terms fails local window alignment [-300..+450] and cannot open substantive gate.
+    distant_filler = " UnrelatedFillerWord" * 70  # >1400 chars
+    distant_phrase_4q = "Erbarmensgefäße und Auszeichnungen verheißend zuspricht."
+    p130_distant_text = (
+        "Hos 225                 "  # 0..24
+        "Indem es Heiden diejenigen Auszeichnungen verheißend zuspricht."
+        + distant_filler
+        + " " + distant_phrase_4q
+    )
+    mock_pages_4q = list(mock_pages)
+    mock_pages_4q[141] = p130_distant_text
+    mock_text_4q = "\x0c".join(mock_pages_4q)
+
+    # 1. Attacker supplies correct Hos 225 offset (0..7) on p. 130, but supplies the distant phrase as snippet
+    hit_distant_snip = {
+        "start": 0,
+        "printed_page": 130,
+        "page_offset_start": 0,
+        "page_offset_end": 7,
+        "match": "Hos 225",
+        "snippet": distant_phrase_4q,
+    }
+    ok_dist, h_dist, msg_dist = vns.authenticate_hit(hit_distant_snip, mock_pages_4q)
+    assert ok_dist is False
+    assert h_dist is None
+    assert "does not align with local text window" in msg_dist
+
+    # 2. When passed to adjudicate_target, hits with distant snippets cannot open substantive gate
+    distant_snippet_hits = [dict(hit_distant_snip) for _ in range(3)]
+    adj_4q = vns.adjudicate_target(
+        target_def_b2, distant_snippet_hits, {"passed": True}, ledger=valid_b2_ledger, pages=mock_pages_4q, full_text=mock_text_4q
+    )
+    assert adj_4q["passed"] is False
+    assert adj_4q["classification"] == "MANUAL_REVIEW_REQUIRED"
+    assert "could not be authenticated and semantically bound" in adj_4q["summary"]
+
+    # 3. When caller provides NO snippet, derived_snippet is bounded to local window [0..457]
+    # and does NOT contain analytical terms located only in the distant phrase (>1,400 chars away)
+    hit_no_snip = {
+        "start": 0,
+        "printed_page": 130,
+        "page_offset_start": 0,
+        "page_offset_end": 7,
+        "match": "Hos 225",
+    }
+    ok_derived, h_derived, _ = vns.authenticate_hit(hit_no_snip, mock_pages_4q)
+    assert ok_derived is True
+    assert "Erbarmensgefäße" not in h_derived["snippet"]
+
+    # Case 4r (S05-R9-F2): Conflicting printed_page and caller-supplied pdf_page fails invariant enforcement
+    hit_conflict_pdf = {
+        "printed_page": 130,
+        "pdf_page": 20,
+        "page_offset_start": 0,
+        "page_offset_end": 7,
+        "match": "Hos 225",
+    }
+    ok_conf, h_conf, msg_conf = vns.authenticate_hit(hit_conflict_pdf, mock_pages)
+    assert ok_conf is False
+    assert h_conf is None
+    assert "Contradictory pdf_page 20" in msg_conf
+
+    ok_bind_conf, b_conf = vns.authenticate_and_bind_hit(
+        hit_conflict_pdf, mock_pages, [{"evidence_id": "S05-E001", "printed_page": 130, "witnesses": []}]
+    )
+    assert ok_bind_conf is False
+    assert b_conf is None
+
+    adj_4r = vns.adjudicate_target(
+        target_def_b2, [dict(hit_conflict_pdf) for _ in range(3)], {"passed": True}, ledger=valid_b2_ledger, pages=mock_pages, full_text=mock_full_text
+    )
+    assert adj_4r["passed"] is False
 
 
 def test_s05_qualifications_and_locators_discipline():

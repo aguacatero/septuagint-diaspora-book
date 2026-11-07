@@ -90,29 +90,29 @@
 ### B001-1 — Romans 4:3 / Genesis 15:6
 
 - **Scholarly Classification:** `NOT DISCUSSED`
-- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Rom 4:3 and Gen 15:6 are not substantively analyzed in this volume. Gen 15:6 has zero occurrences in the volume and is absent from the authorial Stellenregister. Rom 4:3 appears once as an incidental citation-formula example on p. 94 n. 29 and is absent from the authorial Stellenregister.
+- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Rom 4:3 and Gen 15:6 are not substantively analyzed in this volume. Gen 15:6 has zero occurrences in the volume and is absent from the authorial Stellenregister. Rom 4:3 appears once as an incidental citation-formula example on p. 94 n. 29 and is absent from the authorial Stellenregister. *(Source-reviewed/extraction judgment, awaiting independent review)*
 
 ### B001-2 — Romans 9:25 / Hosea 2:23
 
 - **Scholarly Classification:** `SUBSTANTIVE_DISCUSSION`
-- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Wilk argues (p. 130) that in Rom 9:25-26 Paul chiastically applies the Hosea restoration prophecies (Hos 2:25 and Hos 2:1 LXX) to Gentiles as 'vessels of mercy' (v. 24), interpreting the future-tense promises as fulfilled in the Gentile mission, preparing for the transition to Rom 9:30-33.
+- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Wilk argues (p. 130) that in Rom 9:25-26 Paul chiastically applies the Hosea restoration prophecies (Hos 2:25 and Hos 2:1 LXX) to Gentiles as 'vessels of mercy' (v. 24), interpreting the future-tense promises as fulfilled in the Gentile mission, preparing for the transition to Rom 9:30-33. *(Source-reviewed/extraction judgment, awaiting independent review)*
 - **Evidence Record `S05-E001` (Printed p. 130; PDF p. 142):**
   - **Author Claim (Human-Reviewed):** In Romans 9:25, Paul quotes Hosea 2:25 LXX, applying future promise verbs to Gentile believers to demonstrate that their calling into God's mercy aligns with scriptural prophecy.
-  - **Reviewer Provenance & Scholarly Rationale:** Manual scholarly extraction and argument analysis from Wilk (1998) Teil II / IV; crosswalked to B001 target and verified against text layer.
+  - **Reviewer Provenance & Scholarly Rationale:** Source-reviewed/extraction judgment from Wilk (1998) Teil II / IV crosswalked to B001 target and verified against text layer; awaiting independent review.
   - **Verified Quotation:** `Indem es Heiden diejenigen 'Auszeichnungen' verheißend zuspricht, 'die Israel besaß und besitzt', erweist es die Berechtigung der paulinischen Darstellung...`
   - **Segment 1:** page offset `[200..358]` (matched `Indem es Heiden diejenigen 'Auszeichnungen' verheißend zuspr`)
 - **Bound Local Contextual Hits (2 hits in discussion loci):**
   *(Automated check: verified citation occurrences within <=500 chars of witness span sharing >=2 non-trivial argument tokens of length >=5 under bounded token equality. Automated locality corroborates text-span proximity, while substantive argument evaluation derives from human-reviewed evidence records.)*
-  - **Hit 1 (Printed p. 130; PDF p. 142; offset `[147..154]`):** matched `in 925f` | analytical phrases: `Berechtigung der paulinischen Darstellung, Erbarmensgefäße` | bound witness: `S05-E001` | binding: `Automated lexical locality: hit matched on printed p. 130 [147..154] within 46 chars of verified witness S05-E001 [200..358]; shared argument tokens: auszeichnungen, berechtigung, besaß, besitzt, darstellung, diejenigen, erweist, indem. (Automated check verifies text-layer locality and lexical co-occurrence; substantive argument support derives from human-reviewed evidence record S05-E001.)` | context: `»n zielenden D u k t u s von 96-29 z u w i d e r l a u f e n - , und gegen Lange/Fay, Rom. 204, u.a., die v.25f. auf Juden und Heiden b e z i e h e n .  130  II...«`
+  - **Hit 1 (Printed p. 130; PDF p. 142; offset `[147..154]`):** matched `in 925f` | analytical phrases: `Berechtigung der paulinischen Darstellung, Erbarmensgefäße` | bound witness: `S05-E001` | binding: `Automated lexical locality: hit matched on printed p. 130 [147..154] within 46 chars of verified witness S05-E001 [200..358]; shared argument tokens: auszeichnungen, berechtigung, besaß, besitzt, darstellung, diejenigen, erweist, indem. (Automated check verifies text-layer locality and lexical co-occurrence; substantive argument support derives from human-reviewed evidence record S05-E001.)` | context: `»130  II. Die Zitation von Jesajaworten  des Hoseazitats aber ergibt sich aus dem Befund, daß die futurischen Verbformen xaXEOto und xXri'&rioovxat  . die Aorist...«`
   - **Hit 2 (Printed p. 130; PDF p. 142; offset `[468..473]`):** matched `v.25f` | analytical phrases: `Berechtigung der paulinischen Darstellung, Erbarmensgefäße, chiastisch auf v.24 bezogen` | bound witness: `S05-E001` | binding: `Automated lexical locality: hit matched on printed p. 130 [468..473] within 110 chars of verified witness S05-E001 [200..358]; shared argument tokens: auszeichnungen, berechtigung, besaß, besitzt, darstellung, diejenigen, erweist, indem. (Automated check verifies text-layer locality and lexical co-occurrence; substantive argument support derives from human-reviewed evidence record S05-E001.)` | context: `»orm ExäXsOEV aus v.24 aufgreifen: Indem es Heiden diejenigen „Auszeichnungen" verheißend zuspricht, „die Israel besaß und besitzt" 58 , erweist es die Berechtig...«`
 
 ### B001-3 — Romans 9:26 / Hosea 1:10
 
 - **Scholarly Classification:** `SUBSTANTIVE_DISCUSSION`
-- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Wilk argues (p. 129) that Paul combines Hos 2:1 LXX with Hos 2:25 LXX to assert that Gentiles formerly 'not my people' are called 'sons of the living God', using the LXX wording to warrant the inclusion of Gentile believers.
+- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Wilk argues (p. 129) that Paul combines Hos 2:1 LXX with Hos 2:25 LXX to assert that Gentiles formerly 'not my people' are called 'sons of the living God', using the LXX wording to warrant the inclusion of Gentile believers. *(Source-reviewed/extraction judgment, awaiting independent review)*
 - **Evidence Record `S05-E002` (Printed p. 129; PDF p. 141):**
   - **Author Claim (Human-Reviewed):** Paul combines Hosea 2:1 LXX with Hosea 2:25 LXX in Romans 9:25-26 to establish that Gentiles receive divine sonship in the very location of their former alienation.
-  - **Reviewer Provenance & Scholarly Rationale:** Manual scholarly extraction and argument analysis from Wilk (1998) Teil II / IV; crosswalked to B001 target and verified against text layer.
+  - **Reviewer Provenance & Scholarly Rationale:** Source-reviewed/extraction judgment from Wilk (1998) Teil II / IV crosswalked to B001 target and verified against text layer; awaiting independent review.
   - **Verified Quotation:** `In der Tat kann der Apostel die Zitatkombination ihrem Wortlaut zufolge kaum anders denn als Rede über Heiden verstanden haben...`
   - **Segment 1:** page offset `[1478..1604]` (matched `In der Tat kann der Apostel die Zitatkombination ihrem Wortl`)
 - **Bound Local Contextual Hits (2 hits in discussion loci):**
@@ -123,15 +123,15 @@
 ### B001-4 — Romans 10:11 / Isaiah 28:16
 
 - **Scholarly Classification:** `SUBSTANTIVE_DISCUSSION`
-- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Wilk argues (pp. 45, 164) that Paul makes a deliberate stylistic modification by writing οὐ καταισχυνθήσεται instead of LXX οὐ μὴ καταισχυνθῇ to harmonize with the future-tense environment, prefixes πᾶς to emphasize universal scope, and links the stone prophecy Christologically with Joel 2:32 in Rom 10:13.
+- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Wilk argues (pp. 45, 164) that Paul makes a deliberate stylistic modification by writing οὐ καταισχυνθήσεται instead of LXX οὐ μὴ καταισχυνθῇ to harmonize with the future-tense environment, prefixes πᾶς to emphasize universal scope, and links the stone prophecy Christologically with Joel 2:32 in Rom 10:13. *(Source-reviewed/extraction judgment, awaiting independent review)*
 - **Evidence Record `S05-E003` (Printed p. 45; PDF p. 57):**
   - **Author Claim (Human-Reviewed):** In Romans 10:11, Paul modifies Isaiah 28:16bβ LXX by changing οὐ μὴ καταισχυνθῇ to οὐ καταισχυνθήσεται to harmonize with the future-tense framework of the surrounding context, and prefixes πᾶς to emphasize universal salvation.
-  - **Reviewer Provenance & Scholarly Rationale:** Manual scholarly extraction and argument analysis from Wilk (1998) Teil II / IV; crosswalked to B001 target and verified against text layer.
+  - **Reviewer Provenance & Scholarly Rationale:** Source-reviewed/extraction judgment from Wilk (1998) Teil II / IV crosswalked to B001 target and verified against text layer; awaiting independent review.
   - **Verified Quotation:** `Die rein stilistische Modifikation — Paulus schreibt 'οὐ καταισχυνθήσεται' statt 'οὐ μὴ καταισχυνθῇ' — dürfte in dem Bestreben begründet sein, das Zitat in das von Futura durchzogene Umfeld einzupassen.`
   - **Segment 1:** page offset `[1137..1345]` (matched `Die rein stilistische Modifikation - Paulus schreibt 'oü xaT`)
 - **Evidence Record `S05-E004` (Printed p. 164; PDF p. 176):**
   - **Author Claim (Human-Reviewed):** Paul interprets the 'stone in Zion' (Isaiah 28:16) christologically: in Romans 9:33 as a dual stumbling-stone/salvation figure, and in Romans 10:11 as an unmixed universal promise of vindication for all who believe.
-  - **Reviewer Provenance & Scholarly Rationale:** Manual scholarly extraction and argument analysis from Wilk (1998) Teil II / IV; crosswalked to B001 target and verified against text layer.
+  - **Reviewer Provenance & Scholarly Rationale:** Source-reviewed/extraction judgment from Wilk (1998) Teil II / IV crosswalked to B001 target and verified against text layer; awaiting independent review.
   - **Verified Quotation:** `So begreift er beide Jesajaworte als Hinweise auf Christus, der als eine, in sich identische Person nach der einen Seite Juden und Heiden Gerechtigkeit verleiht...`
   - **Segment 1:** page offset `[1435..1617]` (matched `So begreift er beide Jesajaworte als Hinweise auf Christus, `)
 - **Bound Local Contextual Hits (3 hits in discussion loci):**
@@ -143,10 +143,10 @@
 ### B001-5 — Romans 10:13 / Joel 2:32
 
 - **Scholarly Classification:** `SUBSTANTIVE_DISCUSSION`
-- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Wilk argues (pp. 47, 61) that Paul cites Joel 3:5 LXX verbatim, applying the divine name κύριος directly to the risen Jesus as the object of universal saving faith.
+- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Wilk argues (pp. 47, 61) that Paul cites Joel 3:5 LXX verbatim, applying the divine name κύριος directly to the risen Jesus as the object of universal saving faith. *(Source-reviewed/extraction judgment, awaiting independent review)*
 - **Evidence Record `S05-E005` (Printed p. 61; PDF p. 73):**
   - **Author Claim (Human-Reviewed):** In Romans 10:13, Paul quotes Joel 3:5a LXX verbatim, using πᾶς to connect with Isaiah 28:16 in Rom 10:11 and transferring the Old Testament formula for calling on the Lord God to the confession of Jesus as Lord.
-  - **Reviewer Provenance & Scholarly Rationale:** Manual scholarly extraction and argument analysis from Wilk (1998) Teil II / IV; crosswalked to B001 target and verified against text layer.
+  - **Reviewer Provenance & Scholarly Rationale:** Source-reviewed/extraction judgment from Wilk (1998) Teil II / IV crosswalked to B001 target and verified against text layer; awaiting independent review.
   - **Verified Quotation:** `...demgegenüber unterstreicht die Anspielung auf Joel 35a die Verbindung von κύριος-Homologie und Rettung.`
   - **Segment 1:** page offset `[1099..1201]` (matched `demgegenüber unterstreicht die Anspielung auf Joel 35a die V`)
 - **Bound Local Contextual Hits (2 hits in discussion loci):**
@@ -157,15 +157,15 @@
 ### B001-6 — Romans 11:34 / Isaiah 40:13
 
 - **Scholarly Classification:** `SUBSTANTIVE_DISCUSSION`
-- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Wilk argues (p. 307 Anm. 23) that Paul likely inserted ἤ into Rom 11:34 to assimilate the quotation to Rom 11:35 (Job 41:3), noting the weak attestation of ἤ in the Greek tradition, and analyzes the Isaianic hymn on p. 397 as an expression of the wonderful character of divine wisdom.
+- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Wilk argues (p. 307 Anm. 23) that Paul likely inserted ἤ into Rom 11:34 to assimilate the quotation to Rom 11:35 (Job 41:3), noting the weak attestation of ἤ in the Greek tradition, and analyzes the Isaianic hymn on p. 397 as an expression of the wonderful character of divine wisdom. *(Source-reviewed/extraction judgment, awaiting independent review)*
 - **Evidence Record `S05-E006` (Printed p. 307; PDF p. 319):**
   - **Author Claim (Human-Reviewed):** In Romans 11:34, Paul quotes Isaiah 40:13 LXX; Wilk hypothesizes that Paul likely inserted ἤ before τίς σύμβουλος to split the citation into a two-part rhetorical question matching the paired concepts of God's wisdom and knowledge in Romans 11:33.
-  - **Reviewer Provenance & Scholarly Rationale:** Manual scholarly extraction and argument analysis from Wilk (1998) Teil II / IV; crosswalked to B001 target and verified against text layer.
+  - **Reviewer Provenance & Scholarly Rationale:** Source-reviewed/extraction judgment from Wilk (1998) Teil II / IV crosswalked to B001 target and verified against text layer; awaiting independent review.
   - **Verified Quotation:** `Angesichts der schwachen Bezeugung von ἤ in der 𝔊-Tradition steht zu vermuten, daß Paulus es in Rom 1134, zur Angleichung an 1135, selbst eingefügt hat.`
   - **Segment 1:** page offset `[1764..1921]` (matched `Angesichts der schwachen Bezeugung von fj in der ©-Tradition`)
 - **Evidence Record `S05-E007` (Printed p. 397; PDF p. 409):**
   - **Author Claim (Human-Reviewed):** Paul uses Isaiah 40:13 in Romans 11:34 to highlight that God's sovereign and unexpected plan for Israel's salvation—encompassing temporary hardening and Gentile inclusion—transcends human comprehension.
-  - **Reviewer Provenance & Scholarly Rationale:** Manual scholarly extraction and argument analysis from Wilk (1998) Teil II / IV; crosswalked to B001 target and verified against text layer.
+  - **Reviewer Provenance & Scholarly Rationale:** Source-reviewed/extraction judgment from Wilk (1998) Teil II / IV crosswalked to B001 target and verified against text layer; awaiting independent review.
   - **Verified Quotation:** `...bringt es den wunderbaren Charakter des — von Menschen nur demütig nach- und mitzuvollziehenden — Heilshandelns Gottes an Israel gebündelt zur Sprache.`
   - **Segment 1:** page offset `[748..898]` (matched `bringt es den wunderbaren Charakter des - von Menschen nur d`)
 - **Bound Local Contextual Hits (6 hits in discussion loci):**
@@ -179,54 +179,54 @@
 ### B001-7 — Romans 15:12 / Isaiah 11:10
 
 - **Scholarly Classification:** `SUBSTANTIVE_DISCUSSION`
-- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Wilk argues (pp. 46, 238) that Paul quotes Isa 11:10 LXX verbatim with its eschatological hope for the Gentiles, noting the textual reservation on p. 238 n. 28 regarding a possible pre-Pauline Vorlage.
+- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Wilk argues (pp. 46, 238) that Paul quotes Isa 11:10 LXX verbatim with its eschatological hope for the Gentiles, noting the textual reservation on p. 238 n. 28 regarding a possible pre-Pauline Vorlage. *(Source-reviewed/extraction judgment, awaiting independent review)*
 - **Evidence Record `S05-E008` (Printed p. 46; PDF p. 58):**
   - **Author Claim (Human-Reviewed):** In Romans 15:12, Paul quotes the substantive clauses of Isaiah 11:10a LXX verbatim, deliberately omitting ἐν τῇ ἡμέρᾳ ἐκείνῃ because he considers the promised 'Root of Jesse' to have already appeared in Jesus Christ; Wilk notes textual reservations on a possible Hebraizing Vorlage.
-  - **Reviewer Provenance & Scholarly Rationale:** Manual scholarly extraction and argument analysis from Wilk (1998) Teil II / IV; crosswalked to B001 target and verified against text layer.
+  - **Reviewer Provenance & Scholarly Rationale:** Source-reviewed/extraction judgment from Wilk (1998) Teil II / IV crosswalked to B001 target and verified against text layer; awaiting independent review.
   - **Verified Quotation:** `Diese Zeitangabe kann entfallen, da nach Meinung des Apostels — wie sie in Röm 158 zum Ausdruck kommt — die verheißene 'Wurzel Isais' mit Jesus Christus bereits erschienen ist.`
   - **Segment 1:** page offset `[406..581]` (matched `Diese Zeitangabe kann entfallen, da nach Meinung des Apostel`)
 - **Evidence Record `S05-E009` (Printed p. 394; PDF p. 406):**
   - **Author Claim (Human-Reviewed):** Paul places Isaiah 11:10 at the climax of his quotation chain in Romans 15:9–12 to demonstrate that Christ's reign over the Gentiles grounds the united praise of Jewish and Gentile believers.
-  - **Reviewer Provenance & Scholarly Rationale:** Manual scholarly extraction and argument analysis from Wilk (1998) Teil II / IV; crosswalked to B001 target and verified against text layer.
+  - **Reviewer Provenance & Scholarly Rationale:** Source-reviewed/extraction judgment from Wilk (1998) Teil II / IV crosswalked to B001 target and verified against text layer; awaiting independent review.
   - **Verified Quotation:** `Sie erklärt Christus — wie ihn sein Evangelium bezeugt... zum Garanten der Gemeinschaft von Juden- und Heidenchristen...`
   - **Segment 1:** page offset `[469..523]` (matched `Sie erklärt Christus - wie ihn sein Evangelium bezeugt`)
   - **Segment 2:** page offset `[614..673]` (matched `zum Garanten der Gemeinschaft von Juden- und Heidenchristen`)
 - **Bound Local Contextual Hits (3 hits in discussion loci):**
   *(Automated check: verified citation occurrences within <=500 chars of witness span sharing >=2 non-trivial argument tokens of length >=5 under bounded token equality. Automated locality corroborates text-span proximity, while substantive argument evaluation derives from human-reviewed evidence records.)*
-  - **Hit 1 (Printed p. 46; PDF p. 58; offset `[287..295]`):** matched `Rom 1512` | analytical phrases: `Zeitangabe kann entfallen` | bound witness: `S05-E008` | binding: `Automated lexical locality: hit matched on printed p. 46 [287..295] within 111 chars of verified witness S05-E008 [406..581]; shared argument tokens: apostels, ausdruck, bereits, christus, entfallen, erschienen, isais, jesus. (Automated check verifies text-layer locality and lexical co-occurrence; substantive argument support derives from human-reviewed evidence record S05-E008.)` | context: `»7 (^rjoe17  46  II. Die Zitation von Jesajaworten  b) Rom 1127 (Jes 279aß): Gegenüber der ihm vorliegenden ©-Version von Jes 27925 setzt Paulus Objekt und Pron...«`
+  - **Hit 1 (Printed p. 46; PDF p. 58; offset `[287..295]`):** matched `Rom 1512` | analytical phrases: `Zeitangabe kann entfallen` | bound witness: `S05-E008` | binding: `Automated lexical locality: hit matched on printed p. 46 [287..295] within 111 chars of verified witness S05-E008 [406..581]; shared argument tokens: apostels, ausdruck, bereits, christus, entfallen, erschienen, isais, jesus. (Automated check verifies text-layer locality and lexical co-occurrence; substantive argument support derives from human-reviewed evidence record S05-E008.)` | context: `»46  II. Die Zitation von Jesajaworten  b) Rom 1127 (Jes 279aß): Gegenüber der ihm vorliegenden ©-Version von Jes 27925 setzt Paulus Objekt und Pronomen in den P...«`
   - **Hit 2 (Printed p. 46; PDF p. 58; offset `[297..306]`):** matched `Jes 1110a` | analytical phrases: `Zeitangabe kann entfallen` | bound witness: `S05-E008` | binding: `Automated lexical locality: hit matched on printed p. 46 [297..306] within 100 chars of verified witness S05-E008 [406..581]; shared argument tokens: apostels, ausdruck, bereits, christus, entfallen, erschienen, isais, jesus. (Automated check verifies text-layer locality and lexical co-occurrence; substantive argument support derives from human-reviewed evidence record S05-E008.)` | context: `»46  II. Die Zitation von Jesajaworten  b) Rom 1127 (Jes 279aß): Gegenüber der ihm vorliegenden ©-Version von Jes 27925 setzt Paulus Objekt und Pronomen in den P...«`
-  - **Hit 3 (Printed p. 394; PDF p. 406; offset `[213..221]`):** matched `Jes 1110` | analytical phrases: `Garanten der Gemeinschaft` | bound witness: `S05-E009` | binding: `Automated lexical locality: hit matched on printed p. 394 [213..221] within 248 chars of verified witness S05-E009 [469..523]; shared argument tokens: bezeugt, christus, erklärt, evangelium, garanten, gemeinschaft. (Automated check verifies text-layer locality and lexical co-occurrence; substantive argument support derives from human-reviewed evidence record S05-E009.)` | context: `»ofjc. Xe^ei" - sowie „xai ndXiv 'Hoatac, Xe^ei" (15l2a) mit den Formeln 159b.ioa.na.  394  V. Die Bedeutung des Jesajabuches für Paulus  Handeln Gottes an Isra...«`
+  - **Hit 3 (Printed p. 394; PDF p. 406; offset `[213..221]`):** matched `Jes 1110` | analytical phrases: `Garanten der Gemeinschaft` | bound witness: `S05-E009` | binding: `Automated lexical locality: hit matched on printed p. 394 [213..221] within 248 chars of verified witness S05-E009 [469..523]; shared argument tokens: bezeugt, christus, erklärt, evangelium, garanten, gemeinschaft. (Automated check verifies text-layer locality and lexical co-occurrence; substantive argument support derives from human-reviewed evidence record S05-E009.)` | context: `»394  V. Die Bedeutung des Jesajabuches für Paulus  Handeln Gottes an Israel erweisen und damit vom Argumentationsgang in Rom 101-21 zu dem in 111-24(27) überlei...«`
 
 ### B001-8 — 1 Corinthians 1:19 / Isaiah 29:14
 
 - **Scholarly Classification:** `SUBSTANTIVE_DISCUSSION`
-- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Wilk argues (p. 45) that Paul intentionally substitutes ἀθετήσω for LXX κρύψω (possibly mediated by Ps 32:10 LXX) to clarify that God actively invalidates and sets aside human wisdom.
+- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Wilk argues (p. 45) that Paul intentionally substitutes ἀθετήσω for LXX κρύψω (possibly mediated by Ps 32:10 LXX) to clarify that God actively invalidates and sets aside human wisdom. *(Source-reviewed/extraction judgment, awaiting independent review)*
 - **Evidence Record `S05-E010` (Printed p. 45; PDF p. 57):**
   - **Author Claim (Human-Reviewed):** In 1 Corinthians 1:19, Paul cites Isaiah 29:14b LXX, substituting ἀθετήσω ('I will set aside') for LXX κρύψω ('I will hide'), possibly influenced by Psalm 32:10 LXX, to express that God actively invalidates human wisdom.
-  - **Reviewer Provenance & Scholarly Rationale:** Manual scholarly extraction and argument analysis from Wilk (1998) Teil II / IV; crosswalked to B001 target and verified against text layer.
+  - **Reviewer Provenance & Scholarly Rationale:** Source-reviewed/extraction judgment from Wilk (1998) Teil II / IV crosswalked to B001 target and verified against text layer; awaiting independent review.
   - **Verified Quotation:** `Demgegenüber läßt das — vielleicht durch Ps 3210(𝔊) vermittelte — Wort ἀθετεῖν... den Sinn der jesajanischen Prophetie in ihrer paulinischen Deutung deutlicher zutage treten.`
   - **Segment 1:** page offset `[842..923]` (matched `Demgegenüber läßt das - vielleicht durch Ps 32lo(@) vermitte`)
   - **Segment 2:** page offset `[980..1071]` (matched `den Sinn der jesajanischen Prophetie in ihrer paulinischen D`)
 - **Evidence Record `S05-E011` (Printed p. 393; PDF p. 405):**
   - **Author Claim (Human-Reviewed):** Paul uses Isaiah 29:14 in 1 Corinthians 1:19 as scriptural proof that God's saving act in the cross of Christ intentionally destroys human intellectual self-reliance as a means of knowing God.
-  - **Reviewer Provenance & Scholarly Rationale:** Manual scholarly extraction and argument analysis from Wilk (1998) Teil II / IV; crosswalked to B001 target and verified against text layer.
+  - **Reviewer Provenance & Scholarly Rationale:** Source-reviewed/extraction judgment from Wilk (1998) Teil II / IV crosswalked to B001 target and verified against text layer; awaiting independent review.
   - **Verified Quotation:** `Sie erlaubt es Paulus, das Gericht Gottes über die Weisheit jüdischer und hellenistischer Provenienz als notwendige Kehrseite des Heilsgeschehens in Christus darzustellen...`
   - **Segment 1:** page offset `[414..584]` (matched `Sie erlaubt es Paulus, das Gericht Gottes über die Weisheit `)
 - **Bound Local Contextual Hits (3 hits in discussion loci):**
   *(Automated check: verified citation occurrences within <=500 chars of witness span sharing >=2 non-trivial argument tokens of length >=5 under bounded token equality. Automated locality corroborates text-span proximity, while substantive argument evaluation derives from human-reviewed evidence records.)*
   - **Hit 1 (Printed p. 45; PDF p. 57; offset `[919..926]`):** matched `ä^EtEiv` | analytical phrases: `außer Kraft setzen, Sinn der jesajanischen Prophetie` | bound witness: `S05-E010` | binding: `Automated lexical locality: hit matched on printed p. 45 [919..926] within 0 chars of verified witness S05-E010 [842..923]; shared argument tokens: demgegenüber, deutlicher, deutung, eteiv, ihrer, jesajanischen, paulinischen, prophetie. (Automated check verifies text-layer locality and lexical co-occurrence; substantive argument support derives from human-reviewed evidence record S05-E010.)` | context: `»tEiv nicht angemessen zum Ausdruck gebracht sehen; denn davon abgeleitete Begriffe benutzt er stets zur Kennzeichnung von Phänomenen, die den Menschen als solch...«`
-  - **Hit 2 (Printed p. 393; PDF p. 405; offset `[40..48]`):** matched `IKor 119` | analytical phrases: `Gericht Gottes über die Weisheit, Gewichtung der Zitate` | bound witness: `S05-E011` | binding: `Automated lexical locality: hit matched on printed p. 393 [40..48] within 366 chars of verified witness S05-E011 [414..584]; shared argument tokens: erlaubt, gericht, gottes, jüdischer, weisheit. (Automated check verifies text-layer locality and lexical co-occurrence; substantive argument support derives from human-reviewed evidence record S05-E011.)` | context: `»men wird. 1  Ob man die Stichwortverbindungen zu llio (oxävSaXov) und 1126 (ev Zuiv) als kompositorische Verknüpfungen werten darf, bleibt angesichts der Gliede...«`
-  - **Hit 3 (Printed p. 393; PDF p. 405; offset `[103..111]`):** matched `Jes 2914` | analytical phrases: `Gericht Gottes über die Weisheit, Gewichtung der Zitate` | bound witness: `S05-E011` | binding: `Automated lexical locality: hit matched on printed p. 393 [103..111] within 303 chars of verified witness S05-E011 [414..584]; shared argument tokens: erlaubt, gericht, gottes, heilsgeschehens, hellenistischer, jüdischer, kehrseite, notwendige. (Automated check verifies text-layer locality and lexical co-occurrence; substantive argument support derives from human-reviewed evidence record S05-E011.)` | context: `»v) und 1126 (ev Zuiv) als kompositorische Verknüpfungen werten darf, bleibt angesichts der Gliederung von Kap.9-11 (dazu s.o. S.139) trotz deutlicher Sachbezüge...«`
+  - **Hit 2 (Printed p. 393; PDF p. 405; offset `[40..48]`):** matched `IKor 119` | analytical phrases: `Gericht Gottes über die Weisheit, Gewichtung der Zitate` | bound witness: `S05-E011` | binding: `Automated lexical locality: hit matched on printed p. 393 [40..48] within 366 chars of verified witness S05-E011 [414..584]; shared argument tokens: erlaubt, gericht, gottes, jüdischer, weisheit. (Automated check verifies text-layer locality and lexical co-occurrence; substantive argument support derives from human-reviewed evidence record S05-E011.)` | context: `»2.1. Die Gewichtung der Zitate  393  f)  : Gemeinsam mit der Leitthese 118 bildet das Zitat aus Jes 2914 den Auftakt zur Komposition IKor 1(17)18-34 und zu dere...«`
+  - **Hit 3 (Printed p. 393; PDF p. 405; offset `[103..111]`):** matched `Jes 2914` | analytical phrases: `Gericht Gottes über die Weisheit, Gewichtung der Zitate` | bound witness: `S05-E011` | binding: `Automated lexical locality: hit matched on printed p. 393 [103..111] within 303 chars of verified witness S05-E011 [414..584]; shared argument tokens: erlaubt, gericht, gottes, heilsgeschehens, hellenistischer, jüdischer, kehrseite, notwendige. (Automated check verifies text-layer locality and lexical co-occurrence; substantive argument support derives from human-reviewed evidence record S05-E011.)` | context: `»2.1. Die Gewichtung der Zitate  393  f) IKor 119: Gemeinsam mit der Leitthese 118 bildet das Zitat aus   den Auftakt zur Komposition IKor 1(17)18-34 und zu dere...«`
 
 ### B001-9 — 1 Corinthians 6:16 / Genesis 2:24
 
 - **Scholarly Classification:** `NOT DISCUSSED`
-- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Neither 1 Cor 6:16 nor Gen 2:24 is discussed in this volume. Zero hits occur in the text layer, and both passages are absent from the authorial Stellenregister.
+- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Neither 1 Cor 6:16 nor Gen 2:24 is discussed in this volume. Zero hits occur in the text layer, and both passages are absent from the authorial Stellenregister. *(Source-reviewed/extraction judgment, awaiting independent review)*
 
 ### B001-10 — 1 Corinthians 9:9 / Deuteronomy 25:4
 
 - **Scholarly Classification:** `PASSING_REFERENCE`
-- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Passing reference on p. 112 n. 58 where Deut 25:4 is cited strictly as an introductory formula analogy ('γέγραπται γάρ'). Verified zero substantive textual analysis; Deut 25:4 is absent from the authorial Stellenregister.
+- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Passing reference on p. 112 n. 58 where Deut 25:4 is cited strictly as an introductory formula analogy ('γέγραπται γάρ'). Verified zero substantive textual analysis; Deut 25:4 is absent from the authorial Stellenregister. *(Source-reviewed/extraction judgment, awaiting independent review)*
 - **Passing Witness (`PASSING_CITATION_FORMULA_ANALOGY`, Printed p. 112; PDF p. 124):**
   - **Witness Excerpt:** `V xü vöp:o) • yEypaTcxat" auf die genannte Form der Verwendung hin. Die nächste Parallele hierzu findet sich nämlich in 99;58 und dort erschließt Paulus ebenfalls aus einer besonderen Vorschrift, die die eigene Situation nicht betrifft, einen`
   - **Bounded Negative-Search Rationale:** Bounded/source-reviewed judgment: Deut 25:4 absent from authorial Stellenregister (Deuteronomium section pp. 444-445); p. 112 n. 58 compares only introductory citation formula γέγραπται γάρ without Vorlage or textual variant discussion.
@@ -234,7 +234,7 @@
 ### B001-11 — 1 Corinthians 10:7 / Exodus 32:6
 
 - **Scholarly Classification:** `PASSING_REFERENCE`
-- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Passing reference on p. 319 n. 11 where 1 Cor 10:7 is cited for the lexical phrase 'φαγεῖν καὶ πιεῖν' in comparison with Isa 22:13. Exod 32:6 has zero occurrences in the volume and is absent from the authorial Stellenregister.
+- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Passing reference on p. 319 n. 11 where 1 Cor 10:7 is cited for the lexical phrase 'φαγεῖν καὶ πιεῖν' in comparison with Isa 22:13. Exod 32:6 has zero occurrences in the volume and is absent from the authorial Stellenregister. *(Source-reviewed/extraction judgment, awaiting independent review)*
 - **Passing Witness (`PASSING_PHRASE_COMPARISON`, Printed p. 319; PDF p. 331):**
   - **Witness Excerpt:** `it diesen Leuten warnt, h i n a u s . 14 Vgl. dazu auch den Gebrauch des Ausdrucks „cpa^eiv xai iteiv" in 107, wo Paulus die Gemeindeglieder davor warnt, zu Götzendienern zu werden. 15 Eine ä h n l i c h e Deutung erfährt Jes 22l`
   - **Bounded Negative-Search Rationale:** Bounded/source-reviewed judgment: Exod 32:6 has zero occurrences in volume and is absent from authorial Stellenregister (Exodus section p. 444); p. 319 n. 11 compares only lexical phrase φαγεῖν καὶ πιεῖν with Isa 22:13.
@@ -242,10 +242,10 @@
 ### B001-12 — Galatians 3:13 / Deuteronomy 21:23
 
 - **Scholarly Classification:** `PASSING_TEXT_CRITICAL_NOTE`
-- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Passing text-critical note on p. 47 n. 1 where Wilk observes the assimilation of the opening word of Deut 21:23a (κεκατηραμένος / XExaxrjpapEvoc;) to Gal 3:10 (ἐπικατάρατος / enixaxäpaxoc;). Deut 21:23 is absent from the authorial Stellenregister.
+- **Human-Reviewed Argument Assessment (Scholarly Provenance):** Passing text-critical note on p. 47 n. 1 where Wilk observes the assimilation of the opening word of Deut 21:23a (κεκατηραμένος / XExaxrjpapEvoc;) to Gal 3:10 (ἐπικατάρατος / enixaxäpaxoc;). Deut 21:23 is absent from the authorial Stellenregister. *(Source-reviewed/extraction judgment, awaiting independent review)*
 - **Evidence Record `S05-E012` (Printed p. 47; PDF p. 59):**
   - **Author Claim (Human-Reviewed):** In Galatians 3:13, Paul substitutes ἐπικατάρατος for Old Greek κεκατηραμένος in Deuteronomy 21:23a to assimilate to the wording of Deuteronomy 27:26 as cited in Galatians 3:10.
-  - **Reviewer Provenance & Scholarly Rationale:** Manual scholarly extraction and argument analysis from Wilk (1998) Teil II / IV; crosswalked to B001 target and verified against text layer.
+  - **Reviewer Provenance & Scholarly Rationale:** Source-reviewed/extraction judgment from Wilk (1998) Teil II / IV crosswalked to B001 target and verified against text layer; awaiting independent review.
   - **Verified Quotation:** `Eine Analogie bietet Gal 313, wo Paulus — zur Angleichung an das Dtn-Zitat in Gal 310 — das Dtn 2123a eröffnende Wort κεκατηραμένος gegen ἐπικατάρατος austauscht...`
   - **Segment 1:** page offset `[1604..1788]` (matched `Eine Analogie bietet Gal 313, wo Paulus - zur A n g l e i c `)
 

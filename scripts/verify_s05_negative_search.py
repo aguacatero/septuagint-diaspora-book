@@ -1233,13 +1233,14 @@ def authenticate_hit(
     pages: list[str] | None,
 ) -> tuple[bool, dict | None, str]:
     """
-    S05-R8-F1: Authenticate caller-provided hit against the page text layer.
+    S05-R8-F1, S05-R9-F1 & S05-R9-F2: Authenticate caller-provided hit against the page text layer.
     Fails closed if pages is None or empty.
     Validates printed page, PDF page bounds, match string existence, and exact page offset.
-    Derives the authoritative hit snippet directly from page_text around the validated offset
+    Enforces the pinned invariant PDF = printed + 12; rejects any conflicting caller-supplied pdf_page.
+    ALWAYS derives the authoritative canonical hit snippet directly from page_text around the validated offset
     using a bounded local window [-300..+450].
-    If the caller supplied a snippet, requires exact normalized source-span correspondence;
-    rejects fabricated caller-supplied snippets containing words/phrases absent from the page span.
+    If the caller supplied a snippet, requires strict alignment with the local window [-300..+450] around this hit;
+    rejects fabricated caller-supplied snippets or authentic text from distant portions of the page or volume.
     """
     if pages is None or not pages:
         return False, None, "Page text layer unavailable for hit authentication"
@@ -1248,8 +1249,15 @@ def authenticate_hit(
     if not isinstance(hp, int) or hp < 1:
         return False, None, f"Invalid printed page {hp}"
 
-    pdf_page = h.get("pdf_page", hp + 12)
-    if not isinstance(pdf_page, int) or pdf_page < 1 or pdf_page > len(pages):
+    # S05-R9-F2: Enforce the pinned PDF = printed + 12 invariant.
+    # Derive pdf_page strictly from printed page hp + 12 and reject any conflicting caller-supplied pdf_page.
+    expected_pdf = hp + 12
+    caller_pdf = h.get("pdf_page")
+    if caller_pdf is not None and caller_pdf != expected_pdf:
+        return False, None, f"Contradictory pdf_page {caller_pdf} (expected {expected_pdf} for printed page {hp})"
+    pdf_page = expected_pdf
+
+    if pdf_page > len(pages):
         return False, None, f"Calculated PDF page {pdf_page} out of bounds (1..{len(pages)})"
 
     page_text = pages[pdf_page - 1]
@@ -1278,28 +1286,32 @@ def authenticate_hit(
             p_start = m_pos
             p_end = m_pos + len(match_str)
 
-    # S05-R8-F1: If caller supplied a snippet, enforce that it actually occurs in the source text
-    # at/around this page boundary. Fabricated analytical prose (even with real words) MUST be rejected.
+    # S05-R9-F1: ALWAYS calculate the authoritative canonical snippet directly from the verified local page text window [-300..+450].
+    win_start = max(0, p_start - 300)
+    win_end = min(len(page_text), p_end + 450)
+    derived_snippet = page_text[win_start:win_end].replace("\n", " ").strip()
+
+    # S05-R9-F1: If caller supplied a snippet, enforce that it aligns with the local window [-300..+450] around this hit.
+    # Distant text (even on the same page or neighboring pages) or fabricated prose MUST be rejected.
     caller_snip = h.get("snippet")
     if caller_snip:
         clean_caller = clean_ocr_page(caller_snip).strip(" .…»«\"'").lower()
-        p_prev = pages[pdf_page - 2] if pdf_page > 1 else ""
-        p_next = pages[pdf_page] if pdf_page < len(pages) else ""
-        clean_context = clean_ocr_page(p_prev + "\n" + page_text + "\n" + p_next).lower()
-        if clean_caller not in clean_context:
-            return False, None, f"Caller-provided snippet contains fabricated prose not present on page {hp}"
-        derived_snippet = caller_snip
-    else:
-        win_start = max(0, p_start - 300)
-        win_end = min(len(page_text), p_end + 450)
-        derived_snippet = page_text[win_start:win_end].replace("\n", " ").strip()
+        p_prev_tail = pages[pdf_page - 2][-(300 - p_start):] if (pdf_page > 1 and p_start < 300) else ""
+        p_next_head = pages[pdf_page][:max(0, 450 - (len(page_text) - p_end))] if (pdf_page < len(pages) and (len(page_text) - p_end) < 450) else ""
+        local_context = p_prev_tail + "\n" + page_text[win_start:win_end] + "\n" + p_next_head
+        clean_local_context = clean_ocr_page(local_context).lower()
+        if clean_caller not in clean_local_context:
+            return False, None, f"Caller-provided snippet does not align with local text window [-300..+450] around offset {p_start} on page {hp}"
 
     auth_h = dict(h)
     auth_h["printed_page"] = hp
-    auth_h["pdf_page"] = pdf_page
+    auth_h["pdf_page"] = expected_pdf
+    auth_h["page_pairing_verified"] = True
     auth_h["page_offset_start"] = p_start
     auth_h["page_offset_end"] = p_end
-    auth_h["snippet"] = derived_snippet
+    auth_h["snippet"] = derived_snippet  # ALWAYS authoritative canonical derived snippet
+    if caller_snip:
+        auth_h["caller_snippet"] = caller_snip
     auth_h["authenticated"] = True
     return True, auth_h, "Authenticated on page text layer"
 
@@ -2128,13 +2140,13 @@ def build_markdown_report(
         lines.append("")
         lines.append(f"- **Scholarly Classification:** `{sr['classification']}`")
         if rev_judg:
-            lines.append(f"- **Human-Reviewed Argument Assessment (Scholarly Provenance):** {rev_judg}")
+            lines.append(f"- **Human-Reviewed Argument Assessment (Scholarly Provenance):** {rev_judg} *(Source-reviewed/extraction judgment, awaiting independent review)*")
         if wits:
             for w in wits:
                 if "evidence_id" in w:
                     lines.append(f"- **Evidence Record `{w['evidence_id']}` (Printed p. {w['printed_page']}; PDF p. {w['pdf_page']}):**")
                     lines.append(f"  - **Author Claim (Human-Reviewed):** {w.get('author_claim', '')}")
-                    lines.append(f"  - **Reviewer Provenance & Scholarly Rationale:** Manual scholarly extraction and argument analysis from Wilk (1998) Teil II / IV; crosswalked to B001 target and verified against text layer.")
+                    lines.append(f"  - **Reviewer Provenance & Scholarly Rationale:** Source-reviewed/extraction judgment from Wilk (1998) Teil II / IV crosswalked to B001 target and verified against text layer; awaiting independent review.")
                     lines.append(f"  - **Verified Quotation:** `{w.get('quote', '')}`")
                     if w.get("witnesses"):
                         for seg_wit in w["witnesses"]:
