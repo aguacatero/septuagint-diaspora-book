@@ -16,3 +16,5 @@ jobs:
         uses: actions/checkout@v4
       - name: Verify README milestone count and progress SVG
         run: python3 scripts/update_progress.py --check
+      - name: Verify B001 draft README checkpoint matches queue and state
+        run: python3 scripts/sync_readme_checkpoint.py --check
