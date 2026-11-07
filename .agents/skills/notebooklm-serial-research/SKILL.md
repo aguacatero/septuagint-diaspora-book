@@ -27,6 +27,19 @@ This skill governs the active B001 research lane. It does not change the Project
 10. **No premature book prose.** Produce evidence records and argument maps first. Final prose comes after passage-level synthesis and review.
 11. **Timestamp every owner-facing status.** Every pipeline/checkpoint message must include an absolute America/Los_Angeles date and time in the header, plus source, live HEAD, current state, what it is waiting on, and whether owner action is required.
 
+## Mandatory task-completion / README gate
+
+Antigravity must treat README synchronization as the **last acceptance gate for every source task and hourly resume iteration**. A source is not reportably `DONE` merely because NotebookLM extraction, reviewer acceptance, or notebook promotion finished.
+
+After any queue/state/review transition:
+1. Run `python3 scripts/sync_readme_checkpoint.py` (regenerates the two B001 draft progress blocks in `README.md`).
+2. Reconcile any narrative review verdict/blocker against the live PR; the generated block is not a substitute for inspecting the exact-SHA independent review.
+3. Run `python3 scripts/sync_readme_checkpoint.py --check` and `python3 scripts/update_progress.py --check` and require both to pass.
+4. Commit/push changed README along with the changed source state, or in an immediate follow-up **before** reporting `DONE` or starting another source. Do not change the six-gate checkbox/SVG for draft source acceptance.
+5. Report `README: UPDATED <commit link>` or `README: CHECKED AND UNCHANGED (checks passed)` in the final checkpoint.
+
+If the check, commit, push, or review reconciliation is blocked, leave the task `IN_PROGRESS`/`BLOCKED`, retain the current source, and record the specific blocker. Review-pending runs remain `AWAITING_REVIEW`. Read root `AGENTS.md` for the full no-inflated-progress policy.
+
 ## State machine
 
 Each queue item moves only through:
