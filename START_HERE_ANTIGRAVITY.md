@@ -2,7 +2,7 @@
 
 This is the only file the owner needs to point Antigravity at.
 
-**Durable agent requirement:** Read root [`AGENTS.md`](AGENTS.md) and check the `README.md` Research progress and Status sections at every run checkpoint. Record a material active source/review transition accurately while preserving the six-stage acceptance gate. Draft PR #2 must stay draft/unmerged; see `AGENTS.md` for the no-inflated-progress rule.
+**Durable agent requirement:** Read root [`AGENTS.md`](AGENTS.md) and check the `README.md` Research progress and Status sections at every run checkpoint. Record a material active source/review transition accurately while preserving the six-stage acceptance gate. Draft PR #2 must stay draft/unmerged; see `AGENTS.md` for the no-inflated-progress rule. **Task completion is gated on `python3 scripts/sync_readme_checkpoint.py --check` and `python3 scripts/update_progress.py --check` passing after any README sync. A source transition is not DONE until any README change is committed/pushed.**
 
 ## First run: smoke test only
 
