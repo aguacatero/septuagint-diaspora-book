@@ -54,12 +54,33 @@ Source-bounded extraction self-audit for Pieter K. Baaij, *Paulus als Schriftuit
 - **Round 2 Findings & Remediation:**
   - **S07F-R2-F1 (MEDIUM / BLOCKING — `τῷ θεῷ` falsely listed as Pauline authorial modification):** Removed `τῷ θεῷ` from list of authorial modifications in `counterevidence.md` §1.D; retitled and structured section to separate extant textual differences (*καί* vs *δέ*, *Ἀβράμ* vs *Ἀβραάμ*) from authorial interpretations of shared wording, clarifying that the simple dative *τῷ θεῷ* is shared verbatim with LXX Gen 15:6 and interpreted by Baaij as a *dativus causae*, not an authorial insertion.
   - **S07F-R2-F2 (MEDIUM / BLOCKING — Pagination verifier locality enforcement & adversarial test):** Enforced margin locality (header <= 5 lines or footer within last 12 lines) and proximity to documented running publication markers (<= 8 lines in footer, <= 5 lines in header) in `verify_monotonic_pagination()`. Added adversarial regression tests in `tests/test_citation_ledger_crosswalk.py` covering the reviewer's deterministic mid-body counterexample (`["In die Skriflig..."] + ["body text"]*50 + ["239"] + ["body text"]*50`) and mid-body numeral with distant markers, ensuring fail-closed rejection.
-- **Round 3 Review Status:** `READY_FOR_REVIEW` (Round 3 resubmission at new PR #2 HEAD SHA).
+- **Round 3 Reviewed SHA:** `001eb018739a5bf6c94abf5539990d44bc2ccaa0`
+- **Round 3 Verdict:** `SOURCE_PACKET: ACCEPT` (GitHub PR #2 Comment [#6727995244](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6727995244))
+- **Round 3 Findings Disposition:**
+  - **S07F-R2-F1:** PASS (shared *τῷ θεῷ* no longer framed as Pauline insertion; accurately classified as shared wording interpreted by Baaij as *dativus causae*; passive *ἐλογίσθη* similarly distinguished).
+  - **S07F-R2-F2:** PASS (enforced margin-locality and marker-proximity predicates in `verify_monotonic_pagination()`; adversarial regression tests fail closed on mid-body insertions).
+  - **Earlier Findings (S07F-R1-F1, S07F-R1-F2, S07F-R1-F3, S07F-R1-F4):** Retained as PASS.
 
 ---
 
 ## 3. Promotion to SDP-01 Paul (Cumulative Synthesis Notebook)
 
-- **Promotion Status:** `PENDING_ACCEPTANCE`
-- **Promotion Prerequisites:** Promotion requires an explicit, unconditioned `SOURCE_PACKET: ACCEPT` disposition from the independent ChatGPT exact-SHA reviewer on PR #2.
-- **Staging Isolation:** Source S07F remains staged exclusively in `SDP-B001-EXTRACT` until independent review acceptance is achieved.
+- **Promotion Status:** `PROMOTED`
+- **Cumulative Notebook:** `SDP-01 Paul` (`65d4bea4-7939-4754-bb7b-09d420e8ff19`)
+- **Promoted Source:** `baaij_2005_romans_4_3.pdf` (202,671 bytes, SHA-256 `201a31f1ef5d7a2f...`)
+- **Cumulative Source Count:** 10 of 10 unique PDF sources verified present in `SDP-01 Paul`:
+  1. `lightfoot_1914_galatians.pdf` (S04F)
+  2. `robertson_plummer_1911_1corinthians_icc.pdf` (S03F)
+  3. `sanday_headlam_1895_romans_icc.pdf` (S02F)
+  4. `aageson_1984_pauls_use_of_scripture.pdf` (S01F)
+  5. `ryskova_2019_isaiah_romans.pdf` (S06F)
+  6. `wilk_1998_jesaja_paulus.pdf` (S05)
+  7. `sblgnt.pdf` (P01F)
+  8. `swete_lxx_vol1_p02f_target.pdf` (P02F)
+  9. `swete_lxx_vol3_p03f_target.pdf` (P03F)
+  10. `baaij_2005_romans_4_3.pdf` (S07F)
+- **Source-Grounded Retrieval Verification:** Executed via `scripts/promote_to_sdp01.py` with probe query:
+  `"In Pieter K. Baaij's Paulus als Schriftuitlegger: Genesis 15:5b–6 in Romeinen 4:3, what is his analysis regarding the simple dative to Theo as a dativus causae and the passive elogisthe?"`
+  - Response length: 909 characters (and 2224 characters on initial ingestion run)
+  - Citation markers: 5 grounded citations (and 15 on initial ingestion run)
+  - Verification: PASSED

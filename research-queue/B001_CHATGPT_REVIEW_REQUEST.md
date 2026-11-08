@@ -4,52 +4,16 @@ Antigravity rewrites this file for every source before requesting review.
 
 ## Current source
 
-- Source ID: `S07F`
-- Review Round: `Round 3`
-- Exact citation: Pieter K. Baaij, *Paulus als Schriftuitlegger: Genesis 15:5b–6 in Romeinen 4:3*, *In die Skriflig*, Vol. 39, No. 2 (2005), pp. 239–254. DOI: `10.4102/ids.v39i2.383`
+- Source ID: `S08F` (S07F ACCEPTED and promoted to SDP-01 Paul)
+- Review Round: `PRE-ACQUISITION / PENDING EXTRACTION`
+- Exact citation: J. Paul Tanner, *The New Covenant and Paul's Quotations from Hosea in Romans 9:25–26*, *Bibliotheca Sacra*, Vol. 162 (2005), pp. 95–110.
 - Branch: `research/B001-notebooklm-serial`
 - Draft PR: `2`
-- Review readiness: `READY`
-- Review target: `LIVE_PR_HEAD`
-- Previous review dispositions:
-  - `S07F REVISE` in Round 1 independent review ([#issuecomment-6722488826](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6722488826)) at commit `b4643e296b115c2fddd4a77f36ee885873300f93`.
-  - `S07F REVISE` in Round 2 independent review ([#issuecomment-6726871508](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6726871508)) at commit `0bd4bebfd65e50c97c70a9a0a6a46a16621e49dd`.
+- Review readiness: `NOT_READY`
+- Review target: `NONE`
+- Previous source disposition: `S07F ACCEPTED` in Round 3 independent review ([#issuecomment-6727995244](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6727995244)) at commit `001eb018739a5bf6c94abf5539990d44bc2ccaa0`, and promoted to cumulative notebook `SDP-01 Paul` with source-grounded retrieval verification.
 
-## Round 2 Findings & Remediation Summary
-
-1. **S07F-R2-F1 (MEDIUM / BLOCKING — `τῷ θεῷ` falsely listed as Pauline authorial modification):**
-   - Corrected `counterevidence.md` §1.D: removed `τῷ θεῷ` from list of authorial modifications.
-   - Retitled and structured section to separate extant textual differences (*καί* vs *δέ*, *Ἀβράμ* vs *Ἀβραάμ*) from authorial interpretations of shared wording.
-   - Clarified that the simple dative *τῷ θεῷ* is shared verbatim with LXX Gen 15:6 and is interpreted by Baaij as a *dativus causae*, not an authorial lexical insertion relative to the Septuagint.
-
-2. **S07F-R2-F2 (MEDIUM / BLOCKING — Pagination verifier locality enforcement & adversarial test):**
-   - Updated `verify_monotonic_pagination()` in `scripts/verify_s07f_negative_search.py` to enforce that the standalone page numeral must occur in a valid margin region (header within first 5 lines or footer within last 12 lines) AND be proximate to a documented running publication marker (<= 8 lines in footer or <= 5 lines in header).
-   - Added adversarial regression tests in `tests/test_citation_ledger_crosswalk.py` covering the reviewer's deterministic mid-body counterexample (`["In die Skriflig 39(2) 2005:239-254"] + ["body text"] * 50 + ["239"] + ["body text"] * 50`) and isolated mid-body numerals with distant markers, ensuring fail-closed rejection.
-
-## Cumulative Round 1 Remediation Summary (Confirmed in Round 2)
-
-1. **S07F-R1-F1 (HIGH / BLOCKING — Misleading MT/LXX/Paul comparison):**
-   - Corrected `argument_map.md`, `counterevidence.md`, `paulus_schriftuitlegger_synthesis.md`, `relevance_scan.md`, `scripts/verify_s07f_negative_search.py`, and `full_volume_search_log.md`.
-   - Explicitly preserved that in extant Greek wording, Paul (Rom 4:3) and the Septuagint (Gen 15:6) share the exact Greek passive clause *καὶ ἐλογίσθη αὐτῷ εἰς δικαιοσύνην* and simple dative *τῷ θεῷ*. Baaij explicitly notes that Paul, just like the LXX (*evenals de LXX*), uses a passive form of *λογίζομαι* to express God's action (Printed p. 249 [PDF p. 11]).
-   - Clearly separated extant textual agreements from the actual textual variants (*καί* vs. postpositive *δέ*, *Ἀβράμ* vs. *Ἀβραάμ*) and from Baaij's exegetical interpretation of Pauline retro-translation from Biblical Hebrew.
-
-2. **S07F-R1-F2 (HIGH / BLOCKING — Misattributed falsification conditional):**
-   - Replaced claims that "Baaij explicitly states that if Paul's Hebrew text differed from the MT his entire argument would be invalidated" in `counterevidence.md` (§1.F), `argument_map.md` (§4), and `citation_ledger.csv` (S07F-E003).
-   - Preserved Baaij's stated premise as an **explicit working assumption** (Printed p. 243 [PDF p. 5]) and separately presented the vulnerability to textual divergence as an **independent reviewer-derived implication**, without attributing the conditional to Baaij.
-
-3. **S07F-R1-F3 (MEDIUM — False conclusion locator & E009 contextual overreach):**
-   - Corrected conclusion locator in `argument_map.md` from p. 254 (which is bibliography) to p. 240 (*schriftuitlegger bij uitstek*) and the substantive concluding discussion on pp. 250–253.
-   - Expanded S07F-E009 locator in `citation_ledger.csv`, `extraction.md`, `paulus_schriftuitlegger_synthesis.md`, and verifier to `Printed pp. 252–253 [PDF pp. 14–15]`.
-   - Clarified that E009 represents a broader hermeneutical polemic attributed to Paul regarding translation reliance following Rom 10:5ff spanning the page break, rather than a direct syntactic observation on Genesis 15:6 textual variants.
-
-4. **S07F-R1-F4 (MEDIUM — Methodological precision, verifier assertions & regression tests):**
-   - Labeled W.C. van Unnik's thesis in `bibliography_leads.md` as a prominent scholarly reconstruction endorsed by Baaij rather than demonstrated proof.
-   - Strengthened `verify_monotonic_pagination()` in `scripts/verify_s07f_negative_search.py` to enforce that each page contains an isolated standalone page numeral line matching $printed = PDF + 238$ and running journal markers, failing closed on body-only numbers.
-   - Added fail-closed assertions in `execute_full_volume_search()` requiring that `CONFIRMED_ABSENT` targets return exactly zero pattern hits (and positive targets return > 0 hits), honestly labeled as pattern-hit reporting.
-   - Clarified the distinction between lexical quote validation (confirming physical presence on page) and scholarly/source attribution review.
-   - Added unit and adversarial regression tests in `tests/test_citation_ledger_crosswalk.py` covering body-only numeral counterexamples, missing running markers, injected absent-target matches, and single-vs-range locator integrity. Full suite passes 118/118 tests.
-
-## Source packet under review
+## Previous accepted source packet
 
 `research/inbox/B001-pauline-txt-pilot/sources/S07F/`
 - `metadata.md`
@@ -67,26 +31,18 @@ Antigravity rewrites this file for every source before requesting review.
 Plus governing scripts and tests:
 - `scripts/execute_s07f_prompts.py`
 - `scripts/verify_s07f_negative_search.py`
+- `scripts/promote_to_sdp01.py`
 - `tests/test_citation_ledger_crosswalk.py`
 
 Plus governing method:
 - `docs/design/PROJECT_CONSTITUTION.md`
-- `research/TXT/textual_classifications.md`
-- `research/TXT/hebrew_consultation_test.md`
-- `docs/workflow/NOTEBOOKLM_ANTIGRAVITY_SERIAL.md`
-- `docs/workflow/NOTEBOOKLM_EXTRACTION_PROMPTS.md`
+- `docs/workflow/RESEARCH_WORKFLOW.md`
+- `research-queue/CURRENT_BATCH.md`
+- `research-queue/B001_NOTEBOOKLM_STATE.json`
+- `research-queue/B001_NOTEBOOKLM_SOURCE_QUEUE.csv`
 
 ## Review task
 
-Evaluate remediated source packet `S07F` (Round 2) against the governing method and source text.
+Pre-acquisition state for source `S08F`. Independent review will be requested once source acquisition, extraction, citation verification, and regression tests are completed for `S08F`.
 
-Verify that:
-1. All four Round 1 findings (S07F-R1-F1, S07F-R1-F2, S07F-R1-F3, S07F-R1-F4) have been fully and accurately addressed.
-2. The agreement of extant Greek wording between Paul and the LXX (*ἐλογίσθη*, *τῷ θεῷ*) is explicitly preserved alongside the actual variants and Baaij's interpretation of Pauline Hebrew retro-translation.
-3. The distinction between Baaij's stated working premise (MT consistency, p. 243) and reviewer-derived vulnerability implications is maintained.
-4. Locators accurately reflect printed pp. 250–253 / p. 240 for the conclusion and pp. 252–253 for S07F-E009.
-5. The verifier script and test suite pass with rigorous fail-closed invariants.
-
-Issue an independent verdict: `SOURCE_PACKET: ACCEPT`, `REVISE`, or `REJECT`.
-Draft PR #2 remains unmerged (`MERGE: NO`).
-Milestone progress remains strictly 1/6 accepted.
+Review readiness is currently `NOT_READY`.

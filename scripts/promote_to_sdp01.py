@@ -27,6 +27,7 @@ PROBE_QUERIES = {
     "S04F": "In Lightfoot's commentary on Galatians, what is his discussion in the note on Galatians 3:13 or the detached note regarding the interpretation of Deuteronomy 21:23 and the omission of hypo Theou?",
     "S05": "In Florian Wilk's Die Bedeutung des Jesajabuches für Paulus, what is his discussion regarding Romans 9:25 and the application of Hosea restoration prophecies to Gentiles as vessels of mercy?",
     "S06F": "In Mireia Ryšková's The Reception of the Book of Isaiah in Paul's Letter to the Romans, what is her analysis regarding Paul's insertion of pas in Romans 10:11 and the application of Isaiah 28:16 to Christ?",
+    "S07F": "In Pieter K. Baaij's Paulus als Schriftuitlegger: Genesis 15:5b–6 in Romeinen 4:3, what is his analysis regarding the simple dative to Theo as a dativus causae and the passive elogisthe?",
     "P01F": "In this Greek New Testament edition, what text is printed for 1 Corinthians 1:19?",
     "P02F": "In this Septuagint edition, what Greek text is printed for Genesis 15:6?",
     "P03F": "In this Septuagint edition, what Greek text is printed for Isaiah 29:14?",
@@ -105,10 +106,21 @@ async def inspect_sdp01(client: CDPClient) -> dict:
     (() => {
         const titleInput = document.querySelector('input.title-input');
         const title = titleInput ? titleInput.value : document.title;
-        const sources = Array.from(document.querySelectorAll('.source-title, .source-item-title, [data-source-title]'))
-            .map(s => s.innerText.trim())
-            .filter(t => t.endsWith('.pdf'));
-        const uniqueSources = Array.from(new Set(sources));
+        // Expand any collapsed label groups so all nested sources are in the DOM
+        const labelArrows = Array.from(document.querySelectorAll('.label-icon'));
+        for (let arrow of labelArrows) {
+            if (arrow.innerText && arrow.innerText.includes('keyboard_arrow_right')) {
+                arrow.click();
+            }
+        }
+        const dropzone = document.querySelector('.sources-list-dropzone, .contents') || document;
+        const pdfs = [];
+        for (let el of dropzone.querySelectorAll('*')) {
+            if (el.children.length === 0 && el.innerText && el.innerText.trim().endsWith('.pdf')) {
+                pdfs.push(el.innerText.trim());
+            }
+        }
+        const uniqueSources = Array.from(new Set(pdfs));
         const errorEl = document.querySelector('.single-source-error-container, [aria-label*="Error info"]');
         const spinner = document.querySelector('mat-progress-bar, mat-spinner, [role=progressbar], .loading');
         const hasUploader = Boolean(
