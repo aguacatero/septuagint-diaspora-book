@@ -36,3 +36,11 @@ Audit of the extractions against Mireia Ryšková’s published article, *The Re
 5. **Scholar Attribution (Check #5):** Addressed. Explicit attributions for Koch, Dodd, Shum, and Wilk are maintained throughout.
 6. **Qualifications and Textual Variants (Check #6):** Addressed. Textual variations (LXX vs. MT, addition of πᾶς, selective omissions) are recorded accurately.
 7. **No General Model Knowledge (Check #7):** Verified. No external model assertions or extraneous claims have been introduced into the evidence packet.
+
+---
+
+## 3. Independent Review Acceptance & Cumulative Promotion (Round 4)
+- **Review Verdict:** `SOURCE_PACKET: ACCEPT`, `MERGE: NO` ([#issuecomment-6717257302](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6717257302)) at live PR HEAD `645ebf78eb919e2356d9cc6d093b3ca59261d002`.
+- **Cumulative Promotion:** S06F (`ryskova_2019_isaiah_romans.pdf`) promoted into cumulative synthesis notebook `SDP-01 Paul` via `scripts/promote_to_sdp01.py` on 2026-11-07.
+- **Ingestion & Settle:** File uploaded and settled in 10s; cumulative sources in `SDP-01 Paul` reached 9 (`aageson_1984_pauls_use_of_scripture.pdf`, `lightfoot_1914_galatians.pdf`, `robertson_plummer_1911_1corinthians_icc.pdf`, `ryskova_2019_isaiah_romans.pdf`, `sanday_headlam_1895_romans_icc.pdf`, `sblgnt.pdf`, `swete_lxx_vol1_p02f_target.pdf`, `swete_lxx_vol3_p03f_target.pdf`, `wilk_1998_jesaja_paulus.pdf`).
+- **Source-Attributed Retrieval Verification:** Probe query ("In Mireia Ryšková's The Reception of the Book of Isaiah in Paul's Letter to the Romans, what is her analysis regarding Paul's insertion of pas in Romans 10:11 and the application of Isaiah 28:16 to Christ?") succeeded with response length 555 chars and 1 verified citation marker.
