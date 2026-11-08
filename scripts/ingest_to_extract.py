@@ -26,6 +26,7 @@ PROBE_QUERIES = {
     "S04F": "In Lightfoot's commentary on Galatians, what is his discussion in the note on Galatians 3:13 or the detached note regarding the interpretation of Deuteronomy 21:23 and the omission of hypo Theou?",
     "S05": "In Florian Wilk's Die Bedeutung des Jesajabuches für Paulus, what is his discussion regarding Romans 9:25 and the application of Hosea restoration prophecies to Gentiles as vessels of mercy?",
     "S06F": "In Mireia Ryšková's The Reception of the Book of Isaiah in Paul's Letter to the Romans, how many direct quotations from Isaiah does the author state are analyzed in Romans?",
+    "S07F": "In Pieter K. Baaij's Paulus als Schriftuitlegger: Genesis 15:5b-6 in Romeinen 4:3, what is the author's primary argument regarding Paul's use of Genesis 15:6 in Romans 4:3 and whether Paul acted as an accurate expositor of Hebrew Scripture?",
 }
 
 

@@ -3028,6 +3028,139 @@ def test_s06f_section_boundary_escape_and_range_bounds_fail_closed(tmp_path):
     arg_path.write_text(orig_arg, encoding="utf-8")
 
 
+def test_s07f_citation_ledger_crosswalk_integrity():
+    """Verify S07F citation ledger schema, evidence IDs, and locators."""
+    repo_root = Path(__file__).resolve().parent.parent
+    s07f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S07F"
+    csv_path = s07f_dir / "citation_ledger.csv"
+
+    assert csv_path.is_file(), f"Missing S07F citation ledger: {csv_path}"
+
+    with open(csv_path, encoding="utf-8") as f:
+        reader = list(csv.DictReader(f))
+
+    assert len(reader) == 9, f"Expected 9 ledger rows for S07F, found {len(reader)}"
+
+    expected_ids = [f"S07F-E00{i}" for i in range(1, 10)]
+    for idx, row in enumerate(reader):
+        eid = row["evidence_id"]
+        assert eid == expected_ids[idx], f"Expected {expected_ids[idx]}, got {eid}"
+        assert row["source_id"] == "S07F"
+        assert row["verification_status"] == "VERIFIED"
+        assert row["short_quote"], f"Missing short quote for {eid}"
+        assert row["author_claim"], f"Missing author claim for {eid}"
+        assert row["source_locator"], f"Missing source locator for {eid}"
+        assert int(row["printed_page"]) == int(re.search(r"Printed p\.\s*(\d+)", row["source_locator"]).group(1))
+
+
+def test_s07f_verifier_negative_search_passes():
+    """Verify scripts/verify_s07f_negative_search.py passes in --check-only mode."""
+    import subprocess
+    repo_root = Path(__file__).resolve().parent.parent
+    verifier_script = repo_root / "scripts/verify_s07f_negative_search.py"
+    assert verifier_script.is_file(), f"Missing verifier script: {verifier_script}"
+
+    cmd = ["python3", str(verifier_script), "--check-only"]
+    res = subprocess.run(cmd, cwd=str(repo_root), capture_output=True, text=True)
+    assert res.returncode == 0, f"Verifier failed with return code {res.returncode}:\nStdout:\n{res.stdout}\nStderr:\n{res.stderr}"
+    assert "matches generated report byte-for-byte (--check-only passed)" in res.stdout
+
+
+def test_s07f_section_boundary_escape_and_range_bounds_fail_closed(tmp_path):
+    """Verify S07F fails closed on section-boundary escape, duplicate locators, and range bound violations."""
+    import shutil
+    import sys
+    import pytest
+    repo_root = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(repo_root))
+    from scripts.verify_s07f_negative_search import verify_cross_artifact_consistency
+    s07f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S07F"
+
+    temp_sources = tmp_path / "S07F"
+    shutil.copytree(s07f_dir, temp_sources)
+
+    # Base state must pass
+    verify_cross_artifact_consistency(temp_sources)
+
+    # Counterexample A: Delete locator from S07F-E001 in extraction.md
+    extr_path = temp_sources / "extraction.md"
+    orig_extr = extr_path.read_text(encoding="utf-8")
+    mutated_extr = orig_extr.replace("- **Source Locator:** Printed p. 239 [PDF p. 1]; Section 1\n", "", 1)
+    extr_path.write_text(mutated_extr, encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "extraction.md: Missing Source Locator line for S07F-E001" in str(exc.value)
+    extr_path.write_text(orig_extr, encoding="utf-8")
+
+    # Duplicate locator in extraction.md section S07F-E001 fails closed
+    dup_extr = orig_extr.replace(
+        "- **Source Locator:** Printed p. 239 [PDF p. 1]; Section 1",
+        "- **Source Locator:** Printed p. 239 [PDF p. 1]; Section 1\n- **Source Locator:** Printed p. 239 [PDF p. 1]; Section 1",
+        1
+    )
+    extr_path.write_text(dup_extr, encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "extraction.md: Duplicate Source Locator line for S07F-E001" in str(exc.value)
+    extr_path.write_text(orig_extr, encoding="utf-8")
+
+    # Counterexample B: Delete locator from synthesis subsection
+    synth_path = temp_sources / "paulus_schriftuitlegger_synthesis.md"
+    orig_synth = synth_path.read_text(encoding="utf-8")
+    mutated_synth = orig_synth.replace("  - **Source Locator:** Printed p. 239 [PDF p. 1]; Section 1\n", "", 1)
+    synth_path.write_text(mutated_synth, encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "paulus_schriftuitlegger_synthesis.md: Missing Source Locator in subsection 'Paul's Use and Citation in Romans 4:3'" in str(exc.value)
+    synth_path.write_text(orig_synth, encoding="utf-8")
+
+    # Duplicate locator in synthesis subsection fails closed
+    dup_synth = orig_synth.replace(
+        "  - **Source Locator:** Printed p. 239 [PDF p. 1]; Section 1",
+        "  - **Source Locator:** Printed p. 239 [PDF p. 1]; Section 1\n  - **Source Locator:** Printed p. 239 [PDF p. 1]; Section 1",
+        1
+    )
+    synth_path.write_text(dup_synth, encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "paulus_schriftuitlegger_synthesis.md: Duplicate Source Locator in subsection 'Paul's Use and Citation in Romans 4:3'" in str(exc.value)
+    synth_path.write_text(orig_synth, encoding="utf-8")
+
+    # Counterexample C: Mutate table row in relevance_scan.md
+    rel_path = temp_sources / "relevance_scan.md"
+    orig_rel = rel_path.read_text(encoding="utf-8")
+    mutated_rel = orig_rel.replace("| Printed p. 248 [PDF p. 10] |", "| N/A |", 1)
+    rel_path.write_text(mutated_rel, encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "relevance_scan.md: Malformed or missing single-page locator for B001-4: 'N/A'" in str(exc.value)
+    rel_path.write_text(orig_rel, encoding="utf-8")
+
+    # Counterexample D: Out of bounds end page range in argument_map.md fails closed
+    arg_path = temp_sources / "argument_map.md"
+    orig_arg = arg_path.read_text(encoding="utf-8")
+    arg_path.write_text(orig_arg + "\nPrinted pp. 240–300 [PDF pp. 2–62]\n", encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "Out of bounds range end in locator 'Printed pp. 240–300 [PDF pp. 2–62]'" in str(exc.value)
+    arg_path.write_text(orig_arg, encoding="utf-8")
+
+    # Counterexample E: Inverted range in argument_map.md fails closed
+    arg_path.write_text(orig_arg + "\nPrinted pp. 250–240 [PDF pp. 12–2]\n", encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "Inverted page range in locator 'Printed pp. 250–240 [PDF pp. 12–2]'" in str(exc.value)
+    arg_path.write_text(orig_arg, encoding="utf-8")
+
+    # Counterexample F: Half-range in argument_map.md fails closed
+    arg_path.write_text(orig_arg + "\nPrinted pp. 240–245 [PDF p. 2]\n", encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "Malformed half-range locator 'Printed pp. 240–245 [PDF p. 2]'" in str(exc.value)
+    arg_path.write_text(orig_arg, encoding="utf-8")
+
+
+
 
 
 
