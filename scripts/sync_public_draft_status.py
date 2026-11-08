@@ -155,7 +155,7 @@ def validate_and_render(pr: dict, state: dict, queue: list[dict], reviews: list[
         f'(https://github.com/{REPO}/pull/{PR_NUMBER}), '
         f'HEAD `{head["sha"][:12]}`): '
         f'**{len(accepted)}/{SOURCE_COUNT} source packets independently accepted**, '
-        f'**{len(promoted)}/{SOURCE_COUNT} promoted to the draft `SDP-01 Paul` synthesis. '
+        f'**{len(promoted)}/{SOURCE_COUNT} promoted** to the draft `SDP-01 Paul` synthesis. '
         f'Active: **{active_id}** (source {active_index + 1}/{SOURCE_COUNT}), '
         f'phase `{phase}`, queue `{queue[active_index]["status"]}`. '
         f'Latest independent review: {decision}. '
