@@ -1,0 +1,62 @@
+name: Publish provisional B001 status to main README
+
+# Trusted workflow code lives on main. Never check out or execute PR #2's code.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */2 * * *"
+  issue_comment:
+    types: [created, edited]
+  pull_request_target:
+    types: [opened, synchronize, reopened, converted_to_draft]
+
+permissions:
+  contents: write
+  pull-requests: read
+  issues: read
+
+concurrency:
+  group: public-b001-draft-readme-main
+  cancel-in-progress: false
+
+jobs:
+  sync-public-draft-status:
+    if: >-
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.number == 2 &&
+       github.event.issue.pull_request != null) ||
+      (github.event_name == 'pull_request_target' &&
+       github.event.pull_request.number == 2)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out trusted main (never the research PR)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+
+      - name: Test the fail-closed draft status formatter
+        run: python3 -m unittest discover -s tests -p test_sync_public_draft_status.py -v
+
+      - name: Update public draft status using read-only research data
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/sync_public_draft_status.py
+          python3 scripts/update_progress.py --check
+
+      - name: Publish README-only documentation update to main
+        run: |
+          if git diff --quiet -- README.md; then
+            echo "Public README already current"
+            exit 0
+          fi
+          test "$(git diff --name-only | wc -l | tr -d ' ')" = "1"
+          test "$(git diff --name-only)" = "README.md"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- README.md
+          git commit -m "docs: sync provisional B001 research status [skip ci]"
+          git push origin HEAD:main
