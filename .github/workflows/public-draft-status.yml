@@ -2,6 +2,8 @@ name: Publish provisional B001 status to main README
 
 # Trusted workflow code lives on main. Never check out or execute PR #2's code.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
   schedule:
     - cron: "17 */2 * * *"
@@ -22,6 +24,7 @@ concurrency:
 jobs:
   sync-public-draft-status:
     if: >-
+      github.event_name == 'push' ||
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'issue_comment' &&
