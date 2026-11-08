@@ -35,7 +35,11 @@ The [Project Constitution](docs/design/PROJECT_CONSTITUTION.md) explains the ful
 
 **Currently researching:** the first close comparison of how passages from Jewish scripture appear in letters traditionally attributed to Paul (**B001 — Pauline textual pilot**). This is a methodological pilot, not a verdict about Pauline authorship or dating.
 
-**Checkpoint — November 1, 2026:** **7 of 16** source packets have passed independent *source-level* review on [draft PR #2](https://github.com/aguacatero/septuagint-diaspora-book/pull/2): P01F, P02F, P03F, S01F, S02F, S03F, and S04F. The latest, S04F (J. B. Lightfoot on Galatians), [passed its fifth-round review](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6561683809) and was added to the working synthesis notebook. **S05 (Florian Wilk on Isaiah in Paul)** is next and awaits source acquisition. **PR #2 is draft/unmerged; the overall B001 batch is not finished.**
+<!-- BEGIN PUBLIC-B001-DRAFT-STATUS: automated, provisional; do not edit -->
+**Provisional B001 progress — DRAFT / UNMERGED** (research ledger 2026-11-08; [live PR #2](https://github.com/aguacatero/septuagint-diaspora-book/pull/2), HEAD `0bd4bebfd65e`): **9/16 source packets independently accepted**, **9/16 promoted** to the draft `SDP-01 Paul` synthesis. Active: **S07F** (source 10/16), phase `AWAITING_REVIEW`, queue `SUBMITTED`. Latest independent review: **REVISE** ([independent exact-SHA review](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6726871508)). This is **not accepted evidence on `main`** and does **not** complete B001 or TXT. **Project milestone gates remain 1/6 accepted** (the separately reviewed Foundation gate only).
+<!-- END PUBLIC-B001-DRAFT-STATUS -->
+
+*This provisional checkpoint automatically follows the draft source queue and independent GitHub review comments. The roadmap checkboxes and progress graphic still reflect only accepted project milestones.*
 
 **Project milestones:** **1 of 6 accepted**—the research foundation. Accepting individual source packets does not complete the textual-analysis phase or change the other milestone checkboxes.
 
