@@ -20,7 +20,7 @@ Source-bounded extraction self-audit for Pieter K. Baaij, *Paulus als Schriftuit
 
 ### Check 3: Locator and Pagination Integrity
 - **Question:** Did you infer a printed page number rather than observe it?
-- **Finding:** RESOLVED & VERIFIED. Physical page inspection of `baaij_2005_romans_4_3.pdf` confirmed that every page contains its exact printed page number as a standalone line, establishing the strictly monotonic invariant $printed = PDF + 238$ across all 16 pages (PDF pp. 1–16 = printed pp. 239–254). The verifier script enforces that the expected numeral appears as an isolated standalone line in the header/footer region and fails closed on body-only numbers.
+- **Finding:** RESOLVED & VERIFIED. Physical page inspection of `baaij_2005_romans_4_3.pdf` confirmed that every page contains its exact printed page number as a standalone line, establishing the strictly monotonic invariant $printed = PDF + 238$ across all 16 pages (PDF pp. 1–16 = printed pp. 239–254). The verifier script strictly enforces margin locality (header within first 5 lines or footer within last 12 lines) and proximity to documented running publication markers (<= 8 lines in footer or <= 5 lines in header), failing closed on body-only numbers and isolated mid-body numerals.
 
 ### Check 4: Modal Qualification Integrity
 - **Question:** Did you convert an author's possibility into a probability or certainty?
@@ -37,7 +37,7 @@ Source-bounded extraction self-audit for Pieter K. Baaij, *Paulus als Schriftuit
 
 ### Check 6: Proximate Qualifications and Textual Variants
 - **Question:** Did you miss a qualification, objection, textual variant, or counterexample near any extracted passage?
-- **Finding:** RESOLVED & VERIFIED. Extant Greek wording agreements between Paul and the Septuagint—namely, the shared passive form *ἐλογίσθη* (p. 249: *"evenals de LXX"*) and simple dative *τῷ θεῷ*—are explicitly preserved alongside the actual divergences (*καί* vs. *δέ*, *Ἀβράμ* vs. *Ἀβραάμ*). All lexical and semantic nuances (*'āman* in hif'il via Jepsen, *ḥāšaḇ* via Seybold, *ṣəḏāqāh* via Johnson, *πιστεύω τῷ θεῷ* vs. *ἐπ' αὐτῷ*) are captured with exact locators.
+- **Finding:** RESOLVED & VERIFIED. Extant Greek wording agreements between Paul and the Septuagint—namely, the shared passive form *ἐλογίσθη* (p. 249: *"evenals de LXX"*) and simple dative *τῷ θεῷ*—are explicitly preserved alongside the actual divergences (*καί* vs. *δέ*, *Ἀβράμ* vs. *Ἀβραάμ*). All lexical and semantic nuances (*'āman* in hif'il via Jepsen, *ḥāšaḇ* via Seybold, *ṣəḏāqāh* via Johnson, *πιστεύω τῷ θεῷ* vs. *ἐπ' αὐτῷ*) are captured with exact locators. Furthermore, in Round 2 remediation, *τῷ θεῷ* was explicitly removed from authorial modification framing and categorized under interpretations of shared wording.
 
 ### Check 7: External Knowledge Independence
 - **Question:** Did you rely on general model knowledge?
@@ -49,12 +49,12 @@ Source-bounded extraction self-audit for Pieter K. Baaij, *Paulus als Schriftuit
 
 - **Round 1 Reviewed SHA:** `b4643e296b115c2fddd4a77f36ee885873300f93`
 - **Round 1 Verdict:** `SOURCE_PACKET: REVISE` (GitHub PR #2 Comment [#6722488826](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6722488826))
-- **Round 1 Findings & Remediation:**
-  - **S07F-R1-F1 (HIGH / BLOCKING):** Corrected MT/LXX/Paul comparison across argument map, counterevidence, synthesis, and verifier. Explicitly preserved that Paul and LXX share passive *ἐλογίσθη* (p. 249: *"evenals de LXX"*) and simple dative *τῷ θεῷ*, distinguishing extant textual agreements from Baaij's interpretations of Hebrew retro-translation.
-  - **S07F-R1-F2 (HIGH / BLOCKING):** Separated Baaij's explicit working assumption of MT consistency (p. 243) from reviewer-derived vulnerability implications, removing misattribution of falsification conditionals to the author.
-  - **S07F-R1-F3 (MEDIUM):** Corrected conclusion locator from p. 254 (bibliography) to p. 240 (*schriftuitlegger bij uitstek*) and substantive concluding discussion on pp. 250–253. Expanded S07F-E009 locator to pp. 252–253, contextualizing the polemic following Rom 10:5ff.
-  - **S07F-R1-F4 (MEDIUM):** Labeled Van Unnik's thesis as a scholarly reconstruction endorsed by Baaij rather than demonstrated proof. Strengthened verifier pagination predicate to enforce standalone page numeral lines and running markers (rejecting body-only numbers), added fail-closed assertions for absent targets in negative search, and distinguished lexical locator validation from scholarly attribution review.
-- **Round 2 Review Status:** `READY_FOR_REVIEW` (Round 2 resubmission at new PR #2 HEAD SHA).
+- **Round 2 Reviewed SHA:** `0bd4bebfd65e50c97c70a9a0a6a46a16621e49dd`
+- **Round 2 Verdict:** `SOURCE_PACKET: REVISE` (GitHub PR #2 Comment [#6726871508](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6726871508))
+- **Round 2 Findings & Remediation:**
+  - **S07F-R2-F1 (MEDIUM / BLOCKING — `τῷ θεῷ` falsely listed as Pauline authorial modification):** Removed `τῷ θεῷ` from list of authorial modifications in `counterevidence.md` §1.D; retitled and structured section to separate extant textual differences (*καί* vs *δέ*, *Ἀβράμ* vs *Ἀβραάμ*) from authorial interpretations of shared wording, clarifying that the simple dative *τῷ θεῷ* is shared verbatim with LXX Gen 15:6 and interpreted by Baaij as a *dativus causae*, not an authorial insertion.
+  - **S07F-R2-F2 (MEDIUM / BLOCKING — Pagination verifier locality enforcement & adversarial test):** Enforced margin locality (header <= 5 lines or footer within last 12 lines) and proximity to documented running publication markers (<= 8 lines in footer, <= 5 lines in header) in `verify_monotonic_pagination()`. Added adversarial regression tests in `tests/test_citation_ledger_crosswalk.py` covering the reviewer's deterministic mid-body counterexample (`["In die Skriflig..."] + ["body text"]*50 + ["239"] + ["body text"]*50`) and mid-body numeral with distant markers, ensuring fail-closed rejection.
+- **Round 3 Review Status:** `READY_FOR_REVIEW` (Round 3 resubmission at new PR #2 HEAD SHA).
 
 ---
 

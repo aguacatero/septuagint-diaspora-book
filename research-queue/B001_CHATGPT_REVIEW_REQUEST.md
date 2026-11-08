@@ -5,15 +5,28 @@ Antigravity rewrites this file for every source before requesting review.
 ## Current source
 
 - Source ID: `S07F`
-- Review Round: `Round 2`
+- Review Round: `Round 3`
 - Exact citation: Pieter K. Baaij, *Paulus als Schriftuitlegger: Genesis 15:5b–6 in Romeinen 4:3*, *In die Skriflig*, Vol. 39, No. 2 (2005), pp. 239–254. DOI: `10.4102/ids.v39i2.383`
 - Branch: `research/B001-notebooklm-serial`
 - Draft PR: `2`
 - Review readiness: `READY`
 - Review target: `LIVE_PR_HEAD`
-- Previous review disposition: `S07F REVISE` in Round 1 independent review ([#issuecomment-6722488826](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6722488826)) at commit `b4643e296b115c2fddd4a77f36ee885873300f93`.
+- Previous review dispositions:
+  - `S07F REVISE` in Round 1 independent review ([#issuecomment-6722488826](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6722488826)) at commit `b4643e296b115c2fddd4a77f36ee885873300f93`.
+  - `S07F REVISE` in Round 2 independent review ([#issuecomment-6726871508](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6726871508)) at commit `0bd4bebfd65e50c97c70a9a0a6a46a16621e49dd`.
 
-## Round 1 Findings & Remediation Summary
+## Round 2 Findings & Remediation Summary
+
+1. **S07F-R2-F1 (MEDIUM / BLOCKING — `τῷ θεῷ` falsely listed as Pauline authorial modification):**
+   - Corrected `counterevidence.md` §1.D: removed `τῷ θεῷ` from list of authorial modifications.
+   - Retitled and structured section to separate extant textual differences (*καί* vs *δέ*, *Ἀβράμ* vs *Ἀβραάμ*) from authorial interpretations of shared wording.
+   - Clarified that the simple dative *τῷ θεῷ* is shared verbatim with LXX Gen 15:6 and is interpreted by Baaij as a *dativus causae*, not an authorial lexical insertion relative to the Septuagint.
+
+2. **S07F-R2-F2 (MEDIUM / BLOCKING — Pagination verifier locality enforcement & adversarial test):**
+   - Updated `verify_monotonic_pagination()` in `scripts/verify_s07f_negative_search.py` to enforce that the standalone page numeral must occur in a valid margin region (header within first 5 lines or footer within last 12 lines) AND be proximate to a documented running publication marker (<= 8 lines in footer or <= 5 lines in header).
+   - Added adversarial regression tests in `tests/test_citation_ledger_crosswalk.py` covering the reviewer's deterministic mid-body counterexample (`["In die Skriflig 39(2) 2005:239-254"] + ["body text"] * 50 + ["239"] + ["body text"] * 50`) and isolated mid-body numerals with distant markers, ensuring fail-closed rejection.
+
+## Cumulative Round 1 Remediation Summary (Confirmed in Round 2)
 
 1. **S07F-R1-F1 (HIGH / BLOCKING — Misleading MT/LXX/Paul comparison):**
    - Corrected `argument_map.md`, `counterevidence.md`, `paulus_schriftuitlegger_synthesis.md`, `relevance_scan.md`, `scripts/verify_s07f_negative_search.py`, and `full_volume_search_log.md`.

@@ -3196,13 +3196,29 @@ def test_s07f_adversarial_pagination_and_negative_search_assertions():
         verify_monotonic_pagination(mock_body_only_pages)
     assert "expected standalone printed page number '239' not found as an isolated line" in str(exc1.value)
 
+    # 1b. Reviewer deterministic counterexample (S07F-R2-F2): isolated mid-body numeral with header marker
+    reviewer_counterexample = [
+        "\n".join(["In die Skriflig 39(2) 2005:239-254"] + ["body text"] * 50 + ["239"] + ["body text"] * 50)
+    ]
+    with pytest.raises(ValueError) as exc1b:
+        verify_monotonic_pagination(reviewer_counterexample)
+    assert "is not located in a valid header/footer margin region proximate to running journal markers" in str(exc1b.value)
+
+    # 1c. Mid-body isolated numeral with both header and footer markers far away
+    mock_midbody_with_both_markers = [
+        "\n".join(["Paulus als Schriftuitlegger"] + ["body text"] * 50 + ["239"] + ["body text"] * 50 + ["In die Skriflig 39(2) 2005:239-254"])
+    ]
+    with pytest.raises(ValueError) as exc1c:
+        verify_monotonic_pagination(mock_midbody_with_both_markers)
+    assert "is not located in a valid header/footer margin region proximate to running journal markers" in str(exc1c.value)
+
     # 2. Missing running header/footer marker counterexample
     mock_missing_marker_pages = [
         "239\nProse without any journal header or footer marker.\n"
     ]
     with pytest.raises(ValueError) as exc2:
         verify_monotonic_pagination(mock_missing_marker_pages)
-    assert "Page running header/footer marker missing at PDF p. 1 (printed p. 239)" in str(exc2.value)
+    assert "is not located in a valid header/footer margin region proximate to running journal markers" in str(exc2.value)
 
     # 3. Injected match for CONFIRMED_ABSENT target (B001-11: 1 Cor 10:7 / Exodus 32:6)
     mock_16_pages = ["In die Skriflig 39(2) 2005:239-254\n" + str(p + 238) for p in range(1, 17)]

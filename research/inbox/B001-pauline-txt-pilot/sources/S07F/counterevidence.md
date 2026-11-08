@@ -25,10 +25,13 @@
 ### D. Allows Authorial Adaptation & Non-Literal Translation
 - **Intentional Dynamic Re-translation:** Baaij explicitly states that Paul does not translate the Hebrew text literally, but adapts his Greek phrasing to capture the original author's exact intent:  
   *Quote:* "Paulus volgt de grondtekst niet letterlijk, maar geeft de inhoud ervan weer... Paulus wil door zijn weergave duidelijker aangeven waar het de bijbelschrijver om gaat" (Printed p. 249 [PDF p. 11]).
-- **Specific Authorial Modifications:**
-  - Placing *ἐπίστευσεν* first with postpositive δέ to emphasize active trust (Printed p. 248 [PDF p. 10]).
-  - Inserting *τῷ θεῷ* as a *dativus causae* (Printed p. 248 [PDF p. 10]).
-  - Replacing the Septuagint's "Abram" (*Ἀβράμ*) with the covenant name "Abraham" (*Ἀβραάμ*) (Printed p. 248 [PDF p. 10]).
+- **Specific Textual Adaptations and Interpretations of Shared Wording:**
+  - *Extant Textual Differences:*
+    - Placing *ἐπίστευσεν* first with postpositive δέ to emphasize active trust rather than opening with the conjunction *καί* (Printed p. 248 [PDF p. 10]).
+    - Employing the covenant name "Abraham" (*Ἀβραάμ*) rather than the Septuagint's pre-covenant name "Abram" (*Ἀβράμ*) (Printed p. 248 [PDF p. 10]).
+  - *Exegetical Interpretation of Shared Wording:*
+    - Interpreting the shared simple dative *τῷ θεῷ* (which is already present in LXX Gen 15:6 without prepositions *ἐπί* or *εἰς*) as a *dativus causae* highlighting God as the Initiator and Cause of trust, rather than an authorial lexical insertion relative to the Septuagint (Printed p. 248 [PDF p. 10]).
+    - Employing the passive form of *λογίζομαι* (*ἐλογίσθη*)—shared verbatim with the Septuagint (p. 249: *"evenals de LXX"*)—to express God's attributing action (*ḥāšaḇ*) as an unmerited relational gift (Printed pp. 248–249 [PDF pp. 10–11]).
 
 ### E. Disagrees with Other Scholars
 - **C. E. B. Cranfield (1985) & Joseph A. Fitzmyer (1993):** Disagrees with their assertion that Paul must be understood through Hellenistic-Roman culture, maintaining (via W. C. van Unnik) that Paul thought in Biblical Hebrew out of a Pharisaic Jerusalem upbringing (Printed p. 240 [PDF p. 2], p. 242 [PDF p. 4] fn. 3).

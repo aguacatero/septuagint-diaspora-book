@@ -188,34 +188,50 @@ def extract_page_texts(pdf_path: Path) -> list[str]:
 def verify_monotonic_pagination(page_texts: list[str]) -> None:
     """Verify strictly monotonic pagination invariant (printed = PDF + 238) across all 16 pages.
 
-    Guarantees that each page contains an isolated standalone page number line matching the exact
-    expected printed numeral (PDF + 238), located in the page header/footer region, and that the
-    volume running header or footer marker is present. Fails closed if the numeral only appears
-    embedded inside prose body text.
+    Enforces that each page contains an isolated standalone page number line matching the exact
+    expected printed numeral (PDF + 238), located in the page margin region (header within first 5
+    lines or footer within last 12 lines), and that a documented running publication marker
+    is within proximate distance (<= 8 lines in footer or <= 5 lines in header).
+    Fails closed if the numeral only appears embedded inside prose body text or isolated in mid-body.
     """
     for idx, txt in enumerate(page_texts):
         pdf_page = idx + 1
         expected_printed = pdf_page + 238
+        expected_str = str(expected_printed)
         lines = [ln.strip() for ln in txt.splitlines() if ln.strip()]
 
-        # Enforce isolated standalone line containing solely the expected printed numeral
-        has_standalone_num = any(ln == str(expected_printed) for ln in lines)
-        if not has_standalone_num:
+        num_indices = [i for i, ln in enumerate(lines) if ln == expected_str]
+        if not num_indices:
             raise ValueError(
                 f"Monotonic pagination invariant violated at PDF p. {pdf_page}: "
                 f"expected standalone printed page number '{expected_printed}' not found as an isolated line"
             )
 
-        # Enforce running journal/article header or footer marker on the page
-        has_running_marker = any(
-            "In die Skriflig" in ln
-            or "Paulus als Schriftuitlegger" in ln
-            or "P.K. Baaij" in ln
-            for ln in lines
-        )
-        if not has_running_marker:
+        footer_markers = [i for i, ln in enumerate(lines) if "In die Skriflig" in ln]
+        header_markers = [
+            i for i, ln in enumerate(lines)
+            if "Paulus als Schriftuitlegger" in ln or "P.K. Baaij" in ln
+        ]
+
+        valid_locality = False
+        for n_idx in num_indices:
+            in_footer_region = n_idx >= len(lines) - 12
+            in_header_region = n_idx < 5
+
+            if in_footer_region and footer_markers:
+                if any(abs(n_idx - f_idx) <= 8 for f_idx in footer_markers):
+                    valid_locality = True
+                    break
+            elif in_header_region and header_markers:
+                if any(abs(n_idx - h_idx) <= 5 for h_idx in header_markers):
+                    valid_locality = True
+                    break
+
+        if not valid_locality:
             raise ValueError(
-                f"Page running header/footer marker missing at PDF p. {pdf_page} (printed p. {expected_printed})"
+                f"Monotonic pagination invariant violated at PDF p. {pdf_page}: "
+                f"standalone numeral '{expected_printed}' at line index {num_indices} is not located in "
+                f"a valid header/footer margin region proximate to running journal markers (total lines: {len(lines)})"
             )
 
 
