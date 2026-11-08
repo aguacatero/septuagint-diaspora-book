@@ -65,6 +65,34 @@ AUTHORITATIVE_EVIDENCE_LOCI = {
     "S06F-E009": (114, 20),
 }
 
+EXPECTED_SYNTHESIS_SUBSECTIONS = {
+    "Addition of πᾶς": (106, 12),
+    "Comparison with MT and LXX": (106, 12),
+    "Christological Application": (106, 12),
+    "Origin of the Composite Stone Citation in Romans 9:33": (105, 11),
+    "Paul's Citation Form & Technique": (112, 18),
+    "Comparison with Job 41:11 / Romans 11:35 & 1 Corinthians 2:16": (112, 18),
+    "Doxological Function": (112, 18),
+    "Messianic Hope of the Gentiles": (114, 20),
+    "Comparison with LXX and MT": (114, 20),
+    "Role in the Climax of Romans 15:7–13": (114, 20),
+}
+
+EXPECTED_RELEVANCE_TABLE_LOCI = {
+    "B001-1": ("NO", "N/A"),
+    "B001-2": ("YES", (104, 10)),
+    "B001-3": ("YES", (104, 10)),
+    "B001-4": ("YES", (105, 106, 11, 12)),
+    "B001-5": ("YES", (106, 12)),
+    "B001-6": ("YES", (112, 18)),
+    "B001-7": ("YES", (114, 20)),
+    "B001-8": ("NO", "N/A"),
+    "B001-9": ("NO", "N/A"),
+    "B001-10": ("NO", "N/A"),
+    "B001-11": ("NO", "N/A"),
+    "B001-12": ("NO", "N/A"),
+}
+
 POSITIVE_CONTROLS = [
     {
         "id": "PC01",
@@ -514,7 +542,7 @@ def verify_cross_artifact_consistency(source_dir: Path) -> None:
 
     # Pattern for natural format: Printed p. N [PDF p. M] or Printed pp. N1-N2 [PDF pp. M1-M2]
     locator_pattern = re.compile(
-        r"Printed\s+p(?:p)?\.\s*(\d+)(?:[–-](\d+))?\s*\[PDF\s+p(?:p)?\.\s*(\d+)(?:[–-](\d+))?\]",
+        r"(?:Printed\s+)?p(?:p)?\.\s*(\d+)(?:[–-](\d+))?\s*\[PDF\s+p(?:p)?\.\s*(\d+)(?:[–-](\d+))?\]",
         re.IGNORECASE
     )
 
@@ -531,8 +559,17 @@ def verify_cross_artifact_consistency(source_dir: Path) -> None:
 
         # 2. General locator invariant check: validate all explicit Printed p. N [PDF p. M]
         for m in locator_pattern.finditer(text):
+            has_p_end = m.group(2) is not None
+            has_pdf_end = m.group(4) is not None
+            if has_p_end != has_pdf_end:
+                raise ValueError(
+                    f"{filename}: Malformed half-range locator '{m.group(0)}': "
+                    f"both printed and PDF range ends must be provided"
+                )
+
             p_start = int(m.group(1))
             pdf_start = int(m.group(3))
+
             if p_start != pdf_start + 94:
                 raise ValueError(
                     f"{filename}: Invariant violated in locator '{m.group(0)}': "
@@ -543,79 +580,179 @@ def verify_cross_artifact_consistency(source_dir: Path) -> None:
                     f"{filename}: Out of bounds locator '{m.group(0)}': "
                     f"printed {p_start} must be [95..116], PDF {pdf_start} must be [1..22]"
                 )
-            if m.group(2) and m.group(4):
+
+            if has_p_end and has_pdf_end:
                 p_end = int(m.group(2))
                 pdf_end = int(m.group(4))
+                if p_start > p_end:
+                    raise ValueError(
+                        f"{filename}: Inverted page range in locator '{m.group(0)}': "
+                        f"start page {p_start} exceeds end page {p_end}"
+                    )
+                if pdf_start > pdf_end:
+                    raise ValueError(
+                        f"{filename}: Inverted PDF page range in locator '{m.group(0)}': "
+                        f"start page {pdf_start} exceeds end page {pdf_end}"
+                    )
                 if p_end != pdf_end + 94:
                     raise ValueError(
                         f"{filename}: Range invariant violated in '{m.group(0)}': "
                         f"printed {p_end} != PDF {pdf_end} + 94"
                     )
+                if not (95 <= p_end <= 116) or not (1 <= pdf_end <= 22):
+                    raise ValueError(
+                        f"{filename}: Out of bounds range end in locator '{m.group(0)}': "
+                        f"printed {p_end} must be [95..116], PDF {pdf_end} must be [1..22]"
+                    )
 
-    # 3. Section/Evidence-ID bound locator extraction for extraction.md
+    # 3. Section/Evidence-ID bound locator extraction for extraction.md (fail closed against cross-record bleed)
     extr_text = (source_dir / "extraction.md").read_text(encoding="utf-8")
+    raw_records = re.split(r"(?=^####\s+S06F-E\d{3})", extr_text, flags=re.MULTILINE)
+    record_map: dict[str, str] = {}
+    for rec in raw_records:
+        m = re.match(r"^####\s+(S06F-E\d{3})", rec.strip())
+        if m:
+            eid = m.group(1)
+            if eid in record_map:
+                raise ValueError(f"extraction.md: Duplicate section header for {eid}")
+            record_map[eid] = rec
+
     for eid, (exp_printed, exp_pdf) in AUTHORITATIVE_EVIDENCE_LOCI.items():
-        # Match the section for this evidence ID
-        m = re.search(
-            rf"{eid}.*?\*\*Source Locator:\*\*\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]",
-            extr_text,
-            re.DOTALL
+        if eid not in record_map:
+            raise ValueError(f"extraction.md: Missing evidence record section for {eid}")
+        rec = record_map[eid]
+        loc_lines = [
+            l.strip() for l in rec.splitlines()
+            if "**Source Locator:**" in l or "**Source Locators:**" in l
+        ]
+        if len(loc_lines) == 0:
+            raise ValueError(f"extraction.md: Missing Source Locator line for {eid}")
+        if len(loc_lines) > 1:
+            raise ValueError(f"extraction.md: Duplicate Source Locator line for {eid}")
+
+        m_loc = re.search(
+            r"\*\*Source Locator(?:s)?:\*\*\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]",
+            loc_lines[0]
         )
-        if not m:
-            raise ValueError(f"extraction.md: Missing or malformed natural-format locator for {eid}")
-        act_printed = int(m.group(1))
-        act_pdf = int(m.group(2))
+        if not m_loc:
+            raise ValueError(f"extraction.md: Malformed Source Locator in {eid}: '{loc_lines[0]}'")
+
+        act_printed = int(m_loc.group(1))
+        act_pdf = int(m_loc.group(2))
         if act_printed != exp_printed or act_pdf != exp_pdf:
             raise ValueError(
                 f"extraction.md: Locus mismatch for {eid}: expected Printed p. {exp_printed} [PDF p. {exp_pdf}], "
                 f"got Printed p. {act_printed} [PDF p. {act_pdf}]"
             )
 
-    # 4. Section-bound checks for isaiah_in_romans_synthesis.md
+    # 4. Section-bound checks for isaiah_in_romans_synthesis.md (fail closed against subsection bleed)
     synth_text = (source_dir / "isaiah_in_romans_synthesis.md").read_text(encoding="utf-8")
-    expected_synth_loci = [
-        (r"### 1\. Romans 10:11.*?Addition of πᾶς.*?\*\*Source Locator:\*\*\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 106, 12, "Rom 10:11"),
-        (r"Origin of the Composite Stone Citation in Romans 9:33.*?\*\*Source Locator:\*\*\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 105, 11, "Rom 9:33"),
-        (r"### 2\. Romans 11:34.*?\*\*Source Locator:\*\*\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 112, 18, "Rom 11:34"),
-        (r"### 3\. Romans 15:12.*?\*\*Source Locator:\*\*\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 114, 20, "Rom 15:12"),
-    ]
-    for pattern, exp_pr, exp_pdf, label in expected_synth_loci:
-        m = re.search(pattern, synth_text, re.DOTALL)
-        if not m:
-            raise ValueError(f"isaiah_in_romans_synthesis.md: Missing natural-format locator for {label}")
-        if int(m.group(1)) != exp_pr or int(m.group(2)) != exp_pdf:
+    raw_subsections = re.split(r"(?=^- \*\*)", synth_text, flags=re.MULTILINE)
+    synth_subsections: dict[str, str] = {}
+    for sub in raw_subsections:
+        lines = sub.strip().splitlines()
+        if not lines:
+            continue
+        m = re.match(r"^- \*\*(.*?):\*\*", lines[0])
+        if m:
+            title = m.group(1).strip()
+            if title in synth_subsections:
+                raise ValueError(f"isaiah_in_romans_synthesis.md: Duplicate subsection '{title}'")
+            synth_subsections[title] = sub
+
+    for title, (exp_pr, exp_pdf) in EXPECTED_SYNTHESIS_SUBSECTIONS.items():
+        if title not in synth_subsections:
+            raise ValueError(f"isaiah_in_romans_synthesis.md: Missing subsection '{title}'")
+        sub = synth_subsections[title]
+        loc_lines = [
+            l.strip() for l in sub.splitlines()
+            if "**Source Locator:**" in l or "**Source Locators:**" in l
+        ]
+        if len(loc_lines) == 0:
+            raise ValueError(f"isaiah_in_romans_synthesis.md: Missing Source Locator in subsection '{title}'")
+        if len(loc_lines) > 1:
+            raise ValueError(f"isaiah_in_romans_synthesis.md: Duplicate Source Locator in subsection '{title}'")
+
+        m_loc = re.search(
+            r"\*\*Source Locator(?:s)?:\*\*\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]",
+            loc_lines[0]
+        )
+        if not m_loc:
+            raise ValueError(f"isaiah_in_romans_synthesis.md: Malformed Source Locator in subsection '{title}': '{loc_lines[0]}'")
+
+        act_pr, act_pdf = int(m_loc.group(1)), int(m_loc.group(2))
+        if act_pr != exp_pr or act_pdf != exp_pdf:
             raise ValueError(
-                f"isaiah_in_romans_synthesis.md: Wrong locus for {label}: "
-                f"expected Printed p. {exp_pr} [PDF p. {exp_pdf}], got Printed p. {m.group(1)} [PDF p. {m.group(2)}]"
+                f"isaiah_in_romans_synthesis.md: Wrong locus for subsection '{title}': "
+                f"expected Printed p. {exp_pr} [PDF p. {exp_pdf}], got Printed p. {act_pr} [PDF p. {act_pdf}]"
             )
 
-    # 5. Section-bound checks for relevance_scan.md table
+    # 5. Section-bound checks for relevance_scan.md table (fail closed against row bleed)
     rel_text = (source_dir / "relevance_scan.md").read_text(encoding="utf-8")
-    expected_rel_loci = [
-        (r"\*\*B001-2\*\*.*?\|\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 104, 10, "B001-2"),
-        (r"\*\*B001-3\*\*.*?\|\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 104, 10, "B001-3"),
-        (r"\*\*B001-4\*\*.*?\|\s*Printed\s+pp\.\s*(\d+)[–-](\d+)\s*\[PDF\s+pp\.\s*(\d+)[–-](\d+)\]", (105, 106, 11, 12), "B001-4"),
-        (r"\*\*B001-5\*\*.*?\|\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 106, 12, "B001-5"),
-        (r"\*\*B001-6\*\*.*?\|\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 112, 18, "B001-6"),
-        (r"\*\*B001-7\*\*.*?\|\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 114, 20, "B001-7"),
-    ]
-    for item in expected_rel_loci:
-        pattern = item[0]
-        label = item[-1]
-        m = re.search(pattern, rel_text, re.DOTALL)
-        if not m:
-            raise ValueError(f"relevance_scan.md: Missing natural-format locator for {label}")
-        if len(item) == 4:
-            exp_pr, exp_pdf = item[1], item[2]
-            if int(m.group(1)) != exp_pr or int(m.group(2)) != exp_pdf:
+    table_rows: dict[str, str] = {}
+    for line in rel_text.splitlines():
+        line_clean = line.strip()
+        if not line_clean.startswith("|"):
+            continue
+        m_id = re.search(r"\|\s*\*\*(B001-\d+)\*\*\s*\|", line_clean)
+        if m_id:
+            b_id = m_id.group(1)
+            if b_id in table_rows:
+                raise ValueError(f"relevance_scan.md: Duplicate table row for {b_id}")
+            table_rows[b_id] = line_clean
+
+    for b_id, (exp_discussed, exp_locus) in EXPECTED_RELEVANCE_TABLE_LOCI.items():
+        if b_id not in table_rows:
+            raise ValueError(f"relevance_scan.md: Missing table row for {b_id}")
+        row_str = table_rows[b_id]
+        cells = [c.strip() for c in row_str.split("|")]
+        if len(cells) < 7:
+            raise ValueError(f"relevance_scan.md: Malformed table row structure for {b_id}: '{row_str}'")
+
+        act_discussed = cells[3]
+        act_locator = cells[4]
+
+        if act_discussed != exp_discussed:
+            raise ValueError(
+                f"relevance_scan.md: Discussion status mismatch for {b_id}: expected {exp_discussed}, got {act_discussed}"
+            )
+
+        if exp_discussed == "NO":
+            if act_locator != "N/A":
                 raise ValueError(
-                    f"relevance_scan.md: Wrong locus for {label}: "
-                    f"expected Printed p. {exp_pr} [PDF p. {exp_pdf}], got Printed p. {m.group(1)} [PDF p. {m.group(2)}]"
+                    f"relevance_scan.md: Expected N/A locator for absent locus {b_id}, got '{act_locator}'"
                 )
         else:
-            p1, p2, pdf1, pdf2 = item[1]
-            if (int(m.group(1)), int(m.group(2)), int(m.group(3)), int(m.group(4))) != (p1, p2, pdf1, pdf2):
-                raise ValueError(f"relevance_scan.md: Wrong range locus for {label}")
+            if isinstance(exp_locus, tuple) and len(exp_locus) == 2:
+                exp_pr, exp_pdf = exp_locus
+                m_loc = re.fullmatch(r"Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", act_locator)
+                if not m_loc:
+                    raise ValueError(
+                        f"relevance_scan.md: Malformed or missing single-page locator for {b_id}: '{act_locator}'"
+                    )
+                act_pr, act_pdf = int(m_loc.group(1)), int(m_loc.group(2))
+                if act_pr != exp_pr or act_pdf != exp_pdf:
+                    raise ValueError(
+                        f"relevance_scan.md: Wrong locus for {b_id}: expected Printed p. {exp_pr} [PDF p. {exp_pdf}], got '{act_locator}'"
+                    )
+            elif isinstance(exp_locus, tuple) and len(exp_locus) == 4:
+                p1, p2, pdf1, pdf2 = exp_locus
+                m_loc = re.fullmatch(
+                    r"Printed\s+pp\.\s*(\d+)[–-](\d+)\s*\[PDF\s+pp\.\s*(\d+)[–-](\d+)\]",
+                    act_locator
+                )
+                if not m_loc:
+                    raise ValueError(
+                        f"relevance_scan.md: Malformed or missing range locator for {b_id}: '{act_locator}'"
+                    )
+                act_p1, act_p2, act_pdf1, act_pdf2 = (
+                    int(m_loc.group(1)), int(m_loc.group(2)), int(m_loc.group(3)), int(m_loc.group(4))
+                )
+                if (act_p1, act_p2, act_pdf1, act_pdf2) != (p1, p2, pdf1, pdf2):
+                    raise ValueError(
+                        f"relevance_scan.md: Wrong range locus for {b_id}: expected "
+                        f"Printed pp. {p1}–{p2} [PDF pp. {pdf1}–{pdf2}], got '{act_locator}'"
+                    )
 
     # 6. Positive witnessed footnote verification for bibliography_leads.md
     bib_text = (source_dir / "bibliography_leads.md").read_text(encoding="utf-8")

@@ -2904,13 +2904,13 @@ def test_s06f_cross_artifact_consistency_fails_on_debris_or_bad_loci(tmp_path):
     assert "Locus mismatch for S06F-E006" in str(exc.value)
     extr_md.write_text(orig_extr, encoding="utf-8")
 
-    # 5. Test natural-format wrong locator in isaiah_in_romans_synthesis.md for Rom 10:11
+    # 5. Test natural-format wrong locator in isaiah_in_romans_synthesis.md for Addition of πᾶς
     synth_md = temp_sources / "isaiah_in_romans_synthesis.md"
     orig_synth = synth_md.read_text(encoding="utf-8")
     synth_md.write_text(orig_synth.replace("Printed p. 106 [PDF p. 12]", "Printed p. 104 [PDF p. 10]", 1), encoding="utf-8")
     with pytest.raises(ValueError) as exc:
         verify_cross_artifact_consistency(temp_sources)
-    assert "Wrong locus for Rom 10:11" in str(exc.value)
+    assert "Wrong locus for subsection 'Addition of πᾶς'" in str(exc.value)
     synth_md.write_text(orig_synth, encoding="utf-8")
 
     # 6. Test natural-format wrong locator in relevance_scan.md for B001-2
@@ -2930,6 +2930,102 @@ def test_s06f_cross_artifact_consistency_fails_on_debris_or_bad_loci(tmp_path):
         verify_cross_artifact_consistency(temp_sources)
     assert "Missing positive footnote witness" in str(exc.value)
     bib_md.write_text(orig_bib, encoding="utf-8")
+
+
+def test_s06f_section_boundary_escape_and_range_bounds_fail_closed(tmp_path):
+    """Adversarial regression tests for S06F-R2-F2 (section boundary escape) and S06F-R3-F1 (locator range bounds)."""
+    import pytest
+    import shutil
+    import sys
+    repo_root = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(repo_root))
+    from scripts.verify_s06f_negative_search import verify_cross_artifact_consistency, DEFAULT_SOURCE_DIR
+
+    # Valid check passes
+    verify_cross_artifact_consistency(DEFAULT_SOURCE_DIR)
+
+    temp_sources = tmp_path / "sources_boundary_test"
+    shutil.copytree(DEFAULT_SOURCE_DIR, temp_sources)
+
+    # Counterexample A: Delete locator from S06F-E001 in extraction.md
+    # Must fail closed on E001 and NOT silently match E002 sharing page 106/12
+    extr_path = temp_sources / "extraction.md"
+    orig_extr = extr_path.read_text(encoding="utf-8")
+    mutated_extr = orig_extr.replace("- **Source Locator:** Printed p. 106 [PDF p. 12]; Section 6 (Rom 10:11)\n", "", 1)
+    extr_path.write_text(mutated_extr, encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "extraction.md: Missing Source Locator line for S06F-E001" in str(exc.value)
+    extr_path.write_text(orig_extr, encoding="utf-8")
+
+    # Duplicate locator in extraction.md section S06F-E001 fails closed
+    dup_extr = orig_extr.replace(
+        "- **Source Locator:** Printed p. 106 [PDF p. 12]; Section 6 (Rom 10:11)",
+        "- **Source Locator:** Printed p. 106 [PDF p. 12]; Section 6 (Rom 10:11)\n- **Source Locator:** Printed p. 106 [PDF p. 12]; Section 6 (Rom 10:11)",
+        1
+    )
+    extr_path.write_text(dup_extr, encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "extraction.md: Duplicate Source Locator line for S06F-E001" in str(exc.value)
+    extr_path.write_text(orig_extr, encoding="utf-8")
+
+    # Counterexample B: Delete locator from 'Addition of πᾶς' in isaiah_in_romans_synthesis.md
+    # Must fail closed on subsection and NOT silently match following subsection sharing page 106/12
+    synth_path = temp_sources / "isaiah_in_romans_synthesis.md"
+    orig_synth = synth_path.read_text(encoding="utf-8")
+    mutated_synth = orig_synth.replace("  - **Source Locator:** Printed p. 106 [PDF p. 12]; Section 6 (Rom 10:11)\n", "", 1)
+    synth_path.write_text(mutated_synth, encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "isaiah_in_romans_synthesis.md: Missing Source Locator in subsection 'Addition of πᾶς'" in str(exc.value)
+    synth_path.write_text(orig_synth, encoding="utf-8")
+
+    # Duplicate locator in synthesis subsection fails closed
+    dup_synth = orig_synth.replace(
+        "  - **Source Locator:** Printed p. 106 [PDF p. 12]; Section 6 (Rom 10:11)",
+        "  - **Source Locator:** Printed p. 106 [PDF p. 12]; Section 6 (Rom 10:11)\n  - **Source Locator:** Printed p. 106 [PDF p. 12]; Section 6 (Rom 10:11)",
+        1
+    )
+    synth_path.write_text(dup_synth, encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "isaiah_in_romans_synthesis.md: Duplicate Source Locator in subsection 'Addition of πᾶς'" in str(exc.value)
+    synth_path.write_text(orig_synth, encoding="utf-8")
+
+    # Counterexample C: Replace B001-2 locator with N/A in relevance_scan.md table
+    # Must fail closed on B001-2 and NOT silently match B001-3 sharing page 104/10
+    rel_path = temp_sources / "relevance_scan.md"
+    orig_rel = rel_path.read_text(encoding="utf-8")
+    mutated_rel = orig_rel.replace("| Printed p. 104 [PDF p. 10] |", "| N/A |", 1)
+    rel_path.write_text(mutated_rel, encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "relevance_scan.md: Malformed or missing single-page locator for B001-2: 'N/A'" in str(exc.value)
+    rel_path.write_text(orig_rel, encoding="utf-8")
+
+    # Counterexample D (S06F-R3-F1 Range Bounds): Append out-of-bounds end page range to argument_map.md
+    arg_path = temp_sources / "argument_map.md"
+    orig_arg = arg_path.read_text(encoding="utf-8")
+    arg_path.write_text(orig_arg + "\nPrinted pp. 105–200 [PDF pp. 11–106]\n", encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "Out of bounds range end in locator 'Printed pp. 105–200 [PDF pp. 11–106]'" in str(exc.value)
+    arg_path.write_text(orig_arg, encoding="utf-8")
+
+    # Counterexample E (S06F-R3-F1 Inverted Range): Inverted page range in argument_map.md fails closed
+    arg_path.write_text(orig_arg + "\nPrinted pp. 114–105 [PDF pp. 20–11]\n", encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "Inverted page range in locator 'Printed pp. 114–105 [PDF pp. 20–11]'" in str(exc.value)
+    arg_path.write_text(orig_arg, encoding="utf-8")
+
+    # Counterexample F (S06F-R3-F1 Half-range): Half-range locator in argument_map.md fails closed
+    arg_path.write_text(orig_arg + "\nPrinted pp. 105–106 [PDF p. 11]\n", encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "Malformed half-range locator 'Printed pp. 105–106 [PDF p. 11]'" in str(exc.value)
+    arg_path.write_text(orig_arg, encoding="utf-8")
 
 
 
