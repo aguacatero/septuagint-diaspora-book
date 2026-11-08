@@ -41,7 +41,7 @@ Itemized extraction of Pieter K. Baaij's positions and claims across the substan
 - **Source Locator:** Printed p. 243 [PDF p. 5]; Section 1
 - **NotebookLM Citation:** [4]
 - **Textual Evidence Invoked:** Hebrew consonantal and Masoretic text of Genesis 15:5b–6 (BHS).
-- **Qualifications / Conditions:** Explicit working assumption acknowledged by the author; would be falsified if Paul's Hebrew Vorlage diverged significantly from the MT.
+- **Qualifications / Conditions:** Explicit working assumption acknowledged by author on p. 243; reviewer derivation (not authorial statement) that divergent Vorlage would undermine thesis.
 - **Extraction Confidence:** `HIGH`
 - **Notes:** Baaij 2005:243. Core textual premise of the study.
 
@@ -114,11 +114,11 @@ Itemized extraction of Pieter K. Baaij's positions and claims across the substan
 - **Proposed Evidence ID:** `S07F-E009`
 - **B001 Passage ID:** `B001-1`
 - **Claim Type:** `METHODOLOGICAL_TEXTUAL`
-- **Author's Claim:** Relying uncritically on Septuagint translations obscures Hebrew syntax and leads commentators to teach the opposite of what Hebrew Scripture states.
+- **Author's Claim:** Baaij attributes to Paul a broader polemic (following Rom 10:5ff) that uncritical reliance on the Septuagint alienates readers from the God of Scripture and teaches the opposite of what Hebrew Scripture states.
 - **Short Exact Quotation:** "de mens het tegenovergestelde van wat de Schrift zegt"
-- **Source Locator:** Printed p. 253 [PDF p. 15]; Section 5
+- **Source Locator:** Printed pp. 252–253 [PDF pp. 14–15]; Section 5
 - **NotebookLM Citation:** [11, 12]
-- **Textual Evidence Invoked:** Comparison of Hebrew syntax in Gen 15:5b–6 and Rom 10:5ff with Septuagint translations; citing F. Breukelman (Bekker 1989:58).
-- **Qualifications / Conditions:** Applies specifically when translators and commentators allow existing Greek or vernacular translations to dictate exegesis over Hebrew grammar.
+- **Textual Evidence Invoked:** Hermeneutical argument on uncritical Septuagintal reliance spanning pp. 252–253 following discussion of Rom 10:5ff; citing F. Breukelman (Bekker 1989:58).
+- **Qualifications / Conditions:** Broader hermeneutical polemic attributed to Paul regarding LXX reliance (citing Rom 10:5ff), distinct from a direct syntactic observation on Genesis 15:6 textual variants where Paul and LXX share passive *ἐλογίσθη*.
 - **Extraction Confidence:** `HIGH`
-- **Notes:** Baaij 2005:253. Polemic against uncritical Septuagintal reading of Paul.
+- **Notes:** Baaij 2005:252–253. Polemic against uncritical Septuagintal reading, spanning page break from Rom 10:5ff discussion on p. 252.

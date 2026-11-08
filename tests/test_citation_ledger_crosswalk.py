@@ -3050,7 +3050,14 @@ def test_s07f_citation_ledger_crosswalk_integrity():
         assert row["short_quote"], f"Missing short quote for {eid}"
         assert row["author_claim"], f"Missing author claim for {eid}"
         assert row["source_locator"], f"Missing source locator for {eid}"
-        assert int(row["printed_page"]) == int(re.search(r"Printed p\.\s*(\d+)", row["source_locator"]).group(1))
+        if "-" in row["printed_page"]:
+            p_start, p_end = [int(x) for x in row["printed_page"].split("-")]
+            m = re.search(r"Printed pp\.\s*(\d+)[–-](\d+)", row["source_locator"])
+            assert m, f"Locator format mismatch for range in {row['source_locator']}"
+            assert p_start == int(m.group(1))
+            assert p_end == int(m.group(2))
+        else:
+            assert int(row["printed_page"]) == int(re.search(r"Printed p\.\s*(\d+)", row["source_locator"]).group(1))
 
 
 def test_s07f_verifier_negative_search_passes():
@@ -3158,6 +3165,83 @@ def test_s07f_section_boundary_escape_and_range_bounds_fail_closed(tmp_path):
         verify_cross_artifact_consistency(temp_sources)
     assert "Malformed half-range locator 'Printed pp. 240–245 [PDF p. 2]'" in str(exc.value)
     arg_path.write_text(orig_arg, encoding="utf-8")
+
+    # Counterexample G: Single page when range expected for S07F-E009 in extraction.md fails closed
+    mutated_e009 = orig_extr.replace(
+        "- **Source Locator:** Printed pp. 252–253 [PDF pp. 14–15]; Section 5",
+        "- **Source Locator:** Printed p. 253 [PDF p. 15]; Section 5",
+        1
+    )
+    extr_path.write_text(mutated_e009, encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "extraction.md: Expected range for S07F-E009, got single page in '- **Source Locator:** Printed p. 253 [PDF p. 15]; Section 5'" in str(exc.value)
+    extr_path.write_text(orig_extr, encoding="utf-8")
+
+
+def test_s07f_adversarial_pagination_and_negative_search_assertions():
+    """Verify S07F verifier assertions fail closed against adversarial mutations (S07F-R1-F4)."""
+    import pytest
+    from scripts.verify_s07f_negative_search import (
+        verify_monotonic_pagination,
+        execute_full_volume_search,
+        verify_ledger_witnesses,
+    )
+
+    # 1. Body-only numeral counterexample: '239' embedded in prose, NO standalone page numeral line
+    mock_body_only_pages = [
+        "Paulus als Schriftuitlegger\nThis line mentions 239 inside a prose sentence.\nIn die Skriflig 39(2) 2005:239-254\n"
+    ]
+    with pytest.raises(ValueError) as exc1:
+        verify_monotonic_pagination(mock_body_only_pages)
+    assert "expected standalone printed page number '239' not found as an isolated line" in str(exc1.value)
+
+    # 2. Missing running header/footer marker counterexample
+    mock_missing_marker_pages = [
+        "239\nProse without any journal header or footer marker.\n"
+    ]
+    with pytest.raises(ValueError) as exc2:
+        verify_monotonic_pagination(mock_missing_marker_pages)
+    assert "Page running header/footer marker missing at PDF p. 1 (printed p. 239)" in str(exc2.value)
+
+    # 3. Injected match for CONFIRMED_ABSENT target (B001-11: 1 Cor 10:7 / Exodus 32:6)
+    mock_16_pages = ["In die Skriflig 39(2) 2005:239-254\n" + str(p + 238) for p in range(1, 17)]
+    # Provide expected positive hits for B001-1 (on p. 1) and B001-4 (on p. 10)
+    mock_16_pages[0] += "\nRom 4:3 citing Gen 15:6 with ἐπίστευσεν δὲ Ἀβραάμ\n"
+    mock_16_pages[9] += "\nRom 10:11 and 9:33\n"
+    # Inject 1 Cor 10:7 on PDF p. 5 (printed 243)
+    mock_16_pages[4] += "\nHere is an injected mention of 1 Cor 10:7 in text.\n"
+    with pytest.raises(ValueError) as exc3:
+        execute_full_volume_search(mock_16_pages, [])
+    assert "Target B001-11 is categorized as CONFIRMED_ABSENT, but search pattern matched 1 hit(s)" in str(exc3.value)
+    assert "on page(s) [243]" in str(exc3.value)
+
+    # 4. Zero matches for positive target B001-1
+    mock_empty_pages = ["In die Skriflig 39(2) 2005:239-254\n" + str(p + 238) + "\nGeneric text with no citations." for p in range(1, 17)]
+    with pytest.raises(ValueError) as exc4:
+        execute_full_volume_search(mock_empty_pages, [])
+    assert "Target B001-1 is categorized as EXTENDED_EXEGETICAL_ANALYSIS, but search patterns returned zero hits!" in str(exc4.value)
+
+    # 5. Ledger witness quote mismatch fails closed
+    fake_ledger_row = [{
+        "evidence_id": "S07F-E001",
+        "source_id": "S07F",
+        "b001_id": "B001-1",
+        "claim_type": "Historical / Methodological",
+        "author_claim": "Claim text",
+        "short_quote": "nonexistent quote string",
+        "printed_page": "239",
+        "source_locator": "Printed p. 239 [PDF p. 1]",
+        "notebooklm_citation": "[1]",
+        "verification_status": "VERIFIED",
+        "qualification": "qual",
+        "extraction_confidence": "HIGH",
+        "notes": "note",
+    }]
+    with pytest.raises(ValueError) as exc5:
+        verify_ledger_witnesses(fake_ledger_row, mock_16_pages)
+    assert "entire normalized quote not found in text of PDF p(p). 1 (printed p(p). 239)" in str(exc5.value)
+
 
 
 

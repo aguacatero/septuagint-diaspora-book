@@ -33,7 +33,7 @@
 ### B001-1: Romans 4:3 / Genesis 15:6
 - **Category:** `EXTENDED_EXEGETICAL_ANALYSIS`
 - **Total Full-Volume Occurrences:** 48
-- **Source-Reviewed/Extraction-Stage Argument Assessment (Scholarly Provenance):** Primary subject of this entire investigation (pp. 239–254). Baaij provides extensive grammatical, lexical, and theological analysis showing how Paul in Rom 4:3 accurately renders Genesis 15:5b–6 directly from Biblical Hebrew (*'āman*, *ḥāšaḇ*, *ṣəḏāqāh*) rather than following Septuagint passive constructions. *(Source-reviewed/extraction judgment, awaiting independent review)*
+- **Source-Reviewed/Extraction-Stage Argument Assessment (Pattern-Hit Search & Scholarly Provenance):** Primary subject of this entire investigation (pp. 239–254). Baaij provides extensive grammatical, lexical, and theological analysis arguing that Paul in Rom 4:3 renders Genesis 15:5b–6 directly from Biblical Hebrew (*'āman*, *ḥāšaḇ*, *ṣəḏāqāh*), emphasizing active trust and God as Initiator (*dativus causae* *τῷ θεῷ*), while sharing the passive *ἐλογίσθη* and simple dative *τῷ θεῷ* with the Septuagint to express divine attribution. *(Source-reviewed/extraction judgment, awaiting independent review)*
 - **Verified Page Occurrences:**
   - **[PDF p. 1; printed p. 239]:** 10 hit(s)
     - Pattern `\b4:3\b`: *"itlegger Paulus’ vertolking van Genesis 15:5b-6 in Romeinen 4:3 Pieter K. Baaij SCHOTEN België E-pos: pk.baaij@skynet.be Ab"*
@@ -127,26 +127,26 @@
     - **Authoritative Derived Snippet:** *"s in rom. 4:5, 24). hij gebruikt hier pi,steuw cum dativo zonder evpi of eivj . met pi,steuw cum dativo (zonder preposit..."*
     - **Verification Status:** `VERIFIED`
   - **Evidence ID:** `S07F-E009` (Methodological / Textual)
-    - **Extracted Author Claim:** Relying uncritically on Septuagint translations obscures Hebrew syntax and leads commentators to teach the opposite of what Hebrew Scripture states.
+    - **Extracted Author Claim:** Baaij attributes to Paul a broader polemic (following Rom 10:5ff) that uncritical reliance on the Septuagint alienates readers from the God of Scripture and teaches the opposite of what Scripture states.
     - **Short Quote:** *"de mens het tegenovergestelde van wat de Schrift zegt"*
-    - **Locator:** [PDF p. 15; printed p. 253]
-    - **Authoritative Derived Snippet:** *"p.k. baaij de mens het tegenovergestelde van wat de schrift zegt (baaij, 2003:145-148). vertalers en uitleggers van de s..."*
+    - **Locator:** [PDF pp. 14–15; printed pp. 252–253]
+    - **Authoritative Derived Snippet:** *"vertaling) is daarom onjuist. 252 in die skriflig 39(2) 2005:239-254 p.k. baaij de mens het tegenovergestelde van wat de..."*
     - **Verification Status:** `VERIFIED`
 
 ### B001-2: Romans 9:25 / Hosea 2:23 [LXX 2:25]
 - **Category:** `CONFIRMED_ABSENT`
 - **Total Full-Volume Occurrences:** 0
-- **Source-Reviewed/Extraction-Stage Argument Assessment (Scholarly Provenance):** Rom 9:25 and Hosea 2:23 are not discussed in this volume. Zero hits occur across all 16 pages. *(Source-reviewed/extraction judgment, awaiting independent review)*
+- **Source-Reviewed/Extraction-Stage Argument Assessment (Pattern-Hit Search & Scholarly Provenance):** Rom 9:25 and Hosea 2:23 are not discussed in this volume. Zero hits occur across all 16 pages. *(Source-reviewed/extraction judgment, awaiting independent review)*
 
 ### B001-3: Romans 9:26 / Hosea 1:10 [LXX 2:1]
 - **Category:** `CONFIRMED_ABSENT`
 - **Total Full-Volume Occurrences:** 0
-- **Source-Reviewed/Extraction-Stage Argument Assessment (Scholarly Provenance):** Rom 9:26 and Hosea 1:10 are not discussed in this volume. Zero hits occur across all 16 pages. *(Source-reviewed/extraction judgment, awaiting independent review)*
+- **Source-Reviewed/Extraction-Stage Argument Assessment (Pattern-Hit Search & Scholarly Provenance):** Rom 9:26 and Hosea 1:10 are not discussed in this volume. Zero hits occur across all 16 pages. *(Source-reviewed/extraction judgment, awaiting independent review)*
 
 ### B001-4: Romans 10:11 / Isaiah 28:16
 - **Category:** `PASSING_COMPARATIVE_MENTION`
 - **Total Full-Volume Occurrences:** 2
-- **Source-Reviewed/Extraction-Stage Argument Assessment (Scholarly Provenance):** Baaij notes in passing on p. 248 [PDF p. 10] that Paul constructs πιστεύω with ἐπί and the dative in Rom 10:11 (and Rom 9:33) in explicit grammatical contrast to his deliberate use of πιστεύω with a simple dative (*τῷ θεῷ*) in Rom 4:3 to highlight God as the divine Cause (*dativus causae*). *(Source-reviewed/extraction judgment, awaiting independent review)*
+- **Source-Reviewed/Extraction-Stage Argument Assessment (Pattern-Hit Search & Scholarly Provenance):** Baaij notes in passing on p. 248 [PDF p. 10] that Paul constructs πιστεύω with ἐπί and the dative in Rom 10:11 (and Rom 9:33) in explicit grammatical contrast to his deliberate use of πιστεύω with a simple dative (*τῷ θεῷ*) in Rom 4:3 to highlight God as the divine Cause (*dativus causae*). *(Source-reviewed/extraction judgment, awaiting independent review)*
 - **Verified Page Occurrences:**
   - **[PDF p. 10; printed p. 248]:** 2 hit(s)
     - Pattern `\b10:11\b`: *"immers niet pi,steuw evpi, cum dativo (zoals in Rom. 9:33; 10:11) of pi,steuw cum accusativo (zoals in Rom. 4:5, 24). Hij ge"*
@@ -162,42 +162,42 @@
 ### B001-5: Romans 10:13 / Joel 2:32 [LXX 3:5]
 - **Category:** `CONFIRMED_ABSENT`
 - **Total Full-Volume Occurrences:** 0
-- **Source-Reviewed/Extraction-Stage Argument Assessment (Scholarly Provenance):** Neither Rom 10:13 nor Joel 2:32 is discussed in this volume. Zero hits occur across all 16 pages. (Rom 10:16 is referenced on p. 248 for dative construction). *(Source-reviewed/extraction judgment, awaiting independent review)*
+- **Source-Reviewed/Extraction-Stage Argument Assessment (Pattern-Hit Search & Scholarly Provenance):** Neither Rom 10:13 nor Joel 2:32 is discussed in this volume. Zero hits occur across all 16 pages. (Rom 10:16 is referenced on p. 248 for dative construction). *(Source-reviewed/extraction judgment, awaiting independent review)*
 
 ### B001-6: Romans 11:34 / Isaiah 40:13
 - **Category:** `CONFIRMED_ABSENT`
 - **Total Full-Volume Occurrences:** 0
-- **Source-Reviewed/Extraction-Stage Argument Assessment (Scholarly Provenance):** Neither Rom 11:34 nor Isaiah 40:13 is discussed in this volume. Zero hits occur across all 16 pages. (Rom 11:13 is referenced in passing on p. 249 in an unrelated syntactic remark). *(Source-reviewed/extraction judgment, awaiting independent review)*
+- **Source-Reviewed/Extraction-Stage Argument Assessment (Pattern-Hit Search & Scholarly Provenance):** Neither Rom 11:34 nor Isaiah 40:13 is discussed in this volume. Zero hits occur across all 16 pages. (Rom 11:13 is referenced in passing on p. 249 in an unrelated syntactic remark). *(Source-reviewed/extraction judgment, awaiting independent review)*
 
 ### B001-7: Romans 15:12 / Isaiah 11:10
 - **Category:** `CONFIRMED_ABSENT`
 - **Total Full-Volume Occurrences:** 0
-- **Source-Reviewed/Extraction-Stage Argument Assessment (Scholarly Provenance):** Neither Rom 15:12 nor Isaiah 11:10 is discussed in this volume. Zero hits occur across all 16 pages. *(Source-reviewed/extraction judgment, awaiting independent review)*
+- **Source-Reviewed/Extraction-Stage Argument Assessment (Pattern-Hit Search & Scholarly Provenance):** Neither Rom 15:12 nor Isaiah 11:10 is discussed in this volume. Zero hits occur across all 16 pages. *(Source-reviewed/extraction judgment, awaiting independent review)*
 
 ### B001-8: 1 Corinthians 1:19 / Isaiah 29:14
 - **Category:** `CONFIRMED_ABSENT`
 - **Total Full-Volume Occurrences:** 0
-- **Source-Reviewed/Extraction-Stage Argument Assessment (Scholarly Provenance):** Neither 1 Cor 1:19 nor Isaiah 29:14 is discussed in this volume. Zero hits occur across all 16 pages. *(Source-reviewed/extraction judgment, awaiting independent review)*
+- **Source-Reviewed/Extraction-Stage Argument Assessment (Pattern-Hit Search & Scholarly Provenance):** Neither 1 Cor 1:19 nor Isaiah 29:14 is discussed in this volume. Zero hits occur across all 16 pages. *(Source-reviewed/extraction judgment, awaiting independent review)*
 
 ### B001-9: 1 Corinthians 6:16 / Genesis 2:24
 - **Category:** `CONFIRMED_ABSENT`
 - **Total Full-Volume Occurrences:** 0
-- **Source-Reviewed/Extraction-Stage Argument Assessment (Scholarly Provenance):** Neither 1 Cor 6:16 nor Gen 2:24 is discussed in this volume. Zero hits occur across all 16 pages. *(Source-reviewed/extraction judgment, awaiting independent review)*
+- **Source-Reviewed/Extraction-Stage Argument Assessment (Pattern-Hit Search & Scholarly Provenance):** Neither 1 Cor 6:16 nor Gen 2:24 is discussed in this volume. Zero hits occur across all 16 pages. *(Source-reviewed/extraction judgment, awaiting independent review)*
 
 ### B001-10: 1 Corinthians 9:9 / Deuteronomy 25:4
 - **Category:** `CONFIRMED_ABSENT`
 - **Total Full-Volume Occurrences:** 0
-- **Source-Reviewed/Extraction-Stage Argument Assessment (Scholarly Provenance):** Neither 1 Cor 9:9 nor Deut 25:4 is discussed in this volume. Zero hits occur across all 16 pages. *(Source-reviewed/extraction judgment, awaiting independent review)*
+- **Source-Reviewed/Extraction-Stage Argument Assessment (Pattern-Hit Search & Scholarly Provenance):** Neither 1 Cor 9:9 nor Deut 25:4 is discussed in this volume. Zero hits occur across all 16 pages. *(Source-reviewed/extraction judgment, awaiting independent review)*
 
 ### B001-11: 1 Corinthians 10:7 / Exodus 32:6
 - **Category:** `CONFIRMED_ABSENT`
 - **Total Full-Volume Occurrences:** 0
-- **Source-Reviewed/Extraction-Stage Argument Assessment (Scholarly Provenance):** Neither 1 Cor 10:7 nor Exod 32:6 is discussed in this volume. Zero hits occur across all 16 pages. *(Source-reviewed/extraction judgment, awaiting independent review)*
+- **Source-Reviewed/Extraction-Stage Argument Assessment (Pattern-Hit Search & Scholarly Provenance):** Neither 1 Cor 10:7 nor Exod 32:6 is discussed in this volume. Zero hits occur across all 16 pages. *(Source-reviewed/extraction judgment, awaiting independent review)*
 
 ### B001-12: Galatians 3:13 / Deuteronomy 21:23
 - **Category:** `CONFIRMED_ABSENT`
 - **Total Full-Volume Occurrences:** 0
-- **Source-Reviewed/Extraction-Stage Argument Assessment (Scholarly Provenance):** Neither Gal 3:13 nor Deut 21:23 is discussed in this volume. Zero hits occur across all 16 pages. (Gal 3:6 is referenced in fn. 8 on p. 248). *(Source-reviewed/extraction judgment, awaiting independent review)*
+- **Source-Reviewed/Extraction-Stage Argument Assessment (Pattern-Hit Search & Scholarly Provenance):** Neither Gal 3:13 nor Deut 21:23 is discussed in this volume. Zero hits occur across all 16 pages. (Gal 3:6 is referenced in fn. 8 on p. 248). *(Source-reviewed/extraction judgment, awaiting independent review)*
 
 ---
 

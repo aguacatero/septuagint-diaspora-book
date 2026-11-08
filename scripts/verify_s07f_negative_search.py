@@ -62,7 +62,7 @@ AUTHORITATIVE_EVIDENCE_LOCI = {
     "S07F-E006": (248, 10),
     "S07F-E007": (248, 10),
     "S07F-E008": (248, 10),
-    "S07F-E009": (253, 15),
+    "S07F-E009": (252, 253, 14, 15),
 }
 
 EXPECTED_SYNTHESIS_SUBSECTIONS = {
@@ -71,7 +71,7 @@ EXPECTED_SYNTHESIS_SUBSECTIONS = {
     "Comparison Between the Masoretic Text (MT) and Septuagint (LXX)": (248, 10),
     "Word Order and Postpositive δé": (248, 10),
     "Covenant Name Change (Abraham vs Abram)": (248, 10),
-    "Septuagint Misleading Readers & Polemic": (253, 15),
+    "Septuagint Misleading Readers & Polemic": (252, 253, 14, 15),
     "Grammatical Analysis: Active Hebrew (wayyaḥšəḇehā) vs. Passive Greek (ἐλογίσθη)": (248, 10),
     "Paul's Theology of Justification & Dativus Causae": (248, 10),
     "Paul as 'Schriftuitlegger bij uitstek' (Expositor Par Excellence)": (240, 2),
@@ -186,15 +186,36 @@ def extract_page_texts(pdf_path: Path) -> list[str]:
 
 
 def verify_monotonic_pagination(page_texts: list[str]) -> None:
+    """Verify strictly monotonic pagination invariant (printed = PDF + 238) across all 16 pages.
+
+    Guarantees that each page contains an isolated standalone page number line matching the exact
+    expected printed numeral (PDF + 238), located in the page header/footer region, and that the
+    volume running header or footer marker is present. Fails closed if the numeral only appears
+    embedded inside prose body text.
+    """
     for idx, txt in enumerate(page_texts):
         pdf_page = idx + 1
         expected_printed = pdf_page + 238
         lines = [ln.strip() for ln in txt.splitlines() if ln.strip()]
-        has_printed = any(str(expected_printed) in ln for ln in lines)
-        if not has_printed:
+
+        # Enforce isolated standalone line containing solely the expected printed numeral
+        has_standalone_num = any(ln == str(expected_printed) for ln in lines)
+        if not has_standalone_num:
             raise ValueError(
                 f"Monotonic pagination invariant violated at PDF p. {pdf_page}: "
-                f"expected printed page number '{expected_printed}' not found in page lines"
+                f"expected standalone printed page number '{expected_printed}' not found as an isolated line"
+            )
+
+        # Enforce running journal/article header or footer marker on the page
+        has_running_marker = any(
+            "In die Skriflig" in ln
+            or "Paulus als Schriftuitlegger" in ln
+            or "P.K. Baaij" in ln
+            for ln in lines
+        )
+        if not has_running_marker:
+            raise ValueError(
+                f"Page running header/footer marker missing at PDF p. {pdf_page} (printed p. {expected_printed})"
             )
 
 
@@ -252,34 +273,57 @@ def load_evidence_ledger(ledger_path: Path) -> list[dict]:
 
 
 def verify_ledger_witnesses(rows: list[dict], page_texts: list[str]) -> list[dict]:
+    """Verify physical presence of each ledger row's exact quotation on the declared page or page range.
+
+    Methodological boundary:
+    Lexical quote verification confirms that the exact string occurs within the declared physical
+    boundaries of the source volume. It validates physical citation locators, but does NOT
+    autonomously prove that the human-authored 'author_claim' is logically entailed by the quote.
+    Scholarly attribution and contextual interpretation remain subject to independent scholarly review.
+    """
     witnesses = []
     for r in rows:
         eid = r["evidence_id"]
         b_id = r["b001_id"]
-        printed_page = int(r["printed_page"])
-        expected_pdf_page = printed_page - 238
-        if expected_pdf_page < 1 or expected_pdf_page > EXPECTED_PAGE_COUNT:
-            raise ValueError(f"{eid}: invalid printed page {printed_page} (derived PDF {expected_pdf_page})")
+        printed_str = r["printed_page"].strip()
 
-        p_idx = expected_pdf_page - 1
-        page_txt = page_texts[p_idx]
+        if "-" in printed_str or "–" in printed_str:
+            parts = re.split(r"[–-]", printed_str)
+            p_start, p_end = int(parts[0]), int(parts[1])
+            pdf_start = p_start - 238
+            pdf_end = p_end - 238
+            if pdf_start < 1 or pdf_end > EXPECTED_PAGE_COUNT or pdf_start > pdf_end:
+                raise ValueError(f"{eid}: invalid printed page range {printed_str}")
+            page_slice = page_texts[pdf_start - 1 : pdf_end]
+            combined_txt = " ".join(page_slice)
+            norm_target_text = normalize_text_for_match(combined_txt)
+            display_printed = f"{p_start}–{p_end}"
+            display_pdf = f"{pdf_start}–{pdf_end}"
+        else:
+            printed_page = int(printed_str)
+            expected_pdf_page = printed_page - 238
+            if expected_pdf_page < 1 or expected_pdf_page > EXPECTED_PAGE_COUNT:
+                raise ValueError(f"{eid}: invalid printed page {printed_page} (derived PDF {expected_pdf_page})")
+            p_idx = expected_pdf_page - 1
+            norm_target_text = normalize_text_for_match(page_texts[p_idx])
+            display_printed = str(printed_page)
+            display_pdf = str(expected_pdf_page)
 
         quote = r["short_quote"].strip().strip('"')
-        norm_page = normalize_text_for_match(page_txt)
         norm_q = normalize_text_for_match(quote)
 
-        # Fail-closed: verify the ENTIRE normalized quote, in correct order, on declared page
-        if norm_q not in norm_page:
+        # Fail-closed: verify the ENTIRE normalized quote, in correct order, on declared page or range
+        if norm_q not in norm_target_text:
             raise ValueError(
-                f"{eid}: entire normalized quote not found in text of PDF p. {expected_pdf_page} "
-                f"(printed p. {printed_page}).\nQuote: '{norm_q}'"
+                f"{eid}: entire normalized quote not found in text of PDF p(p). {display_pdf} "
+                f"(printed p(p). {display_printed}).\nQuote: '{norm_q}'"
             )
 
-        # Locate exact position of entire quote in norm_page
-        start_pos = norm_page.find(norm_q)
+        # Locate exact position of entire quote in norm_target_text
+        start_pos = norm_target_text.find(norm_q)
         w_start = max(0, start_pos - 80)
-        w_end = min(len(norm_page), start_pos + len(norm_q) + 80)
-        authoritative_snippet = norm_page[w_start:w_end].strip()
+        w_end = min(len(norm_target_text), start_pos + len(norm_q) + 80)
+        authoritative_snippet = norm_target_text[w_start:w_end].strip()
 
         witnesses.append({
             "evidence_id": eid,
@@ -287,8 +331,8 @@ def verify_ledger_witnesses(rows: list[dict], page_texts: list[str]) -> list[dic
             "claim_type": r["claim_type"],
             "author_claim": r["author_claim"],
             "short_quote": quote,
-            "printed_page": printed_page,
-            "pdf_page": expected_pdf_page,
+            "printed_page": display_printed,
+            "pdf_page": display_pdf,
             "authoritative_snippet": authoritative_snippet,
             "verification_status": r["verification_status"],
             "qualification": r["qualification"],
@@ -304,7 +348,7 @@ def execute_full_volume_search(page_texts: list[str], witnesses: list[dict]) -> 
             "comparison": "Romans 4:3 / Genesis 15:6",
             "patterns": [r"\b4:3\b", r"\bGen(?:esis)?\s*15(?::[56][b]?)?\b", r"\b15:6\b", r"ἐπίστευσεν\s+δὲ\s+Ἀβραάμ"],
             "category": "EXTENDED_EXEGETICAL_ANALYSIS",
-            "judgment": "Primary subject of this entire investigation (pp. 239–254). Baaij provides extensive grammatical, lexical, and theological analysis showing how Paul in Rom 4:3 accurately renders Genesis 15:5b–6 directly from Biblical Hebrew (*'āman*, *ḥāšaḇ*, *ṣəḏāqāh*) rather than following Septuagint passive constructions.",
+            "judgment": "Primary subject of this entire investigation (pp. 239–254). Baaij provides extensive grammatical, lexical, and theological analysis arguing that Paul in Rom 4:3 renders Genesis 15:5b–6 directly from Biblical Hebrew (*'āman*, *ḥāšaḇ*, *ṣəḏāqāh*), emphasizing active trust and God as Initiator (*dativus causae* *τῷ θεῷ*), while sharing the passive *ἐλογίσθη* and simple dative *τῷ θεῷ* with the Septuagint to express divine attribution.",
         },
         {
             "id": "B001-2",
@@ -404,6 +448,21 @@ def execute_full_volume_search(page_texts: list[str], witnesses: list[dict]) -> 
                         "snippet": snip
                     })
         
+        # Fail-closed assertion: absent targets MUST return exactly zero pattern hits
+        if tgt["category"] == "CONFIRMED_ABSENT":
+            if len(hits) != 0:
+                hit_pages = [h["printed_page"] for h in hits]
+                raise ValueError(
+                    f"Target {b_id} is categorized as CONFIRMED_ABSENT, but search pattern matched {len(hits)} hit(s) "
+                    f"on page(s) {hit_pages}! Invariant violated: absent targets must return zero hits."
+                )
+        elif tgt["category"] in ("EXTENDED_EXEGETICAL_ANALYSIS", "PASSING_COMPARATIVE_MENTION"):
+            if len(hits) == 0:
+                raise ValueError(
+                    f"Target {b_id} is categorized as {tgt['category']}, but search patterns returned zero hits! "
+                    f"Expected positive hits on target passage."
+                )
+
         matched_witnesses = [w for w in witnesses if w["b001_id"] == b_id]
         report_sections.append({
             "target": tgt,
@@ -466,7 +525,7 @@ def generate_markdown_report(
             f"### {b_id}: {comp}",
             f"- **Category:** `{cat}`",
             f"- **Total Full-Volume Occurrences:** {len(hits)}",
-            f"- **Source-Reviewed/Extraction-Stage Argument Assessment (Scholarly Provenance):** {judg} *(Source-reviewed/extraction judgment, awaiting independent review)*",
+            f"- **Source-Reviewed/Extraction-Stage Argument Assessment (Pattern-Hit Search & Scholarly Provenance):** {judg} *(Source-reviewed/extraction judgment, awaiting independent review)*",
         ])
 
         if hits:
@@ -483,11 +542,13 @@ def generate_markdown_report(
         if witnesses:
             lines.append("- **Evidence Ledger Witnesses (`citation_ledger.csv`):**")
             for w in witnesses:
+                p_label = "pp." if "–" in str(w["printed_page"]) or "-" in str(w["printed_page"]) else "p."
+                pdf_label = "pp." if "–" in str(w["pdf_page"]) or "-" in str(w["pdf_page"]) else "p."
                 lines.extend([
                     f"  - **Evidence ID:** `{w['evidence_id']}` ({w['claim_type']})",
                     f"    - **Extracted Author Claim:** {w['author_claim']}",
                     f"    - **Short Quote:** *\"{w['short_quote']}\"*",
-                    f"    - **Locator:** [PDF p. {w['pdf_page']}; printed p. {w['printed_page']}]",
+                    f"    - **Locator:** [PDF {pdf_label} {w['pdf_page']}; printed {p_label} {w['printed_page']}]",
                     f"    - **Authoritative Derived Snippet:** *\"{w['authoritative_snippet'][:120]}...\"*",
                     f"    - **Verification Status:** `{w['verification_status']}`",
                 ])
@@ -611,7 +672,7 @@ def verify_cross_artifact_consistency(source_dir: Path) -> None:
                 raise ValueError(f"extraction.md: Duplicate section header for {eid}")
             record_map[eid] = rec
 
-    for eid, (exp_printed, exp_pdf) in AUTHORITATIVE_EVIDENCE_LOCI.items():
+    for eid, exp_locus in AUTHORITATIVE_EVIDENCE_LOCI.items():
         if eid not in record_map:
             raise ValueError(f"extraction.md: Missing evidence record section for {eid}")
         rec = record_map[eid]
@@ -625,19 +686,36 @@ def verify_cross_artifact_consistency(source_dir: Path) -> None:
             raise ValueError(f"extraction.md: Duplicate Source Locator line for {eid}")
 
         m_loc = re.search(
-            r"\*\*Source Locator(?:s)?:\*\*\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]",
+            r"\*\*Source Locator(?:s)?:\*\*\s*Printed\s+pp?\.\s*(\d+)(?:[–-](\d+))?\s*\[PDF\s+pp?\.\s*(\d+)(?:[–-](\d+))?\]",
             loc_lines[0]
         )
         if not m_loc:
             raise ValueError(f"extraction.md: Malformed Source Locator in {eid}: '{loc_lines[0]}'")
 
-        act_printed = int(m_loc.group(1))
-        act_pdf = int(m_loc.group(2))
-        if act_printed != exp_printed or act_pdf != exp_pdf:
-            raise ValueError(
-                f"extraction.md: Locus mismatch for {eid}: expected Printed p. {exp_printed} [PDF p. {exp_pdf}], "
-                f"got Printed p. {act_printed} [PDF p. {act_pdf}]"
-            )
+        if len(exp_locus) == 2:
+            exp_printed, exp_pdf = exp_locus
+            if m_loc.group(2) is not None or m_loc.group(4) is not None:
+                raise ValueError(f"extraction.md: Expected single page for {eid}, got range in '{loc_lines[0]}'")
+            act_printed = int(m_loc.group(1))
+            act_pdf = int(m_loc.group(3))
+            if act_printed != exp_printed or act_pdf != exp_pdf:
+                raise ValueError(
+                    f"extraction.md: Locus mismatch for {eid}: expected Printed p. {exp_printed} [PDF p. {exp_pdf}], "
+                    f"got Printed p. {act_printed} [PDF p. {act_pdf}]"
+                )
+        else:
+            exp_p_start, exp_p_end, exp_pdf_start, exp_pdf_end = exp_locus
+            if m_loc.group(2) is None or m_loc.group(4) is None:
+                raise ValueError(f"extraction.md: Expected range for {eid}, got single page in '{loc_lines[0]}'")
+            act_p_start = int(m_loc.group(1))
+            act_p_end = int(m_loc.group(2))
+            act_pdf_start = int(m_loc.group(3))
+            act_pdf_end = int(m_loc.group(4))
+            if (act_p_start, act_p_end, act_pdf_start, act_pdf_end) != exp_locus:
+                raise ValueError(
+                    f"extraction.md: Range mismatch for {eid}: expected Printed pp. {exp_p_start}–{exp_p_end} [PDF pp. {exp_pdf_start}–{exp_pdf_end}], "
+                    f"got '{loc_lines[0]}'"
+                )
 
     # 4. Section-bound checks for paulus_schriftuitlegger_synthesis.md (fail closed against subsection bleed)
     synth_text = (source_dir / "paulus_schriftuitlegger_synthesis.md").read_text(encoding="utf-8")
@@ -654,7 +732,7 @@ def verify_cross_artifact_consistency(source_dir: Path) -> None:
                 raise ValueError(f"paulus_schriftuitlegger_synthesis.md: Duplicate subsection '{title}'")
             synth_subsections[title] = sub
 
-    for title, (exp_pr, exp_pdf) in EXPECTED_SYNTHESIS_SUBSECTIONS.items():
+    for title, exp_locus in EXPECTED_SYNTHESIS_SUBSECTIONS.items():
         if title not in synth_subsections:
             raise ValueError(f"paulus_schriftuitlegger_synthesis.md: Missing subsection '{title}'")
         sub = synth_subsections[title]
@@ -668,18 +746,37 @@ def verify_cross_artifact_consistency(source_dir: Path) -> None:
             raise ValueError(f"paulus_schriftuitlegger_synthesis.md: Duplicate Source Locator in subsection '{title}'")
 
         m_loc = re.search(
-            r"\*\*Source Locator(?:s)?:\*\*\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]",
+            r"\*\*Source Locator(?:s)?:\*\*\s*Printed\s+pp?\.\s*(\d+)(?:[–-](\d+))?\s*\[PDF\s+pp?\.\s*(\d+)(?:[–-](\d+))?\]",
             loc_lines[0]
         )
         if not m_loc:
             raise ValueError(f"paulus_schriftuitlegger_synthesis.md: Malformed Source Locator in subsection '{title}': '{loc_lines[0]}'")
 
-        act_pr, act_pdf = int(m_loc.group(1)), int(m_loc.group(2))
-        if act_pr != exp_pr or act_pdf != exp_pdf:
-            raise ValueError(
-                f"paulus_schriftuitlegger_synthesis.md: Wrong locus for subsection '{title}': "
-                f"expected Printed p. {exp_pr} [PDF p. {exp_pdf}], got Printed p. {act_pr} [PDF p. {act_pdf}]"
-            )
+        if len(exp_locus) == 2:
+            exp_pr, exp_pdf = exp_locus
+            if m_loc.group(2) is not None or m_loc.group(4) is not None:
+                raise ValueError(f"paulus_schriftuitlegger_synthesis.md: Expected single page in '{title}', got range in '{loc_lines[0]}'")
+            act_pr = int(m_loc.group(1))
+            act_pdf = int(m_loc.group(3))
+            if act_pr != exp_pr or act_pdf != exp_pdf:
+                raise ValueError(
+                    f"paulus_schriftuitlegger_synthesis.md: Wrong locus for subsection '{title}': "
+                    f"expected Printed p. {exp_pr} [PDF p. {exp_pdf}], got Printed p. {act_pr} [PDF p. {act_pdf}]"
+                )
+        else:
+            exp_p_start, exp_p_end, exp_pdf_start, exp_pdf_end = exp_locus
+            if m_loc.group(2) is None or m_loc.group(4) is None:
+                raise ValueError(f"paulus_schriftuitlegger_synthesis.md: Expected range in '{title}', got single page in '{loc_lines[0]}'")
+            act_p_start = int(m_loc.group(1))
+            act_p_end = int(m_loc.group(2))
+            act_pdf_start = int(m_loc.group(3))
+            act_pdf_end = int(m_loc.group(4))
+            if (act_p_start, act_p_end, act_pdf_start, act_pdf_end) != exp_locus:
+                raise ValueError(
+                    f"paulus_schriftuitlegger_synthesis.md: Range mismatch in '{title}': "
+                    f"expected Printed pp. {exp_p_start}–{exp_p_end} [PDF pp. {exp_pdf_start}–{exp_pdf_end}], "
+                    f"got '{loc_lines[0]}'"
+                )
 
     # 5. Section-bound checks for relevance_scan.md table (fail closed against row bleed)
     rel_text = (source_dir / "relevance_scan.md").read_text(encoding="utf-8")

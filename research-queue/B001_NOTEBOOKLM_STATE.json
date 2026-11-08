@@ -8,11 +8,11 @@
   "active_source_id": "S07F",
   "active_phase": "AWAITING_REVIEW",
   "last_accepted_source_id": "S06F",
-  "last_reviewed_sha": "645ebf78eb919e2356d9cc6d093b3ca59261d002",
+  "last_reviewed_sha": "b4643e296b115c2fddd4a77f36ee885873300f93",
   "chatgpt_relay_mode": "REVIEW_LOOP_ONLY",
   "allow_legacy_relay_worker": false,
   "allow_paid_api": false,
-  "updated_at": "2026-11-07",
+  "updated_at": "2026-11-08",
   "smoke_test_status": "PASSED",
   "hands_off_enabled": true
 }

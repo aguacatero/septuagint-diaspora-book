@@ -20,7 +20,7 @@ Synthesis of Pieter K. Baaij's explicit analysis in *Paulus als Schriftuitlegger
 
 - **Comparison Between the Masoretic Text (MT) and Septuagint (LXX):**
   - **Source Locator:** Printed p. 248 [PDF p. 10]; Section 3
-  - **Analysis & Quote:** Baaij compares the MT of Genesis 15:5b–6 (וְהֶאֱמִן בַּיהוָה וַיַּחְשְׁבֶהָ לּוֹ צְדָקָה) with the LXX (*καὶ ἐπίστευσεν Ἀβρὰμ τῷ θεῷ καὶ ἐλογίσθη αὐτῷ εἰς δικαιοσύνην*), highlighting key syntactic differences: Paul follows the Hebrew causal structure and replaces the pre-covenant name Abram with Abraham.
+  - **Analysis & Quote:** Baaij compares the MT of Genesis 15:5b–6 (וְהֶאֱמִן בַּיהוָה וַיַּחְשְׁבֶהָ לּוֹ צְדָקָה) with the LXX (*καὶ ἐπίστευσεν Ἀβρὰμ τῷ θεῷ καὶ ἐλογίσθη αὐτῷ εἰς δικαιοσύνην*). He notes that in extant Greek wording, Paul (Rom 4:3) and the LXX (Gen 15:6) agree in sharing the passive clause *καὶ ἐλογίσθη αὐτῷ εἰς δικαιοσύνην* (p. 249: *"evenals de LXX"*) and simple dative *τῷ θεῷ*. The actual textual differences are the conjunction (*καί* vs. postpositive *δέ*) and patriarch's name (*Ἀβράμ* vs. *Ἀβραάμ*). Baaij argues that Paul's Greek syntax with postpositive *δέ* reflects active Hebrew trust (*'āman* in hif'il) directly from Hebrew thought patterns.
 
 - **Word Order and Postpositive δé:**
   - **Source Locator:** Printed p. 248 [PDF p. 10]; Section 3
@@ -31,8 +31,8 @@ Synthesis of Pieter K. Baaij's explicit analysis in *Paulus als Schriftuitlegger
   - **Analysis & Quote:** The LXX retains the pre-covenant name "Abram" (*Ἀβράμ*), whereas Paul intentionally uses the covenant name "Abraham" (*Ἀβραάμ*), designating the responsive covenant partner: *"Niet dus “Abram” (LXX), maar Abraham, de God antwoordende mens, over wie Paulus in het vervolg nog uitgebreid zal spreken."* (p. 248).
 
 - **Septuagint Misleading Readers & Polemic:**
-  - **Source Locator:** Printed p. 253 [PDF p. 15]; Section 5
-  - **Analysis & Quote:** Baaij argues that where translators rely uncritically on LXX renderings, they obscure Hebrew syntax and teach the opposite of what Scripture says: *"de mens het tegenovergestelde van wat de Schrift zegt (Baaij, 2003:145-148). Vertalers en uitleggers van de Schriften zouden zich dus beter door Paulus laten onderrichten."* (p. 253).
+  - **Source Locator:** Printed pp. 252–253 [PDF pp. 14–15]; Section 5
+  - **Analysis & Quote:** In the concluding section following discussion of Romans 10:5ff, Baaij attributes to Paul a broader polemical argument that uncritical reliance on Septuagint translations alienates readers from the God of Scripture and teaches the opposite of what Hebrew Scripture states: *"de mens het tegenovergestelde van wat de Schrift zegt (Baaij, 2003:145-148). Vertalers en uitleggers van de Schriften zouden zich dus beter door Paulus laten onderrichten."* (pp. 252–253). This represents a broader hermeneutical polemic attributed to Paul regarding translation reliance, distinct from direct syntactic observation on Genesis 15:6 variants (where Paul and the LXX share passive *ἐλογίσθη* and simple dative *τῷ θεῷ*).
 
 ---
 

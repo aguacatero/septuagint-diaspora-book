@@ -11,7 +11,7 @@ Disaggregated bibliographic entries from footnotes and bibliography in Pieter K.
 - **Title:** *Tarsus of Jeruzalem: De stad van Paulus’ jeugd*
 - **Publication Year:** 1952 (Amsterdam: Noord-Hollandsche Uitgevers Maatschappij; Mededelingen der Koninklijke Nederlandse Akademie van Wetenschappen, Afd. Letterkunde, Nieuwe Reeks, Deel 15, No. 5, pp. 141–183)
 - **Source Locator:** Printed pp. 241–242 [PDF pp. 3–4]; Section 1
-- **Why It Matters:** Provides the foundational historical-biographical proof that Paul was raised, educated, and trained as a strict Pharisee in Jerusalem rather than Tarsus, meaning Paul thought primarily in Aramaic and Biblical Hebrew before expressing his thoughts in Greek. Baaij relies on Van Unnik (pp. 173, 176, 178) to argue that Paul retro-translated Genesis 15:5b–6 directly from Biblical Hebrew in Romans 4:3.
+- **Why It Matters:** Provides a prominent historical-biographical scholarly reconstruction (endorsed and cited by Baaij on pp. 241–242) arguing that Paul was raised, educated, and trained as a strict Pharisee in Jerusalem rather than Tarsus, from which Baaij adopts the hypothesis that Paul thought primarily in Aramaic and Biblical Hebrew before expressing his thoughts in Greek. This record documents Baaij's secondary citation and endorsement of Van Unnik's thesis, not independent historical verification of Paul's biography. Baaij relies on Van Unnik (pp. 173, 176, 178) to argue that Paul retro-translated Genesis 15:5b–6 directly from Biblical Hebrew in Romans 4:3.
 
 ### Alfred Jepsen (1973–1995)
 - **Author:** Alfred Jepsen
