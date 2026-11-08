@@ -2775,7 +2775,7 @@ def test_s06f_adversarial_quote_witness_tail_mutation_fails_closed():
 
 
 def test_s06f_check_only_detects_tampered_search_log(tmp_path):
-    """Verify that --check-only compares committed bytes and fails closed on tampering."""
+    """Verify that --check-only compares exact bytes and fails closed on semantic or whitespace tampering."""
     import subprocess
     import sys
     repo_root = Path(__file__).resolve().parent.parent
@@ -2791,12 +2791,20 @@ def test_s06f_check_only_detects_tampered_search_log(tmp_path):
         ("[PDF p. 12; printed p. 106]", "[PDF p. 99; printed p. 199]"),
         # Alter claim
         ("universal availability of salvation", "restricted salvation only for few"),
+        # Terminal whitespace tampering (S06F-R2-F3: byte-for-byte exactness)
+        (None, "trailing_newline"),
+        (None, "trailing_space"),
     ]
 
     for original, tampered in tampering_cases:
         content = committed_log.read_text(encoding="utf-8")
-        assert original in content, f"Target string '{original}' not found in committed log"
-        tampered_content = content.replace(original, tampered, 1)
+        if original is not None:
+            assert original in content, f"Target string '{original}' not found in committed log"
+            tampered_content = content.replace(original, tampered, 1)
+        elif tampered == "trailing_newline":
+            tampered_content = content + "\n"
+        elif tampered == "trailing_space":
+            tampered_content = content + " "
 
         tampered_file = tmp_path / "tampered_log.md"
         tampered_file.write_text(tampered_content, encoding="utf-8")
@@ -2849,7 +2857,7 @@ def test_s06f_ledger_schema_and_verification_assertions_fail_closed(tmp_path):
 
 
 def test_s06f_cross_artifact_consistency_fails_on_debris_or_bad_loci(tmp_path):
-    """Verify that cross-artifact check catches UI debris and invalid page locators."""
+    """Verify that cross-artifact check catches UI debris, natural-format wrong locators, and missing footnote witnesses."""
     import pytest
     import shutil
     import sys
@@ -2873,22 +2881,55 @@ def test_s06f_cross_artifact_consistency_fails_on_debris_or_bad_loci(tmp_path):
     assert "UI debris 'expand_more' found" in str(exc.value)
     target_md.write_text(orig_text, encoding="utf-8")
 
-    # 2. Test bad locus detection for Rom 10:11 (Page 104 instead of 106)
+    # 2. Test natural-format wrong printed page in extraction.md for S06F-E001 (Printed p. 104 [PDF p. 10])
     extr_md = temp_sources / "extraction.md"
     orig_extr = extr_md.read_text(encoding="utf-8")
-    extr_md.write_text(orig_extr.replace("Printed p. 106", "Page 104"), encoding="utf-8")
+    extr_md.write_text(orig_extr.replace("Printed p. 106 [PDF p. 12]", "Printed p. 104 [PDF p. 10]", 1), encoding="utf-8")
     with pytest.raises(ValueError) as exc:
         verify_cross_artifact_consistency(temp_sources)
-    assert "contains incorrect locus 'Page 104' for Rom 10:11" in str(exc.value)
+    assert "Locus mismatch for S06F-E001" in str(exc.value)
     extr_md.write_text(orig_extr, encoding="utf-8")
 
-    # 3. Test impossible locator in bibliography_leads.md
-    bib_md = temp_sources / "bibliography_leads.md"
-    orig_bib = bib_md.read_text(encoding="utf-8")
-    bib_md.write_text(orig_bib + "\nKoch [p. 34]\n", encoding="utf-8")
+    # 3. Test natural-format wrong PDF page in extraction.md for S06F-E001 (Printed p. 106 [PDF p. 99])
+    extr_md.write_text(orig_extr.replace("Printed p. 106 [PDF p. 12]", "Printed p. 106 [PDF p. 99]", 1), encoding="utf-8")
     with pytest.raises(ValueError) as exc:
         verify_cross_artifact_consistency(temp_sources)
-    assert "contains impossible article locator [p. 34]" in str(exc.value)
+    assert "Invariant violated in locator" in str(exc.value) or "Locus mismatch for S06F-E001" in str(exc.value)
+    extr_md.write_text(orig_extr, encoding="utf-8")
+
+    # 4. Test natural-format wrong locator for Rom 11:34 (S06F-E006)
+    extr_md.write_text(orig_extr.replace("Printed p. 112 [PDF p. 18]", "Printed p. 108 [PDF p. 14]", 1), encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "Locus mismatch for S06F-E006" in str(exc.value)
+    extr_md.write_text(orig_extr, encoding="utf-8")
+
+    # 5. Test natural-format wrong locator in isaiah_in_romans_synthesis.md for Rom 10:11
+    synth_md = temp_sources / "isaiah_in_romans_synthesis.md"
+    orig_synth = synth_md.read_text(encoding="utf-8")
+    synth_md.write_text(orig_synth.replace("Printed p. 106 [PDF p. 12]", "Printed p. 104 [PDF p. 10]", 1), encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "Wrong locus for Rom 10:11" in str(exc.value)
+    synth_md.write_text(orig_synth, encoding="utf-8")
+
+    # 6. Test natural-format wrong locator in relevance_scan.md for B001-2
+    rel_md = temp_sources / "relevance_scan.md"
+    orig_rel = rel_md.read_text(encoding="utf-8")
+    rel_md.write_text(orig_rel.replace("Printed p. 104 [PDF p. 10]", "Printed p. 101 [PDF p. 7]", 1), encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "Wrong locus for B001-2" in str(exc.value)
+    rel_md.write_text(orig_rel, encoding="utf-8")
+
+    # 7. Test missing positive footnote witness in bibliography_leads.md
+    bib_md = temp_sources / "bibliography_leads.md"
+    orig_bib = bib_md.read_text(encoding="utf-8")
+    bib_md.write_text(orig_bib.replace("Printed p. 99 [PDF p. 5], fn. 14", "Printed p. 97 [PDF p. 3], fn. 14"), encoding="utf-8")
+    with pytest.raises(ValueError) as exc:
+        verify_cross_artifact_consistency(temp_sources)
+    assert "Missing positive footnote witness" in str(exc.value)
+    bib_md.write_text(orig_bib, encoding="utf-8")
 
 
 

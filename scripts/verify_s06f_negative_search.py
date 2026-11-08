@@ -5,8 +5,8 @@ Fails closed on missing or corrupted input PDF, binds extracted text cryptograph
 to the source volume (verifying EXPECTED_TEXT_SHA256), enforces the strict monotonic pagination
 invariant (printed = PDF + 94), validates positive controls across all article sections,
 verifies ENTIRE normalized quotes across evidence rows without truncation, asserts ledger schema
-and verified statuses, checks cross-artifact locator consistency across all deliverables,
-and in --check-only mode fails closed if the committed report differs from computed output.
+and verified statuses, checks cross-artifact natural-format locator consistency and positive
+footnote witnesses, and in --check-only mode fails closed on any byte difference (including whitespace).
 """
 
 from __future__ import annotations
@@ -52,6 +52,18 @@ EXPECTED_LEDGER_COLUMNS = [
 ]
 
 EXPECTED_EVIDENCE_IDS = [f"S06F-E00{i}" for i in range(1, 10)]
+
+AUTHORITATIVE_EVIDENCE_LOCI = {
+    "S06F-E001": (106, 12),
+    "S06F-E002": (106, 12),
+    "S06F-E003": (106, 12),
+    "S06F-E004": (105, 11),
+    "S06F-E005": (106, 12),
+    "S06F-E006": (112, 18),
+    "S06F-E007": (112, 18),
+    "S06F-E008": (114, 20),
+    "S06F-E009": (114, 20),
+}
 
 POSITIVE_CONTROLS = [
     {
@@ -478,7 +490,7 @@ def generate_markdown_report(
 
 
 def verify_cross_artifact_consistency(source_dir: Path) -> None:
-    """Verify cross-artifact locator consistency and absence of UI debris across all deliverables."""
+    """Verify natural-format locators, section-bound loci, positive footnote witnesses, and absence of UI debris."""
     deliverables = [
         "metadata.md",
         "relevance_scan.md",
@@ -500,6 +512,12 @@ def verify_cross_artifact_consistency(source_dir: Path) -> None:
         "unfold_less",
     ]
 
+    # Pattern for natural format: Printed p. N [PDF p. M] or Printed pp. N1-N2 [PDF pp. M1-M2]
+    locator_pattern = re.compile(
+        r"Printed\s+p(?:p)?\.\s*(\d+)(?:[–-](\d+))?\s*\[PDF\s+p(?:p)?\.\s*(\d+)(?:[–-](\d+))?\]",
+        re.IGNORECASE
+    )
+
     for filename in deliverables:
         p = source_dir / filename
         if not p.is_file():
@@ -511,26 +529,115 @@ def verify_cross_artifact_consistency(source_dir: Path) -> None:
             if deb in text:
                 raise ValueError(f"UI debris '{deb}' found in curated deliverable: {filename}")
 
-        # 2. Page locator check
-        # For non-bibliography files, ensure that article page citations fall strictly within [95..116]
-        # and match the canonical passage loci
-        if filename in ["extraction.md", "isaiah_in_romans_synthesis.md", "relevance_scan.md"]:
-            # Check passage-specific loci
-            if "Rom 10:11" in text and "Page 104" in text:
-                raise ValueError(f"{filename} contains incorrect locus 'Page 104' for Rom 10:11 (should be p. 106)")
-            if "Rom 11:34" in text and "Page 108" in text:
-                raise ValueError(f"{filename} contains incorrect locus 'Page 108' for Rom 11:34 (should be p. 112)")
-            if "Rom 15:12" in text and ("Page 110\n" in text or "Pages 109–110" in text):
-                raise ValueError(f"{filename} contains incorrect locus for Rom 15:12 (should be p. 114)")
-            if "Rom 9:33" in text and "Page 103" in text:
-                raise ValueError(f"{filename} contains incorrect locus 'Page 103' for Rom 9:33 (should be p. 105)")
+        # 2. General locator invariant check: validate all explicit Printed p. N [PDF p. M]
+        for m in locator_pattern.finditer(text):
+            p_start = int(m.group(1))
+            pdf_start = int(m.group(3))
+            if p_start != pdf_start + 94:
+                raise ValueError(
+                    f"{filename}: Invariant violated in locator '{m.group(0)}': "
+                    f"printed {p_start} != PDF {pdf_start} + 94"
+                )
+            if not (95 <= p_start <= 116) or not (1 <= pdf_start <= 22):
+                raise ValueError(
+                    f"{filename}: Out of bounds locator '{m.group(0)}': "
+                    f"printed {p_start} must be [95..116], PDF {pdf_start} must be [1..22]"
+                )
+            if m.group(2) and m.group(4):
+                p_end = int(m.group(2))
+                pdf_end = int(m.group(4))
+                if p_end != pdf_end + 94:
+                    raise ValueError(
+                        f"{filename}: Range invariant violated in '{m.group(0)}': "
+                        f"printed {p_end} != PDF {pdf_end} + 94"
+                    )
 
-        if filename == "bibliography_leads.md":
-            # Ensure impossible footnote-as-page locators don't exist
-            impossible = ["[p. 34]", "[p. 38]", "[p. 52]", "[p. 59]", "[p. 65]"]
-            for imp in impossible:
-                if imp in text:
-                    raise ValueError(f"bibliography_leads.md contains impossible article locator {imp}")
+    # 3. Section/Evidence-ID bound locator extraction for extraction.md
+    extr_text = (source_dir / "extraction.md").read_text(encoding="utf-8")
+    for eid, (exp_printed, exp_pdf) in AUTHORITATIVE_EVIDENCE_LOCI.items():
+        # Match the section for this evidence ID
+        m = re.search(
+            rf"{eid}.*?\*\*Source Locator:\*\*\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]",
+            extr_text,
+            re.DOTALL
+        )
+        if not m:
+            raise ValueError(f"extraction.md: Missing or malformed natural-format locator for {eid}")
+        act_printed = int(m.group(1))
+        act_pdf = int(m.group(2))
+        if act_printed != exp_printed or act_pdf != exp_pdf:
+            raise ValueError(
+                f"extraction.md: Locus mismatch for {eid}: expected Printed p. {exp_printed} [PDF p. {exp_pdf}], "
+                f"got Printed p. {act_printed} [PDF p. {act_pdf}]"
+            )
+
+    # 4. Section-bound checks for isaiah_in_romans_synthesis.md
+    synth_text = (source_dir / "isaiah_in_romans_synthesis.md").read_text(encoding="utf-8")
+    expected_synth_loci = [
+        (r"### 1\. Romans 10:11.*?Addition of πᾶς.*?\*\*Source Locator:\*\*\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 106, 12, "Rom 10:11"),
+        (r"Origin of the Composite Stone Citation in Romans 9:33.*?\*\*Source Locator:\*\*\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 105, 11, "Rom 9:33"),
+        (r"### 2\. Romans 11:34.*?\*\*Source Locator:\*\*\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 112, 18, "Rom 11:34"),
+        (r"### 3\. Romans 15:12.*?\*\*Source Locator:\*\*\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 114, 20, "Rom 15:12"),
+    ]
+    for pattern, exp_pr, exp_pdf, label in expected_synth_loci:
+        m = re.search(pattern, synth_text, re.DOTALL)
+        if not m:
+            raise ValueError(f"isaiah_in_romans_synthesis.md: Missing natural-format locator for {label}")
+        if int(m.group(1)) != exp_pr or int(m.group(2)) != exp_pdf:
+            raise ValueError(
+                f"isaiah_in_romans_synthesis.md: Wrong locus for {label}: "
+                f"expected Printed p. {exp_pr} [PDF p. {exp_pdf}], got Printed p. {m.group(1)} [PDF p. {m.group(2)}]"
+            )
+
+    # 5. Section-bound checks for relevance_scan.md table
+    rel_text = (source_dir / "relevance_scan.md").read_text(encoding="utf-8")
+    expected_rel_loci = [
+        (r"\*\*B001-2\*\*.*?\|\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 104, 10, "B001-2"),
+        (r"\*\*B001-3\*\*.*?\|\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 104, 10, "B001-3"),
+        (r"\*\*B001-4\*\*.*?\|\s*Printed\s+pp\.\s*(\d+)[–-](\d+)\s*\[PDF\s+pp\.\s*(\d+)[–-](\d+)\]", (105, 106, 11, 12), "B001-4"),
+        (r"\*\*B001-5\*\*.*?\|\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 106, 12, "B001-5"),
+        (r"\*\*B001-6\*\*.*?\|\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 112, 18, "B001-6"),
+        (r"\*\*B001-7\*\*.*?\|\s*Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]", 114, 20, "B001-7"),
+    ]
+    for item in expected_rel_loci:
+        pattern = item[0]
+        label = item[-1]
+        m = re.search(pattern, rel_text, re.DOTALL)
+        if not m:
+            raise ValueError(f"relevance_scan.md: Missing natural-format locator for {label}")
+        if len(item) == 4:
+            exp_pr, exp_pdf = item[1], item[2]
+            if int(m.group(1)) != exp_pr or int(m.group(2)) != exp_pdf:
+                raise ValueError(
+                    f"relevance_scan.md: Wrong locus for {label}: "
+                    f"expected Printed p. {exp_pr} [PDF p. {exp_pdf}], got Printed p. {m.group(1)} [PDF p. {m.group(2)}]"
+                )
+        else:
+            p1, p2, pdf1, pdf2 = item[1]
+            if (int(m.group(1)), int(m.group(2)), int(m.group(3)), int(m.group(4))) != (p1, p2, pdf1, pdf2):
+                raise ValueError(f"relevance_scan.md: Wrong range locus for {label}")
+
+    # 6. Positive witnessed footnote verification for bibliography_leads.md
+    bib_text = (source_dir / "bibliography_leads.md").read_text(encoding="utf-8")
+    expected_footnote_witnesses = [
+        "Printed p. 99 [PDF p. 5], fn. 14",  # Koch via Whitlock
+        "Printed p. 97 [PDF p. 3], fn. 9",   # Dodd via Whitlock
+        "Printed p. 97 [PDF p. 3], fn. 6",   # Wagner
+        "Printed p. 105 [PDF p. 11], Section 5 (Rom 9:33), fn. 35",  # Koch/Dodd via Shum
+        "Printed p. 105 [PDF p. 11], Section 5 (Rom 9:33), fn. 36",  # Shum
+        "Printed p. 105 [PDF p. 11], Section 5 (Rom 9:33), fn. 37",  # Shum
+        "Printed p. 106 [PDF p. 12], Section 6 (Rom 10:11), fn. 40", # Shum
+        "Printed p. 106 [PDF p. 12], Section 5, fn. 38",             # Schleritt
+        "Printed p. 105 [PDF p. 11], Section 4 (Rom 9:29), fn. 34",  # Zeller & Wagner
+        "Printed p. 112 [PDF p. 18], Section 11, fn. 57",            # Wilk
+        "Printed p. 114 [PDF p. 20], Section 14 (Rom 15:12), fn. 61",# Wilk
+        "Printed p. 114 [PDF p. 20], Section 13 (Rom 14:11), fn. 60",# Wilckens
+        "Printed p. 116 [PDF p. 22], Summary, fn. 65",               # Wilk
+        "Printed p. 116 [PDF p. 22], Summary, fn. 67",               # Wagner
+    ]
+    for witness in expected_footnote_witnesses:
+        if witness not in bib_text:
+            raise ValueError(f"bibliography_leads.md: Missing positive footnote witness '{witness}'")
 
 
 def main():
@@ -590,24 +697,26 @@ def main():
 
     if not args.check_only:
         args.out.parent.mkdir(parents=True, exist_ok=True)
-        with open(args.out, "w", encoding="utf-8") as f:
-            f.write(report_md)
+        report_bytes = report_md.encode("utf-8")
+        args.out.write_bytes(report_bytes)
         print(f"SUCCESS: Wrote verified full-volume search log to {args.out}")
     else:
         if not args.out.is_file():
             print(f"Error: Output file {args.out} does not exist in --check-only mode")
             sys.exit(4)
-        committed_md = args.out.read_text(encoding="utf-8")
-        if committed_md.strip() != report_md.strip():
-            print(f"Error: Committed search log {args.out} does not match computed output!")
+        committed_bytes = args.out.read_bytes()
+        expected_bytes = report_md.encode("utf-8")
+        if committed_bytes != expected_bytes:
+            print(f"Error: Committed search log {args.out} does not match computed output byte-for-byte!")
+            committed_str = committed_bytes.decode("utf-8", errors="replace")
+            expected_str = expected_bytes.decode("utf-8", errors="replace")
             diff = list(difflib.unified_diff(
-                committed_md.strip().splitlines(),
-                report_md.strip().splitlines(),
+                committed_str.splitlines(keepends=True),
+                expected_str.splitlines(keepends=True),
                 fromfile="committed",
                 tofile="computed",
-                lineterm=""
             ))
-            print("\n".join(diff[:30]))
+            print("".join(diff[:30]))
             sys.exit(5)
         print("Check-only mode: committed full-volume search log matches computed output byte-for-byte!")
 

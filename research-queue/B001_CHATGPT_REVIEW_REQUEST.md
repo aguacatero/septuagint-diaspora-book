@@ -5,35 +5,34 @@ Antigravity rewrites this file for every source before requesting review.
 ## Current source
 
 - Source ID: `S06F`
-- Review Round: `Round 2 — independent exact-live-SHA review of Round 1 remediation`
+- Review Round: `Round 3 — independent exact-live-SHA review of Round 2 remediation`
 - Exact citation: Mireia Ryšková, *The Reception of the Book of Isaiah in Paul's Letter to the Romans*, *Acta Universitatis Carolinae Theologica*, Vol. 9, No. 2 (2019), pp. 95–116 (Karolinum Press, Charles University; DOI: `10.14712/23363398.2020.8`; CC-BY 4.0 Open Access).
 - Branch: `research/B001-notebooklm-serial`
 - Draft PR: `2`
 - Review readiness: `READY`
 - Review target: `LIVE_PR_HEAD`
 - Previous source disposition: `S05 ACCEPTED` in Round 10 independent review ([#issuecomment-6701611220](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6701611220)) at commit `129207e9db458c7f644a3b19500d341508fe9f6f`, and promoted to cumulative notebook `SDP-01 Paul` with source-grounded retrieval verification.
-- Last review disposition for S06F: `REVISE` in Round 1 review ([#issuecomment-6712546554](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6712546554)) at commit `c550ad8327a643a4bdc173d56a6fda2f5a70bde0`.
+- Last review disposition for S06F: `REVISE` in Round 2 review ([#issuecomment-6716798717](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6716798717)) at commit `fcc46fa640cd0f1afbb1fc07bebb2771c7992963`.
 
-## Round 1 Findings Remediation Summary
+## Round 2 Findings Remediation Summary
 
-1. **S06F-R1-F1 (Conflicting source locations and impossible bibliography locators eliminated):**
-   - Corrected all passage locators across all deliverables to match the authentic publisher PDF pagination: Rom 10:11 on printed p. 106 [PDF p. 12]; Rom 11:34 on printed p. 112 [PDF p. 18]; Rom 15:12 on printed p. 114 [PDF p. 20]; Rom 9:33 on printed p. 105 [PDF p. 11]; Rom 10:13 on printed p. 106 [PDF p. 12]; Rom 9:25–26 on printed p. 104 [PDF p. 10].
-   - Completely restructured `bibliography_leads.md`: explicitly separates the **printed page and footnote where Ryšková cites a scholar** (strictly within pp. 95–116) from the **page numbers of the cited scholar's original publication**. Impossible article locators (`[p. 34]`, `[p. 38]`, `[p. 52]`, etc.) eliminated.
-   - Added automated cross-artifact locator and clean Markdown checks in `scripts/verify_s06f_negative_search.py` and `tests/test_citation_ledger_crosswalk.py`.
-2. **S06F-R1-F2 (Fail-closed entire normalized quote witness verification):**
-   - Eliminated the 60-character prefix probe in `scripts/verify_s06f_negative_search.py`.
-   - The verifier now authenticates the **entire normalized quote** without truncation across all 9 evidence rows, strictly failing closed if any part of the quote is missing or altered.
-   - Added 4 adversarial test cases in `tests/test_citation_ledger_crosswalk.py` with quote tail mutations after char 60 (negation, Greek tokens, numerical reference, fabricated tail), proving they fail closed.
-3. **S06F-R1-F3 (Incorporation of self-audit qualifications and neutral framing):**
-   - Lead author claim for `S06F-E004` (Rom 9:33) reframed neutrally: states that Rom 9:33 contains a composite quotation of Isa 28:16 and 8:14 and that its immediate origin is contested in scholarship between a pre-Pauline tradition (Koch/Dodd) and Paul's direct scroll compilation (Shum). Full qualifications carried into `extraction.md`, `argument_map.md`, and `isaiah_in_romans_synthesis.md`.
-   - `S06F-E006` (Rom 11:34–35) preserves Ryšková's disjunctive quotation technique (memory vs. biblical idiom) and expressly qualifies the Job 41:11 allusion as a *possible echo*.
-   - `S06F-E003` (Rom 10:11) explicitly attributes the Christological "co-sovereign and co-unique" formulation to Shiu-Lun Shum (2002, p. 223, cited in fn. 40).
-4. **S06F-R1-F4 (--check-only comparison and verifier ledger assertions):**
-   - In `scripts/verify_s06f_negative_search.py`, `--check-only` now reads the committed `full_volume_search_log.md` and verifies byte-for-byte correspondence against freshly computed report output, exiting non-zero with unified diff on mismatch.
-   - Built-in assertion of ledger schema (all 13 required columns), all 9 expected IDs `S06F-E001`–`S06F-E009`, and `VERIFIED` status directly within the verifier.
-   - Added regression test verifying `--check-only` fails on log tampering (claim, category, or locator).
-5. **UI Debris Cleanup:**
-   - Removed all raw NotebookLM UI debris (`Thoughts`, `expand_more`, `unfold_less`, `keep_pin`, `copy`, `thumb_up`, `thumb_down`, `subdirectory_arrow_right`, numeric marker fragments) across all 8 curated markdown files.
+1. **S06F-R2-F1 (Corrected publisher footnote locations and direct/indirect attribution):**
+   - Systematically audited and corrected all article page and footnote locators in `bibliography_leads.md` against Karolinum's publisher PDF:
+     - Dietrich-Alex Koch: correctly placed at **printed p. 99 [PDF p. 5], fn. 14** (indirect citation through Jonathan Whitlock regarding statistical counts of quotations) and **printed p. 105 [PDF p. 11], Section 5 (Rom 9:33), fn. 35** (indirect citation through Shiu-Lun Shum regarding pre-Pauline oral composite tradition).
+     - C. H. Dodd: correctly placed at **printed p. 97 [PDF p. 3], fn. 9** (indirect citation through Jonathan Whitlock regarding contextual early Christian testimonia) and **printed p. 105 [PDF p. 11], Section 5 (Rom 9:33), fn. 35** (indirect citation through Shiu-Lun Shum).
+     - J. Ross Wagner: correctly placed at **printed p. 97 [PDF p. 3], fn. 6** (memorization practices and access to written Vorlage / testimonia), **printed p. 105 [PDF p. 11], Section 4 (Rom 9:29), fn. 34** (Paul locating Israel between desolation and hope), **printed p. 106 [PDF p. 12], fn. 38** (co-editor of *Between Gospel and Election*), and **printed p. 116 [PDF p. 22], Summary, fn. 67** (Paul as chosen instrument provoking Israel to jealousy).
+   - Explicitly preserved direct versus indirect scholarly attribution across all entries.
+   - Added positive witnessed footnote verification checks covering all 14 major footnote witnesses across the article.
+
+2. **S06F-R2-F2 (Natural-format section/evidence-ID bound cross-artifact locator verification):**
+   - Replaced brittle string blacklists with section/evidence-ID-bound natural-format locator extraction in `scripts/verify_s06f_negative_search.py::verify_cross_artifact_consistency()`.
+   - Validates all explicit `Printed p. N [PDF p. M]` pairs across all curated deliverables against the authoritative per-locus map and $N = M + 94$.
+   - Bound extraction asserts that `extraction.md` has exact matching locators for each `S06F-E001` through `S06F-E009`, `isaiah_in_romans_synthesis.md` has exact locators per passage section, `relevance_scan.md` has exact locators per table row, and `bibliography_leads.md` contains all positive footnote witnesses.
+   - Added 7 comprehensive test cases in `tests/test_citation_ledger_crosswalk.py` testing natural-format wrong locators (wrong printed page, wrong PDF page, wrong passage mapping, and missing footnote witnesses), proving all fail closed.
+
+3. **S06F-R2-F3 (True byte-for-byte exactness in `--check-only`):**
+   - In `scripts/verify_s06f_negative_search.py`, `--check-only` now compares `args.out.read_bytes()` directly to `report_md.encode("utf-8")` without trimming or normalization.
+   - Added regression test `test_s06f_check_only_detects_tampered_search_log` confirming that terminal whitespace tampering (both trailing newline and trailing space) fails closed with non-zero exit code.
 
 ## Source packet for review
 
@@ -44,15 +43,15 @@ Antigravity rewrites this file for every source before requesting review.
 - `citation_ledger.csv` — 9 verified evidence rows (`S06F-E001` through `S06F-E009`) with physical locators, full exact quotes, and neutral author claims.
 - `argument_map.md` — Structural reasoning maps (Question -> Evidence -> Inference -> Conclusion) preserving scholarly qualifications.
 - `counterevidence.md` — Textual uncertainties, variants, competing forms, and scholar disagreements.
-- `bibliography_leads.md` — Disaggregated bibliographical leads clearly separating Ryšková's citation loci from cited works' pagination.
+- `bibliography_leads.md` — Disaggregated bibliographical leads with authentic article page and footnote locators and positive witness checks.
 - `notebooklm_self_audit.md` — Source-bounded extraction self-audit detailing applied corrections.
 - `isaiah_in_romans_synthesis.md` — Detailed synthesis of Isaiah quotations in Romans.
 - `full_volume_search_log.md` — Full-volume negative search verification log across all 12 B001 targets.
 - `provenance_manifest.json` — Cryptographic file provenance, SHA256, and pagination mapping invariant.
 
 Plus governing scripts and tests:
-- `scripts/verify_s06f_negative_search.py` — Reproducible full-volume negative search verification script with full-quote authentication and byte-level log check.
-- `tests/test_citation_ledger_crosswalk.py` — Unit tests for S06F ledger crosswalk, pagination invariant, negative search verifier, adversarial tail mutations, and log tampering detection (all 113 suite tests passing).
+- `scripts/verify_s06f_negative_search.py` — Reproducible full-volume negative search verification script with full-quote authentication, natural-format locator verification, and byte-for-byte log check.
+- `tests/test_citation_ledger_crosswalk.py` — Unit tests for S06F ledger crosswalk, pagination invariant, negative search verifier, adversarial tail mutations, natural-format locator tampering, and byte-exact check (all 113 suite tests passing).
 
 Plus governing method:
 - `docs/design/PROJECT_CONSTITUTION.md`
