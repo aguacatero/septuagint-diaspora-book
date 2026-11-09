@@ -60,20 +60,20 @@ The following 10 project comparisons are **NOT DISCUSSED** in Tanner (2005). Zer
 
 ### Disagreements with Other Scholars
 1. **Disputes Alva J. McClain (1973), John A. Battle, Jr. (1981), & David L. Turner (1985):**
-   - **Source Locator:** Printed p. 98 [PDF p. 4], fn. 1, 3
-   - **Details:** Tanner rejects the position that Romans 9:25–26 refers exclusively to national Israel: "Any attempt to argue that the Hosea quotations were used by Paul in Romans to argue for the inclusion of all ethnic Israelites must certainly be rejected."
+   - **Source Locator:** Printed p. 98 [PDF p. 4], fn. 2, 3
+   - **Details:** Tanner rejects the position that Romans 9:25–26 refers exclusively to national Israel: "Any attempt to argue that the Hosea quotations were used by Paul in Romans to argue for the inclusion of all ethnic Israelites must certainly be rejected" (p. 98, fn. 2 for McClain and Battle; fn. 3 for Turner).
 2. **Disputes George Eldon Ladd (1977) & Douglas J. Moo (1996) on Replacement Theology:**
-   - **Source Locator:** Printed pp. 100–101 [PDF pp. 6–7], fn. 6, 8; p. 103 [PDF p. 9]; p. 110 [PDF p. 16]
-   - **Details:** Tanner rejects Ladd's claim that the NT identifies the church as "spiritual Israel" and Moo's premise that OT predictions of renewed Israel are fulfilled replacement-style in the church, emphasizing that Paul maintains a consistent distinction between ethnic Israel and Gentiles throughout Romans 9–11.
+   - **Source Locator:** Printed pp. 100–101 [PDF pp. 6–7], fn. 6, 8; p. 103 [PDF p. 9]; p. 109 [PDF p. 15], fn. 22; p. 110 [PDF p. 16]
+   - **Details:** Tanner rejects Ladd's claim that the NT identifies the church as "spiritual Israel" (p. 109, fn. 22) and Moo's premise that OT predictions of renewed Israel are fulfilled replacement-style in the church (p. 101, fn. 6), emphasizing that Paul maintains a consistent distinction between ethnic Israel and Gentiles throughout Romans 9–11.
 3. **Disputes Robert B. Chisholm Jr. (1985), John A. Witmer (1983), & S. Lewis Johnson (1992) on Mere Analogy:**
-   - **Source Locator:** Printed pp. 101–102 [PDF pp. 7–8], fn. 8, 10
-   - **Details:** Tanner rejects treating Paul's citation as a mere analogy or general principle, agreeing with Moo that Paul required direct scriptural proof.
+   - **Source Locator:** Printed pp. 101–102 [PDF pp. 7–8], fn. 8
+   - **Details:** Tanner rejects treating Paul's citation as a mere analogy or general principle (Chisholm and Witmer on pp. 101–102, fn. 8; Johnson on p. 102, fn. 8), agreeing with Moo (p. 102, fn. 8) that Paul required direct scriptural proof.
 4. **Disputes Richard Daniels (1999) on Non-Participating Mediation:**
    - **Source Locator:** Printed p. 104 [PDF p. 10], fn. 13
-   - **Details:** Tanner disputes Daniels's thesis that the church is merely a "nonparticipating mediator" of the New Covenant, arguing instead that Gentiles are full participants in its spiritual blessings.
+   - **Details:** Tanner disputes Daniels's thesis in *Faith and Mission* that the church is merely a "nonparticipating mediator" of the New Covenant, arguing instead that Gentiles are full participants in its spiritual blessings.
 5. **Disputes Leon J. Wood (1985) & Francis I. Andersen & David Noel Freedman (1980):**
    - **Source Locator:** Printed p. 107 [PDF p. 13], fn. 18
-   - **Details:** Tanner criticizes Wood for ignoring the mention of "covenant" in Hosea 2:18 and Andersen/Freedman for failing to identify it, following Hans Walter Wolff in recognizing Hosea 2:18 as an end-time New Covenant reference.
+   - **Details:** Tanner criticizes Wood for ignoring the mention of "covenant" in Hosea 2:18 and Andersen/Freedman for failing to identify it, following Hans Walter Wolff (also in fn. 18) in recognizing Hosea 2:18 as an end-time New Covenant reference.
 
 ### Weakening Evidence Acknowledged by Author
 1. **Silence of the Jerusalem Council (Acts 15):**

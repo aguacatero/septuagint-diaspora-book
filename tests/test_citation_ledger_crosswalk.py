@@ -3260,16 +3260,28 @@ def test_s07f_adversarial_pagination_and_negative_search_assertions():
 
 
 def test_s08f_citation_ledger_crosswalk_integrity():
-    """Verify S08F citation ledger schema, pagination mapping, and quote integrity."""
+    """Verify S08F citation ledger schema, pagination mapping, quote integrity, and multi-locus scope."""
     repo_root = Path(__file__).resolve().parent.parent
     s08f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S08F"
     csv_path = s08f_dir / "citation_ledger.csv"
+    ext_path = s08f_dir / "extraction.md"
 
     assert csv_path.is_file(), f"Missing citation_ledger.csv at {csv_path}"
     with open(csv_path, encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
 
     assert len(rows) == 8, f"Expected 8 ledger rows for S08F, found {len(rows)}"
+
+    expected_b001_map = {
+        "S08F-E001": "B001-2",
+        "S08F-E002": "B001-2",
+        "S08F-E003": "B001-3",
+        "S08F-E004": "B001-2, B001-3",
+        "S08F-E005": "B001-2, B001-3",
+        "S08F-E006": "B001-2, B001-3",
+        "S08F-E007": "B001-2, B001-3",
+        "S08F-E008": "B001-2",
+    }
 
     expected_ids = [f"S08F-E00{i}" for i in range(1, 9)]
     for idx, r in enumerate(rows):
@@ -3281,10 +3293,22 @@ def test_s08f_citation_ledger_crosswalk_integrity():
         assert len(r["short_quote"].strip()) > 15
         assert r["author_claim"].strip()
 
+        # Verify B001 locus alignment
+        assert r["b001_id"] == expected_b001_map[eid], f"Expected {expected_b001_map[eid]} for {eid}, got {r['b001_id']}"
+
         printed = int(r["printed_page"])
         expected_pdf = printed - 94
         assert 1 <= expected_pdf <= 16, f"Invalid printed page {printed} for {eid}"
         assert f"Printed p. {printed} [PDF p. {expected_pdf}" in r["source_locator"]
+
+    # Check extraction.md cross-alignment
+    ext_text = ext_path.read_text(encoding="utf-8")
+    for eid, exp_b001 in expected_b001_map.items():
+        assert f"`{eid}`" in ext_text
+        assert re.search(
+            rf"####\s+{eid}[\s\S]*?-\s+\*\*B001 Passage ID:\*\*\s*`{re.escape(exp_b001)}`",
+            ext_text
+        )
 
 
 def test_s08f_provenance_manifest_and_pagination_invariant():
@@ -3320,7 +3344,11 @@ def test_s08f_verifier_negative_search_passes():
 
 def test_s08f_adversarial_pagination_and_negative_search_assertions():
     """Verify S08F verifier assertions fail closed against adversarial mutations."""
+    import sys
     import pytest
+    repo_root = Path(__file__).resolve().parent.parent
+    if str(repo_root) not in sys.path:
+        sys.path.insert(0, str(repo_root))
     from scripts.verify_s08f_negative_search import (
         verify_monotonic_pagination,
         execute_full_volume_search,
@@ -3382,6 +3410,134 @@ def test_s08f_adversarial_pagination_and_negative_search_assertions():
     with pytest.raises(ValueError) as exc5:
         verify_ledger_witnesses(fake_ledger_row, mock_16_pages)
     assert "Quote text not found on declared printed p. 98 [PDF p. 4]" in str(exc5.value)
+
+    # 6. Ledger witness b001_id mismatch fails closed
+    fake_ledger_b001_mismatch = [{
+        "evidence_id": "S08F-E004",
+        "source_id": "S08F",
+        "b001_id": "B001-2",  # Should be "B001-2, B001-3"
+        "claim_type": "Hermeneutical / Theological",
+        "author_claim": "Claim text",
+        "short_quote": "verses 25-26 affirm that the conversion of Gentiles is a direct fulfillment of Hosea's prophecy (though not the complete fulfillment).",
+        "printed_page": "102",
+        "source_locator": "Printed p. 102 [PDF p. 8]",
+        "notebooklm_citation": "[9, 10]",
+        "verification_status": "VERIFIED",
+        "qualification": "qual",
+        "extraction_confidence": "HIGH",
+        "notes": "note",
+    }]
+    with pytest.raises(ValueError) as exc6:
+        verify_ledger_witnesses(fake_ledger_b001_mismatch, mock_16_pages)
+    assert "S08F-E004: b001_id mismatch: expected 'B001-2, B001-3', got 'B001-2'" in str(exc6.value)
+
+
+def test_s08f_cross_artifact_adversarial_mutations(tmp_path):
+    """Verify section-bound extraction, subsection synthesis, and structured bibliography fail closed against mutations."""
+    import shutil
+    import sys
+    import pytest
+
+    repo_root = Path(__file__).resolve().parent.parent
+    if str(repo_root) not in sys.path:
+        sys.path.insert(0, str(repo_root))
+    from scripts.verify_s08f_negative_search import verify_cross_artifact_consistency
+    s08f_src = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S08F"
+
+    # Baseline: copy all files to tmp_path and verify it passes
+    shutil.copytree(s08f_src, tmp_path / "S08F")
+    test_dir = tmp_path / "S08F"
+    verify_cross_artifact_consistency(test_dir)
+
+    # Mutation 1: Missing Source Locator in extraction block fails closed
+    ext_file = test_dir / "extraction.md"
+    orig_ext = ext_file.read_text(encoding="utf-8")
+    mutated_ext_missing_loc = orig_ext.replace("- **Source Locator:** Printed p. 99 [PDF p. 5]\n", "", 1)
+    ext_file.write_text(mutated_ext_missing_loc, encoding="utf-8")
+    with pytest.raises(ValueError) as exc1:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Expected exactly one Source Locator, found 0" in str(exc1.value)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 2: Duplicate Source Locator in extraction block fails closed
+    mutated_ext_dup_loc = orig_ext.replace(
+        "- **Source Locator:** Printed p. 98 [PDF p. 4]\n",
+        "- **Source Locator:** Printed p. 98 [PDF p. 4]\n- **Source Locator:** Printed p. 98 [PDF p. 4]\n",
+        1
+    )
+    ext_file.write_text(mutated_ext_dup_loc, encoding="utf-8")
+    with pytest.raises(ValueError) as exc2:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Expected exactly one Source Locator, found 2" in str(exc2.value)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 3: Borrowed/swapped Source Locator across blocks fails closed
+    mutated_ext_swap_loc = orig_ext.replace(
+        "#### S08F-E008\n- **Proposed Evidence ID:** `S08F-E008`\n- **B001 Passage ID:** `B001-2` (Romans 9:25 / Hosea 2:23)\n- **Claim Type:** `Textual-critical / Exegetical`\n- **Author's Claim:** Paul reversed the order of the clauses in Hosea 2:23 to stress the \"My people\" aspect of the promise and God's sovereign call to them, aligning the quotation with Romans 9:24.\n- **Short Exact Quotation:** \"reversed the order of the clauses (perhaps to stress the \\\"My people\\\" aspect of the promise and God's \\\"call\\\" to them).\"\n- **Printed Page Number:** 99\n- **Source Locator:** Printed p. 99 [PDF p. 5]",
+        "#### S08F-E008\n- **Proposed Evidence ID:** `S08F-E008`\n- **B001 Passage ID:** `B001-2` (Romans 9:25 / Hosea 2:23)\n- **Claim Type:** `Textual-critical / Exegetical`\n- **Author's Claim:** Paul reversed the order of the clauses in Hosea 2:23 to stress the \"My people\" aspect of the promise and God's sovereign call to them, aligning the quotation with Romans 9:24.\n- **Short Exact Quotation:** \"reversed the order of the clauses (perhaps to stress the \\\"My people\\\" aspect of the promise and God's \\\"call\\\" to them).\"\n- **Printed Page Number:** 99\n- **Source Locator:** Printed p. 98 [PDF p. 4]"
+    )
+    ext_file.write_text(mutated_ext_swap_loc, encoding="utf-8")
+    with pytest.raises(ValueError) as exc3:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Source Locator 'Printed p. 98 [PDF p. 4]' does not match expected 'Printed p. 99 [PDF p. 5" in str(exc3.value)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 4: Extraction B001 passage ID drift fails closed
+    mutated_ext_b001_drift = orig_ext.replace(
+        "#### S08F-E004\n- **Proposed Evidence ID:** `S08F-E004`\n- **B001 Passage ID:** `B001-2, B001-3`",
+        "#### S08F-E004\n- **Proposed Evidence ID:** `S08F-E004`\n- **B001 Passage ID:** `B001-2`"
+    )
+    ext_file.write_text(mutated_ext_b001_drift, encoding="utf-8")
+    with pytest.raises(ValueError) as exc4:
+        verify_cross_artifact_consistency(test_dir)
+    assert "B001 ID mismatch: expected 'B001-2, B001-3'" in str(exc4.value)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 5: Synthesis subsection locus swap/missing fails closed
+    synth_file = test_dir / "tanner_hosea_new_covenant_synthesis.md"
+    orig_synth = synth_file.read_text(encoding="utf-8")
+    mutated_synth = orig_synth.replace(
+        "### Composite Quotation Structure\n- **Printed Page Number:** Printed p. 98 [PDF p. 4]",
+        "### Composite Quotation Structure\n- **Printed Page Number:** Printed p. 101 [PDF p. 7]"
+    )
+    synth_file.write_text(mutated_synth, encoding="utf-8")
+    with pytest.raises(ValueError) as exc5:
+        verify_cross_artifact_consistency(test_dir)
+    assert "missing expected locus 'Printed p. 98 [PDF p. 4]' within its subsection block" in str(exc5.value)
+    synth_file.write_text(orig_synth, encoding="utf-8")
+
+    # Mutation 6: Bibliographic container misattribution (Daniels -> JETS) fails closed
+    bib_file = test_dir / "bibliography_leads.md"
+    orig_bib = bib_file.read_text(encoding="utf-8")
+    mutated_bib_container = orig_bib.replace("Faith and Mission", "Journal for the Evangelical Theological Society")
+    bib_file.write_text(mutated_bib_container, encoding="utf-8")
+    with pytest.raises(ValueError) as exc6:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Container mismatch: expected 'Faith and Mission' in lead block" in str(exc6.value)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 7: Bibliographic footnote number misattribution (McClain -> fn. 1) fails closed
+    mutated_bib_footnote = orig_bib.replace(
+        "### Alva J. McClain (1973)\n- **Author:** Alva J. McClain\n- **Title:** *The Gospel of God’s Grace*\n- **Publication Year:** 1973 (Chicago: Moody Press, p. 183)\n- **Source Locator:** Printed p. 98 [PDF p. 4], fn. 2",
+        "### Alva J. McClain (1973)\n- **Author:** Alva J. McClain\n- **Title:** *The Gospel of God’s Grace*\n- **Publication Year:** 1973 (Chicago: Moody Press, p. 183)\n- **Source Locator:** Printed p. 98 [PDF p. 4], fn. 1"
+    )
+    bib_file.write_text(mutated_bib_footnote, encoding="utf-8")
+    with pytest.raises(ValueError) as exc7:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Source locator mismatch: expected 'Printed p. 98 [PDF p. 4], fn. 2'" in str(exc7.value)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 8: Bibliographic footnote number misattribution (Wolff -> fn. 17) fails closed
+    mutated_bib_wolff = orig_bib.replace(
+        "### Hans Walter Wolff (1974)\n- **Author:** Hans Walter Wolff\n- **Title:** *Hosea* (Hermeneia Commentary, trans. Gary Stensell)\n- **Publication Year:** 1974 (Philadelphia: Fortress Press, pp. 51, 55)\n- **Source Locator:** Printed p. 107 [PDF p. 13], fn. 18",
+        "### Hans Walter Wolff (1974)\n- **Author:** Hans Walter Wolff\n- **Title:** *Hosea* (Hermeneia Commentary, trans. Gary Stensell)\n- **Publication Year:** 1974 (Philadelphia: Fortress Press, pp. 51, 55)\n- **Source Locator:** Printed p. 107 [PDF p. 13], fn. 17"
+    )
+    bib_file.write_text(mutated_bib_wolff, encoding="utf-8")
+    with pytest.raises(ValueError) as exc8:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Source locator mismatch: expected 'Printed p. 107 [PDF p. 13], fn. 18'" in str(exc8.value)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
 
 
 

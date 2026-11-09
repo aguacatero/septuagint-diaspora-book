@@ -30,12 +30,12 @@
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `S08F-E001` | `B001-2` | Exegetical / Theological | Printed p. 98 [PDF p. 4] | "it seems clear that Paul was citing these verses t..." | `VERIFIED` |
 | `S08F-E002` | `B001-2` | Textual-critical / Exegetical | Printed p. 99 [PDF p. 5] | "Paul quoted from a Greek rendering of Hosea and th..." | `VERIFIED` |
-| `S08F-E004` | `B001-2` | Hermeneutical / Theological | Printed p. 102 [PDF p. 8] | "verses 25-26 affirm that the conversion of Gentile..." | `VERIFIED` |
-| `S08F-E005` | `B001-2` | Theological / Covenantal | Printed p. 110 [PDF p. 16] | "It was the New Covenant that made it possible for ..." | `VERIFIED` |
-| `S08F-E006` | `B001-2` | Theological / Hermeneutical | Printed p. 103 [PDF p. 9] | "Paul was not operating by some new theological dic..." | `VERIFIED` |
-| `S08F-E007` | `B001-2` | Exegetical / Theological | Printed p. 96 [PDF p. 2] | "In Romans 11 the apostle clarified this distinctio..." | `VERIFIED` |
-| `S08F-E008` | `B001-2` | Textual-critical / Exegetical | Printed p. 99 [PDF p. 5] | "reversed the order of the clauses (perhaps to stre..." | `VERIFIED` |
 | `S08F-E003` | `B001-3` | Historical / Exegetical | Printed p. 100 [PDF p. 6] | "Nothing in the context of these passages makes ref..." | `VERIFIED` |
+| `S08F-E004` | `B001-2, B001-3` | Hermeneutical / Theological | Printed p. 102 [PDF p. 8] | "verses 25-26 affirm that the conversion of Gentile..." | `VERIFIED` |
+| `S08F-E005` | `B001-2, B001-3` | Theological / Covenantal | Printed p. 110 [PDF p. 16] | "It was the New Covenant that made it possible for ..." | `VERIFIED` |
+| `S08F-E006` | `B001-2, B001-3` | Theological / Hermeneutical | Printed p. 103 [PDF p. 9] | "Paul was not operating by some new theological dic..." | `VERIFIED` |
+| `S08F-E007` | `B001-2, B001-3` | Exegetical / Theological | Printed p. 96 [PDF p. 2] | "In Romans 11 the apostle clarified this distinctio..." | `VERIFIED` |
+| `S08F-E008` | `B001-2` | Textual-critical / Exegetical | Printed p. 99 [PDF p. 5] | "reversed the order of the clauses (perhaps to stre..." | `VERIFIED` |
 
 ---
 
@@ -90,6 +90,10 @@
 - **Scholarly Determination:** Substantive extended discussion across pp. 98–101. Tanner analyzes the selective omission of Hosea 1:10a and the New Covenant application of Hosea 1:10b to Gentiles.
 - **Associated Evidence Rows:**
   - `S08F-E003`: Printed p. 100 [PDF p. 6] — "Nothing in the context of these passages makes reference to Gentiles, ..."
+  - `S08F-E004`: Printed p. 102 [PDF p. 8] — "verses 25-26 affirm that the conversion of Gentiles is a direct fulfil..."
+  - `S08F-E005`: Printed p. 110 [PDF p. 16] — "It was the New Covenant that made it possible for the Jewish remnant t..."
+  - `S08F-E006`: Printed p. 103 [PDF p. 9] — "Paul was not operating by some new theological dictum whereby Israel n..."
+  - `S08F-E007`: Printed p. 96 [PDF p. 2] — "In Romans 11 the apostle clarified this distinction between ethnic Isr..."
 - **Sample Text Hits:**
   - Printed p. 99 [PDF p. 5]: `e regarded as God's "people." In Romans 9:26 Paul did not quote all of Hosea 1:10. V`
   - Printed p. 99 [PDF p. 5]: `th of these are vitally related also to Hosea 1:10 in its immediate context, that is, in l`

@@ -6,7 +6,9 @@ to the source volume (verifying EXPECTED_TEXT_SHA256), enforces the strict monot
 invariant (printed = PDF + 94), validates positive controls across all article sections,
 verifies ENTIRE normalized quotes across evidence rows without truncation, asserts ledger schema
 and verified statuses, checks cross-artifact natural-format locator consistency and positive
-footnote witnesses, and in --check-only mode fails closed on any byte difference (including whitespace).
+footnote witnesses, enforces section/evidence-ID bound extraction, subsection-bound synthesis,
+and structured bibliographic witness authentication, and in --check-only mode fails closed on
+any byte difference (including whitespace).
 """
 
 from __future__ import annotations
@@ -65,19 +67,32 @@ AUTHORITATIVE_EVIDENCE_LOCI = {
     "S08F-E008": (99, 5),
 }
 
+EXPECTED_EVIDENCE_B001_MAP = {
+    "S08F-E001": "B001-2",
+    "S08F-E002": "B001-2",
+    "S08F-E003": "B001-3",
+    "S08F-E004": "B001-2, B001-3",
+    "S08F-E005": "B001-2, B001-3",
+    "S08F-E006": "B001-2, B001-3",
+    "S08F-E007": "B001-2, B001-3",
+    "S08F-E008": "B001-2",
+}
+
 EXPECTED_SYNTHESIS_SUBSECTIONS = {
-    "Composite Quotation Structure": (98, 4),
-    "Relation to Isaiah 10:22-23 and 1:9 in Romans 9:27-29": (97, 98, 3, 4),
-    "Structural Sandwiching in Romans 9": (97, 3),
-    "Dependence on a Greek Vorlage": (99, 5),
-    "Reversal of Clause Order in Hosea 2:23": (99, 5),
-    "Modification of the Main Verb (καλέσω vs. ἐρῶ / 'āmar)": (99, 5),
-    "Selective Omission of Hosea 1:10a": (99, 5),
-    "Original Historical Setting of Hosea 1-2": (99, 100, 5, 6),
-    "The Core Hermeneutical Tension": (101, 7),
-    "Tanner's Solution: Direct, Partial Phase of Fulfillment": (101, 102, 7, 8),
-    "The Mechanism of Status Change": (106, 108, 12, 14),
-    "Rejection of Replacement Theology (Supersessionism)": (95, 96, 1, 2),
+    "Composite Quotation Structure": "Printed p. 98 [PDF p. 4]",
+    "Relation to Isaiah 10:22–23 and 1:9 in Romans 9:27–29": "Printed pp. 97–98 [PDF pp. 3–4]",
+    "Structural Sandwiching in Romans 9": "Printed p. 97 [PDF p. 3]",
+    "Dependence on a Greek Vorlage": "Printed p. 99 [PDF p. 5]",
+    "Reversal of Clause Order in Hosea 2:23": "Printed p. 99 [PDF p. 5]",
+    "Modification of the Main Verb (*καλέσω* vs. *ἐρῶ* / *'āmar*)": "Printed p. 99 [PDF p. 5], fn. 4",
+    "Selective Omission of Hosea 1:10a": "Printed p. 99 [PDF p. 5]",
+    "Original Historical Setting of Hosea 1–2": "Printed pp. 99–100 [PDF pp. 5–6]",
+    "The Core Hermeneutical Tension": "Printed p. 101 [PDF p. 7]",
+    "Tanner’s Solution: Direct, Partial Phase of Fulfillment": "Printed pp. 101–102 [PDF pp. 7–8]",
+    "The Mechanism of Status Change": "Printed pp. 106–108 [PDF pp. 12–14], p. 110 [PDF p. 16]",
+    "Progressive Revelation & Historic Realization": "Printed pp. 103–105 [PDF pp. 9–11]",
+    "Rejection of Replacement Theology (Supersessionism)": "Printed pp. 95–96 [PDF pp. 1–2], p. 101 [PDF p. 7], pp. 109–110 [PDF pp. 15–16]",
+    "Distinction Between Shared Spiritual Blessings & National Promises": "Printed p. 106 [PDF p. 12], fn. 16; p. 110 [PDF p. 16]",
 }
 
 EXPECTED_RELEVANCE_TABLE_LOCI = {
@@ -94,6 +109,139 @@ EXPECTED_RELEVANCE_TABLE_LOCI = {
     "B001-11": ("NO", "N/A"),
     "B001-12": ("NO", "N/A"),
 }
+
+EXPECTED_BIBLIOGRAPHY_LEADS = [
+    {
+        "title": "Walter C. Kaiser Jr. (1989)",
+        "container": "Mishkan",
+        "locator": "Printed p. 95 [PDF p. 1], fn. 1",
+    },
+    {
+        "title": "Alva J. McClain (1973)",
+        "container": "Moody Press",
+        "locator": "Printed p. 98 [PDF p. 4], fn. 2",
+    },
+    {
+        "title": "John A. Battle, Jr. (1981)",
+        "container": "Grace Theological Journal",
+        "locator": "Printed p. 98 [PDF p. 4], fn. 2",
+    },
+    {
+        "title": "W. Edward Glenny (1995)",
+        "container": "Bibliotheca Sacra",
+        "locator": "Printed p. 98 [PDF p. 4], fn. 3",
+    },
+    {
+        "title": "Douglas J. Moo (1996) — Romans 9:24–26 Calling of Gentiles",
+        "container": "Eerdmans",
+        "locator": "Printed p. 98 [PDF p. 4], fn. 3",
+    },
+    {
+        "title": "David L. Turner (1985)",
+        "container": "Grace Theological Journal",
+        "locator": "Printed p. 98 [PDF p. 4], fn. 3",
+    },
+    {
+        "title": "Douglas J. Moo (1996) — Textual Modification of καλέσω",
+        "container": "Eerdmans",
+        "locator": "Printed p. 99 [PDF p. 5], fn. 4",
+    },
+    {
+        "title": "Douglas J. Moo (1996) — Hermeneutical Supposition of Replacement",
+        "container": "Eerdmans",
+        "locator": "Printed p. 101 [PDF p. 7], fn. 6",
+    },
+    {
+        "title": "Robert B. Chisholm Jr. (1985)",
+        "container": "Victor",
+        "locator": "Printed pp. 101–102 [PDF pp. 7–8], fn. 8",
+    },
+    {
+        "title": "John A. Witmer (1983)",
+        "container": "Victor",
+        "locator": "Printed pp. 101–102 [PDF pp. 7–8], fn. 8",
+    },
+    {
+        "title": "S. Lewis Johnson (1992)",
+        "container": "Moody Press",
+        "locator": "Printed p. 102 [PDF p. 8], fn. 8",
+    },
+    {
+        "title": "Douglas J. Moo (1996) — Rejection of Mere Analogy",
+        "container": "Eerdmans",
+        "locator": "Printed p. 102 [PDF p. 8], fn. 8",
+    },
+    {
+        "title": "W. Edward Glenny (1992)",
+        "container": "Zondervan",
+        "locator": "Printed p. 102 [PDF p. 8], fn. 9",
+    },
+    {
+        "title": "Roy B. Zuck (1991)",
+        "container": "Victor",
+        "locator": "Printed p. 103 [PDF p. 9], fn. 10",
+    },
+    {
+        "title": "David K. Lowery (1983)",
+        "container": "Victor",
+        "locator": "Printed p. 103 [PDF p. 9], fn. 11",
+    },
+    {
+        "title": "Rodney J. Decker (1995)",
+        "container": "Bibliotheca Sacra",
+        "locator": "Printed p. 104 [PDF p. 10], fn. 12",
+    },
+    {
+        "title": "Richard Daniels (1999)",
+        "container": "Faith and Mission",
+        "locator": "Printed p. 104 [PDF p. 10], fn. 13",
+    },
+    {
+        "title": "Larry D. Pettegrew (1993)",
+        "container": "University Press of America",
+        "locator": "Printed pp. 104–105 [PDF pp. 10–11], fn. 14",
+    },
+    {
+        "title": "Paul R. Thorsell (1998)",
+        "container": "Journal for the Evangelical Theological Society",
+        "locator": "Printed p. 105 [PDF p. 11], fn. 14",
+    },
+    {
+        "title": "Douglas Stuart (1987)",
+        "container": "Word Books",
+        "locator": "Printed p. 106 [PDF p. 12], fn. 16",
+    },
+    {
+        "title": "Gary W. Light (1993)",
+        "container": "Review and Expositor",
+        "locator": "Printed p. 106 [PDF p. 12], fn. 17",
+    },
+    {
+        "title": "Leon J. Wood (1985)",
+        "container": "Zondervan",
+        "locator": "Printed p. 107 [PDF p. 13], fn. 18",
+    },
+    {
+        "title": "Francis I. Andersen & David Noel Freedman (1980)",
+        "container": "Doubleday",
+        "locator": "Printed p. 107 [PDF p. 13], fn. 18",
+    },
+    {
+        "title": "Hans Walter Wolff (1974)",
+        "container": "Fortress Press",
+        "locator": "Printed p. 107 [PDF p. 13], fn. 18",
+    },
+    {
+        "title": "Andrew G. Shead (2000)",
+        "container": "InterVarsity Press",
+        "locator": "Printed pp. 108–109 [PDF pp. 14–15], fn. 21",
+    },
+    {
+        "title": "George Eldon Ladd (1977)",
+        "container": "InterVarsity Press",
+        "locator": "Printed p. 109 [PDF p. 15], fn. 22",
+    },
+]
 
 POSITIVE_CONTROLS = [
     {
@@ -173,6 +321,7 @@ def normalize_text_for_match(s: str) -> str:
     """Normalize text strictly for matching: NFKD, smart quotes, dashes, whitespace, lowercase."""
     nfkd = unicodedata.normalize("NFKD", s)
     cleaned = "".join(c for c in nfkd if not unicodedata.combining(c))
+    cleaned = cleaned.replace(r'\"', '"').replace(r"\'", "'")
     cleaned = cleaned.replace("’", "'").replace("‘", "'").replace("“", '"').replace("”", '"')
     cleaned = cleaned.replace("–", "-").replace("—", "-").replace("…", "...").strip()
     return " ".join(cleaned.split()).lower()
@@ -296,8 +445,13 @@ def verify_ledger_witnesses(rows: list[dict], page_texts: list[str]) -> list[dic
     witnesses = []
     for r in rows:
         eid = r["evidence_id"]
-        b_id = r["b001_id"]
+        b_id = r["b001_id"].strip()
         printed_str = r["printed_page"].strip()
+
+        # Enforce valid b001_id specification
+        expected_b001 = EXPECTED_EVIDENCE_B001_MAP.get(eid)
+        if b_id != expected_b001:
+            raise ValueError(f"{eid}: b001_id mismatch: expected '{expected_b001}', got '{b_id}'")
 
         if "-" in printed_str or "–" in printed_str:
             parts = re.split(r"[–-]", printed_str)
@@ -311,6 +465,7 @@ def verify_ledger_witnesses(rows: list[dict], page_texts: list[str]) -> list[dic
             norm_target_text = normalize_text_for_match(combined_txt)
             display_printed = f"{p_start}–{p_end}"
             display_pdf = f"{pdf_start}–{pdf_end}"
+            expected_locator_part = f"Printed pp. {p_start}–{p_end} [PDF pp. {pdf_start}–{pdf_end}"
         else:
             printed_page = int(printed_str)
             expected_pdf_page = printed_page - 94
@@ -320,6 +475,13 @@ def verify_ledger_witnesses(rows: list[dict], page_texts: list[str]) -> list[dic
             norm_target_text = normalize_text_for_match(txt)
             display_printed = str(printed_page)
             display_pdf = str(expected_pdf_page)
+            expected_locator_part = f"Printed p. {printed_page} [PDF p. {expected_pdf_page}"
+
+        # Enforce source_locator integrity
+        if expected_locator_part not in r["source_locator"].replace("-", "–"):
+            raise ValueError(
+                f"{eid}: source_locator '{r['source_locator']}' does not contain expected '{expected_locator_part}'"
+            )
 
         auth_spec = AUTHORITATIVE_EVIDENCE_LOCI.get(eid)
         if not auth_spec:
@@ -475,7 +637,10 @@ def execute_full_volume_search(page_texts: list[str], witnesses: list[dict]) -> 
             "category": cat,
             "judgment": tgt["judgment"],
             "hits": hits,
-            "witnesses": [w for w in witnesses if b_id in w["b001_id"]]
+            "witnesses": [
+                w for w in witnesses
+                if b_id in [x.strip() for x in w["b001_id"].split(",")]
+            ]
         })
 
     return sections
@@ -484,6 +649,7 @@ def execute_full_volume_search(page_texts: list[str], witnesses: list[dict]) -> 
 def generate_markdown_report(
     pc_results: list[dict],
     sections: list[dict],
+    witnesses: list[dict],
     pdf_path: Path,
     text_sha256: str
 ) -> str:
@@ -518,11 +684,10 @@ def generate_markdown_report(
         "| :--- | :--- | :--- | :--- | :--- | :--- |",
     ])
 
-    for sec in sections:
-        for w in sec["witnesses"]:
-            lines.append(
-                f"| `{w['evidence_id']}` | `{w['b001_id']}` | {w['claim_type']} | Printed p. {w['printed_page']} [PDF p. {w['pdf_page']}] | \"{w['short_quote'][:50]}...\" | `VERIFIED` |"
-            )
+    for w in witnesses:
+        lines.append(
+            f"| `{w['evidence_id']}` | `{w['b001_id']}` | {w['claim_type']} | Printed p. {w['printed_page']} [PDF p. {w['pdf_page']}] | \"{w['short_quote'][:50]}...\" | `VERIFIED` |"
+        )
 
     lines.extend([
         "",
@@ -571,7 +736,20 @@ def generate_markdown_report(
     return "\n".join(lines)
 
 
-def verify_cross_artifact_consistency(source_dir: Path) -> None:
+def verify_cross_artifact_consistency(source_dir: Path, ledger_rows: list[dict] | None = None) -> None:
+    """Verify strict cross-artifact consistency across all S08F deliverables.
+
+    Enforces:
+    1. metadata.md bibliographic citation details.
+    2. extraction.md section/evidence-ID bound locator, quote, and B001 ID binding.
+    3. tanner_hosea_new_covenant_synthesis.md subsection-bound page reference assertions.
+    4. relevance_scan.md table discussion categories and range locators.
+    5. bibliography_leads.md structured witness authentication (exact containers, footnotes, and pages).
+    """
+    if ledger_rows is None:
+        ledger_rows = load_evidence_ledger(source_dir / "citation_ledger.csv")
+    ledger_map = {r["evidence_id"]: r for r in ledger_rows}
+
     # 1. Verify metadata.md
     meta_text = (source_dir / "metadata.md").read_text(encoding="utf-8")
     for phrase in ["J. Paul Tanner", "The New Covenant and Paul's Quotations", "Bibliotheca Sacra", "95-110", "16"]:
@@ -579,30 +757,80 @@ def verify_cross_artifact_consistency(source_dir: Path) -> None:
         if norm_p not in normalize_text_for_match(meta_text):
             raise ValueError(f"metadata.md: Missing required phrase '{phrase}'")
 
-    # 2. Verify extraction.md locators
+    # 2. Section/evidence-ID-bound verification of extraction.md
     ext_text = (source_dir / "extraction.md").read_text(encoding="utf-8")
-    for eid, spec in AUTHORITATIVE_EVIDENCE_LOCI.items():
-        if len(spec) == 2:
-            p, pdf = spec
-            expected_locator = f"Printed p. {p} [PDF p. {pdf}]"
-        else:
-            p1, p2, pdf1, pdf2 = spec
-            expected_locator = f"Printed pp. {p1}-{p2} [PDF pp. {pdf1}-{pdf2}]"
-        norm_exp = normalize_text_for_match(expected_locator)
-        if norm_exp not in normalize_text_for_match(ext_text):
-            raise ValueError(f"extraction.md: Missing expected locator for {eid}: '{expected_locator}'")
+    ext_blocks = re.split(r"(?=####\s+S08F-E\d{3})", ext_text)
+    ext_block_map: dict[str, str] = {}
+    for blk in ext_blocks:
+        m = re.search(r"####\s+(S08F-E\d{3})", blk)
+        if m:
+            eid = m.group(1)
+            if eid in ext_block_map:
+                raise ValueError(f"extraction.md: Duplicate section block for {eid}")
+            ext_block_map[eid] = blk
 
-    # 3. Verify tanner_hosea_new_covenant_synthesis.md loci
+    for eid in EXPECTED_EVIDENCE_IDS:
+        if eid not in ext_block_map:
+            raise ValueError(f"extraction.md: Missing discrete section block for evidence ID {eid}")
+        blk = ext_block_map[eid]
+        row = ledger_map[eid]
+
+        # Enforce exactly one Proposed Evidence ID matching block ID
+        m_prop = re.findall(r"-\s+\*\*Proposed Evidence ID:\*\*\s*`([^`]+)`", blk)
+        if len(m_prop) != 1 or m_prop[0] != eid:
+            raise ValueError(f"extraction.md [{eid}]: Expected exactly one Proposed Evidence ID `{eid}`, got {m_prop}")
+
+        # Enforce B001 Passage ID matching ledger
+        raw_b001 = re.findall(r"-\s+\*\*B001 Passage ID:\*\*\s*([^\n(]+)", blk)
+        m_b001 = [x.strip("` ").strip() for x in raw_b001]
+        if len(m_b001) != 1 or m_b001[0] != row["b001_id"].strip():
+            raise ValueError(f"extraction.md [{eid}]: B001 ID mismatch: expected '{row['b001_id']}', got {m_b001}")
+
+        # Enforce exactly one Source Locator line matching authoritative locator and ledger
+        loc_lines = re.findall(r"-\s+\*\*Source Locator:\*\*\s*([^\n]+)", blk)
+        if len(loc_lines) != 1:
+            raise ValueError(f"extraction.md [{eid}]: Expected exactly one Source Locator, found {len(loc_lines)}")
+        act_loc = loc_lines[0].strip()
+        expected_spec = AUTHORITATIVE_EVIDENCE_LOCI[eid]
+        p, pdf = expected_spec
+        expected_part = f"Printed p. {p} [PDF p. {pdf}"
+        if expected_part not in act_loc.replace("-", "–"):
+            raise ValueError(f"extraction.md [{eid}]: Source Locator '{act_loc}' does not match expected '{expected_part}'")
+        if normalize_text_for_match(act_loc) != normalize_text_for_match(row["source_locator"]):
+            raise ValueError(f"extraction.md [{eid}]: Source Locator '{act_loc}' does not match ledger '{row['source_locator']}'")
+
+        # Enforce Printed Page Number matching ledger
+        m_page = re.findall(r"-\s+\*\*Printed Page Number:\*\*\s*(\d+)", blk)
+        if len(m_page) != 1 or int(m_page[0]) != int(row["printed_page"]):
+            raise ValueError(f"extraction.md [{eid}]: Printed page mismatch: expected {row['printed_page']}, got {m_page}")
+
+        # Enforce Short Exact Quotation matching ledger
+        norm_row_quote = normalize_text_for_match(row["short_quote"])
+        norm_blk = normalize_text_for_match(blk)
+        if norm_row_quote not in norm_blk:
+            raise ValueError(f"extraction.md [{eid}]: Short quote from ledger not found in section block")
+
+    # 3. Subsection-bound verification of tanner_hosea_new_covenant_synthesis.md
     synth_text = (source_dir / "tanner_hosea_new_covenant_synthesis.md").read_text(encoding="utf-8")
-    for sub, spec in EXPECTED_SYNTHESIS_SUBSECTIONS.items():
-        if len(spec) == 2:
-            p, pdf = spec
-            expected_str = f"p. {p}"
-        else:
-            p1, p2, pdf1, pdf2 = spec
-            expected_str = f"pp. {p1}-{p2}"
-        if expected_str not in synth_text.replace("–", "-"):
-            raise ValueError(f"synthesis.md: Subheading '{sub}' missing expected page reference '{expected_str}'")
+    synth_blocks = re.split(r"(?=###\s+)", synth_text)
+    synth_block_map: dict[str, str] = {}
+    for blk in synth_blocks:
+        m = re.match(r"###\s+([^\n]+)", blk)
+        if m:
+            sub_title = m.group(1).strip()
+            synth_block_map[normalize_text_for_match(sub_title)] = blk
+
+    for sub_title, expected_loc in EXPECTED_SYNTHESIS_SUBSECTIONS.items():
+        norm_title = normalize_text_for_match(sub_title)
+        if norm_title not in synth_block_map:
+            raise ValueError(f"synthesis.md: Missing subsection '{sub_title}'")
+        sub_blk = synth_block_map[norm_title]
+        norm_expected_loc = normalize_text_for_match(expected_loc)
+        norm_sub_blk = normalize_text_for_match(sub_blk)
+        if norm_expected_loc not in norm_sub_blk:
+            raise ValueError(
+                f"synthesis.md: Subsection '{sub_title}' missing expected locus '{expected_loc}' within its subsection block"
+            )
 
     # 4. Verify relevance_scan.md table loci
     rel_text = (source_dir / "relevance_scan.md").read_text(encoding="utf-8")
@@ -636,27 +864,42 @@ def verify_cross_artifact_consistency(source_dir: Path) -> None:
                     f"Printed pp. {p1}–{p2} [PDF pp. {pdf1}–{pdf2}], got '{act_locator}'"
                 )
 
-    # 5. Positive witnessed footnote verification for bibliography_leads.md
+    # 5. Structured bibliographic witness authentication in bibliography_leads.md
     bib_text = (source_dir / "bibliography_leads.md").read_text(encoding="utf-8")
-    expected_footnote_witnesses = [
-        "Printed p. 98 [PDF p. 4], fn. 1",
-        "Printed p. 98 [PDF p. 4], fn. 3",
-        "Printed p. 99 [PDF p. 5], fn. 4",
-        "Printed p. 101 [PDF p. 7], fn. 8",
-        "Printed p. 102 [PDF p. 8], fn. 9",
-        "Printed p. 102 [PDF p. 8], fn. 10",
-        "Printed p. 104 [PDF p. 10], fn. 12",
-        "Printed p. 104 [PDF p. 10], fn. 13",
-        "Printed p. 104 [PDF p. 10], fn. 14",
-        "Printed p. 106 [PDF p. 12], fn. 16",
-        "Printed p. 106 [PDF p. 12], fn. 17",
-        "Printed p. 107 [PDF p. 13], fn. 18",
-        "Printed p. 108 [PDF p. 14], fn. 21",
-        "Printed p. 109 [PDF p. 15], fn. 22",
-    ]
-    for witness in expected_footnote_witnesses:
-        if witness not in bib_text:
-            raise ValueError(f"bibliography_leads.md: Missing positive footnote witness '{witness}'")
+    bib_blocks = re.split(r"(?=###\s+)", bib_text)
+    bib_block_map: dict[str, str] = {}
+    for blk in bib_blocks:
+        m = re.match(r"###\s+([^\n]+)", blk)
+        if m:
+            entry_title = m.group(1).strip()
+            bib_block_map[normalize_text_for_match(entry_title)] = blk
+
+    for lead in EXPECTED_BIBLIOGRAPHY_LEADS:
+        lead_title = lead["title"]
+        norm_lead_title = normalize_text_for_match(lead_title)
+        if norm_lead_title not in bib_block_map:
+            raise ValueError(f"bibliography_leads.md: Missing structured bibliographic lead '{lead_title}'")
+        blk = bib_block_map[norm_lead_title]
+
+        # Enforce expected container
+        exp_container = lead["container"]
+        if normalize_text_for_match(exp_container) not in normalize_text_for_match(blk):
+            raise ValueError(
+                f"bibliography_leads.md [{lead_title}]: Container mismatch: expected '{exp_container}' in lead block"
+            )
+
+        # Enforce exactly one Source Locator line matching expected locator
+        exp_locator = lead["locator"]
+        loc_lines = re.findall(r"-\s+\*\*Source Locator:\*\*\s*([^\n]+)", blk)
+        if len(loc_lines) != 1:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_title}]: Expected exactly one Source Locator, found {len(loc_lines)}"
+            )
+        act_loc = loc_lines[0].strip()
+        if normalize_text_for_match(exp_locator) not in normalize_text_for_match(act_loc):
+            raise ValueError(
+                f"bibliography_leads.md [{lead_title}]: Source locator mismatch: expected '{exp_locator}', got '{act_loc}'"
+            )
 
 
 def main():
@@ -716,10 +959,10 @@ def main():
     sections = execute_full_volume_search(page_texts, witnesses)
 
     # 8. Generate markdown report
-    generated_md = generate_markdown_report(pc_results, sections, pdf_path, text_sha256)
+    generated_md = generate_markdown_report(pc_results, sections, witnesses, pdf_path, text_sha256)
 
-    # 9. Cross-artifact natural format locator consistency and footnote witnesses
-    verify_cross_artifact_consistency(args.source_dir)
+    # 9. Cross-artifact natural format locator consistency, section-bound extraction, and structured bibliographic authentication
+    verify_cross_artifact_consistency(args.source_dir, ledger_rows)
 
     out_path = args.out_path
     if args.check_only:
@@ -744,7 +987,7 @@ def main():
     print(f"Verified {len(pc_results)} positive controls.")
     print(f"Verified {len(witnesses)} evidence ledger rows.")
     print(f"Verified 12 B001 search targets across {EXPECTED_PAGE_COUNT} pages.")
-    print(f"Verified cross-artifact locator consistency and footnote witnesses across all deliverables.")
+    print(f"Verified cross-artifact section-bound consistency, subsection-bound synthesis, and structured bibliographic witnesses across all deliverables.")
 
 
 if __name__ == "__main__":
