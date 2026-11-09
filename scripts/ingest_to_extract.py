@@ -27,6 +27,7 @@ PROBE_QUERIES = {
     "S05": "In Florian Wilk's Die Bedeutung des Jesajabuches für Paulus, what is his discussion regarding Romans 9:25 and the application of Hosea restoration prophecies to Gentiles as vessels of mercy?",
     "S06F": "In Mireia Ryšková's The Reception of the Book of Isaiah in Paul's Letter to the Romans, how many direct quotations from Isaiah does the author state are analyzed in Romans?",
     "S07F": "In Pieter K. Baaij's Paulus als Schriftuitlegger: Genesis 15:5b-6 in Romeinen 4:3, what is the author's primary argument regarding Paul's use of Genesis 15:6 in Romans 4:3 and whether Paul acted as an accurate expositor of Hebrew Scripture?",
+    "S08F": "In J. Paul Tanner's The New Covenant and Paul's Quotations from Hosea in Romans 9:25-26, what is the author's primary argument regarding how Paul uses Hosea 1:10 and 2:23 in relation to Gentile inclusion and the New Covenant?",
 }
 
 
@@ -102,10 +103,14 @@ async def inspect_extract_nb(client: CDPClient) -> dict:
     (() => {
         const titleInput = document.querySelector('input.title-input');
         const title = titleInput ? titleInput.value : document.title;
-        const sources = Array.from(document.querySelectorAll('.source-title, .source-item-title, [data-source-title]'))
-            .map(s => s.innerText.trim())
-            .filter(t => t.endsWith('.pdf'));
-        const uniqueSources = Array.from(new Set(sources));
+        const dropzone = document.querySelector('.sources-list-dropzone, .contents') || document;
+        const pdfs = [];
+        for (let el of dropzone.querySelectorAll('*')) {
+            if (el.children.length === 0 && el.innerText && el.innerText.trim().endsWith('.pdf')) {
+                pdfs.push(el.innerText.trim());
+            }
+        }
+        const uniqueSources = Array.from(new Set(pdfs));
         const errorEl = document.querySelector('.single-source-error-container, [aria-label*="Error info"]');
         const spinner = document.querySelector('mat-progress-bar, mat-spinner, [role=progressbar], .loading');
         const hasUploader = Boolean(

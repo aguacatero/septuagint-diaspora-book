@@ -3259,6 +3259,132 @@ def test_s07f_adversarial_pagination_and_negative_search_assertions():
     assert "entire normalized quote not found in text of PDF p(p). 1 (printed p(p). 239)" in str(exc5.value)
 
 
+def test_s08f_citation_ledger_crosswalk_integrity():
+    """Verify S08F citation ledger schema, pagination mapping, and quote integrity."""
+    repo_root = Path(__file__).resolve().parent.parent
+    s08f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S08F"
+    csv_path = s08f_dir / "citation_ledger.csv"
+
+    assert csv_path.is_file(), f"Missing citation_ledger.csv at {csv_path}"
+    with open(csv_path, encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+
+    assert len(rows) == 8, f"Expected 8 ledger rows for S08F, found {len(rows)}"
+
+    expected_ids = [f"S08F-E00{i}" for i in range(1, 9)]
+    for idx, r in enumerate(rows):
+        eid = r["evidence_id"]
+        assert eid == expected_ids[idx], f"Expected {expected_ids[idx]}, got {eid}"
+        assert r["source_id"] == "S08F"
+        assert r["verification_status"] == "VERIFIED"
+        assert r["extraction_confidence"] == "HIGH"
+        assert len(r["short_quote"].strip()) > 15
+        assert r["author_claim"].strip()
+
+        printed = int(r["printed_page"])
+        expected_pdf = printed - 94
+        assert 1 <= expected_pdf <= 16, f"Invalid printed page {printed} for {eid}"
+        assert f"Printed p. {printed} [PDF p. {expected_pdf}" in r["source_locator"]
+
+
+def test_s08f_provenance_manifest_and_pagination_invariant():
+    """Verify S08F provenance manifest and pagination invariant."""
+    repo_root = Path(__file__).resolve().parent.parent
+    manifest_path = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S08F/provenance_manifest.json"
+    assert manifest_path.is_file(), f"Missing manifest at {manifest_path}"
+
+    with open(manifest_path, encoding="utf-8") as f:
+        manifest = json.load(f)
+
+    assert manifest["source_id"] == "S08F"
+    assert manifest["work"]["authors"] == ["J. Paul Tanner"]
+    assert manifest["work"]["journal"] == "Bibliotheca Sacra"
+    assert manifest["ingested_volume"]["size_bytes"] == 1440727
+    assert manifest["ingested_volume"]["pages"] == 17
+    assert manifest["ingested_volume"]["article_pages"] == 16
+    assert manifest["ingested_volume"]["sha256"] == "88263a92f5edf99217238123198ff580a91203ecca68111aaed614a1a932a64a"
+
+
+def test_s08f_verifier_negative_search_passes():
+    """Verify scripts/verify_s08f_negative_search.py passes in --check-only mode."""
+    import subprocess
+    repo_root = Path(__file__).resolve().parent.parent
+    verifier_script = repo_root / "scripts/verify_s08f_negative_search.py"
+    assert verifier_script.is_file(), f"Missing verifier script: {verifier_script}"
+
+    cmd = ["python3", str(verifier_script), "--check-only"]
+    res = subprocess.run(cmd, cwd=str(repo_root), capture_output=True, text=True)
+    assert res.returncode == 0, f"Verifier failed with return code {res.returncode}:\nStdout:\n{res.stdout}\nStderr:\n{res.stderr}"
+    assert "matches generated report byte-for-byte (--check-only passed)" in res.stdout
+
+
+def test_s08f_adversarial_pagination_and_negative_search_assertions():
+    """Verify S08F verifier assertions fail closed against adversarial mutations."""
+    import pytest
+    from scripts.verify_s08f_negative_search import (
+        verify_monotonic_pagination,
+        execute_full_volume_search,
+        verify_ledger_witnesses,
+    )
+
+    # 1. Missing header numeral in top 3 lines fails closed
+    mock_body_only_pages = [
+        "BiBLiOTHECA SACRA / January-March 2005\nThis line mentions 95 in mid-prose.\nThird line without numeral.\n"
+    ]
+    with pytest.raises(ValueError) as exc1:
+        verify_monotonic_pagination(mock_body_only_pages)
+    assert "expected printed page number '95' not found in header margin" in str(exc1.value)
+
+    # 2. Missing running journal marker in header lines fails closed
+    mock_missing_marker_pages = [
+        "95 An Unrelated Header / January-March 2005\nSecond line.\nThird line.\n"
+    ]
+    with pytest.raises(ValueError) as exc2:
+        verify_monotonic_pagination(mock_missing_marker_pages)
+    assert "missing running journal marker in header lines" in str(exc2.value)
+
+    # 3. Injected match for CONFIRMED_ABSENT target (B001-1: Romans 4:3) fails closed
+    mock_16_pages = ["95 BiBLiOTHECA SACRA / January-March 2005\nHeader 2\nHeader 3\n"]
+    for p in range(2, 17):
+        prn = p + 94
+        mock_16_pages.append(f"{prn} BiBLiOTHECA SACRA / January-March 2005\nLine 2\nLine 3\n")
+    # Provide expected positive hits for B001-2 (Rom 9:25) and B001-3 (Rom 9:26)
+    mock_16_pages[0] += "\nRom 9:25 and Hos 2:23\n"
+    mock_16_pages[4] += "\nRom 9:26 and Hos 1:10\n"
+    # Inject Rom 4:3 into page 3
+    mock_16_pages[2] += "\nHere is an injected mention of Rom 4:3 in text.\n"
+    with pytest.raises(ValueError) as exc3:
+        execute_full_volume_search(mock_16_pages, [])
+    assert "Target B001-1 expected absent but found 1 hits" in str(exc3.value)
+
+    # 4. Zero matches for positive target B001-2 fails closed
+    mock_no_positive_pages = [f"{p+94} BiBLiOTHECA SACRA / January-March 2005\nLine 2\nLine 3\nGeneric text without citations." for p in range(1, 17)]
+    with pytest.raises(ValueError) as exc4:
+        execute_full_volume_search(mock_no_positive_pages, [])
+    assert "Target B001-2 expected extended discussion but found 0 hits" in str(exc4.value)
+
+    # 5. Ledger witness quote mismatch fails closed
+    fake_ledger_row = [{
+        "evidence_id": "S08F-E001",
+        "source_id": "S08F",
+        "b001_id": "B001-2",
+        "claim_type": "Exegetical / Theological",
+        "author_claim": "Claim text",
+        "short_quote": "nonexistent quote string that should never appear",
+        "printed_page": "98",
+        "source_locator": "Printed p. 98 [PDF p. 4]",
+        "notebooklm_citation": "[1, 2]",
+        "verification_status": "VERIFIED",
+        "qualification": "qual",
+        "extraction_confidence": "HIGH",
+        "notes": "note",
+    }]
+    with pytest.raises(ValueError) as exc5:
+        verify_ledger_witnesses(fake_ledger_row, mock_16_pages)
+    assert "Quote text not found on declared printed p. 98 [PDF p. 4]" in str(exc5.value)
+
+
+
 
 
 

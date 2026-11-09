@@ -1,0 +1,33 @@
+{
+  "source_id": "S08F",
+  "work": {
+    "authors": [
+      "J. Paul Tanner"
+    ],
+    "title": "The New Covenant and Paul's Quotations from Hosea in Romans 9:25–26",
+    "full_title": "The New Covenant and Paul's Quotations from Hosea in Romans 9:25–26",
+    "journal": "Bibliotheca Sacra",
+    "volume": "Vol. 162, No. 645",
+    "year": "2005",
+    "month": "January–March 2005",
+    "pages": "95–110",
+    "publisher": "Dallas Theological Seminary",
+    "issn": "0006-1921",
+    "article_url": "https://paultanner.org/English%20HTML/Publ%20Articles/Use%20of%20Hosea%20in%20Romans%20-%20P%20Tanner.pdf",
+    "pdf_url": "https://paultanner.org/English%20HTML/Publ%20Articles/Use%20of%20Hosea%20in%20Romans%20-%20P%20Tanner.pdf",
+    "license": "Publisher Reprint / Author-hosted PDF / ATLA Preservation"
+  },
+  "ingested_volume": {
+    "filename": "tanner_2005_hosea_romans_9.pdf",
+    "local_path": "/Users/chrisrodriguez/Downloads/tanner_2005_hosea_romans_9.pdf",
+    "pages": 17,
+    "article_pages": 16,
+    "size_bytes": 1440727,
+    "sha256": "88263a92f5edf99217238123198ff580a91203ecca68111aaed614a1a932a64a",
+    "verification_command": "stat -f '%z' /Users/chrisrodriguez/Downloads/tanner_2005_hosea_romans_9.pdf && shasum -a 256 /Users/chrisrodriguez/Downloads/tanner_2005_hosea_romans_9.pdf",
+    "page_mapping": {
+      "formula": "Printed page = PDF page + 94; PDF page = Printed page - 94 for all 16 article pages (PDF pp. 1-16 correspond strictly to printed pp. 95-110). PDF p. 17 is ATLA terms.",
+      "article_structure": "Section 1: The Context of Romans 9: The 'True Israel' (pp. 95-96; PDF pp. 1-2); Section 2: The Old Testament Quotations in Romans 9:25-29 (pp. 96-99; PDF pp. 2-5); Section 3: The Hosea Quotations in Their Original Context (pp. 99-101; PDF pp. 5-7); Section 4: Clarifications Regarding the Fulfillment of Hosea 1-2 (pp. 101-102; PDF pp. 7-8); Section 5: The Hermeneutical Explanation (pp. 102-109; PDF pp. 8-15); Section 6: Conclusions and Implications (pp. 109-110; PDF pp. 15-16)"
+    }
+  }
+}
