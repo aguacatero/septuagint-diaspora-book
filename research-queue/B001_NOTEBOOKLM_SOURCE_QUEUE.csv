@@ -10,7 +10,7 @@ order,source_id,source_class,author_or_editor,title,year,notebook_label,expected
 9,S06F,SECONDARY,Mireia Ryšková,The Reception of the Book of Isaiah in Paul's Letter to the Romans,2019,S06F — Ryškova — Isaiah in Romans — 2019,ryskova_2019_isaiah_romans.pdf,DONE,ACCEPTED,Modern OA passage-relevant scholarship
 10,S07F,SECONDARY,Pieter K. Baaij,Paulus als Schriftuitlegger: Genesis 15:5b–6 in Romeinen 4:3,2005,S07F — Baaij — Genesis 15.6 in Romans 4.3 — 2005,baaij_2005_romans_4_3.pdf,DONE,ACCEPTED,Passage-specific
 11,S08F,SECONDARY,J. Paul Tanner,The New Covenant and Paul's Quotations from Hosea in Romans 9:25–26,2005,S08F — Tanner — Hosea in Romans 9.25-26 — 2005,tanner_2005_hosea_romans_9.pdf,DONE,ACCEPTED,Passage-specific
-12,S09F,SECONDARY,Willem Oliver,Romans 10:5–13 Revisited,2015,S09F — Oliver — Romans 10.5-13 — 2015,oliver_2015_romans_10.pdf,PENDING,NOT_REVIEWED,Passage-specific
+12,S09F,SECONDARY,Willem Oliver,Romans 10:5–13 Revisited,2015,S09F — Oliver — Romans 10.5-13 — 2015,oliver_2015_romans_10.pdf,ACQUIRED,NOT_REVIEWED,Passage-specific
 13,S10F,SECONDARY,Colin Hamer,Genesis 2:24 and the New Covenant: A Profound Mystery,2018,S10F — Hamer — Genesis 2.24 and the New Covenant — 2018,hamer_2018_genesis_2_24.pdf,PENDING,NOT_REVIEWED,Passage-specific
 14,S11F,SECONDARY,David Instone-Brewer,1 Corinthians 9.9–11: A Literal Interpretation of Do Not Muzzle the Ox,1992,S11F — Instone-Brewer — 1 Corinthians 9.9-11 — 1992,instone_brewer_1992_1cor_9_9.pdf,PENDING,NOT_REVIEWED,Passage-specific
 15,S12F,SECONDARY,Jerry Hwang,Turning the Tables on Idol Feasts: Paul's Use of Exodus 32:6 in 1 Corinthians 10:7,2011,S12F — Hwang — Exodus 32.6 in 1 Corinthians 10.7 — 2011,hwang_2011_exodus_32_6.pdf,PENDING,NOT_REVIEWED,Passage-specific
