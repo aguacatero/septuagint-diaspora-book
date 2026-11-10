@@ -130,10 +130,35 @@ Both findings from ChatGPT Round 3 review ([#issuecomment-6768652597](https://gi
 
 ---
 
-## 6. Review Readiness & Submission
+## 6. Round 4 Review Disposition
 
-- **Active Source:** `S08F`
-- **Source Deliverable Directory:** `research/inbox/B001-pauline-txt-pilot/sources/S08F/`
-- **Status:** `REMEDIATED / READY_FOR_ROUND_4_REVIEW`
-- **Review Target:** `LIVE_PR_HEAD`
-- **Review Loop:** Independent exact-SHA evaluation by ChatGPT on Draft PR #2.
+- **Reviewed SHA:** `61f6cd4d09e479fb11853abe2bab0414e154d121`
+- **Verdict:** `SOURCE_PACKET: ACCEPT` (GitHub PR #2 Comment [#6774281253](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6774281253))
+- **Findings Disposition:**
+  - **S08F-R3-F1:** PASS (duplicate/conflicting locator references fail closed with strict grammar and structural bracket checks).
+  - **S08F-R3-F2:** PASS (bibliographic year and primary container identity enforced with exact normalized equality).
+
+---
+
+## 7. Promotion to SDP-01 Paul (Cumulative Synthesis Notebook)
+
+- **Promotion Status:** `PROMOTED`
+- **Cumulative Notebook:** `SDP-01 Paul` (`65d4bea4-7939-4754-bb7b-09d420e8ff19`)
+- **Promoted Source:** `tanner_2005_hosea_romans_9.pdf` (1,440,727 bytes, SHA-256 `88263a92f5edf992...`)
+- **Cumulative Source Count:** 11 of 11 unique PDF sources verified present in `SDP-01 Paul`:
+  1. `lightfoot_1914_galatians.pdf` (S04F)
+  2. `robertson_plummer_1911_1corinthians_icc.pdf` (S03F)
+  3. `sanday_headlam_1895_romans_icc.pdf` (S02F)
+  4. `aageson_1984_pauls_use_of_scripture.pdf` (S01F)
+  5. `ryskova_2019_isaiah_romans.pdf` (S06F)
+  6. `wilk_1998_jesaja_paulus.pdf` (S05)
+  7. `sblgnt.pdf` (P01F)
+  8. `swete_lxx_vol1_p02f_target.pdf` (P02F)
+  9. `swete_lxx_vol3_p03f_target.pdf` (P03F)
+  10. `baaij_2005_romans_4_3.pdf` (S07F)
+  11. `tanner_2005_hosea_romans_9.pdf` (S08F)
+- **Source-Grounded Retrieval Verification:** Executed via `scripts/promote_to_sdp01.py` with probe query:
+  `"In J. Paul Tanner's The New Covenant and Paul's Quotations from Hosea in Romans 9:25–26, what is his analysis regarding the New Covenant as the theological bridge for Gentile inclusion as vessels of mercy without replacing Israel?"`
+  - Response length: 1355 characters
+  - Citation markers: 8 grounded citations
+  - Verification: PASSED

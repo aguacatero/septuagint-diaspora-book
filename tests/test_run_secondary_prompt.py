@@ -943,9 +943,9 @@ async def test_source_switch_s01f_to_s02f_fails_closed_without_overwriting_s01f(
     assert ctx_s02f["output_dir"].endswith("/sources/S02F")
     assert ctx_s02f["output_dir"] != ctx_s01f["output_dir"]
 
-    # Active queue context (S02F, S03F, S04F, S05, S06F, S07F, or S08F after serial promotion)
+    # Active queue context (S02F, S03F, S04F, S05, S06F, S07F, S08F, or S09F after serial promotion)
     ctx_active = get_source_context()
-    assert ctx_active["source_id"] in ("S02F", "S03F", "S04F", "S05", "S06F", "S07F", "S08F")
+    assert ctx_active["source_id"] in ("S02F", "S03F", "S04F", "S05", "S06F", "S07F", "S08F", "S09F")
     if ctx_active["source_id"] == "S02F":
         assert ctx_active["expected_filename"] == "sanday_headlam_1895_romans_icc.pdf"
     elif ctx_active["source_id"] == "S03F":
@@ -958,8 +958,10 @@ async def test_source_switch_s01f_to_s02f_fails_closed_without_overwriting_s01f(
         assert ctx_active["expected_filename"] == "ryskova_2019_isaiah_romans.pdf"
     elif ctx_active["source_id"] == "S07F":
         assert ctx_active["expected_filename"] == "baaij_2005_romans_4_3.pdf"
-    else:
+    elif ctx_active["source_id"] == "S08F":
         assert ctx_active["expected_filename"] == "tanner_2005_hosea_romans_9.pdf"
+    else:
+        assert ctx_active["expected_filename"] == "oliver_2015_romans_10.pdf"
 
     # 2. Residual Aageson-only notebook or wrong/ambiguous source fails closed under S02F
     with pytest.raises(RuntimeError, match="Source identity invariant violated: expected sole source 'sanday_headlam_1895_romans_icc.pdf', but found 'aageson_1984_pauls_use_of_scripture.pdf'"):
