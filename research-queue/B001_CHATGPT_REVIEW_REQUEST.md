@@ -5,7 +5,7 @@ Antigravity rewrites this file for every source before requesting review.
 ## Current source
 
 - Source ID: `S08F`
-- Review Round: `Round 2`
+- Review Round: `Round 3`
 - Exact citation: J. Paul Tanner, *The New Covenant and Paul’s Quotations from Hosea in Romans 9:25–26*, *Bibliotheca Sacra*, Vol. 162, No. 645 (January–March 2005), pp. 95–110.
 - Branch: `research/B001-notebooklm-serial`
 - Draft PR: `2`
@@ -13,13 +13,20 @@ Antigravity rewrites this file for every source before requesting review.
 - Review target: `LIVE_PR_HEAD`
 - Previous source disposition: `S07F ACCEPTED` in Round 3 independent review ([#issuecomment-6727995244](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6727995244)) at commit `001eb018739a5bf6c94abf5539990d44bc2ccaa0`, and promoted to cumulative notebook `SDP-01 Paul` with source-grounded retrieval verification.
 - Round 1 review disposition: `SOURCE_PACKET: REVISE` ([#issuecomment-6733387261](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6733387261)) on SHA `1a5e5800592910ee8790c309f95b8a0e7af08422`.
+- Round 2 review disposition: `SOURCE_PACKET: REVISE` ([#issuecomment-6759235942](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6759235942)) on SHA `a3dc8282d6733b9a88dfde97fb5c71d0d17ea79a`.
 
-## Round 1 Findings Remediation Summary
+## Round 2 Findings Remediation Summary
 
-1. **S08F-R1-F1 (Bibliographic Containers & Footnote Locators):** Corrected Richard Daniels (1999) container to *Faith and Mission* 16 (1999): 64–98 on p. 104, fn. 13 (removing erroneous JETS attribution). Corrected McClain and Battle to p. 98, fn. 2. Corrected Wolff to p. 107, fn. 18. Reintroduced Gary W. Light (1993 in *Review and Expositor* 90:219–238) on p. 106, fn. 17. Corrected Ladd to p. 109, fn. 22. All 26 bibliographic leads verified across `bibliography_leads.md` and `counterevidence.md`.
-2. **S08F-R1-F2 (Cross-Artifact Verifier Hardening & Adversarial Tests):** Upgraded `scripts/verify_s08f_negative_search.py` with section/evidence-ID bound extraction verification, subsection-bound synthesis verification, and structured bibliographic witness authentication for all 26 entries. Added comprehensive fail-closed adversarial mutation tests in `tests/test_citation_ledger_crosswalk.py`.
-3. **S08F-R1-F3 (Target Loci Scope Alignment):** Reconciled `citation_ledger.csv` rows `S08F-E004`, `S08F-E005`, `S08F-E006`, and `S08F-E007` to `b001_id = "B001-2, B001-3"`, matching `extraction.md`. Regenerated `full_volume_search_log.md` with multi-loci witness associations.
-4. **S08F-R1-F4 (Methodological Scoping & Premise Demarcation):** Updated `argument_map.md` to explicitly demarcate Tanner's confessional/theological premises (such as apostolic realization via Acts 10–11 and Ephesians 3 mystery revelation) from independently verifiable historical evidence.
+1. **S08F-R2-F1 (Bibliographic Footnote Prefix Collision & Author/Title Authentication):**
+   - Implemented `parse_source_locator` in `scripts/verify_s08f_negative_search.py` to parse exact numeric printed pages, PDF pages, and exact delimited footnote integers (e.g. `\bfn\.\s*(\d+)\b`). Replaced substring comparisons with integer equality checks, preventing prefix collisions (`fn. 2 -> fn. 20`).
+   - Added authoritative per-lead `author` and `title` fields to `EXPECTED_BIBLIOGRAPHY_LEADS` for all 26 leads, enforcing that each lead block in `bibliography_leads.md` contains exactly one matching `Author` line and exactly one matching `Title` line.
+   - Added fail-closed adversarial mutation tests in `tests/test_citation_ledger_crosswalk.py` for `fn. 2 -> fn. 20`, invented work title (`*Unrelated Work*`), and invented author (`Another Scholar`).
+2. **S08F-R2-F2 (Strict Bracket Delimiters & Coordinated False PDF Pages):**
+   - Enforced strict bracketed delimiters `[PDF p. X]` and exact parsed numeric comparisons in both `verify_ledger_witnesses()` and `verify_cross_artifact_consistency()`, eliminating open-ended prefix matching `[PDF p. 4`.
+   - Added fail-closed adversarial mutation tests for a coordinated false PDF page (`PDF p. 4 -> PDF p. 40` in both ledger and extraction) and malformed/missing locator delimiters.
+3. **S08F-R2-F3 (Field-Bound Quotation Verification):**
+   - Isolated the named `- **Short Exact Quotation:**` line in each evidence block rather than searching the entire block, preventing altered quotations from being masked by notes copies.
+   - Added a fail-closed adversarial mutation test for a corrupted quotation field with the original quote pasted into Notes.
 
 ## Source packet under review
 
@@ -53,7 +60,7 @@ Plus governing method:
 Evaluate source packet `S08F` against the governing method and source text.
 
 Verify that:
-1. All four Round 1 review findings (S08F-R1-F1, S08F-R1-F2, S08F-R1-F3, S08F-R1-F4) have been fully remediated.
+1. All three Round 2 review findings (S08F-R2-F1, S08F-R2-F2, S08F-R2-F3) have been fully remediated.
 2. All extracted claims in `citation_ledger.csv` and `extraction.md` are accurately grounded in J. Paul Tanner's 2005 article, with exact quotes and verified physical locators matching the monotonic formula $printed = PDF + 94$ across all 16 article pages (printed pp. 95–110 = PDF pp. 1–16).
 3. The negative search log accurately distinguishes the extended treatment of B001-2 (Romans 9:25 / Hosea 2:23) and B001-3 (Romans 9:26 / Hosea 1:10), and the 10 confirmed absent loci.
 4. The cross-artifact consistency checks pass without section-boundary bleed, duplicate locators, or malformed range bounds.

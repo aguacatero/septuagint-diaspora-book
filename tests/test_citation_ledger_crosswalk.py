@@ -3431,6 +3431,26 @@ def test_s08f_adversarial_pagination_and_negative_search_assertions():
         verify_ledger_witnesses(fake_ledger_b001_mismatch, mock_16_pages)
     assert "S08F-E004: b001_id mismatch: expected 'B001-2, B001-3', got 'B001-2'" in str(exc6.value)
 
+    # 7. Coordinated false PDF page locator in ledger fails closed
+    fake_ledger_pdf40 = [{
+        "evidence_id": "S08F-E001",
+        "source_id": "S08F",
+        "b001_id": "B001-2",
+        "claim_type": "Exegetical / Theological",
+        "author_claim": "Claim text",
+        "short_quote": "it seems clear that Paul was citing these verses to establish the point that God's \"vessels of mercy\" include Gentiles.",
+        "printed_page": "98",
+        "source_locator": "Printed p. 98 [PDF p. 40]",
+        "notebooklm_citation": "[1, 2]",
+        "verification_status": "VERIFIED",
+        "qualification": "qual",
+        "extraction_confidence": "HIGH",
+        "notes": "note",
+    }]
+    with pytest.raises(ValueError) as exc7:
+        verify_ledger_witnesses(fake_ledger_pdf40, mock_16_pages)
+    assert "source_locator PDF pages (40,) != expected (4,)" in str(exc7.value)
+
 
 def test_s08f_cross_artifact_adversarial_mutations(tmp_path):
     """Verify section-bound extraction, subsection synthesis, and structured bibliography fail closed against mutations."""
@@ -3479,7 +3499,7 @@ def test_s08f_cross_artifact_adversarial_mutations(tmp_path):
     ext_file.write_text(mutated_ext_swap_loc, encoding="utf-8")
     with pytest.raises(ValueError) as exc3:
         verify_cross_artifact_consistency(test_dir)
-    assert "Source Locator 'Printed p. 98 [PDF p. 4]' does not match expected 'Printed p. 99 [PDF p. 5" in str(exc3.value)
+    assert "Printed page mismatch: expected (99,), got (98,)" in str(exc3.value)
     ext_file.write_text(orig_ext, encoding="utf-8")
 
     # Mutation 4: Extraction B001 passage ID drift fails closed
@@ -3513,7 +3533,7 @@ def test_s08f_cross_artifact_adversarial_mutations(tmp_path):
     bib_file.write_text(mutated_bib_container, encoding="utf-8")
     with pytest.raises(ValueError) as exc6:
         verify_cross_artifact_consistency(test_dir)
-    assert "Container mismatch: expected 'Faith and Mission' in lead block" in str(exc6.value)
+    assert "Container mismatch: expected 'Faith and Mission'" in str(exc6.value)
     bib_file.write_text(orig_bib, encoding="utf-8")
 
     # Mutation 7: Bibliographic footnote number misattribution (McClain -> fn. 1) fails closed
@@ -3524,7 +3544,7 @@ def test_s08f_cross_artifact_adversarial_mutations(tmp_path):
     bib_file.write_text(mutated_bib_footnote, encoding="utf-8")
     with pytest.raises(ValueError) as exc7:
         verify_cross_artifact_consistency(test_dir)
-    assert "Source locator mismatch: expected 'Printed p. 98 [PDF p. 4], fn. 2'" in str(exc7.value)
+    assert "Footnote mismatch: expected 2, got 1" in str(exc7.value)
     bib_file.write_text(orig_bib, encoding="utf-8")
 
     # Mutation 8: Bibliographic footnote number misattribution (Wolff -> fn. 17) fails closed
@@ -3535,8 +3555,76 @@ def test_s08f_cross_artifact_adversarial_mutations(tmp_path):
     bib_file.write_text(mutated_bib_wolff, encoding="utf-8")
     with pytest.raises(ValueError) as exc8:
         verify_cross_artifact_consistency(test_dir)
-    assert "Source locator mismatch: expected 'Printed p. 107 [PDF p. 13], fn. 18'" in str(exc8.value)
+    assert "Footnote mismatch: expected 18, got 17" in str(exc8.value)
     bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 9 (R2-F1): Bibliographic footnote prefix collision (McClain fn. 2 -> fn. 20) fails closed
+    mutated_bib_prefix = orig_bib.replace(
+        "Printed p. 98 [PDF p. 4], fn. 2; Section 2",
+        "Printed p. 98 [PDF p. 4], fn. 20; Section 2"
+    )
+    bib_file.write_text(mutated_bib_prefix, encoding="utf-8")
+    with pytest.raises(ValueError) as exc9:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Footnote mismatch: expected 2, got 20" in str(exc9.value)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 10 (R2-F1): Invented work title in bibliography (Daniels -> *Unrelated Work*) fails closed
+    mutated_bib_title = orig_bib.replace(
+        '- **Title:** *"How Does the Church Relate to the New Covenant? or, Whose New Covenant Is It, Anyway?"*',
+        "- **Title:** *Unrelated Work*"
+    )
+    bib_file.write_text(mutated_bib_title, encoding="utf-8")
+    with pytest.raises(ValueError) as exc10:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Title mismatch: expected" in str(exc10.value)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 11 (R2-F1): Invented author in bibliography (Daniels -> Another Scholar) fails closed
+    mutated_bib_auth = orig_bib.replace(
+        "- **Author:** Richard Daniels",
+        "- **Author:** Another Scholar"
+    )
+    bib_file.write_text(mutated_bib_auth, encoding="utf-8")
+    with pytest.raises(ValueError) as exc11:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Author mismatch: expected 'Richard Daniels'" in str(exc11.value)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 12 (R2-F2): Coordinated false PDF-page locator (E001 PDF p. 4 -> PDF p. 40 in both ledger and extraction) fails closed
+    csv_file = test_dir / "citation_ledger.csv"
+    orig_csv = csv_file.read_text(encoding="utf-8")
+    mutated_csv_pdf40 = orig_csv.replace("Printed p. 98 [PDF p. 4]", "Printed p. 98 [PDF p. 40]")
+    mutated_ext_pdf40 = orig_ext.replace("Printed p. 98 [PDF p. 4]", "Printed p. 98 [PDF p. 40]")
+    csv_file.write_text(mutated_csv_pdf40, encoding="utf-8")
+    ext_file.write_text(mutated_ext_pdf40, encoding="utf-8")
+    with pytest.raises(ValueError) as exc12:
+        verify_cross_artifact_consistency(test_dir)
+    assert "PDF page mismatch: expected (4,), got (40,)" in str(exc12.value)
+    csv_file.write_text(orig_csv, encoding="utf-8")
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 13 (R2-F3): Corrupted quotation field masked by notes copies fails closed
+    mutated_ext_quote_notes = orig_ext.replace(
+        '- **Short Exact Quotation:** "it seems clear that Paul was citing these verses to establish the point that God\'s \\"vessels of mercy\\" include Gentiles."',
+        '- **Short Exact Quotation:** "A completely corrupted and invented quotation field that must fail closed."'
+    ).replace(
+        "- **Notes:** Tanner 2005:98. Supporting Gentile inclusion as vessels of mercy.",
+        "- **Notes:** Tanner 2005:98. Supporting Gentile inclusion as vessels of mercy. Original quote: \\\"it seems clear that Paul was citing these verses to establish the point that God's vessels of mercy include Gentiles.\\\""
+    )
+    ext_file.write_text(mutated_ext_quote_notes, encoding="utf-8")
+    with pytest.raises(ValueError) as exc13:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Short Exact Quotation field mismatch" in str(exc13.value)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 14 (R2-F2): Missing closing delimiter in extraction locator fails closed
+    mutated_ext_bad_delim = orig_ext.replace("Printed p. 98 [PDF p. 4]", "Printed p. 98 [PDF p. 4")
+    ext_file.write_text(mutated_ext_bad_delim, encoding="utf-8")
+    with pytest.raises(ValueError) as exc14:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Cannot parse PDF page in locator" in str(exc14.value)
+    ext_file.write_text(orig_ext, encoding="utf-8")
 
 
 

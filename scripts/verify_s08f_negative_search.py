@@ -6,9 +6,10 @@ to the source volume (verifying EXPECTED_TEXT_SHA256), enforces the strict monot
 invariant (printed = PDF + 94), validates positive controls across all article sections,
 verifies ENTIRE normalized quotes across evidence rows without truncation, asserts ledger schema
 and verified statuses, checks cross-artifact natural-format locator consistency and positive
-footnote witnesses, enforces section/evidence-ID bound extraction, subsection-bound synthesis,
-and structured bibliographic witness authentication, and in --check-only mode fails closed on
-any byte difference (including whitespace).
+footnote witnesses, enforces section/evidence-ID bound extraction with field-bound quotation
+and exact parsed locator matching, subsection-bound synthesis, and structured bibliographic
+witness authentication with authoritative author/title/container/exact-delimited footnote checks,
+and in --check-only mode fails closed on any byte difference (including whitespace).
 """
 
 from __future__ import annotations
@@ -57,14 +58,14 @@ EXPECTED_LEDGER_COLUMNS = [
 EXPECTED_EVIDENCE_IDS = [f"S08F-E00{i}" for i in range(1, 9)]
 
 AUTHORITATIVE_EVIDENCE_LOCI = {
-    "S08F-E001": (98, 4),
-    "S08F-E002": (99, 5),
-    "S08F-E003": (100, 6),
-    "S08F-E004": (102, 8),
-    "S08F-E005": (110, 16),
-    "S08F-E006": (103, 9),
-    "S08F-E007": (96, 2),
-    "S08F-E008": (99, 5),
+    "S08F-E001": {"printed": (98,), "pdf": (4,), "fn": None, "locator": "Printed p. 98 [PDF p. 4]"},
+    "S08F-E002": {"printed": (99,), "pdf": (5,), "fn": 4, "locator": "Printed p. 99 [PDF p. 5, fn. 4]"},
+    "S08F-E003": {"printed": (100,), "pdf": (6,), "fn": None, "locator": "Printed p. 100 [PDF p. 6]"},
+    "S08F-E004": {"printed": (102,), "pdf": (8,), "fn": None, "locator": "Printed p. 102 [PDF p. 8]"},
+    "S08F-E005": {"printed": (110,), "pdf": (16,), "fn": None, "locator": "Printed p. 110 [PDF p. 16]"},
+    "S08F-E006": {"printed": (103,), "pdf": (9,), "fn": None, "locator": "Printed p. 103 [PDF p. 9]"},
+    "S08F-E007": {"printed": (96,), "pdf": (2,), "fn": None, "locator": "Printed p. 96 [PDF p. 2]"},
+    "S08F-E008": {"printed": (99,), "pdf": (5,), "fn": None, "locator": "Printed p. 99 [PDF p. 5]"},
 }
 
 EXPECTED_EVIDENCE_B001_MAP = {
@@ -112,134 +113,238 @@ EXPECTED_RELEVANCE_TABLE_LOCI = {
 
 EXPECTED_BIBLIOGRAPHY_LEADS = [
     {
-        "title": "Walter C. Kaiser Jr. (1989)",
+        "header": "Walter C. Kaiser Jr. (1989)",
+        "author": "Walter C. Kaiser Jr.",
+        "title": '*"An Assessment of \'Replacement Theology\'"*',
         "container": "Mishkan",
-        "locator": "Printed p. 95 [PDF p. 1], fn. 1",
+        "printed_pages": (95,),
+        "pdf_pages": (1,),
+        "footnote": 1,
     },
     {
-        "title": "Alva J. McClain (1973)",
+        "header": "Alva J. McClain (1973)",
+        "author": "Alva J. McClain",
+        "title": "*The Gospel of God’s Grace*",
         "container": "Moody Press",
-        "locator": "Printed p. 98 [PDF p. 4], fn. 2",
+        "printed_pages": (98,),
+        "pdf_pages": (4,),
+        "footnote": 2,
     },
     {
-        "title": "John A. Battle, Jr. (1981)",
+        "header": "John A. Battle, Jr. (1981)",
+        "author": "John A. Battle, Jr.",
+        "title": '*"Paul\'s Use of the Old Testament in Romans 9:25–26"*',
         "container": "Grace Theological Journal",
-        "locator": "Printed p. 98 [PDF p. 4], fn. 2",
+        "printed_pages": (98,),
+        "pdf_pages": (4,),
+        "footnote": 2,
     },
     {
-        "title": "W. Edward Glenny (1995)",
+        "header": "W. Edward Glenny (1995)",
+        "author": "W. Edward Glenny",
+        "title": '*"The \'People of God\' in Romans 9:25–26"*',
         "container": "Bibliotheca Sacra",
-        "locator": "Printed p. 98 [PDF p. 4], fn. 3",
+        "printed_pages": (98,),
+        "pdf_pages": (4,),
+        "footnote": 3,
     },
     {
-        "title": "Douglas J. Moo (1996) — Romans 9:24–26 Calling of Gentiles",
+        "header": "Douglas J. Moo (1996) — Romans 9:24–26 Calling of Gentiles",
+        "author": "Douglas J. Moo",
+        "title": "*The Epistle to the Romans* (NICNT)",
         "container": "Eerdmans",
-        "locator": "Printed p. 98 [PDF p. 4], fn. 3",
+        "printed_pages": (98,),
+        "pdf_pages": (4,),
+        "footnote": 3,
     },
     {
-        "title": "David L. Turner (1985)",
+        "header": "David L. Turner (1985)",
+        "author": "David L. Turner",
+        "title": '*"The Continuity of Scripture and Eschatology: Key Hermeneutical Issues"*',
         "container": "Grace Theological Journal",
-        "locator": "Printed p. 98 [PDF p. 4], fn. 3",
+        "printed_pages": (98,),
+        "pdf_pages": (4,),
+        "footnote": 3,
     },
     {
-        "title": "Douglas J. Moo (1996) — Textual Modification of καλέσω",
+        "header": "Douglas J. Moo (1996) — Textual Modification of καλέσω",
+        "author": "Douglas J. Moo",
+        "title": "*The Epistle to the Romans* (NICNT)",
         "container": "Eerdmans",
-        "locator": "Printed p. 99 [PDF p. 5], fn. 4",
+        "printed_pages": (99,),
+        "pdf_pages": (5,),
+        "footnote": 4,
     },
     {
-        "title": "Douglas J. Moo (1996) — Hermeneutical Supposition of Replacement",
+        "header": "Douglas J. Moo (1996) — Hermeneutical Supposition of Replacement",
+        "author": "Douglas J. Moo",
+        "title": "*The Epistle to the Romans* (NICNT)",
         "container": "Eerdmans",
-        "locator": "Printed p. 101 [PDF p. 7], fn. 6",
+        "printed_pages": (101,),
+        "pdf_pages": (7,),
+        "footnote": 6,
     },
     {
-        "title": "Robert B. Chisholm Jr. (1985)",
+        "header": "Robert B. Chisholm Jr. (1985)",
+        "author": "Robert B. Chisholm Jr.",
+        "title": '*"Hosea"*, in John F. Walvoord & Roy B. Zuck (eds.), *The Bible Knowledge Commentary, Old Testament*',
         "container": "Victor",
-        "locator": "Printed pp. 101–102 [PDF pp. 7–8], fn. 8",
+        "printed_pages": (101, 102),
+        "pdf_pages": (7, 8),
+        "footnote": 8,
     },
     {
-        "title": "John A. Witmer (1983)",
+        "header": "John A. Witmer (1983)",
+        "author": "John A. Witmer",
+        "title": '*"Romans"*, in John F. Walvoord & Roy B. Zuck (eds.), *The Bible Knowledge Commentary, New Testament*',
         "container": "Victor",
-        "locator": "Printed pp. 101–102 [PDF pp. 7–8], fn. 8",
+        "printed_pages": (101, 102),
+        "pdf_pages": (7, 8),
+        "footnote": 8,
     },
     {
-        "title": "S. Lewis Johnson (1992)",
+        "header": "S. Lewis Johnson (1992)",
+        "author": "S. Lewis Johnson",
+        "title": '*"Evidence from Romans 9–11"*, in Donald K. Campbell & Jeffrey L. Townsend (eds.), *A Case for Premillennialism: A New Consensus*',
         "container": "Moody Press",
-        "locator": "Printed p. 102 [PDF p. 8], fn. 8",
+        "printed_pages": (102,),
+        "pdf_pages": (8,),
+        "footnote": 8,
     },
     {
-        "title": "Douglas J. Moo (1996) — Rejection of Mere Analogy",
+        "header": "Douglas J. Moo (1996) — Rejection of Mere Analogy",
+        "author": "Douglas J. Moo",
+        "title": "*The Epistle to the Romans* (NICNT)",
         "container": "Eerdmans",
-        "locator": "Printed p. 102 [PDF p. 8], fn. 8",
+        "printed_pages": (102,),
+        "pdf_pages": (8,),
+        "footnote": 8,
     },
     {
-        "title": "W. Edward Glenny (1992)",
+        "header": "W. Edward Glenny (1992)",
+        "author": "W. Edward Glenny",
+        "title": '*"The Israelite Imagery of 1 Peter 2"*, in Craig A. Blaising & Darrell L. Bock (eds.), *Dispensationalism, Israel and the Church*',
         "container": "Zondervan",
-        "locator": "Printed p. 102 [PDF p. 8], fn. 9",
+        "printed_pages": (102,),
+        "pdf_pages": (8,),
+        "footnote": 9,
     },
     {
-        "title": "Roy B. Zuck (1991)",
+        "header": "Roy B. Zuck (1991)",
+        "author": "Roy B. Zuck",
+        "title": "*Basic Bible Interpretation*",
         "container": "Victor",
-        "locator": "Printed p. 103 [PDF p. 9], fn. 10",
+        "printed_pages": (103,),
+        "pdf_pages": (9,),
+        "footnote": 10,
     },
     {
-        "title": "David K. Lowery (1983)",
+        "header": "David K. Lowery (1983)",
+        "author": "David K. Lowery",
+        "title": '*"1 Corinthians"*, in John F. Walvoord & Roy B. Zuck (eds.), *The Bible Knowledge Commentary, New Testament*',
         "container": "Victor",
-        "locator": "Printed p. 103 [PDF p. 9], fn. 11",
+        "printed_pages": (103,),
+        "pdf_pages": (9,),
+        "footnote": 11,
     },
     {
-        "title": "Rodney J. Decker (1995)",
+        "header": "Rodney J. Decker (1995)",
+        "author": "Rodney J. Decker",
+        "title": '*"The Church\'s Relationship to the New Covenant"*',
         "container": "Bibliotheca Sacra",
-        "locator": "Printed p. 104 [PDF p. 10], fn. 12",
+        "printed_pages": (104,),
+        "pdf_pages": (10,),
+        "footnote": 12,
     },
     {
-        "title": "Richard Daniels (1999)",
+        "header": "Richard Daniels (1999)",
+        "author": "Richard Daniels",
+        "title": '*"How Does the Church Relate to the New Covenant? or, Whose New Covenant Is It, Anyway?"*',
         "container": "Faith and Mission",
-        "locator": "Printed p. 104 [PDF p. 10], fn. 13",
+        "printed_pages": (104,),
+        "pdf_pages": (10,),
+        "footnote": 13,
     },
     {
-        "title": "Larry D. Pettegrew (1993)",
+        "header": "Larry D. Pettegrew (1993)",
+        "author": "Larry D. Pettegrew",
+        "title": "*The New Covenant Ministry of the Holy Spirit*",
         "container": "University Press of America",
-        "locator": "Printed pp. 104–105 [PDF pp. 10–11], fn. 14",
+        "printed_pages": (104, 105),
+        "pdf_pages": (10, 11),
+        "footnote": 14,
     },
     {
-        "title": "Paul R. Thorsell (1998)",
+        "header": "Paul R. Thorsell (1998)",
+        "author": "Paul R. Thorsell",
+        "title": '*"The Spirit in the Present Age: Preliminary Fulfillment of the Predicted New Covenant according to Paul"*',
         "container": "Journal for the Evangelical Theological Society",
-        "locator": "Printed p. 105 [PDF p. 11], fn. 14",
+        "printed_pages": (105,),
+        "pdf_pages": (11,),
+        "footnote": 14,
     },
     {
-        "title": "Douglas Stuart (1987)",
+        "header": "Douglas Stuart (1987)",
+        "author": "Douglas Stuart",
+        "title": "*Hosea–Jonah* (Word Biblical Commentary)",
         "container": "Word Books",
-        "locator": "Printed p. 106 [PDF p. 12], fn. 16",
+        "printed_pages": (106,),
+        "pdf_pages": (12,),
+        "footnote": 16,
     },
     {
-        "title": "Gary W. Light (1993)",
+        "header": "Gary W. Light (1993)",
+        "author": "Gary W. Light",
+        "title": '*"The New Covenant in the Book of Hosea"*',
         "container": "Review and Expositor",
-        "locator": "Printed p. 106 [PDF p. 12], fn. 17",
+        "printed_pages": (106,),
+        "pdf_pages": (12,),
+        "footnote": 17,
     },
     {
-        "title": "Leon J. Wood (1985)",
+        "header": "Leon J. Wood (1985)",
+        "author": "Leon J. Wood",
+        "title": '*"Hosea"*, in Frank E. Gaebelein (ed.), *The Expositor’s Bible Commentary*, Vol. 7',
         "container": "Zondervan",
-        "locator": "Printed p. 107 [PDF p. 13], fn. 18",
+        "printed_pages": (107,),
+        "pdf_pages": (13,),
+        "footnote": 18,
     },
     {
-        "title": "Francis I. Andersen & David Noel Freedman (1980)",
+        "header": "Francis I. Andersen & David Noel Freedman (1980)",
+        "author": "Francis I. Andersen & David Noel Freedman",
+        "title": "*Hosea* (Anchor Bible, Vol. 24)",
         "container": "Doubleday",
-        "locator": "Printed p. 107 [PDF p. 13], fn. 18",
+        "printed_pages": (107,),
+        "pdf_pages": (13,),
+        "footnote": 18,
     },
     {
-        "title": "Hans Walter Wolff (1974)",
+        "header": "Hans Walter Wolff (1974)",
+        "author": "Hans Walter Wolff",
+        "title": "*Hosea* (Hermeneia Commentary, trans. Gary Stensell)",
         "container": "Fortress Press",
-        "locator": "Printed p. 107 [PDF p. 13], fn. 18",
+        "printed_pages": (107,),
+        "pdf_pages": (13,),
+        "footnote": 18,
     },
     {
-        "title": "Andrew G. Shead (2000)",
+        "header": "Andrew G. Shead (2000)",
+        "author": "Andrew G. Shead",
+        "title": '*"The Covenant and Pauline Hermeneutics"*, in Peter Bolt & Mark Thompson (eds.), *The Gospel to the Nations: Perspectives on Paul’s Mission*',
         "container": "InterVarsity Press",
-        "locator": "Printed pp. 108–109 [PDF pp. 14–15], fn. 21",
+        "printed_pages": (108, 109),
+        "pdf_pages": (14, 15),
+        "footnote": 21,
     },
     {
-        "title": "George Eldon Ladd (1977)",
+        "header": "George Eldon Ladd (1977)",
+        "author": "George Eldon Ladd",
+        "title": '*"Historic Premillennialism"*, in Robert G. Clouse (ed.), *The Meaning of the Millennium: Four Views*',
         "container": "InterVarsity Press",
-        "locator": "Printed p. 109 [PDF p. 15], fn. 22",
+        "printed_pages": (109,),
+        "pdf_pages": (15,),
+        "footnote": 22,
     },
 ]
 
@@ -325,6 +430,55 @@ def normalize_text_for_match(s: str) -> str:
     cleaned = cleaned.replace("’", "'").replace("‘", "'").replace("“", '"').replace("”", '"')
     cleaned = cleaned.replace("–", "-").replace("—", "-").replace("…", "...").strip()
     return " ".join(cleaned.split()).lower()
+
+
+def parse_source_locator(loc_str: str) -> dict:
+    """Parse a strict source locator string into its component parts.
+
+    Matches single-page or range locators:
+      Printed p. 98 [PDF p. 4]
+      Printed p. 99 [PDF p. 5, fn. 4]
+      Printed pp. 97–98 [PDF pp. 3–4]
+      Printed p. 98 [PDF p. 4], fn. 2
+      Printed p. 98 [PDF p. 4], fn. 2; Section 2
+      Printed pp. 101–102 [PDF pp. 7–8], fn. 8; Section 4
+    Fails closed on missing or unparseable delimiters.
+    """
+    loc = loc_str.strip()
+
+    # 1. Printed page(s)
+    m_prn = re.search(r"\bPrinted\s+pp?\.\s*(\d+)(?:[–-](\d+))?\b", loc)
+    if not m_prn:
+        raise ValueError(f"Cannot parse printed page in locator: '{loc_str}'")
+    if m_prn.group(2):
+        prn_pages = (int(m_prn.group(1)), int(m_prn.group(2)))
+    else:
+        prn_pages = (int(m_prn.group(1)),)
+
+    # 2. PDF page(s) - must be enclosed in [PDF ...] with matching brackets
+    m_pdf = re.search(r"\[PDF\s+pp?\.\s*(\d+)(?:[–-](\d+))?(?:,\s*fn\.\s*(\d+))?\]", loc)
+    if not m_pdf:
+        raise ValueError(f"Cannot parse PDF page in locator (missing or malformed bracketed [PDF p. X]): '{loc_str}'")
+    if m_pdf.group(2):
+        pdf_pages = (int(m_pdf.group(1)), int(m_pdf.group(2)))
+    else:
+        pdf_pages = (int(m_pdf.group(1)),)
+
+    # 3. Footnote (optional) - exact delimited integer from bracket or outside
+    fn = None
+    if m_pdf.group(3):
+        fn = int(m_pdf.group(3))
+    else:
+        m_fn = re.search(r"\bfn\.\s*(\d+)\b", loc)
+        if m_fn:
+            fn = int(m_fn.group(1))
+
+    return {
+        "raw": loc,
+        "printed_pages": prn_pages,
+        "pdf_pages": pdf_pages,
+        "footnote": fn,
+    }
 
 
 def extract_page_texts(pdf_path: Path) -> list[str]:
@@ -453,45 +607,59 @@ def verify_ledger_witnesses(rows: list[dict], page_texts: list[str]) -> list[dic
         if b_id != expected_b001:
             raise ValueError(f"{eid}: b001_id mismatch: expected '{expected_b001}', got '{b_id}'")
 
-        if "-" in printed_str or "–" in printed_str:
-            parts = re.split(r"[–-]", printed_str)
-            p_start, p_end = int(parts[0]), int(parts[1])
-            pdf_start = p_start - 94
-            pdf_end = p_end - 94
-            if pdf_start < 1 or pdf_end > EXPECTED_PAGE_COUNT or pdf_start > pdf_end:
-                raise ValueError(f"{eid}: invalid printed page range {printed_str}")
-            page_slice = page_texts[pdf_start - 1 : pdf_end]
-            combined_txt = " ".join(page_slice)
-            norm_target_text = normalize_text_for_match(combined_txt)
-            display_printed = f"{p_start}–{p_end}"
-            display_pdf = f"{pdf_start}–{pdf_end}"
-            expected_locator_part = f"Printed pp. {p_start}–{p_end} [PDF pp. {pdf_start}–{pdf_end}"
-        else:
-            printed_page = int(printed_str)
-            expected_pdf_page = printed_page - 94
-            if expected_pdf_page < 1 or expected_pdf_page > EXPECTED_PAGE_COUNT:
-                raise ValueError(f"{eid}: invalid printed page {printed_page}")
-            txt = page_texts[expected_pdf_page - 1]
-            norm_target_text = normalize_text_for_match(txt)
-            display_printed = str(printed_page)
-            display_pdf = str(expected_pdf_page)
-            expected_locator_part = f"Printed p. {printed_page} [PDF p. {expected_pdf_page}"
-
-        # Enforce source_locator integrity
-        if expected_locator_part not in r["source_locator"].replace("-", "–"):
-            raise ValueError(
-                f"{eid}: source_locator '{r['source_locator']}' does not contain expected '{expected_locator_part}'"
-            )
-
         auth_spec = AUTHORITATIVE_EVIDENCE_LOCI.get(eid)
         if not auth_spec:
             raise ValueError(f"Missing authoritative locus specification for {eid}")
-        if len(auth_spec) == 2:
-            if (int(printed_str), int(display_pdf)) != auth_spec:
-                raise ValueError(f"{eid}: locus mismatch: expected {auth_spec}, got ({printed_str}, {display_pdf})")
-        elif len(auth_spec) == 4:
-            if (p_start, p_end, pdf_start, pdf_end) != auth_spec:
-                raise ValueError(f"{eid}: range locus mismatch: expected {auth_spec}, got ({p_start}, {p_end}, {pdf_start}, {pdf_end})")
+
+        # Parse and verify source_locator strictly
+        parsed_loc = parse_source_locator(r["source_locator"])
+
+        # Parse declared printed_page column
+        if "-" in printed_str or "–" in printed_str:
+            parts = re.split(r"[–-]", printed_str)
+            exp_prn = (int(parts[0]), int(parts[1]))
+            exp_pdf = (int(parts[0]) - 94, int(parts[1]) - 94)
+            if exp_pdf[0] < 1 or exp_pdf[1] > EXPECTED_PAGE_COUNT or exp_pdf[0] > exp_pdf[1]:
+                raise ValueError(f"{eid}: invalid printed page range {printed_str}")
+            page_slice = page_texts[exp_pdf[0] - 1 : exp_pdf[1]]
+            combined_txt = " ".join(page_slice)
+            norm_target_text = normalize_text_for_match(combined_txt)
+            display_printed = f"{parts[0]}–{parts[1]}"
+            display_pdf = f"{exp_pdf[0]}–{exp_pdf[1]}"
+        else:
+            prn_val = int(printed_str)
+            exp_prn = (prn_val,)
+            exp_pdf = (prn_val - 94,)
+            if exp_pdf[0] < 1 or exp_pdf[0] > EXPECTED_PAGE_COUNT:
+                raise ValueError(f"{eid}: invalid printed page {prn_val}")
+            txt = page_texts[exp_pdf[0] - 1]
+            norm_target_text = normalize_text_for_match(txt)
+            display_printed = str(prn_val)
+            display_pdf = str(exp_pdf[0])
+
+        # Enforce parsed locator values match declared printed_page and derivation
+        if parsed_loc["printed_pages"] != exp_prn:
+            raise ValueError(
+                f"{eid}: source_locator printed pages {parsed_loc['printed_pages']} != declared printed_page '{printed_str}'"
+            )
+        if parsed_loc["pdf_pages"] != exp_pdf:
+            raise ValueError(
+                f"{eid}: source_locator PDF pages {parsed_loc['pdf_pages']} != expected {exp_pdf} (printed - 94)"
+            )
+
+        # Enforce parsed locator matches authoritative specification exactly
+        if parsed_loc["printed_pages"] != auth_spec["printed"]:
+            raise ValueError(
+                f"{eid}: authoritative printed mismatch: expected {auth_spec['printed']}, got {parsed_loc['printed_pages']}"
+            )
+        if parsed_loc["pdf_pages"] != auth_spec["pdf"]:
+            raise ValueError(
+                f"{eid}: authoritative PDF mismatch: expected {auth_spec['pdf']}, got {parsed_loc['pdf_pages']}"
+            )
+        if parsed_loc["footnote"] != auth_spec["fn"]:
+            raise ValueError(
+                f"{eid}: authoritative footnote mismatch: expected {auth_spec['fn']}, got {parsed_loc['footnote']}"
+            )
 
         quote = r["short_quote"].strip()
         norm_quote = normalize_text_for_match(quote)
@@ -741,10 +909,15 @@ def verify_cross_artifact_consistency(source_dir: Path, ledger_rows: list[dict] 
 
     Enforces:
     1. metadata.md bibliographic citation details.
-    2. extraction.md section/evidence-ID bound locator, quote, and B001 ID binding.
+    2. extraction.md section/evidence-ID bound locator, quote, and B001 ID binding:
+       - field-bound exact quotation verification.
+       - strict parsed locator matching against authoritative loci and ledger.
     3. tanner_hosea_new_covenant_synthesis.md subsection-bound page reference assertions.
     4. relevance_scan.md table discussion categories and range locators.
-    5. bibliography_leads.md structured witness authentication (exact containers, footnotes, and pages).
+    5. bibliography_leads.md structured witness authentication:
+       - authoritative author and title metadata fields.
+       - exact publication year container.
+       - exact delimited footnote number and canonical page numbers (prefix-safe).
     """
     if ledger_rows is None:
         ledger_rows = load_evidence_ledger(source_dir / "citation_ledger.csv")
@@ -757,7 +930,7 @@ def verify_cross_artifact_consistency(source_dir: Path, ledger_rows: list[dict] 
         if norm_p not in normalize_text_for_match(meta_text):
             raise ValueError(f"metadata.md: Missing required phrase '{phrase}'")
 
-    # 2. Section/evidence-ID-bound verification of extraction.md
+    # 2. Section/evidence-ID-bound and field-bound verification of extraction.md
     ext_text = (source_dir / "extraction.md").read_text(encoding="utf-8")
     ext_blocks = re.split(r"(?=####\s+S08F-E\d{3})", ext_text)
     ext_block_map: dict[str, str] = {}
@@ -774,6 +947,7 @@ def verify_cross_artifact_consistency(source_dir: Path, ledger_rows: list[dict] 
             raise ValueError(f"extraction.md: Missing discrete section block for evidence ID {eid}")
         blk = ext_block_map[eid]
         row = ledger_map[eid]
+        auth_spec = AUTHORITATIVE_EVIDENCE_LOCI[eid]
 
         # Enforce exactly one Proposed Evidence ID matching block ID
         m_prop = re.findall(r"-\s+\*\*Proposed Evidence ID:\*\*\s*`([^`]+)`", blk)
@@ -791,24 +965,49 @@ def verify_cross_artifact_consistency(source_dir: Path, ledger_rows: list[dict] 
         if len(loc_lines) != 1:
             raise ValueError(f"extraction.md [{eid}]: Expected exactly one Source Locator, found {len(loc_lines)}")
         act_loc = loc_lines[0].strip()
-        expected_spec = AUTHORITATIVE_EVIDENCE_LOCI[eid]
-        p, pdf = expected_spec
-        expected_part = f"Printed p. {p} [PDF p. {pdf}"
-        if expected_part not in act_loc.replace("-", "–"):
-            raise ValueError(f"extraction.md [{eid}]: Source Locator '{act_loc}' does not match expected '{expected_part}'")
-        if normalize_text_for_match(act_loc) != normalize_text_for_match(row["source_locator"]):
-            raise ValueError(f"extraction.md [{eid}]: Source Locator '{act_loc}' does not match ledger '{row['source_locator']}'")
+        parsed_ext_loc = parse_source_locator(act_loc)
+        parsed_ledger_loc = parse_source_locator(row["source_locator"])
+
+        if parsed_ext_loc["printed_pages"] != auth_spec["printed"]:
+            raise ValueError(
+                f"extraction.md [{eid}]: Printed page mismatch: expected {auth_spec['printed']}, got {parsed_ext_loc['printed_pages']}"
+            )
+        if parsed_ext_loc["pdf_pages"] != auth_spec["pdf"]:
+            raise ValueError(
+                f"extraction.md [{eid}]: PDF page mismatch: expected {auth_spec['pdf']}, got {parsed_ext_loc['pdf_pages']}"
+            )
+        if parsed_ext_loc["footnote"] != auth_spec["fn"]:
+            raise ValueError(
+                f"extraction.md [{eid}]: Footnote mismatch: expected {auth_spec['fn']}, got {parsed_ext_loc['footnote']}"
+            )
+
+        if (
+            parsed_ext_loc["printed_pages"] != parsed_ledger_loc["printed_pages"] or
+            parsed_ext_loc["pdf_pages"] != parsed_ledger_loc["pdf_pages"] or
+            parsed_ext_loc["footnote"] != parsed_ledger_loc["footnote"]
+        ):
+            raise ValueError(
+                f"extraction.md [{eid}]: Parsed locator does not match ledger:\n  Ext: {parsed_ext_loc}\n  Ledger: {parsed_ledger_loc}"
+            )
 
         # Enforce Printed Page Number matching ledger
         m_page = re.findall(r"-\s+\*\*Printed Page Number:\*\*\s*(\d+)", blk)
         if len(m_page) != 1 or int(m_page[0]) != int(row["printed_page"]):
             raise ValueError(f"extraction.md [{eid}]: Printed page mismatch: expected {row['printed_page']}, got {m_page}")
 
-        # Enforce Short Exact Quotation matching ledger
-        norm_row_quote = normalize_text_for_match(row["short_quote"])
-        norm_blk = normalize_text_for_match(blk)
-        if norm_row_quote not in norm_blk:
-            raise ValueError(f"extraction.md [{eid}]: Short quote from ledger not found in section block")
+        # Enforce Short Exact Quotation strictly field-bound matching ledger
+        quote_lines = re.findall(r"-\s+\*\*Short Exact Quotation:\*\*\s*([^\n]+)", blk)
+        if len(quote_lines) != 1:
+            raise ValueError(f"extraction.md [{eid}]: Expected exactly one Short Exact Quotation line, found {len(quote_lines)}")
+        raw_field_quote = quote_lines[0].strip()
+        clean_field_quote = raw_field_quote.strip(' "')
+        clean_row_quote = row["short_quote"].strip(' "')
+        norm_row_quote = normalize_text_for_match(clean_row_quote)
+        norm_field_quote = normalize_text_for_match(clean_field_quote)
+        if norm_row_quote != norm_field_quote:
+            raise ValueError(
+                f"extraction.md [{eid}]: Short Exact Quotation field mismatch:\n  Ledger: '{norm_row_quote}'\n  Ext field: '{norm_field_quote}'"
+            )
 
     # 3. Subsection-bound verification of tanner_hosea_new_covenant_synthesis.md
     synth_text = (source_dir / "tanner_hosea_new_covenant_synthesis.md").read_text(encoding="utf-8")
@@ -875,30 +1074,71 @@ def verify_cross_artifact_consistency(source_dir: Path, ledger_rows: list[dict] 
             bib_block_map[normalize_text_for_match(entry_title)] = blk
 
     for lead in EXPECTED_BIBLIOGRAPHY_LEADS:
-        lead_title = lead["title"]
-        norm_lead_title = normalize_text_for_match(lead_title)
-        if norm_lead_title not in bib_block_map:
-            raise ValueError(f"bibliography_leads.md: Missing structured bibliographic lead '{lead_title}'")
-        blk = bib_block_map[norm_lead_title]
+        lead_header = lead["header"]
+        norm_lead_header = normalize_text_for_match(lead_header)
+        if norm_lead_header not in bib_block_map:
+            raise ValueError(f"bibliography_leads.md: Missing structured bibliographic lead '{lead_header}'")
+        blk = bib_block_map[norm_lead_header]
 
-        # Enforce expected container
-        exp_container = lead["container"]
-        if normalize_text_for_match(exp_container) not in normalize_text_for_match(blk):
+        # 1. Enforce Author line
+        auth_lines = re.findall(r"-\s+\*\*Authors?:\*\*\s*([^\n]+)", blk)
+        if len(auth_lines) != 1:
             raise ValueError(
-                f"bibliography_leads.md [{lead_title}]: Container mismatch: expected '{exp_container}' in lead block"
+                f"bibliography_leads.md [{lead_header}]: Expected exactly one Author line, found {len(auth_lines)}"
+            )
+        act_auth = auth_lines[0].strip()
+        exp_auth = lead["author"]
+        if normalize_text_for_match(exp_auth) != normalize_text_for_match(act_auth):
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Author mismatch: expected '{exp_auth}', got '{act_auth}'"
             )
 
-        # Enforce exactly one Source Locator line matching expected locator
-        exp_locator = lead["locator"]
+        # 2. Enforce Title line
+        title_lines = re.findall(r"-\s+\*\*Title:\*\*\s*([^\n]+)", blk)
+        if len(title_lines) != 1:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Expected exactly one Title line, found {len(title_lines)}"
+            )
+        act_title = title_lines[0].strip()
+        exp_title = lead["title"]
+        if normalize_text_for_match(exp_title) != normalize_text_for_match(act_title):
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Title mismatch: expected '{exp_title}', got '{act_title}'"
+            )
+
+        # 3. Enforce Publication Year and Container
+        pub_lines = re.findall(r"-\s+\*\*Publication Year:\*\*\s*([^\n]+)", blk)
+        if len(pub_lines) != 1:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Expected exactly one Publication Year line, found {len(pub_lines)}"
+            )
+        act_pub = pub_lines[0].strip()
+        exp_container = lead["container"]
+        if normalize_text_for_match(exp_container) not in normalize_text_for_match(act_pub):
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Container mismatch: expected '{exp_container}' in Publication Year line '{act_pub}'"
+            )
+
+        # 4. Enforce exact parsed Source Locator (printed pages, PDF pages, footnote)
         loc_lines = re.findall(r"-\s+\*\*Source Locator:\*\*\s*([^\n]+)", blk)
         if len(loc_lines) != 1:
             raise ValueError(
-                f"bibliography_leads.md [{lead_title}]: Expected exactly one Source Locator, found {len(loc_lines)}"
+                f"bibliography_leads.md [{lead_header}]: Expected exactly one Source Locator, found {len(loc_lines)}"
             )
         act_loc = loc_lines[0].strip()
-        if normalize_text_for_match(exp_locator) not in normalize_text_for_match(act_loc):
+        parsed_bib_loc = parse_source_locator(act_loc)
+
+        if parsed_bib_loc["printed_pages"] != lead["printed_pages"]:
             raise ValueError(
-                f"bibliography_leads.md [{lead_title}]: Source locator mismatch: expected '{exp_locator}', got '{act_loc}'"
+                f"bibliography_leads.md [{lead_header}]: Printed page mismatch: expected {lead['printed_pages']}, got {parsed_bib_loc['printed_pages']}"
+            )
+        if parsed_bib_loc["pdf_pages"] != lead["pdf_pages"]:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: PDF page mismatch: expected {lead['pdf_pages']}, got {parsed_bib_loc['pdf_pages']}"
+            )
+        if parsed_bib_loc["footnote"] != lead["footnote"]:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Footnote mismatch: expected {lead['footnote']}, got {parsed_bib_loc['footnote']}"
             )
 
 
@@ -961,7 +1201,7 @@ def main():
     # 8. Generate markdown report
     generated_md = generate_markdown_report(pc_results, sections, witnesses, pdf_path, text_sha256)
 
-    # 9. Cross-artifact natural format locator consistency, section-bound extraction, and structured bibliographic authentication
+    # 9. Cross-artifact natural format locator consistency, section/field-bound extraction, and structured bibliographic authentication
     verify_cross_artifact_consistency(args.source_dir, ledger_rows)
 
     out_path = args.out_path
@@ -987,7 +1227,7 @@ def main():
     print(f"Verified {len(pc_results)} positive controls.")
     print(f"Verified {len(witnesses)} evidence ledger rows.")
     print(f"Verified 12 B001 search targets across {EXPECTED_PAGE_COUNT} pages.")
-    print(f"Verified cross-artifact section-bound consistency, subsection-bound synthesis, and structured bibliographic witnesses across all deliverables.")
+    print(f"Verified cross-artifact section/field-bound consistency, subsection-bound synthesis, and structured bibliographic witnesses across all deliverables.")
 
 
 if __name__ == "__main__":

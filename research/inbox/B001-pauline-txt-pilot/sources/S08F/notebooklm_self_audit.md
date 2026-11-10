@@ -69,35 +69,41 @@ Source-bounded extraction self-audit for J. Paul Tanner, *The New Covenant and P
 
 ## 3. Round 1 Review Findings Remediation Audit
 
-All four findings from ChatGPT Round 1 review ([#issuecomment-6733387261](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6733387261)) have been fully remediated:
+All four findings from ChatGPT Round 1 review ([#issuecomment-6733387261](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6733387261)) were remediated:
 
-1. **S08F-R1-F1 (Bibliographic Containers & Footnote Locators):**
-   - Corrected Richard Daniels (1999) container to *Faith and Mission* 16 (1999): 64–98 (p. 104, fn. 13), removing erroneous JETS attribution.
-   - Corrected Alva J. McClain and John A. Battle, Jr. locators to p. 98, fn. 2.
-   - Corrected Hans Walter Wolff locator to p. 107, fn. 18.
-   - Reintroduced Gary W. Light (1993, *Review and Expositor* 90:219–238, specifically p. 229) at p. 106, fn. 17.
-   - Corrected George Eldon Ladd to p. 109, fn. 22.
-   - Fully verified all 26 bibliographic leads across `bibliography_leads.md` and `counterevidence.md`.
-
-2. **S08F-R1-F2 (Cross-Artifact Verifier Hardening & Adversarial Tests):**
-   - Upgraded `scripts/verify_s08f_negative_search.py` with section/evidence-ID bound extraction verification (requiring exact discrete blocks, exactly one source locator per block, and strict quote and B001 ID matching).
-   - Upgraded synthesis verification to be subsection-bound (verifying page ranges within each discrete `###` block).
-   - Added structured bibliographic witness authentication checking containers and exact footnote numbers for all 26 entries.
-   - Added comprehensive fail-closed adversarial mutation tests in `tests/test_citation_ledger_crosswalk.py`.
-
-3. **S08F-R1-F3 (Reconciled Target Loci Drift):**
-   - Reconciled `citation_ledger.csv` rows `S08F-E004`, `S08F-E005`, `S08F-E006`, and `S08F-E007` to `b001_id = "B001-2, B001-3"`, matching `extraction.md`.
-   - Updated `scripts/verify_s08f_negative_search.py` and regenerated `full_volume_search_log.md` so E004–E007 appear under both `B001-2` and `B001-3`.
-
-4. **S08F-R1-F4 (Methodological Scoping & Premise Demarcation):**
-   - Updated `argument_map.md` to explicitly demarcate Tanner's confessional/theological premises (such as apostolic realization via Acts 10–11 and Ephesians 3 mystery revelation) from independently verifiable historical evidence.
+1. **S08F-R1-F1 (Bibliographic Containers & Footnote Locators):** Corrected Richard Daniels container to *Faith and Mission* 16 (1999): 64–98 on p. 104, fn. 13; McClain & Battle to p. 98, fn. 2; Wolff to p. 107, fn. 18; Light to p. 106, fn. 17; Ladd to p. 109, fn. 22; full 26-lead inventory audited.
+2. **S08F-R1-F2 (Cross-Artifact Verifier Hardening & Adversarial Tests):** Bound extraction to discrete evidence blocks, bound synthesis to subsections, and authenticated structured bibliography witnesses.
+3. **S08F-R1-F3 (Reconciled Target Loci Drift):** Reconciled `citation_ledger.csv` rows `S08F-E004` through `E007` to `b001_id = "B001-2, B001-3"`, matching `extraction.md`.
+4. **S08F-R1-F4 (Methodological Scoping & Premise Demarcation):** Demarcated Tanner's confessional/theological premises (Acts 10–11, Eph 3) in `argument_map.md`.
 
 ---
 
-## 4. Review Readiness & Submission
+## 4. Round 2 Review Findings Remediation Audit
+
+All three findings from ChatGPT Round 2 review ([#issuecomment-6759235942](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6759235942)) have been fully remediated:
+
+1. **S08F-R2-F1 (Bibliographic Footnote Prefix Collision & Author/Title Authentication):**
+   - Implemented `parse_source_locator` in `scripts/verify_s08f_negative_search.py` to extract exact numeric printed page(s), PDF page(s), and exact delimited footnote integers (e.g., `\bfn\.\s*(\d+)\b`).
+   - Replaced substring matching with exact integer comparisons, eliminating prefix collisions such as `fn. 2 -> fn. 20`.
+   - Added authoritative per-lead `author` and `title` metadata fields to `EXPECTED_BIBLIOGRAPHY_LEADS` for all 26 leads, enforcing that each lead block in `bibliography_leads.md` contains exactly one matching `Author` line and exactly one matching `Title` line.
+   - Added fail-closed adversarial mutation tests in `tests/test_citation_ledger_crosswalk.py` for `fn. 2 -> fn. 20`, invented work title (`*Unrelated Work*`), and invented author (`Another Scholar`).
+
+2. **S08F-R2-F2 (Strict Bracket Delimiters & Coordinated False PDF Pages):**
+   - Enforced strict bracketed delimiters `[PDF p. X]` and exact parsed numeric comparisons in both `verify_ledger_witnesses()` and `verify_cross_artifact_consistency()`, eliminating open-ended prefix matching `[PDF p. 4`.
+   - Parsed and compared exact numeric printed and PDF pages between ledger rows, extraction blocks, and authoritative specifications.
+   - Added fail-closed adversarial mutation tests for a coordinated false PDF page (`PDF p. 4 -> PDF p. 40` in both ledger and extraction) and malformed/missing locator delimiters.
+
+3. **S08F-R2-F3 (Field-Bound Quotation Verification):**
+   - Isolated the named `- **Short Exact Quotation:**` line in each evidence block rather than searching the entire block, preventing altered quotations from being masked by notes copies.
+   - Normalized and compared only the extracted field quote against the ledger quote.
+   - Added a fail-closed adversarial mutation test for a corrupted quotation field with the original quote pasted into Notes.
+
+---
+
+## 5. Review Readiness & Submission
 
 - **Active Source:** `S08F`
 - **Source Deliverable Directory:** `research/inbox/B001-pauline-txt-pilot/sources/S08F/`
-- **Status:** `REMEDIATED / READY_FOR_ROUND_2_REVIEW`
+- **Status:** `REMEDIATED / READY_FOR_ROUND_3_REVIEW`
 - **Review Target:** `LIVE_PR_HEAD`
 - **Review Loop:** Independent exact-SHA evaluation by ChatGPT on Draft PR #2.
