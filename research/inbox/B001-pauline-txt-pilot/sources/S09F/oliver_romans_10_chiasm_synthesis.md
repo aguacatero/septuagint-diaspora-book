@@ -26,7 +26,7 @@ Verses 9–10 form an interlocking double chiasm where the outer A-B-C-B′-A′
 - **A′** (2: with mouth, 1: confesses) *eis sōtērian*
 
 ### Prophetic Universal Climax (Verses 11–13)
-Paul concludes the sub-pericope with two prophetic citations—Isaiah 28:16 (LXX) in verse 11 (*pas ho pisteuōn ep' autō ou kataischynthēsetai*) and Joel 2:32 (LXX 3:5) in verse 13 (*pas gar hos an epikalesētai to onoma kyriou sōthēsetai*)—to assert that salvation is universally accessible without distinction between Jew and Greek (v. 12):
+Paul concludes the sub-pericope with two prophetic citations—Isaiah 28:16 (LXX) in verse 11 (*pas ho pisteuōn ep' autō ou kataischynthēsetai*) and the core promise of Joel 2:32 (LXX 3:5a) in verse 13 (*pas gar hos an epikalesētai to onoma kyriou sōthēsetai*, adapting LXX *kai estai pas hos an ...* with postpositive *gar*)—to assert that salvation is universally accessible without distinction between Jew and Greek (v. 12):
 > "Paul asserts the universality of God’s salvation, with words or phrases such as πᾶς (vv. 11 & 13) and κύριος πάντων (v. 12)" (Printed p. 7 [PDF p. 7])
 
 ---

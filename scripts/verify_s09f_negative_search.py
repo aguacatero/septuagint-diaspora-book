@@ -536,6 +536,52 @@ def parse_source_locator(loc_str: str) -> dict:
     }
 
 
+def parse_bib_locator(loc_str: str) -> dict:
+    """Strict parser for bibliographic locators supporting single page, page with fn, or multiple discrete pages.
+
+    Enforces monotonic invariant (printed = PDF, offset = 0) and rejects trailing fragments or malformed brackets.
+    """
+    loc = loc_str.strip()
+    if not loc.startswith("Printed "):
+        raise ValueError(f"Bibliographic locator must start with 'Printed ': '{loc_str}'")
+
+    # Check for footnote
+    fn_matches = re.findall(r"\bfn\.\s*(\d+)\b", loc)
+    if len(fn_matches) > 1:
+        raise ValueError(f"Conflicting duplicate footnote references in locator: '{loc_str}'")
+    fn = int(fn_matches[0]) if fn_matches else None
+
+    # Strip footnote portion for page parsing
+    loc_pages = re.sub(r",\s*fn\.\s*\d+\b", "", loc).strip()
+
+    # Split into page segments
+    segments = [s.strip() for s in loc_pages.split(",")]
+    prn_list = []
+    pdf_list = []
+
+    for i, seg in enumerate(segments):
+        if seg.count("[") != 1 or seg.count("]") != 1:
+            raise ValueError(f"Expected exactly one [PDF ...] pair in segment '{seg}' of '{loc_str}'")
+        if i == 0:
+            m = re.match(r"^Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]$", seg)
+        else:
+            m = re.match(r"^p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]$", seg)
+        if not m:
+            raise ValueError(f"Malformed bibliographic page locator segment '{seg}' in '{loc_str}'")
+        prn = int(m.group(1))
+        pdf = int(m.group(2))
+        if prn != pdf:
+            raise ValueError(f"Monotonic pagination mismatch: printed {prn} != PDF {pdf} in '{loc_str}'")
+        prn_list.append(prn)
+        pdf_list.append(pdf)
+
+    return {
+        "printed_pages": tuple(prn_list),
+        "pdf_pages": tuple(pdf_list),
+        "footnote": fn,
+    }
+
+
 def extract_page_texts(pdf_path: Path) -> list[str]:
     page_texts = []
     for p in range(1, EXPECTED_PAGE_COUNT + 1):
@@ -760,7 +806,7 @@ def execute_full_volume_search(page_texts: list[str], witnesses: list[dict]) -> 
             "comparison": "Romans 10:13 / Joel 2:32 (LXX 3:5)",
             "patterns": [r"\b10:13\b", r"\bJoel\s*2:32\b", r"\bJoel\s*3:5\b", r"\bJl\s*2:32\b"],
             "category": "SUBSTANTIVE_DISCUSSION",
-            "judgment": "Substantive discussion across pp. 4, 5, 7, 8, 10, 11. Oliver analyzes the verbatim quotation of Joel 2:32, oral invocation resulting in salvation, and its link to apostolic preaching in verses 14–15.",
+            "judgment": "Substantive discussion across pp. 4, 5, 7, 8, 10, 11. Oliver analyzes the quotation of Joel 2:32 (LXX 3:5), oral invocation resulting in salvation, and its link to apostolic preaching in verses 14–15.",
         },
         {
             "id": "B001-6",
@@ -843,38 +889,99 @@ def execute_full_volume_search(page_texts: list[str], witnesses: list[dict]) -> 
     return results
 
 
-def verify_cross_artifact_consistency(source_dir: Path) -> None:
+def verify_cross_artifact_consistency(source_dir: Path, ledger_rows: list[dict] | None = None) -> None:
     """Verifies that extraction.md, relevance_scan.md, synthesis, bibliography_leads.md, and manifest match."""
-    # 1. extraction.md checks
+    if ledger_rows is None:
+        ledger_rows = load_evidence_ledger(source_dir / "citation_ledger.csv")
+    ledger_map = {r["evidence_id"]: r for r in ledger_rows}
+
+    # 1. extraction.md checks (Section/evidence-ID-bound and field-bound)
     extr_path = source_dir / "extraction.md"
     if not extr_path.is_file():
         raise FileNotFoundError(f"Missing extraction.md in {source_dir}")
     extr_txt = extr_path.read_text(encoding="utf-8")
 
-    # Verify per-record section boundary and field-bound quotation
+    ext_blocks = re.split(r"(?=###\s+S09F-E\d{3})", extr_txt)
+    ext_block_map: dict[str, str] = {}
+    for blk in ext_blocks:
+        m = re.search(r"###\s+(S09F-E\d{3})", blk)
+        if m:
+            eid = m.group(1)
+            if eid in ext_block_map:
+                raise ValueError(f"extraction.md: Duplicate section block for {eid}")
+            ext_block_map[eid] = blk
+
     for eid in EXPECTED_EVIDENCE_IDS:
-        sec_header = f"### {eid}"
-        if sec_header not in extr_txt:
-            raise ValueError(f"extraction.md missing expected record header '{sec_header}'")
-
+        if eid not in ext_block_map:
+            raise ValueError(f"extraction.md: Missing discrete section block for evidence ID {eid}")
+        blk = ext_block_map[eid]
+        row = ledger_map[eid]
         auth_spec = AUTHORITATIVE_EVIDENCE_LOCI[eid]
-        expected_loc = auth_spec["locator"]
 
-        # Parse section block strictly up to next heading or end
-        sec_start = extr_txt.find(sec_header)
-        next_sec = extr_txt.find("\n### ", sec_start + len(sec_header))
-        sec_block = extr_txt[sec_start:next_sec] if next_sec != -1 else extr_txt[sec_start:]
+        # Enforce exactly one Proposed Evidence ID matching block ID
+        m_prop = re.findall(r"-\s+\*\*Proposed Evidence ID:\*\*\s*`?([^\n`]+)`?", blk)
+        if len(m_prop) != 1 or m_prop[0].strip() != eid:
+            raise ValueError(f"extraction.md [{eid}]: Expected exactly one Proposed Evidence ID `{eid}`, got {m_prop}")
 
-        # Check locator presence
-        if expected_loc not in sec_block:
+        # Enforce B001 Passage ID matching ledger and expected map
+        raw_b001 = re.findall(r"-\s+\*\*B001 Passage ID:\*\*\s*([^\n(]+)", blk)
+        m_b001 = [x.strip("` ").strip() for x in raw_b001]
+        if len(m_b001) != 1 or m_b001[0] != row["b001_id"].strip():
+            raise ValueError(f"extraction.md [{eid}]: B001 ID mismatch: expected '{row['b001_id']}', got {m_b001}")
+        if m_b001[0] != EXPECTED_EVIDENCE_B001_MAP[eid]:
+            raise ValueError(f"extraction.md [{eid}]: B001 ID mismatch: expected '{EXPECTED_EVIDENCE_B001_MAP[eid]}', got '{m_b001[0]}'")
+
+        # Enforce exactly one Source Locator line matching authoritative locator and ledger
+        loc_lines = re.findall(r"-\s+\*\*Source Locator:\*\*\s*([^\n]+)", blk)
+        if len(loc_lines) != 1:
+            raise ValueError(f"extraction.md [{eid}]: Expected exactly one Source Locator line, found {len(loc_lines)}")
+        act_loc = loc_lines[0].strip()
+        parsed_ext_loc = parse_source_locator(act_loc)
+        parsed_ledger_loc = parse_source_locator(row["source_locator"])
+
+        if parsed_ext_loc["printed_pages"] != auth_spec["printed"]:
             raise ValueError(
-                f"extraction.md record {eid} missing expected locator '{expected_loc}' within its subsection block"
+                f"extraction.md [{eid}]: Printed page mismatch: expected {auth_spec['printed']}, got {parsed_ext_loc['printed_pages']}"
+            )
+        if parsed_ext_loc["pdf_pages"] != auth_spec["pdf"]:
+            raise ValueError(
+                f"extraction.md [{eid}]: PDF page mismatch: expected {auth_spec['pdf']}, got {parsed_ext_loc['pdf_pages']}"
+            )
+        if parsed_ext_loc["footnote"] != auth_spec["fn"]:
+            raise ValueError(
+                f"extraction.md [{eid}]: Footnote mismatch: expected {auth_spec['fn']}, got {parsed_ext_loc['footnote']}"
             )
 
-        # Check short exact quotation presence
-        m_q = re.search(r"-\s+\*\*Short Exact Quotation:\*\*\s+\"([^\"]+)\"", sec_block)
-        if not m_q:
-            raise ValueError(f"extraction.md record {eid} missing - **Short Exact Quotation:** field")
+        if (
+            parsed_ext_loc["printed_pages"] != parsed_ledger_loc["printed_pages"] or
+            parsed_ext_loc["pdf_pages"] != parsed_ledger_loc["pdf_pages"] or
+            parsed_ext_loc["footnote"] != parsed_ledger_loc["footnote"]
+        ):
+            raise ValueError(
+                f"extraction.md [{eid}]: Parsed locator does not match ledger:\n  Ext: {parsed_ext_loc}\n  Ledger: {parsed_ledger_loc}"
+            )
+
+        # Enforce exactly one Printed Page Number matching ledger
+        m_page = re.findall(r"-\s+\*\*Printed Page Number:\*\*\s*([^\n]+)", blk)
+        if len(m_page) != 1:
+            raise ValueError(f"extraction.md [{eid}]: Expected exactly one Printed Page Number line, found {len(m_page)}")
+        m_p_num = re.search(r"(\d+)", m_page[0])
+        if not m_p_num or int(m_p_num.group(1)) != int(row["printed_page"]):
+            raise ValueError(f"extraction.md [{eid}]: Printed page mismatch: expected {row['printed_page']}, got {m_page}")
+
+        # Enforce Short Exact Quotation strictly field-bound matching ledger
+        quote_lines = re.findall(r"-\s+\*\*Short Exact Quotation:\*\*\s*([^\n]+)", blk)
+        if len(quote_lines) != 1:
+            raise ValueError(f"extraction.md [{eid}]: Expected exactly one Short Exact Quotation line, found {len(quote_lines)}")
+        raw_field_quote = quote_lines[0].strip()
+        clean_field_quote = raw_field_quote.strip(' "')
+        clean_row_quote = row["short_quote"].strip(' "')
+        norm_row_quote = normalize_text_for_match(clean_row_quote)
+        norm_field_quote = normalize_text_for_match(clean_field_quote)
+        if norm_row_quote != norm_field_quote:
+            raise ValueError(
+                f"extraction.md [{eid}]: Short Exact Quotation field mismatch:\n  Ledger: '{norm_row_quote}'\n  Ext field: '{norm_field_quote}'"
+            )
 
     # 2. relevance_scan.md checks
     rel_path = source_dir / "relevance_scan.md"
@@ -886,7 +993,6 @@ def verify_cross_artifact_consistency(source_dir: Path) -> None:
         if b_id not in rel_txt:
             raise ValueError(f"relevance_scan.md missing entry for {b_id}")
         if exp_status == "NO":
-            # Must indicate NOT DISCUSSED
             pat = rf"\b{re.escape(b_id)}\b[^\n]*\bNO\b"
             if not re.search(pat, rel_txt):
                 raise ValueError(f"relevance_scan.md does not record NO for absent locus {b_id}")
@@ -908,68 +1014,126 @@ def verify_cross_artifact_consistency(source_dir: Path) -> None:
                 f"synthesis missing expected locus '{expected_loc}' within its subsection block '{subsec_title}'"
             )
 
-    # 4. bibliography_leads.md checks
+    # 4. bibliography_leads.md checks (Authoritative per-lead structured authentication)
     bib_path = source_dir / "bibliography_leads.md"
     if not bib_path.is_file():
         raise FileNotFoundError(f"Missing bibliography_leads.md in {source_dir}")
     bib_txt = bib_path.read_text(encoding="utf-8")
 
+    bib_blocks = re.split(r"(?=###\s+)", bib_txt)
+    bib_block_map: dict[str, str] = {}
+    for blk in bib_blocks:
+        m = re.match(r"###\s+([^\n]+)", blk)
+        if m:
+            entry_title = m.group(1).strip()
+            if entry_title in bib_block_map:
+                raise ValueError(f"bibliography_leads.md: Duplicate section block for '{entry_title}'")
+            bib_block_map[entry_title] = blk
+
     for lead in EXPECTED_BIBLIOGRAPHY_LEADS:
-        header = f"### {lead['header']}"
-        if header not in bib_txt:
-            raise ValueError(f"bibliography_leads.md missing expected header '{header}'")
-        h_idx = bib_txt.find(header)
-        next_h = bib_txt.find("\n### ", h_idx + len(header))
-        lead_block = bib_txt[h_idx:next_h] if next_h != -1 else bib_txt[h_idx:]
+        lead_header = lead["header"]
+        if lead_header not in bib_block_map:
+            raise ValueError(f"bibliography_leads.md missing expected header '{lead_header}'")
+        blk = bib_block_map[lead_header]
 
-        # Author verification
+        # 1. Enforce Header Year
+        m_hdr_year = re.search(r"\((\d{4})\)", lead_header)
+        if not m_hdr_year:
+            raise ValueError(f"bibliography_leads.md [{lead_header}]: Cannot parse 4-digit year in header")
+        hdr_year = int(m_hdr_year.group(1))
+        if hdr_year != lead["year"]:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Header year {hdr_year} does not match authoritative year {lead['year']}"
+            )
+
+        # 2. Enforce exactly one Author line
+        auth_lines = re.findall(r"-\s+\*\*Authors?:\*\*\s*([^\n]+)", blk)
+        if len(auth_lines) != 1:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Expected exactly one Author line, found {len(auth_lines)}"
+            )
+        act_auth = auth_lines[0].strip()
         exp_auth = lead["author"]
-        m_auth = re.search(r"-\s+\*\*Author:\*\*\s+([^\n]+)", lead_block)
-        if not m_auth or exp_auth.lower() not in m_auth.group(1).lower():
-            raise ValueError(f"{lead['header']}: Author mismatch: expected '{exp_auth}', got '{m_auth.group(1) if m_auth else None}'")
+        if normalize_text_for_match(exp_auth) != normalize_text_for_match(act_auth):
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Author mismatch: expected '{exp_auth}', got '{act_auth}'"
+            )
 
-        # Title verification
-        exp_title = (
-            lead["title"]
-            .replace("*", "")
-            .replace('"', "")
-            .replace("'", "")
-            .replace("“", "")
-            .replace("”", "")
-            .replace("’", "")
-            .replace("‘", "")
-            .replace("–", "-")
-            .replace("—", "-")
-            .strip()
-        )
-        lead_block_norm = (
-            lead_block
-            .replace("*", "")
-            .replace('"', "")
-            .replace("'", "")
-            .replace("“", "")
-            .replace("”", "")
-            .replace("’", "")
-            .replace("‘", "")
-            .replace("–", "-")
-            .replace("—", "-")
-        )
-        if exp_title.lower() not in lead_block_norm.lower():
-            raise ValueError(f"{lead['header']}: Title mismatch: expected to contain '{exp_title}'")
+        # 3. Enforce exactly one Title line
+        title_lines = re.findall(r"-\s+\*\*Title:\*\*\s*([^\n]+)", blk)
+        if len(title_lines) != 1:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Expected exactly one Title line, found {len(title_lines)}"
+            )
+        act_title = title_lines[0].strip()
+        exp_title = lead["title"]
+        if normalize_text_for_match(exp_title) != normalize_text_for_match(act_title):
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Title mismatch: expected '{exp_title}', got '{act_title}'"
+            )
 
-        # Container verification
-        exp_cont = lead["container"]
-        if exp_cont.lower() not in lead_block.lower():
-            raise ValueError(f"{lead['header']}: Primary container mismatch: expected '{exp_cont}'")
+        # 4. Enforce exactly one Publication Year line and primary container
+        pub_lines = re.findall(r"-\s+\*\*Publication Year:\*\*\s*([^\n]+)", blk)
+        if len(pub_lines) != 1:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Expected exactly one Publication Year line, found {len(pub_lines)}"
+            )
+        act_pub = pub_lines[0].strip()
+        m_pub = re.match(r"^(\d{4})\s*\((.*)\)$", act_pub)
+        if not m_pub:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Malformed Publication Year field: '{act_pub}'"
+            )
+        act_year = int(m_pub.group(1))
+        if act_year != lead["year"]:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Publication year mismatch: expected {lead['year']}, got {act_year}"
+            )
 
-        # Footnote verification
-        exp_fn = lead["footnote"]
-        if exp_fn is not None:
-            fn_matches = re.findall(r"\bfn\.\s*(\d+)\b", lead_block)
-            if not fn_matches:
-                raise ValueError(f"{lead['header']}: Footnote witness missing: expected fn. {exp_fn}")
-            if int(fn_matches[0]) != exp_fn:
-                raise ValueError(f"{lead['header']}: Footnote mismatch: expected {exp_fn}, got {fn_matches[0]}")
+        details = m_pub.group(2).strip()
+        if details.startswith("*"):
+            mj = re.match(r"^\*([^*]+)\*", details)
+            if not mj:
+                raise ValueError(
+                    f"bibliography_leads.md [{lead_header}]: Malformed italicized journal container in '{details}'"
+                )
+            act_container = mj.group(1).strip()
+        elif "Online Publication" in details:
+            act_container = "Online Publication / Research Monograph"
+        else:
+            mb = re.search(r":\s*([^,\)]+)", details)
+            if not mb:
+                raise ValueError(
+                    f"bibliography_leads.md [{lead_header}]: Malformed book publication container in '{details}'"
+                )
+            act_container = mb.group(1).strip()
+
+        if normalize_text_for_match(lead["container"]) != normalize_text_for_match(act_container):
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Primary container mismatch: expected '{lead['container']}', got '{act_container}'"
+            )
+
+        # 5. Enforce exactly one Source Locator line and parse strict bibliography locator
+        loc_lines = re.findall(r"-\s+\*\*Source Locator:\*\*\s*([^\n]+)", blk)
+        if len(loc_lines) != 1:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Expected exactly one Source Locator line, found {len(loc_lines)}"
+            )
+        act_loc = loc_lines[0].strip()
+        parsed_bib_loc = parse_bib_locator(act_loc)
+
+        if parsed_bib_loc["printed_pages"] != lead["printed_pages"]:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Printed page mismatch: expected {lead['printed_pages']}, got {parsed_bib_loc['printed_pages']}"
+            )
+        if parsed_bib_loc["pdf_pages"] != lead["pdf_pages"]:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: PDF page mismatch: expected {lead['pdf_pages']}, got {parsed_bib_loc['pdf_pages']}"
+            )
+        if parsed_bib_loc["footnote"] != lead["footnote"]:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Footnote mismatch: expected {lead['footnote']}, got {parsed_bib_loc['footnote']}"
+            )
 
     # 5. provenance_manifest.json checks
     man_path = source_dir / "provenance_manifest.json"

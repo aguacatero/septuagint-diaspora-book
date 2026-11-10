@@ -41,7 +41,7 @@ unfold_less
 .
 In verse 10, believing with the heart results in righteousness (δικαιοσύνη), whereas confessing with the mouth results in salvation (σωτηρία) [24, 38–39].
 Paul encases his own words (vv. 9–10) within prophetic Old Testament citations: Leviticus 18:5, Habakkuk 2:4 / Deuteronomy 9:4 / Deuteronomy 30:12–14, Isaiah 28:16 (LXX), and Joel 2:32 (LXX 3:5) [20, 26–27].
-In verse 13, Paul quotes Joel 2:32 verbatim (πᾶς γὰρ ὃς ἂν ἐπικαλέσηται τὸ ὄνομα κυρίου σωθήσεται), making "calling on the Name of the Lord" (ἐπικαλέω) the culminating condition for salvation
+In verse 13, Paul quotes the core promise of Old Greek/LXX Joel 3:5a (MT Joel 2:32: πᾶς ὃς ἂν ἐπικαλέσηται τὸ ὄνομα κυρίου σωθήσεται) with authorial adaptation (introducing γάρ and omitting introductory καὶ ἔσται: πᾶς γὰρ ὃς ἂν ἐπικαλέσηται τὸ ὄνομα κυρίου σωθήσεται), making "calling on the Name of the Lord" (ἐπικαλέω) the culminating condition for salvation
 9
 unfold_less
 14

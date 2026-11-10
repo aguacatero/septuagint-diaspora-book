@@ -3866,14 +3866,14 @@ def test_s09f_cross_artifact_adversarial_mutations(tmp_path):
     orig_ext = ext_file.read_text(encoding="utf-8")
     mutated_ext_missing = orig_ext.replace("### S09F-E001", "### S09F-MUTATED")
     ext_file.write_text(mutated_ext_missing, encoding="utf-8")
-    with pytest.raises(ValueError, match="extraction.md missing expected record header '### S09F-E001'"):
+    with pytest.raises(ValueError, match="extraction.md: Missing discrete section block for evidence ID S09F-E001"):
         verify_cross_artifact_consistency(test_dir)
     ext_file.write_text(orig_ext, encoding="utf-8")
 
     # Mutation 2: Missing expected locator in extraction.md record
     mutated_ext_loc = orig_ext.replace("Printed p. 5 [PDF p. 5]", "Printed p. 99 [PDF p. 99]")
     ext_file.write_text(mutated_ext_loc, encoding="utf-8")
-    with pytest.raises(ValueError, match="extraction.md record S09F-E001 missing expected locator 'Printed p. 5 \\[PDF p. 5\\]'"):
+    with pytest.raises(ValueError, match="Printed page mismatch: expected \\(5,\\), got \\(99,\\)"):
         verify_cross_artifact_consistency(test_dir)
     ext_file.write_text(orig_ext, encoding="utf-8")
 
@@ -3911,6 +3911,114 @@ def test_s09f_cross_artifact_adversarial_mutations(tmp_path):
     with pytest.raises(ValueError, match="Footnote mismatch: expected 13, got 99"):
         verify_cross_artifact_consistency(test_dir)
     bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 7 (S09F-R1-F2a): Bogus source locator masked by valid Printed Page Number
+    mutated_ext_bogus_loc = orig_ext.replace(
+        "- **Printed Page Number:** Printed p. 5 [PDF p. 5]\n- **Source Locator:** Printed p. 5 [PDF p. 5]",
+        "- **Printed Page Number:** Printed p. 5 [PDF p. 5]\n- **Source Locator:** Printed p. 12 [PDF p. 12]"
+    )
+    ext_file.write_text(mutated_ext_bogus_loc, encoding="utf-8")
+    with pytest.raises(ValueError, match="Printed page mismatch: expected \\(5,\\), got \\(12,\\)"):
+        verify_cross_artifact_consistency(test_dir)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 8 (S09F-R1-F2b): Fabricated Short Exact Quotation while ledger remains valid
+    mutated_ext_fab_quote = orig_ext.replace(
+        '- **Short Exact Quotation:** "This contrast is set in the form of a stark a-b-b-a chiasm in verses 5a and 6a"',
+        '- **Short Exact Quotation:** "A completely invented but nonempty quotation"'
+    )
+    ext_file.write_text(mutated_ext_fab_quote, encoding="utf-8")
+    with pytest.raises(ValueError, match="Short Exact Quotation field mismatch"):
+        verify_cross_artifact_consistency(test_dir)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 9 (S09F-R1-F2c): Duplicate field in extraction block
+    mutated_ext_dup_field = orig_ext.replace(
+        "- **Source Locator:** Printed p. 5 [PDF p. 5]",
+        "- **Source Locator:** Printed p. 5 [PDF p. 5]\n- **Source Locator:** Printed p. 5 [PDF p. 5]"
+    )
+    ext_file.write_text(mutated_ext_dup_field, encoding="utf-8")
+    with pytest.raises(ValueError, match="Expected exactly one Source Locator line, found 2"):
+        verify_cross_artifact_consistency(test_dir)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 10 (S09F-R1-F2d): Mismatched B001 ID in extraction block
+    mutated_ext_mismatch_b001 = orig_ext.replace(
+        "### S09F-E001\n- **Proposed Evidence ID:** S09F-E001\n- **B001 Passage ID:** B001-4",
+        "### S09F-E001\n- **Proposed Evidence ID:** S09F-E001\n- **B001 Passage ID:** B001-1"
+    )
+    ext_file.write_text(mutated_ext_mismatch_b001, encoding="utf-8")
+    with pytest.raises(ValueError, match="B001 ID mismatch"):
+        verify_cross_artifact_consistency(test_dir)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 11 (S09F-R1-F3a): Fabricated publication year (1999 -> 2099) in bibliography
+    mutated_bib_year = orig_bib.replace(
+        "- **Publication Year:** 1999 (*Journal of the Grace Evangelical Society*",
+        "- **Publication Year:** 2099 (*Journal of the Grace Evangelical Society*"
+    )
+    bib_file.write_text(mutated_bib_year, encoding="utf-8")
+    with pytest.raises(ValueError, match="Publication year mismatch: expected 1999, got 2099"):
+        verify_cross_artifact_consistency(test_dir)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 12 (S09F-R1-F3b): False publication container with real journal mentioned in passing
+    mutated_bib_passing_cont = orig_bib.replace(
+        "- **Publication Year:** 2006 (*Novum Testamentum*, Vol. 48, No. 3, pp. 234–260)",
+        "- **Publication Year:** 2006 (*Bogus Journal*, mentioning Novum Testamentum in text)"
+    )
+    bib_file.write_text(mutated_bib_passing_cont, encoding="utf-8")
+    with pytest.raises(ValueError, match="Primary container mismatch: expected 'Novum Testamentum'"):
+        verify_cross_artifact_consistency(test_dir)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 13 (S09F-R1-F3c): Forged title in Title line masked in Notes
+    mutated_bib_title = orig_bib.replace(
+        '- **Title:** *"The written Torah and the oral Gospel: Romans 10:5–13 in the dynamic tension between orality and literacy"*',
+        '- **Title:** *"Completely Fabricated Title on Romans"*\n- **Notes:** Reference to The written Torah and the oral Gospel'
+    )
+    bib_file.write_text(mutated_bib_title, encoding="utf-8")
+    with pytest.raises(ValueError, match="Title mismatch"):
+        verify_cross_artifact_consistency(test_dir)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 14 (S09F-R1-F3d): Altered PDF page in bibliography locator (e.g. Akio Ito p. 99)
+    mutated_bib_loc = orig_bib.replace(
+        "- **Source Locator:** Printed p. 4 [PDF p. 4], p. 5 [PDF p. 5], p. 6 [PDF p. 6], p. 8 [PDF p. 8], p. 9 [PDF p. 9]",
+        "- **Source Locator:** Printed p. 99 [PDF p. 99]"
+    )
+    bib_file.write_text(mutated_bib_loc, encoding="utf-8")
+    with pytest.raises(ValueError, match="Printed page mismatch"):
+        verify_cross_artifact_consistency(test_dir)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 15 (S09F-R1-F3e): Duplicate bibliography entry block
+    mutated_bib_dup = orig_bib + "\n\n### Akio Ito (2006)\n- **Author:** Akio Ito\n"
+    bib_file.write_text(mutated_bib_dup, encoding="utf-8")
+    with pytest.raises(ValueError, match="Duplicate section block for 'Akio Ito \\(2006\\)'"):
+        verify_cross_artifact_consistency(test_dir)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+
+def test_s09f_r1_f1_textual_fidelity_joel_quotation():
+    """Verify S09F deliverables accurately distinguish LXX Joel 3:5 from Romans 10:13 without false verbatim claims."""
+    repo_root = Path(__file__).resolve().parent.parent
+    s09f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S09F"
+
+    ext_text = (s09f_dir / "extraction.md").read_text(encoding="utf-8")
+    arg_text = (s09f_dir / "argument_map.md").read_text(encoding="utf-8")
+    cnt_text = (s09f_dir / "counterevidence.md").read_text(encoding="utf-8")
+    aud_text = (s09f_dir / "notebooklm_self_audit.md").read_text(encoding="utf-8")
+
+    # No assertions of verbatim quotation for Romans 10:13 / Joel 3:5
+    for name, text in [("extraction.md", ext_text), ("argument_map.md", arg_text), ("counterevidence.md", cnt_text)]:
+        assert "verbatim quotation of lxx joel" not in text.lower(), f"{name} contains prohibited verbatim LXX Joel claim"
+        assert "quotes joel 2:32 verbatim" not in text.lower(), f"{name} contains prohibited quotes Joel verbatim claim"
+
+    # Must explicitly state the text-critical adaptation: omission of καὶ ἔσται and introduction of γάρ
+    assert "καὶ ἔσται" in ext_text and "γάρ" in ext_text, "extraction.md must document omission of kai estai and addition of gar"
+    assert "καὶ ἔσται" in cnt_text and "γάρ" in cnt_text, "counterevidence.md must document omission of kai estai and addition of gar"
+    assert "καὶ ἔσται" in aud_text and "γάρ" in aud_text, "notebooklm_self_audit.md must document omission of kai estai and addition of gar"
 
 
 

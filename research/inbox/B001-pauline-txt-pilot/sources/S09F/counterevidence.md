@@ -242,15 +242,10 @@ Text: Oliver expresses a personal hermeneutical judgment: "The answer (for me) i
 20
 .
 B. Discusses Competing Textual Forms
-Verbatim Septuagint Citation (LXX Joel 3:5):
+Textual Relationship to LXX Joel 3:5 (MT Joel 2:32):
 Page / Locator: Page 4 (Table 1) & Page 7 [24, 26–27, 43]
 Citation: [24, 26–27, 43]
-Text: Oliver notes that Romans 10:13 quotes LXX Joel 3:5 verbatim (Πᾶς γὰρ ὃς ἂν ἐπικαλέσηται τὸ ὄνομα κυρίου σωθήσεται)
-9
-unfold_less
-10
-21
-.
+Text: In Romans 10:13, Paul quotes the core promise of Old Greek/LXX Joel 3:5a (MT Joel 2:32a: וְהָיָה כֹּ֧ל אֲשֶׁר־יִקְרָ֛א בְּשֵׁ֥ם יְהוָ֖ה יִמָּלֵ֑ט; LXX Joel 3:5a: καὶ ἔσται πᾶς ὃς ἂν ἐπικαλέσηται τὸ ὄνομα κυρίου σωθήσεται). While the relative clause and matrix verb (πᾶς ὃς ἂν ἐπικαλέσηται τὸ ὄνομα κυρίου σωθήσεται) match the Septuagint word-for-word, Paul adapts the discourse syntax by omitting the introductory narrative formula καὶ ἔσται and inserting the postpositive causal conjunction γάρ (πᾶς γὰρ ὃς ἂν ...) to provide the scriptural warrant for verse 12. Oliver emphasizes the theological and heraldic function of this citation in Paul's argument, which is distinguished from the primary Greek text-critical facts.
 Canonical Cross-References (Acts 2:21 & 1 Cor 1:2):
 Page / Locator: Page 5, Footnote 10 & Page 5 [26–27]
 Citation: [26–27]

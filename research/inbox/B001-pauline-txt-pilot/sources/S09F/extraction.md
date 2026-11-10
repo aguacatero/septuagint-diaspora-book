@@ -87,9 +87,9 @@
 - **Printed Page Number:** Printed p. 10 [PDF p. 10]
 - **Source Locator:** Printed p. 10 [PDF p. 10]
 - **NotebookLM Citation:** [11]
-- **Textual Evidence Invoked:** Verbatim quotation of LXX Joel 3:5 (Πᾶς γὰρ ὃς ἂν ἐπικαλέσηται τὸ ὄνομα κυρίου σωθήσεται) in Romans 10:13.
+- **Textual Evidence Invoked:** Citation of the core promise of Old Greek/LXX Joel 3:5a (MT Joel 2:32a: וְהָיָה כֹּ֧ל אֲשֶׁר־יִקְרָ֛א בְּשֵׁ֥ם יְהוָ֖ה יִמָּלֵ֑ט; LXX Joel 3:5a: καὶ ἔσται πᾶς ὃς ἂν ἐπικαλέσηται τὸ ὄνομα κυρίου σωθήσεται) in Romans 10:13 (πᾶς γὰρ ὃς ἂν ἐπικαλέσηται τὸ ὄνομα κυρίου σωθήσεται). Paul quotes the shared core relative clause and matrix verb (πᾶς ὃς ἂν ἐπικαλέσηται τὸ ὄνομα κυρίου σωθήσεται) while adapting the discourse frame by omitting the opening narrative formula καὶ ἔσται and introducing the postpositive explanatory conjunction γάρ as logical warrant for verse 12.
 - **Claim Type:** Exegetical / Structural / Theological
-- **Qualifications Stated by Author:** The future passive verb σωθήσεται in verse 13 mirrors σωθήσῃ in verse 9, confirming oral invocation alongside faith as necessary.
+- **Qualifications Stated by Author:** The future passive verb σωθήσεται in verse 13 mirrors σωθήσῃ in verse 9, confirming oral invocation alongside faith as necessary. Oliver's theological interpretation of heraldic proclamation is distinguished from the primary Greek text-critical facts.
 - **Extraction Confidence:** HIGH
 
 ### S09F-E007
