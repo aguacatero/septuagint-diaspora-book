@@ -100,10 +100,40 @@ All three findings from ChatGPT Round 2 review ([#issuecomment-6759235942](https
 
 ---
 
-## 5. Review Readiness & Submission
+## 5. Round 3 Review Findings Remediation Audit
+
+Both findings from ChatGPT Round 3 review ([#issuecomment-6768652597](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6768652597)) have been fully remediated:
+
+1. **S08F-R3-F1 (Strict Locator Parser Accepts Duplicate/Conflicting PDF Pages & Footnotes):**
+   - Enhanced `parse_source_locator` in `scripts/verify_s08f_negative_search.py` with strict structural checks:
+     - Exactly one opening `[` and one closing `]` bracket pair.
+     - At most one `\bfn\.\s*\d+\b` reference anywhere in the string.
+     - Strict start-to-finish full-string regex grammar (`^...$`) that rejects any unparsed trailing text, multiple brackets, or malformed suffixes.
+     - Built-in monotonic pagination formula verification ($printed = PDF + 94$).
+   - Added unit assertions and cross-artifact adversarial tests in `tests/test_citation_ledger_crosswalk.py` covering:
+     - Conflicting appended PDF brackets (`Printed p. 98 [PDF p. 4] [PDF p. 40]`) in extraction and ledger.
+     - Conflicting appended footnotes (`Printed p. 98 [PDF p. 4], fn. 2, fn. 20; Section 2`).
+     - Malformed trailing locator fragments (`Printed p. 98 [PDF p. 4] trailing_garbage`).
+     - Monotonic pagination violations (`Printed p. 98 [PDF p. 5]`).
+
+2. **S08F-R3-F2 (Authoritative Publication Year & Unambiguous Primary Container Validation):**
+   - Added authoritative `year: <int>` field to all 26 bibliographic leads in `EXPECTED_BIBLIOGRAPHY_LEADS`.
+   - Enforced tri-partite agreement among:
+     - Header year in `### Author (YYYY)`.
+     - Authoritative year in `lead["year"]`.
+     - Parsed year in `- **Publication Year:** YYYY (...)`.
+   - Parsed parenthetical publication details to isolate the primary container (`*Journal Name*` for journals, `<City>: <Publisher>` for books), enforcing exact normalized equality against `lead["container"]`. This rejects false primary containers even if the expected container is mentioned as a cross-reference.
+   - Added fail-closed adversarial mutation tests in `tests/test_citation_ledger_crosswalk.py` for:
+     - Fabricated publication year in `Publication Year` line (2099 vs 1999).
+     - Fabricated header year (2099 vs 1999).
+     - Misleading primary container with expected container mentioned as a cross-reference.
+
+---
+
+## 6. Review Readiness & Submission
 
 - **Active Source:** `S08F`
 - **Source Deliverable Directory:** `research/inbox/B001-pauline-txt-pilot/sources/S08F/`
-- **Status:** `REMEDIATED / READY_FOR_ROUND_3_REVIEW`
+- **Status:** `REMEDIATED / READY_FOR_ROUND_4_REVIEW`
 - **Review Target:** `LIVE_PR_HEAD`
 - **Review Loop:** Independent exact-SHA evaluation by ChatGPT on Draft PR #2.

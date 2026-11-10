@@ -116,6 +116,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Walter C. Kaiser Jr. (1989)",
         "author": "Walter C. Kaiser Jr.",
         "title": '*"An Assessment of \'Replacement Theology\'"*',
+        "year": 1989,
         "container": "Mishkan",
         "printed_pages": (95,),
         "pdf_pages": (1,),
@@ -125,6 +126,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Alva J. McClain (1973)",
         "author": "Alva J. McClain",
         "title": "*The Gospel of God’s Grace*",
+        "year": 1973,
         "container": "Moody Press",
         "printed_pages": (98,),
         "pdf_pages": (4,),
@@ -134,6 +136,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "John A. Battle, Jr. (1981)",
         "author": "John A. Battle, Jr.",
         "title": '*"Paul\'s Use of the Old Testament in Romans 9:25–26"*',
+        "year": 1981,
         "container": "Grace Theological Journal",
         "printed_pages": (98,),
         "pdf_pages": (4,),
@@ -143,6 +146,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "W. Edward Glenny (1995)",
         "author": "W. Edward Glenny",
         "title": '*"The \'People of God\' in Romans 9:25–26"*',
+        "year": 1995,
         "container": "Bibliotheca Sacra",
         "printed_pages": (98,),
         "pdf_pages": (4,),
@@ -152,6 +156,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Douglas J. Moo (1996) — Romans 9:24–26 Calling of Gentiles",
         "author": "Douglas J. Moo",
         "title": "*The Epistle to the Romans* (NICNT)",
+        "year": 1996,
         "container": "Eerdmans",
         "printed_pages": (98,),
         "pdf_pages": (4,),
@@ -161,6 +166,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "David L. Turner (1985)",
         "author": "David L. Turner",
         "title": '*"The Continuity of Scripture and Eschatology: Key Hermeneutical Issues"*',
+        "year": 1985,
         "container": "Grace Theological Journal",
         "printed_pages": (98,),
         "pdf_pages": (4,),
@@ -170,6 +176,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Douglas J. Moo (1996) — Textual Modification of καλέσω",
         "author": "Douglas J. Moo",
         "title": "*The Epistle to the Romans* (NICNT)",
+        "year": 1996,
         "container": "Eerdmans",
         "printed_pages": (99,),
         "pdf_pages": (5,),
@@ -179,6 +186,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Douglas J. Moo (1996) — Hermeneutical Supposition of Replacement",
         "author": "Douglas J. Moo",
         "title": "*The Epistle to the Romans* (NICNT)",
+        "year": 1996,
         "container": "Eerdmans",
         "printed_pages": (101,),
         "pdf_pages": (7,),
@@ -188,6 +196,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Robert B. Chisholm Jr. (1985)",
         "author": "Robert B. Chisholm Jr.",
         "title": '*"Hosea"*, in John F. Walvoord & Roy B. Zuck (eds.), *The Bible Knowledge Commentary, Old Testament*',
+        "year": 1985,
         "container": "Victor",
         "printed_pages": (101, 102),
         "pdf_pages": (7, 8),
@@ -197,6 +206,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "John A. Witmer (1983)",
         "author": "John A. Witmer",
         "title": '*"Romans"*, in John F. Walvoord & Roy B. Zuck (eds.), *The Bible Knowledge Commentary, New Testament*',
+        "year": 1983,
         "container": "Victor",
         "printed_pages": (101, 102),
         "pdf_pages": (7, 8),
@@ -206,6 +216,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "S. Lewis Johnson (1992)",
         "author": "S. Lewis Johnson",
         "title": '*"Evidence from Romans 9–11"*, in Donald K. Campbell & Jeffrey L. Townsend (eds.), *A Case for Premillennialism: A New Consensus*',
+        "year": 1992,
         "container": "Moody Press",
         "printed_pages": (102,),
         "pdf_pages": (8,),
@@ -215,6 +226,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Douglas J. Moo (1996) — Rejection of Mere Analogy",
         "author": "Douglas J. Moo",
         "title": "*The Epistle to the Romans* (NICNT)",
+        "year": 1996,
         "container": "Eerdmans",
         "printed_pages": (102,),
         "pdf_pages": (8,),
@@ -224,6 +236,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "W. Edward Glenny (1992)",
         "author": "W. Edward Glenny",
         "title": '*"The Israelite Imagery of 1 Peter 2"*, in Craig A. Blaising & Darrell L. Bock (eds.), *Dispensationalism, Israel and the Church*',
+        "year": 1992,
         "container": "Zondervan",
         "printed_pages": (102,),
         "pdf_pages": (8,),
@@ -233,6 +246,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Roy B. Zuck (1991)",
         "author": "Roy B. Zuck",
         "title": "*Basic Bible Interpretation*",
+        "year": 1991,
         "container": "Victor",
         "printed_pages": (103,),
         "pdf_pages": (9,),
@@ -242,6 +256,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "David K. Lowery (1983)",
         "author": "David K. Lowery",
         "title": '*"1 Corinthians"*, in John F. Walvoord & Roy B. Zuck (eds.), *The Bible Knowledge Commentary, New Testament*',
+        "year": 1983,
         "container": "Victor",
         "printed_pages": (103,),
         "pdf_pages": (9,),
@@ -251,6 +266,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Rodney J. Decker (1995)",
         "author": "Rodney J. Decker",
         "title": '*"The Church\'s Relationship to the New Covenant"*',
+        "year": 1995,
         "container": "Bibliotheca Sacra",
         "printed_pages": (104,),
         "pdf_pages": (10,),
@@ -260,6 +276,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Richard Daniels (1999)",
         "author": "Richard Daniels",
         "title": '*"How Does the Church Relate to the New Covenant? or, Whose New Covenant Is It, Anyway?"*',
+        "year": 1999,
         "container": "Faith and Mission",
         "printed_pages": (104,),
         "pdf_pages": (10,),
@@ -269,6 +286,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Larry D. Pettegrew (1993)",
         "author": "Larry D. Pettegrew",
         "title": "*The New Covenant Ministry of the Holy Spirit*",
+        "year": 1993,
         "container": "University Press of America",
         "printed_pages": (104, 105),
         "pdf_pages": (10, 11),
@@ -278,6 +296,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Paul R. Thorsell (1998)",
         "author": "Paul R. Thorsell",
         "title": '*"The Spirit in the Present Age: Preliminary Fulfillment of the Predicted New Covenant according to Paul"*',
+        "year": 1998,
         "container": "Journal for the Evangelical Theological Society",
         "printed_pages": (105,),
         "pdf_pages": (11,),
@@ -287,6 +306,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Douglas Stuart (1987)",
         "author": "Douglas Stuart",
         "title": "*Hosea–Jonah* (Word Biblical Commentary)",
+        "year": 1987,
         "container": "Word Books",
         "printed_pages": (106,),
         "pdf_pages": (12,),
@@ -296,6 +316,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Gary W. Light (1993)",
         "author": "Gary W. Light",
         "title": '*"The New Covenant in the Book of Hosea"*',
+        "year": 1993,
         "container": "Review and Expositor",
         "printed_pages": (106,),
         "pdf_pages": (12,),
@@ -305,6 +326,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Leon J. Wood (1985)",
         "author": "Leon J. Wood",
         "title": '*"Hosea"*, in Frank E. Gaebelein (ed.), *The Expositor’s Bible Commentary*, Vol. 7',
+        "year": 1985,
         "container": "Zondervan",
         "printed_pages": (107,),
         "pdf_pages": (13,),
@@ -314,6 +336,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Francis I. Andersen & David Noel Freedman (1980)",
         "author": "Francis I. Andersen & David Noel Freedman",
         "title": "*Hosea* (Anchor Bible, Vol. 24)",
+        "year": 1980,
         "container": "Doubleday",
         "printed_pages": (107,),
         "pdf_pages": (13,),
@@ -323,6 +346,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Hans Walter Wolff (1974)",
         "author": "Hans Walter Wolff",
         "title": "*Hosea* (Hermeneia Commentary, trans. Gary Stensell)",
+        "year": 1974,
         "container": "Fortress Press",
         "printed_pages": (107,),
         "pdf_pages": (13,),
@@ -332,6 +356,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "Andrew G. Shead (2000)",
         "author": "Andrew G. Shead",
         "title": '*"The Covenant and Pauline Hermeneutics"*, in Peter Bolt & Mark Thompson (eds.), *The Gospel to the Nations: Perspectives on Paul’s Mission*',
+        "year": 2000,
         "container": "InterVarsity Press",
         "printed_pages": (108, 109),
         "pdf_pages": (14, 15),
@@ -341,6 +366,7 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "header": "George Eldon Ladd (1977)",
         "author": "George Eldon Ladd",
         "title": '*"Historic Premillennialism"*, in Robert G. Clouse (ed.), *The Meaning of the Millennium: Four Views*',
+        "year": 1977,
         "container": "InterVarsity Press",
         "printed_pages": (109,),
         "pdf_pages": (15,),
@@ -435,49 +461,76 @@ def normalize_text_for_match(s: str) -> str:
 def parse_source_locator(loc_str: str) -> dict:
     """Parse a strict source locator string into its component parts.
 
-    Matches single-page or range locators:
+    Grammar enforces:
+      - Exactly one bracketed PDF locator pair [PDF ...]
+      - At most one footnote reference total (either inside or outside the bracket)
+      - Strictly monotonic pagination derivation (printed = PDF + 94)
+      - No duplicate, conflicting, or unparsed trailing fragments
+    Permissible forms:
       Printed p. 98 [PDF p. 4]
       Printed p. 99 [PDF p. 5, fn. 4]
       Printed pp. 97–98 [PDF pp. 3–4]
       Printed p. 98 [PDF p. 4], fn. 2
       Printed p. 98 [PDF p. 4], fn. 2; Section 2
       Printed pp. 101–102 [PDF pp. 7–8], fn. 8; Section 4
-    Fails closed on missing or unparseable delimiters.
+    Fails closed on missing delimiters, duplicate references, or trailing fragments.
     """
     loc = loc_str.strip()
 
-    # 1. Printed page(s)
-    m_prn = re.search(r"\bPrinted\s+pp?\.\s*(\d+)(?:[–-](\d+))?\b", loc)
-    if not m_prn:
-        raise ValueError(f"Cannot parse printed page in locator: '{loc_str}'")
-    if m_prn.group(2):
-        prn_pages = (int(m_prn.group(1)), int(m_prn.group(2)))
-    else:
-        prn_pages = (int(m_prn.group(1)),)
+    # 1. Structural delimiter checks
+    if loc.count("[") != 1 or loc.count("]") != 1:
+        raise ValueError(f"Expected exactly one bracketed PDF locator pair [PDF ...], got: '{loc_str}'")
 
-    # 2. PDF page(s) - must be enclosed in [PDF ...] with matching brackets
-    m_pdf = re.search(r"\[PDF\s+pp?\.\s*(\d+)(?:[–-](\d+))?(?:,\s*fn\.\s*(\d+))?\]", loc)
-    if not m_pdf:
-        raise ValueError(f"Cannot parse PDF page in locator (missing or malformed bracketed [PDF p. X]): '{loc_str}'")
-    if m_pdf.group(2):
-        pdf_pages = (int(m_pdf.group(1)), int(m_pdf.group(2)))
-    else:
-        pdf_pages = (int(m_pdf.group(1)),)
+    fn_matches = re.findall(r"\bfn\.\s*(\d+)\b", loc)
+    if len(fn_matches) > 1:
+        raise ValueError(f"Conflicting duplicate footnote references in locator: '{loc_str}'")
 
-    # 3. Footnote (optional) - exact delimited integer from bracket or outside
-    fn = None
-    if m_pdf.group(3):
-        fn = int(m_pdf.group(3))
+    # 2. Strict grammar matching entire string from start to finish
+    grammar = (
+        r"^Printed\s+(?:p\.\s*(\d+)|pp\.\s*(\d+)[–-](\d+))\s+"
+        r"\[PDF\s+(?:p\.\s*(\d+)|pp\.\s*(\d+)[–-](\d+))(?:,\s*fn\.\s*(\d+))?\]"
+        r"(?:,\s*fn\.\s*(\d+))?"
+        r"(?:;\s*Section\s*(\d+))?$"
+    )
+    m = re.match(grammar, loc)
+    if not m:
+        raise ValueError(f"Malformed source locator grammar or unparsed trailing fragments: '{loc_str}'")
+
+    # 3. Parse printed pages
+    if m.group(1):
+        prn_pages = (int(m.group(1)),)
     else:
-        m_fn = re.search(r"\bfn\.\s*(\d+)\b", loc)
-        if m_fn:
-            fn = int(m_fn.group(1))
+        prn_pages = (int(m.group(2)), int(m.group(3)))
+
+    # 4. Parse PDF pages
+    if m.group(4):
+        pdf_pages = (int(m.group(4)),)
+    else:
+        pdf_pages = (int(m.group(5)), int(m.group(6)))
+
+    if len(prn_pages) != len(pdf_pages):
+        raise ValueError(f"Printed and PDF page range arity mismatch: {prn_pages} vs {pdf_pages}")
+
+    # 5. Monotonic formula check: printed = PDF + 94
+    for prn, pdf in zip(prn_pages, pdf_pages):
+        if prn - 94 != pdf:
+            raise ValueError(f"Monotonic pagination mismatch: printed {prn} != PDF {pdf} + 94 in '{loc_str}'")
+
+    # 6. Footnote parsing
+    fn_in = int(m.group(7)) if m.group(7) else None
+    fn_out = int(m.group(8)) if m.group(8) else None
+    if fn_in is not None and fn_out is not None:
+        raise ValueError(f"Conflicting duplicate footnote references in locator: '{loc_str}'")
+    fn = fn_in if fn_in is not None else fn_out
+
+    section = int(m.group(9)) if m.group(9) else None
 
     return {
         "raw": loc,
         "printed_pages": prn_pages,
         "pdf_pages": pdf_pages,
         "footnote": fn,
+        "section": section,
     }
 
 
@@ -1106,17 +1159,52 @@ def verify_cross_artifact_consistency(source_dir: Path, ledger_rows: list[dict] 
                 f"bibliography_leads.md [{lead_header}]: Title mismatch: expected '{exp_title}', got '{act_title}'"
             )
 
-        # 3. Enforce Publication Year and Container
+        # 3. Enforce Header Year, Publication Year line, and Primary Container
+        m_hdr_year = re.search(r"\((\d{4})\)", lead_header)
+        if not m_hdr_year:
+            raise ValueError(f"bibliography_leads.md [{lead_header}]: Cannot parse 4-digit year in header")
+        hdr_year = int(m_hdr_year.group(1))
+        if hdr_year != lead["year"]:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Header year {hdr_year} does not match authoritative year {lead['year']}"
+            )
+
         pub_lines = re.findall(r"-\s+\*\*Publication Year:\*\*\s*([^\n]+)", blk)
         if len(pub_lines) != 1:
             raise ValueError(
                 f"bibliography_leads.md [{lead_header}]: Expected exactly one Publication Year line, found {len(pub_lines)}"
             )
         act_pub = pub_lines[0].strip()
-        exp_container = lead["container"]
-        if normalize_text_for_match(exp_container) not in normalize_text_for_match(act_pub):
+        m_pub = re.match(r"^(\d{4})\s*\((.*)\)$", act_pub)
+        if not m_pub:
             raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: Container mismatch: expected '{exp_container}' in Publication Year line '{act_pub}'"
+                f"bibliography_leads.md [{lead_header}]: Malformed Publication Year field: '{act_pub}'"
+            )
+        act_year = int(m_pub.group(1))
+        if act_year != lead["year"]:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Publication year mismatch: expected {lead['year']}, got {act_year}"
+            )
+
+        details = m_pub.group(2).strip()
+        if details.startswith("*"):
+            mj = re.match(r"^\*([^*]+)\*", details)
+            if not mj:
+                raise ValueError(
+                    f"bibliography_leads.md [{lead_header}]: Malformed italicized journal container in '{details}'"
+                )
+            act_container = mj.group(1).strip()
+        else:
+            mb = re.match(r"^[^:]+:\s*([^,]+)", details)
+            if not mb:
+                raise ValueError(
+                    f"bibliography_leads.md [{lead_header}]: Malformed book publication container in '{details}'"
+                )
+            act_container = mb.group(1).strip()
+
+        if normalize_text_for_match(lead["container"]) != normalize_text_for_match(act_container):
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Primary container mismatch: expected '{lead['container']}', got '{act_container}'"
             )
 
         # 4. Enforce exact parsed Source Locator (printed pages, PDF pages, footnote)

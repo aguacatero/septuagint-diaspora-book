@@ -3449,7 +3449,29 @@ def test_s08f_adversarial_pagination_and_negative_search_assertions():
     }]
     with pytest.raises(ValueError) as exc7:
         verify_ledger_witnesses(fake_ledger_pdf40, mock_16_pages)
-    assert "source_locator PDF pages (40,) != expected (4,)" in str(exc7.value)
+    assert "Monotonic pagination mismatch: printed 98 != PDF 40 + 94" in str(exc7.value)
+
+    # 8. parse_source_locator parser assertions (R3-F1)
+    from scripts.verify_s08f_negative_search import parse_source_locator
+    with pytest.raises(ValueError) as exc_p1:
+        parse_source_locator("Printed p. 98 [PDF p. 4] [PDF p. 40]")
+    assert "Expected exactly one bracketed PDF locator pair" in str(exc_p1.value)
+
+    with pytest.raises(ValueError) as exc_p2:
+        parse_source_locator("Printed p. 98 [PDF p. 4], fn. 2, fn. 20; Section 2")
+    assert "Conflicting duplicate footnote references" in str(exc_p2.value)
+
+    with pytest.raises(ValueError) as exc_p3:
+        parse_source_locator("Printed p. 99 [PDF p. 5, fn. 4] fn. 40")
+    assert "Conflicting duplicate footnote references" in str(exc_p3.value)
+
+    with pytest.raises(ValueError) as exc_p4:
+        parse_source_locator("Printed p. 98 [PDF p. 4] trailing garbage")
+    assert "Malformed source locator grammar or unparsed trailing fragments" in str(exc_p4.value)
+
+    with pytest.raises(ValueError) as exc_p5:
+        parse_source_locator("Printed p. 98 [PDF p. 5]")
+    assert "Monotonic pagination mismatch: printed 98 != PDF 5 + 94" in str(exc_p5.value)
 
 
 def test_s08f_cross_artifact_adversarial_mutations(tmp_path):
@@ -3533,7 +3555,7 @@ def test_s08f_cross_artifact_adversarial_mutations(tmp_path):
     bib_file.write_text(mutated_bib_container, encoding="utf-8")
     with pytest.raises(ValueError) as exc6:
         verify_cross_artifact_consistency(test_dir)
-    assert "Container mismatch: expected 'Faith and Mission'" in str(exc6.value)
+    assert "Primary container mismatch: expected 'Faith and Mission'" in str(exc6.value)
     bib_file.write_text(orig_bib, encoding="utf-8")
 
     # Mutation 7: Bibliographic footnote number misattribution (McClain -> fn. 1) fails closed
@@ -3600,7 +3622,7 @@ def test_s08f_cross_artifact_adversarial_mutations(tmp_path):
     ext_file.write_text(mutated_ext_pdf40, encoding="utf-8")
     with pytest.raises(ValueError) as exc12:
         verify_cross_artifact_consistency(test_dir)
-    assert "PDF page mismatch: expected (4,), got (40,)" in str(exc12.value)
+    assert "Monotonic pagination mismatch: printed 98 != PDF 40 + 94" in str(exc12.value)
     csv_file.write_text(orig_csv, encoding="utf-8")
     ext_file.write_text(orig_ext, encoding="utf-8")
 
@@ -3623,8 +3645,70 @@ def test_s08f_cross_artifact_adversarial_mutations(tmp_path):
     ext_file.write_text(mutated_ext_bad_delim, encoding="utf-8")
     with pytest.raises(ValueError) as exc14:
         verify_cross_artifact_consistency(test_dir)
-    assert "Cannot parse PDF page in locator" in str(exc14.value)
+    assert "Expected exactly one bracketed PDF locator pair" in str(exc14.value)
     ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 15 (R3-F1): Appended duplicate/conflicting bracketed PDF locator in extraction fails closed
+    mutated_ext_dup_pdf = orig_ext.replace("Printed p. 98 [PDF p. 4]", "Printed p. 98 [PDF p. 4] [PDF p. 40]")
+    ext_file.write_text(mutated_ext_dup_pdf, encoding="utf-8")
+    with pytest.raises(ValueError) as exc15:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Expected exactly one bracketed PDF locator pair" in str(exc15.value)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 16 (R3-F1): Appended duplicate/conflicting bracketed PDF locator in ledger fails closed
+    mutated_csv_dup_pdf = orig_csv.replace("Printed p. 98 [PDF p. 4]", "Printed p. 98 [PDF p. 4] [PDF p. 40]")
+    csv_file.write_text(mutated_csv_dup_pdf, encoding="utf-8")
+    with pytest.raises(ValueError) as exc16:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Expected exactly one bracketed PDF locator pair" in str(exc16.value)
+    csv_file.write_text(orig_csv, encoding="utf-8")
+
+    # Mutation 17 (R3-F1): Appended duplicate/conflicting footnote in bibliography locator fails closed
+    mutated_bib_dup_fn = orig_bib.replace(
+        "Printed p. 98 [PDF p. 4], fn. 2; Section 2",
+        "Printed p. 98 [PDF p. 4], fn. 2, fn. 20; Section 2"
+    )
+    bib_file.write_text(mutated_bib_dup_fn, encoding="utf-8")
+    with pytest.raises(ValueError) as exc17:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Conflicting duplicate footnote references" in str(exc17.value)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 18 (R3-F1): Malformed trailing locator fragment in extraction fails closed
+    mutated_ext_trailing = orig_ext.replace("Printed p. 98 [PDF p. 4]", "Printed p. 98 [PDF p. 4] trailing_garbage")
+    ext_file.write_text(mutated_ext_trailing, encoding="utf-8")
+    with pytest.raises(ValueError) as exc18:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Malformed source locator grammar or unparsed trailing fragments" in str(exc18.value)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 19 (R3-F2): Fabricated publication year in bibliography Publication Year line fails closed
+    mutated_bib_year = orig_bib.replace("- **Publication Year:** 1999 (*Faith and Mission*,", "- **Publication Year:** 2099 (*Faith and Mission*,")
+    bib_file.write_text(mutated_bib_year, encoding="utf-8")
+    with pytest.raises(ValueError) as exc19:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Publication year mismatch: expected 1999, got 2099" in str(exc19.value)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 20 (R3-F2): Fabricated publication year in bibliography heading fails closed
+    mutated_bib_hdr_year = orig_bib.replace("### Richard Daniels (1999)", "### Richard Daniels (2099)")
+    bib_file.write_text(mutated_bib_hdr_year, encoding="utf-8")
+    with pytest.raises(ValueError) as exc20:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Missing structured bibliographic lead 'Richard Daniels (1999)'" in str(exc20.value) or "Header year 2099 does not match authoritative year 1999" in str(exc20.value)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 21 (R3-F2): Misleading primary container with expected container mentioned as a cross-reference fails closed
+    mutated_bib_crossref_container = orig_bib.replace(
+        "- **Publication Year:** 1999 (*Faith and Mission*, Vol. 16, spring 1999, pp. 64–98, specifically pp. 90, 92)",
+        "- **Publication Year:** 1999 (*Journal of Biblical Literature*, discussing *Faith and Mission*)"
+    )
+    bib_file.write_text(mutated_bib_crossref_container, encoding="utf-8")
+    with pytest.raises(ValueError) as exc21:
+        verify_cross_artifact_consistency(test_dir)
+    assert "Primary container mismatch: expected 'Faith and Mission', got 'Journal of Biblical Literature'" in str(exc21.value)
+    bib_file.write_text(orig_bib, encoding="utf-8")
 
 
 
