@@ -1,0 +1,35 @@
+{
+  "source_id": "S09F",
+  "work": {
+    "authors": [
+      "Willem Oliver"
+    ],
+    "title": "Romans 10:5–13 revisited",
+    "full_title": "Romans 10:5–13 revisited",
+    "journal": "HTS Teologiese Studies / Theological Studies",
+    "volume": "Vol. 71, No. 3",
+    "year": "2015",
+    "article_number": "Art. #2929",
+    "pages": "1–12",
+    "publisher": "AOSIS OpenJournals",
+    "issn": "0259-9422",
+    "e_issn": "2072-8050",
+    "doi": "10.4102/hts.v71i3.2929",
+    "article_url": "https://hts.org.za/index.php/hts/article/view/2929",
+    "pdf_url": "https://hts.org.za/index.php/hts/article/download/2929/6457",
+    "license": "Creative Commons Attribution 4.0 International (CC BY 4.0)"
+  },
+  "ingested_volume": {
+    "filename": "oliver_2015_romans_10.pdf",
+    "local_path": "/Users/chrisrodriguez/Downloads/oliver_2015_romans_10.pdf",
+    "pages": 12,
+    "article_pages": 12,
+    "size_bytes": 602923,
+    "sha256": "8148a72d1e0a3138df70a19156b8adbcd4482311bce4b3254fb2746175e31789",
+    "verification_command": "stat -f '%z' /Users/chrisrodriguez/Downloads/oliver_2015_romans_10.pdf && shasum -a 256 /Users/chrisrodriguez/Downloads/oliver_2015_romans_10.pdf",
+    "page_mapping": {
+      "formula": "Printed page = PDF page; PDF page = Printed page for all 12 article pages (PDF pp. 1-12 correspond strictly to printed pp. 1-12). Monotonic offset is 0.",
+      "article_structure": "Introduction (p. 1); Background on chiasm (pp. 1-2); The structure of Romans 10:5-13 (pp. 2-4); Table 1: Structure of Romans 10:5-13 (p. 5); Table 2: Paul's use of Old Testament citations (p. 5); Figures 1-3: Chiasms and word combinations (pp. 4, 7); Detailed analysis of verses 5-8 (pp. 4-6); Triple climax: Verses 11-13 (pp. 6-8); Double chiasm: Verses 9-10 (pp. 8-10); Concluding verses: 13-15 (pp. 10-11); Conclusion (p. 11); References (pp. 11-12)"
+    }
+  }
+}

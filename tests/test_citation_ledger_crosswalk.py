@@ -3711,6 +3711,209 @@ def test_s08f_cross_artifact_adversarial_mutations(tmp_path):
     bib_file.write_text(orig_bib, encoding="utf-8")
 
 
+def test_s09f_citation_ledger_crosswalk_integrity():
+    """Verify S09F citation ledger schema, pagination mapping, quote integrity, and B001 scope."""
+    repo_root = Path(__file__).resolve().parent.parent
+    s09f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S09F"
+    csv_path = s09f_dir / "citation_ledger.csv"
+    ext_path = s09f_dir / "extraction.md"
+
+    assert csv_path.is_file(), f"Missing citation_ledger.csv at {csv_path}"
+    with open(csv_path, encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+
+    assert len(rows) == 8, f"Expected 8 ledger rows for S09F, found {len(rows)}"
+
+    expected_b001_map = {
+        "S09F-E001": "B001-4",
+        "S09F-E002": "B001-4",
+        "S09F-E003": "B001-4",
+        "S09F-E004": "B001-4",
+        "S09F-E005": "B001-4",
+        "S09F-E006": "B001-5",
+        "S09F-E007": "B001-5",
+        "S09F-E008": "B001-4, B001-5",
+    }
+
+    expected_ids = [f"S09F-E00{i}" for i in range(1, 9)]
+    for idx, r in enumerate(rows):
+        eid = r["evidence_id"]
+        assert eid == expected_ids[idx], f"Expected {expected_ids[idx]}, got {eid}"
+        assert r["source_id"] == "S09F"
+        assert r["verification_status"] == "VERIFIED"
+        assert r["extraction_confidence"] == "HIGH"
+        assert len(r["short_quote"].strip()) > 15
+        assert r["author_claim"].strip()
+
+        # Verify B001 locus alignment
+        assert r["b001_id"] == expected_b001_map[eid], f"Expected {expected_b001_map[eid]} for {eid}, got {r['b001_id']}"
+
+        printed = int(r["printed_page"])
+        expected_pdf = printed
+        assert 1 <= expected_pdf <= 12, f"Invalid printed page {printed} for {eid}"
+        assert f"Printed p. {printed} [PDF p. {expected_pdf}]" in r["source_locator"]
+
+    # Check extraction.md cross-alignment
+    ext_text = ext_path.read_text(encoding="utf-8")
+    for eid, exp_b001 in expected_b001_map.items():
+        assert f"### {eid}" in ext_text
+        assert re.search(
+            rf"###\s+{eid}[\s\S]*?-\s+\*\*B001 Passage ID:\*\*\s*{re.escape(exp_b001)}",
+            ext_text
+        )
+
+
+def test_s09f_provenance_manifest_and_pagination_invariant():
+    """Verify S09F provenance manifest and pagination invariant."""
+    repo_root = Path(__file__).resolve().parent.parent
+    manifest_path = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S09F/provenance_manifest.json"
+    assert manifest_path.is_file(), f"Missing manifest at {manifest_path}"
+
+    with open(manifest_path, encoding="utf-8") as f:
+        manifest = json.load(f)
+
+    assert manifest["source_id"] == "S09F"
+    assert manifest["work"]["authors"] == ["Willem Oliver"]
+    assert manifest["work"]["journal"] == "HTS Teologiese Studies / Theological Studies"
+    assert manifest["ingested_volume"]["size_bytes"] == 602923
+    assert manifest["ingested_volume"]["pages"] == 12
+    assert manifest["ingested_volume"]["article_pages"] == 12
+    assert manifest["ingested_volume"]["sha256"] == "8148a72d1e0a3138df70a19156b8adbcd4482311bce4b3254fb2746175e31789"
+
+
+def test_s09f_verifier_negative_search_passes():
+    """Verify scripts/verify_s09f_negative_search.py passes in --check-only mode."""
+    import subprocess
+    repo_root = Path(__file__).resolve().parent.parent
+    verifier_script = repo_root / "scripts/verify_s09f_negative_search.py"
+    assert verifier_script.is_file(), f"Missing verifier script: {verifier_script}"
+
+    cmd = ["python3", str(verifier_script), "--check-only"]
+    res = subprocess.run(cmd, cwd=str(repo_root), capture_output=True, text=True)
+    assert res.returncode == 0, f"Verifier failed with return code {res.returncode}:\nStdout:\n{res.stdout}\nStderr:\n{res.stderr}"
+    assert "matches generated report byte-for-byte (--check-only passed)" in res.stdout
+
+
+def test_s09f_adversarial_pagination_and_negative_search_assertions():
+    """Verify S09F verifier assertions fail closed against adversarial mutations."""
+    import sys
+    import pytest
+    repo_root = Path(__file__).resolve().parent.parent
+    if str(repo_root) not in sys.path:
+        sys.path.insert(0, str(repo_root))
+
+    from scripts.verify_s09f_negative_search import (
+        parse_source_locator,
+        verify_monotonic_pagination,
+        verify_positive_controls,
+        execute_full_volume_search,
+        extract_page_texts,
+        PDF_DEFAULT,
+    )
+
+    # 1. Structural delimiter checks in parse_source_locator
+    with pytest.raises(ValueError, match="Expected exactly one bracketed PDF locator pair"):
+        parse_source_locator("Printed p. 5 PDF p. 5")
+
+    with pytest.raises(ValueError, match="Expected exactly one bracketed PDF locator pair"):
+        parse_source_locator("Printed p. 5 [PDF p. 5] [PDF p. 5]")
+
+    # 2. Conflicting duplicate footnote references
+    with pytest.raises(ValueError, match="Conflicting duplicate footnote references"):
+        parse_source_locator("Printed p. 4 [PDF p. 4, fn. 9], fn. 10")
+
+    # 3. Monotonic derivation check (printed = PDF, offset = 0)
+    with pytest.raises(ValueError, match="Monotonic pagination mismatch: printed 5 != PDF 6"):
+        parse_source_locator("Printed p. 5 [PDF p. 6]")
+
+    # 4. Trailing fragment rejection
+    with pytest.raises(ValueError, match="Malformed source locator grammar or unparsed trailing fragments"):
+        parse_source_locator("Printed p. 5 [PDF p. 5] extra fragment")
+
+    # 5. Missing header numeral in monotonic pagination check
+    fake_pages = ["No header here\nSecond line\nThird line"] * 12
+    with pytest.raises(ValueError, match="Monotonic pagination invariant violated at PDF p. 1"):
+        verify_monotonic_pagination(fake_pages)
+
+    # 6. Positive control failure
+    with pytest.raises(ValueError, match="Positive control 'PC01: Title and Journal Header' failed to match"):
+        verify_positive_controls(["Empty page"] * 12)
+
+    # 7. Negative search assertion fails closed if absent locus is injected
+    page_texts = extract_page_texts(PDF_DEFAULT)
+    mutated_texts = list(page_texts)
+    mutated_texts[0] = mutated_texts[0] + "\nRomans 4:3 Genesis 15:6 was quoted here.\n"
+    with pytest.raises(ValueError, match="Negative search assertion failed for B001-1"):
+        execute_full_volume_search(mutated_texts, [])
+
+
+def test_s09f_cross_artifact_adversarial_mutations(tmp_path):
+    """Verify cross-artifact integrity checks fail closed on adversarial mutations."""
+    import shutil
+    import pytest
+    from scripts.verify_s09f_negative_search import verify_cross_artifact_consistency
+
+    repo_root = Path(__file__).resolve().parent.parent
+    s09f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S09F"
+    test_dir = tmp_path / "S09F"
+    shutil.copytree(s09f_dir, test_dir)
+
+    # Clean verification passes
+    verify_cross_artifact_consistency(test_dir)
+
+    # Mutation 1: Missing evidence record in extraction.md
+    ext_file = test_dir / "extraction.md"
+    orig_ext = ext_file.read_text(encoding="utf-8")
+    mutated_ext_missing = orig_ext.replace("### S09F-E001", "### S09F-MUTATED")
+    ext_file.write_text(mutated_ext_missing, encoding="utf-8")
+    with pytest.raises(ValueError, match="extraction.md missing expected record header '### S09F-E001'"):
+        verify_cross_artifact_consistency(test_dir)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 2: Missing expected locator in extraction.md record
+    mutated_ext_loc = orig_ext.replace("Printed p. 5 [PDF p. 5]", "Printed p. 99 [PDF p. 99]")
+    ext_file.write_text(mutated_ext_loc, encoding="utf-8")
+    with pytest.raises(ValueError, match="extraction.md record S09F-E001 missing expected locator 'Printed p. 5 \\[PDF p. 5\\]'"):
+        verify_cross_artifact_consistency(test_dir)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 3: Missing synthesis subsection in oliver_romans_10_chiasm_synthesis.md
+    synth_file = test_dir / "oliver_romans_10_chiasm_synthesis.md"
+    orig_synth = synth_file.read_text(encoding="utf-8")
+    mutated_synth = orig_synth.replace(
+        "## 1. Overarching Chiastic Structure and Old Testament Framing (Rom 10:5–13)",
+        "## 1. Mutated Title"
+    )
+    synth_file.write_text(mutated_synth, encoding="utf-8")
+    with pytest.raises(ValueError, match="synthesis missing expected subsection heading"):
+        verify_cross_artifact_consistency(test_dir)
+    synth_file.write_text(orig_synth, encoding="utf-8")
+
+    # Mutation 4: Author misattribution in bibliography_leads.md
+    bib_file = test_dir / "bibliography_leads.md"
+    orig_bib = bib_file.read_text(encoding="utf-8")
+    mutated_bib_auth = orig_bib.replace("- **Author:** Akio Ito", "- **Author:** Another Scholar")
+    bib_file.write_text(mutated_bib_auth, encoding="utf-8")
+    with pytest.raises(ValueError, match="Author mismatch: expected 'Akio Ito'"):
+        verify_cross_artifact_consistency(test_dir)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 5: Primary container mismatch in bibliography_leads.md
+    mutated_bib_cont = orig_bib.replace("Novum Testamentum", "Unrelated Journal")
+    bib_file.write_text(mutated_bib_cont, encoding="utf-8")
+    with pytest.raises(ValueError, match="Primary container mismatch: expected 'Novum Testamentum'"):
+        verify_cross_artifact_consistency(test_dir)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 6: Missing footnote witness in bibliography_leads.md
+    mutated_bib_fn = orig_bib.replace("fn. 13", "fn. 99")
+    bib_file.write_text(mutated_bib_fn, encoding="utf-8")
+    with pytest.raises(ValueError, match="Footnote mismatch: expected 13, got 99"):
+        verify_cross_artifact_consistency(test_dir)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+
+
 
 
 

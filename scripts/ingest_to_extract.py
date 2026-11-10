@@ -28,6 +28,7 @@ PROBE_QUERIES = {
     "S06F": "In Mireia Ryšková's The Reception of the Book of Isaiah in Paul's Letter to the Romans, how many direct quotations from Isaiah does the author state are analyzed in Romans?",
     "S07F": "In Pieter K. Baaij's Paulus als Schriftuitlegger: Genesis 15:5b-6 in Romeinen 4:3, what is the author's primary argument regarding Paul's use of Genesis 15:6 in Romans 4:3 and whether Paul acted as an accurate expositor of Hebrew Scripture?",
     "S08F": "In J. Paul Tanner's The New Covenant and Paul's Quotations from Hosea in Romans 9:25-26, what is the author's primary argument regarding how Paul uses Hosea 1:10 and 2:23 in relation to Gentile inclusion and the New Covenant?",
+    "S09F": "In Willem Oliver's Romans 10:5-13 Revisited, what is the author's primary argument regarding the structure of Romans 10:5-13 and Paul's use of Deuteronomy 30:12-14?",
 }
 
 
