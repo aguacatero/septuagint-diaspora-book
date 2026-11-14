@@ -128,7 +128,7 @@ FORBIDDEN_BIB_CONTAINERS = (
     "online publication",
     "research monograph",
     "vol. 38b",
-    "pp. 3–35",
+    "vol. 12, p. 23",
     "pp. 268–275",
     "pp. 556–563",
     "pp. 330–342",
@@ -141,9 +141,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 2006,
         "witness_token": "Ito",
         "ref_page": 12,
-        "ref_key": "Ito, A., 2006",
+        "ref_keys": ("Ito, A., 2006",),
+        "ref_entry_token": "written torah and the oral gospel",
         "container_type": "journal",
-        "container_tokens": ("Novum Testamentum", "48", "3", "234–260"),
+        "container_fields": {
+            "Type": "journal",
+            "Venue": "*Novum Testamentum*",
+            "Vol.": "48",
+            "No.": "3",
+            "Pages": "234–260",
+            "DOI/URL": "http://dx.doi.org/10.1163/156853606777836381",
+        },
         "forbidden_tokens": (),
         "printed_pages": (4, 5, 6, 8, 9),
         "pdf_pages": (4, 5, 6, 8, 9),
@@ -155,10 +163,18 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1999,
         "witness_token": "Hart",
         "ref_page": 12,
-        "ref_key": "Hart, J.F., 1999",
+        "ref_keys": ("Hart, J.F., 1999",),
+        "ref_entry_token": "why confess christ",
         "container_type": "journal",
-        "container_tokens": ("Journal of the Grace Evangelical Society", "12", "23", "faithalone.org"),
-        "forbidden_tokens": ("pp. 3–35", "3–35"),
+        "container_fields": {
+            "Type": "journal",
+            "Venue": "*Journal of the Grace Evangelical Society*",
+            "Oliver Raw Container": "12, 23 (no issue/page label printed in Oliver p. 12)",
+            "Pages in Oliver 2015": "UNKNOWN",
+            "DOI/URL": "http://www.faithalone.org/journal/1999ii/J23-99b.htm (viewed 14 November 2014)",
+        },
+        "external_verification_tokens": ("Vol. 12, No. 23", "pp. 3–35", "faithalone.org"),
+        "forbidden_tokens": ("p. 23", "pp. 23"),
         "printed_pages": (1, 2, 3, 4, 5, 7, 8),
         "pdf_pages": (1, 2, 3, 4, 5, 7, 8),
         "footnotes": ((5, 11),),
@@ -169,9 +185,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1988,
         "witness_token": "Dunn",
         "ref_page": 12,
-        "ref_key": "Dunn, J.D.G., 1988a",
+        "ref_keys": ("Dunn, J.D.G., 1988a", "Dunn, J.D.G., 1988b"),
+        "ref_entry_token": "word biblical commentary",
         "container_type": "book",
-        "container_tokens": ("Word Biblical Commentary", "Dallas, TX", "Word Books"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "Word Biblical Commentary",
+            "Series Vol.": "UNKNOWN in Oliver 2015",
+            "City": "Dallas, TX",
+            "Publisher": "Word Books",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": ("38B",),
         "printed_pages": (2, 3, 4, 8),
         "pdf_pages": (2, 3, 4, 8),
@@ -183,9 +207,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 2012,
         "witness_token": "Kruse",
         "ref_page": 12,
-        "ref_key": "Kruse, C.G., 2012",
+        "ref_keys": ("Kruse, C.G., 2012",),
+        "ref_entry_token": "pillar new testament commentary",
         "container_type": "book",
-        "container_tokens": ("The Pillar New Testament Commentary", "Cambridge", "Eerdmans"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "The Pillar New Testament Commentary",
+            "Series Vol.": "None printed",
+            "City": "Cambridge",
+            "Publisher": "Wm B Eerdmans Publishing Co.",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": ("Grand Rapids",),
         "printed_pages": (1, 4, 7, 8),
         "pdf_pages": (1, 4, 7, 8),
@@ -197,9 +229,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1988,
         "witness_token": "Eckstein",
         "ref_page": 12,
-        "ref_key": "Eckstein, H-J., 1988",
+        "ref_keys": ("Eckstein, H-J., 1988",),
+        "ref_entry_token": "nahe ist dir das wort",
         "container_type": "journal",
-        "container_tokens": ("Zeitschrift für Neutestamentliche Wissenschaft", "79", "204–220"),
+        "container_fields": {
+            "Type": "journal",
+            "Venue": "*Zeitschrift für Neutestamentliche Wissenschaft*",
+            "Vol.": "79",
+            "No.": "UNKNOWN",
+            "Pages": "204–220",
+            "DOI/URL": "UNKNOWN",
+        },
         "forbidden_tokens": (),
         "printed_pages": (3,),
         "pdf_pages": (3,),
@@ -211,9 +251,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1971,
         "witness_token": "Kaiser",
         "ref_page": 12,
-        "ref_key": "Kaiser, W.C. (Jr.), 1971",
+        "ref_keys": ("Kaiser, W.C. (Jr.), 1971",),
+        "ref_entry_token": "leviticus 18:5 and paul",
         "container_type": "journal",
-        "container_tokens": ("Journal of the Evangelical Theological Society", "14", "1", "20–28"),
+        "container_fields": {
+            "Type": "journal",
+            "Venue": "*Journal of the Evangelical Theological Society*",
+            "Vol.": "14",
+            "No.": "1",
+            "Pages": "20–28",
+            "DOI/URL": "UNKNOWN",
+        },
         "forbidden_tokens": (),
         "printed_pages": (3,),
         "pdf_pages": (3,),
@@ -225,9 +273,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 2011,
         "witness_token": "Dunson",
         "ref_page": 12,
-        "ref_key": "Dunson, B.C., 2011",
+        "ref_keys": ("Dunson, B.C., 2011",),
+        "ref_entry_token": "salvation of the individual or life in community",
         "container_type": "journal",
-        "container_tokens": ("Journal for the Study of the New Testament", "34", "1", "19–46"),
+        "container_fields": {
+            "Type": "journal",
+            "Venue": "*Journal for the Study of the New Testament*",
+            "Vol.": "34",
+            "No.": "1",
+            "Pages": "19–46",
+            "DOI/URL": "http://dx.doi.org/10.1177/0142064X11415328",
+        },
         "forbidden_tokens": (),
         "printed_pages": (2, 3, 6, 7, 11),
         "pdf_pages": (2, 3, 6, 7, 11),
@@ -239,9 +295,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1991,
         "witness_token": "Schlatter",
         "ref_page": 12,
-        "ref_key": "Schlatter, A., 1991",
+        "ref_keys": ("Schlatter, A., 1991",),
+        "ref_entry_token": "gottes gerechtigkeit",
         "container_type": "book",
-        "container_tokens": ("Stuttgart", "Calver Verlag"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "None",
+            "Series Vol.": "None",
+            "City": "Stuttgart",
+            "Publisher": "Calver Verlag",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": (),
         "printed_pages": (9,),
         "pdf_pages": (9,),
@@ -253,9 +317,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1981,
         "witness_token": "Aho",
         "ref_page": 11,
-        "ref_key": "Aho, G., 1981",
+        "ref_keys": ("Aho, G., 1981",),
+        "ref_entry_token": "3d sunday in lent",
         "container_type": "journal",
-        "container_tokens": ("Concordia Theological Quarterly", "45", "4", "308–309"),
+        "container_fields": {
+            "Type": "journal",
+            "Venue": "*Concordia Theological Quarterly*",
+            "Vol.": "45",
+            "No.": "4",
+            "Pages": "308–309",
+            "DOI/URL": "UNKNOWN",
+        },
         "forbidden_tokens": (),
         "printed_pages": (3, 8),
         "pdf_pages": (3, 8),
@@ -267,9 +339,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1996,
         "witness_token": "Moo",
         "ref_page": 12,
-        "ref_key": "Moo, D.J., 1996",
+        "ref_keys": ("Moo, D.J., 1996",),
+        "ref_entry_token": "new international commentary on the new testament",
         "container_type": "book",
-        "container_tokens": ("New International Commentary on the New Testament", "Grand Rapids, MI", "Eerdmans"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "New International Commentary on the New Testament",
+            "Series Vol.": "None printed",
+            "City": "Grand Rapids, MI",
+            "Publisher": "Wm. B. Eerdmans Publishing Co.",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": (),
         "printed_pages": (2, 8),
         "pdf_pages": (2, 8),
@@ -281,9 +361,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1959,
         "witness_token": "Ridderbos",
         "ref_page": 12,
-        "ref_key": "Ridderbos, H., 1959",
+        "ref_keys": ("Ridderbos, H., 1959",),
+        "ref_entry_token": "aan de romeinen",
         "container_type": "book",
-        "container_tokens": ("Kampen", "JH Kok"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "Commentaar op het Nieuwe Testament",
+            "Series Vol.": "None printed",
+            "City": "Kampen",
+            "Publisher": "NV Uitgeversmaatschappij JH Kok",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": (),
         "printed_pages": (6,),
         "pdf_pages": (6,),
@@ -295,9 +383,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1989,
         "witness_token": "Hodges",
         "ref_page": 12,
-        "ref_key": "Hodges, Z.C., 1989",
+        "ref_keys": ("Hodges, Z.C., 1989",),
+        "ref_entry_token": "absolutely free",
         "container_type": "book",
-        "container_tokens": ("Dallas, TX", "Redención Viva"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "None",
+            "Series Vol.": "None",
+            "City": "Dallas, TX",
+            "Publisher": "Redención Viva",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": (),
         "printed_pages": (7, 8, 9),
         "pdf_pages": (7, 8, 9),
@@ -309,9 +405,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 2002,
         "witness_token": "Wagner",
         "ref_page": 12,
-        "ref_key": "Wagner, J.R., 2002",
+        "ref_keys": ("Wagner, J.R., 2002",),
+        "ref_entry_token": "heralds of the good news",
         "container_type": "book",
-        "container_tokens": ("Novum Testamentum, suppl. 101", "Leiden/Boston/Köln", "EJ Brill"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "Novum Testamentum, suppl.",
+            "Series Vol.": "101",
+            "City": "Leiden/Boston/Köln",
+            "Publisher": "EJ Brill",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": (),
         "printed_pages": (5,),
         "pdf_pages": (5,),
@@ -323,9 +427,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1991,
         "witness_token": "Sandnes",
         "ref_page": 12,
-        "ref_key": "Sandnes, K.O., 1991",
+        "ref_keys": ("Sandnes, K.O., 1991",),
+        "ref_entry_token": "one of the prophets",
         "container_type": "book",
-        "container_tokens": ("43/2", "Tübingen", "JCB Mohr"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "Wissenschaftliche Untersuchungen zum Neuen Testament",
+            "Series Vol.": "43/2",
+            "City": "Tübingen",
+            "Publisher": "JCB Mohr",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": (),
         "printed_pages": (5,),
         "pdf_pages": (5,),
@@ -337,9 +449,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1983,
         "witness_token": "Derrett",
         "ref_page": 12,
-        "ref_key": "Derrett, J.D.M., 1983",
+        "ref_keys": ("Derrett, J.D.M., 1983",),
+        "ref_entry_token": "reason for the cock-crowings",
         "container_type": "journal",
-        "container_tokens": ("New Testament Studies", "29", "1", "142–144"),
+        "container_fields": {
+            "Type": "journal",
+            "Venue": "*New Testament Studies*",
+            "Vol.": "29",
+            "No.": "1",
+            "Pages": "142–144",
+            "DOI/URL": "http://dx.doi.org/10.1017/S002868850001122X",
+        },
         "forbidden_tokens": (),
         "printed_pages": (4,),
         "pdf_pages": (4,),
@@ -351,9 +471,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1942,
         "witness_token": "Lund",
         "ref_page": 12,
-        "ref_key": "Lund, N.W., 1942",
+        "ref_keys": ("Lund, N.W., 1942",),
+        "ref_entry_token": "chiasmus in the new testament",
         "container_type": "book",
-        "container_tokens": ("Chapel Hill, NC", "The University of North Carolina Press"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "None",
+            "Series Vol.": "None",
+            "City": "Chapel Hill, NC",
+            "Publisher": "The University of North Carolina Press",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": (),
         "printed_pages": (1, 2),
         "pdf_pages": (1, 2),
@@ -365,9 +493,16 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 2013,
         "witness_token": "Gibbs",
         "ref_page": 12,
-        "ref_key": "Gibbs, J.M., 2013",
+        "ref_keys": ("Gibbs, J.M., 2013",),
+        "ref_entry_token": "chiastic structuring",
         "container_type": "web_resource",
-        "container_tokens": ("Dated web resource", "newtestamentresearch.com", "viewed 11 November 2014", "chiastic_structuring.htm", "UNKNOWN"),
+        "container_fields": {
+            "Type": "web_resource",
+            "Site": "newtestamentresearch.com",
+            "Viewed": "11 November 2014",
+            "URL": "http://newtestamentresearch.com/nt%20research-mk%202/chiastic_structuring.htm",
+            "Publisher Status": "Formal publisher/monograph status UNKNOWN in Oliver 2015",
+        },
         "forbidden_tokens": ("Online Publication", "Research Monograph"),
         "printed_pages": (2,),
         "pdf_pages": (2,),
@@ -379,9 +514,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1980,
         "witness_token": "Wilckens",
         "ref_page": 12,
-        "ref_key": "Wilckens, U., 1980",
+        "ref_keys": ("Wilckens, U., 1980",),
+        "ref_entry_token": "benziger verlag",
         "container_type": "book",
-        "container_tokens": ("6", "Zürich", "Benziger Verlag"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "Evangelisch-Katholischer Kommentar zum Neuen Testament",
+            "Series Vol.": "6",
+            "City": "Zürich",
+            "Publisher": "Benziger Verlag",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": (),
         "printed_pages": (6,),
         "pdf_pages": (6,),
@@ -393,9 +536,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 2003,
         "witness_token": "Lohse",
         "ref_page": 12,
-        "ref_key": "Lohse, E., 2003",
+        "ref_keys": ("Lohse, E., 2003",),
+        "ref_entry_token": "vandenhoeck & ruprecht",
         "container_type": "book",
-        "container_tokens": ("4", "Göttingen", "Vandenhoeck & Ruprecht"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "Kritisch-exegetischer Kommentar über das Neue Testament",
+            "Series Vol.": "4",
+            "City": "Göttingen",
+            "Publisher": "Vandenhoeck & Ruprecht",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": (),
         "printed_pages": (6,),
         "pdf_pages": (6,),
@@ -407,9 +558,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1902,
         "witness_token": "Sanday",
         "ref_page": 12,
-        "ref_key": "Sanday, W. & Headlam, A.C., 1902",
+        "ref_keys": ("Sanday, W. & Headlam, A.C., 1902",),
+        "ref_entry_token": "critical and exegetical commentary",
         "container_type": "book",
-        "container_tokens": ("Edinburgh", "T & T Clark"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "None printed in Oliver Ref",
+            "Series Vol.": "None",
+            "City": "Edinburgh",
+            "Publisher": "T & T Clark",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": (),
         "printed_pages": (7, 8),
         "pdf_pages": (7, 8),
@@ -421,9 +580,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1973,
         "witness_token": "Käsemann",
         "ref_page": 12,
-        "ref_key": "Käsemann, E., 1973",
+        "ref_keys": ("Käsemann, E., 1973",),
+        "ref_entry_token": "handbuch zum neuen testament",
         "container_type": "book",
-        "container_tokens": ("Handbuch zum Neuen Testament 8a", "Tübingen", "Mohr Siebeck", "UNKNOWN"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "Handbuch zum Neuen Testament",
+            "Series Vol.": "8a",
+            "City": "Tübingen",
+            "Publisher": "Mohr Siebeck",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": ("pp. 268–275", "268–275"),
         "printed_pages": (2,),
         "pdf_pages": (2,),
@@ -435,9 +602,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1994,
         "witness_token": "Bechtler",
         "ref_page": 11,
-        "ref_key": "Bechtler, S.R., 1994",
+        "ref_keys": ("Bechtler, S.R., 1994",),
+        "ref_entry_token": "goal of romans 10:4",
         "container_type": "journal",
-        "container_tokens": ("Catholic Biblical Quarterly", "56", "2", "288–308"),
+        "container_fields": {
+            "Type": "journal",
+            "Venue": "*Catholic Biblical Quarterly*",
+            "Vol.": "56",
+            "No.": "2",
+            "Pages": "288–308",
+            "DOI/URL": "UNKNOWN",
+        },
         "forbidden_tokens": ("Christ, the End of the Law",),
         "printed_pages": (1, 6, 7),
         "pdf_pages": (1, 6, 7),
@@ -449,9 +624,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 1998,
         "witness_token": "Schreiner",
         "ref_page": 12,
-        "ref_key": "Schreiner, T.R., 1998",
+        "ref_keys": ("Schreiner, T.R., 1998",),
+        "ref_entry_token": "baker exegetical commentary",
         "container_type": "book",
-        "container_tokens": ("Baker Exegetical Commentary on the New Testament", "Grand Rapids, MI", "Baker Book House", "UNKNOWN"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "Baker Exegetical Commentary on the New Testament",
+            "Series Vol.": "None printed",
+            "City": "Grand Rapids, MI",
+            "Publisher": "Baker Book House",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": ("pp. 556–563", "556–563"),
         "printed_pages": (8,),
         "pdf_pages": (8,),
@@ -463,9 +646,18 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 2002,
         "witness_token": "Wright",
         "ref_page": 12,
-        "ref_key": "Wright, N.T., 2002",
+        "ref_keys": ("Wright, N.T., 2002",),
+        "ref_entry_token": "new interpreter's bible",
         "container_type": "chapter",
-        "container_tokens": ("L.E. Keck (ed.)", "The new interpreter’s Bible", "Vol. X", "pp. 393–770", "Nashville, TN", "Abingdon Press"),
+        "container_fields": {
+            "Type": "chapter",
+            "Editors": "L.E. Keck (ed.)",
+            "Book": "*The new interpreter’s Bible*",
+            "Vol.": "Vol. X",
+            "Pages": "pp. 393–770",
+            "City": "Nashville, TN",
+            "Publisher": "Abingdon Press",
+        },
         "forbidden_tokens": (),
         "printed_pages": (2,),
         "pdf_pages": (2,),
@@ -477,9 +669,17 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 2004,
         "witness_token": "Watson",
         "ref_page": 12,
-        "ref_key": "Watson, F., 2004",
+        "ref_keys": ("Watson, F., 2004",),
+        "ref_entry_token": "hermeneutics of faith",
         "container_type": "book",
-        "container_tokens": ("London", "T & T Clark", "UNKNOWN"),
+        "container_fields": {
+            "Type": "book",
+            "Series": "None",
+            "Series Vol.": "None",
+            "City": "London",
+            "Publisher": "T & T Clark",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
         "forbidden_tokens": ("pp. 330–342", "330–342"),
         "printed_pages": (2, 3),
         "pdf_pages": (2, 3),
@@ -491,13 +691,69 @@ EXPECTED_BIBLIOGRAPHY_LEADS = [
         "year": 2007,
         "witness_token": "Seifrid",
         "ref_page": 12,
-        "ref_key": "Seifrid, M.A., 2007",
+        "ref_keys": ("Seifrid, M.A., 2007",),
+        "ref_entry_token": "new testament use of the old testament",
         "container_type": "chapter",
-        "container_tokens": ("G.K. Beale & D.A. Carson (eds.)", "Commentary on the New Testament use of the Old Testament", "pp. 607–694", "Grand Rapids, MI", "Baker Academic"),
+        "container_fields": {
+            "Type": "chapter",
+            "Editors": "G.K. Beale & D.A. Carson (eds.)",
+            "Book": "*Commentary on the New Testament use of the Old Testament*",
+            "Vol.": "None",
+            "Pages": "pp. 607–694",
+            "City": "Grand Rapids, MI",
+            "Publisher": "Baker Academic",
+        },
         "forbidden_tokens": (),
         "printed_pages": (2,),
         "pdf_pages": (2,),
         "footnotes": (),
+    },
+    {
+        "header": "Robert Jewett (2007)",
+        "citation": "*Romans: A commentary*",
+        "year": 2007,
+        "witness_token": "Jewett",
+        "ref_page": 12,
+        "ref_keys": ("Jewett, R., 2007",),
+        "ref_entry_token": "hermeneia",
+        "container_type": "book",
+        "container_fields": {
+            "Type": "book",
+            "Series": "Hermeneia",
+            "Series Vol.": "None printed",
+            "City": "Minneapolis, MN",
+            "Publisher": "Fortress Press",
+            "Pages in Oliver 2015": "UNKNOWN",
+        },
+        "forbidden_tokens": (),
+        "printed_pages": (2, 3),
+        "pdf_pages": (2, 3),
+        "footnotes": ((2, 2),),
+        "supplemental": True,
+    },
+    {
+        "header": "R. Barry Matlock (2010)",
+        "citation": '*"Saving faith: The rhetoric and semantics of πίστις in Paul"*',
+        "year": 2010,
+        "witness_token": "Matlock",
+        "ref_page": 12,
+        "ref_keys": ("Matlock, R.B., 2010",),
+        "ref_entry_token": "saving faith",
+        "container_type": "chapter",
+        "container_fields": {
+            "Type": "chapter",
+            "Editors": "M.F. Bird & P.M. Sprinkle (eds.)",
+            "Book": "*The faith of Jesus Christ: Exegetical, biblical, and theological studies*",
+            "Vol.": "None",
+            "Pages": "pp. 73–89",
+            "City": "Milton Keynes",
+            "Publisher": "Paternoster Press",
+        },
+        "forbidden_tokens": (),
+        "printed_pages": (1, 3),
+        "pdf_pages": (1, 3),
+        "footnotes": (),
+        "supplemental": True,
     },
 ]
 
@@ -967,7 +1223,7 @@ def execute_full_volume_search(page_texts: list[str], witnesses: list[dict]) -> 
             "comparison": "Romans 10:13 / Joel 2:32",
             "patterns": [r"\b(?:romans|rom|rm)\s*10:(?:[^;\n]*,\s*)?13\b", r"\bJoel\s*2:32\b", r"\bJoel\s*3:5\b", r"\bJl\s*2:32\b"],
             "category": "SUBSTANTIVE_DISCUSSION",
-            "judgment": "Substantive discussion across pp. 4, 5, 7, 8, 9, 10, 11. Oliver analyzes the quotation of Joel 2:32 (Acts 2:17–21, p. 4 fn. 10), oral invocation resulting in salvation (σωθήσεται), and its link to apostolic preaching in verses 14–15.",
+            "judgment": "Substantive discussion across pp. 4, 5, 7, 8, 9, 10, 11. Oliver analyzes Paul's quotation of Joel 2:32 (noting Peter quotes Joel in Acts 2:17–21, p. 4 fn. 10, and Paul reuses the invocation wording in 1 Cor 1:2, p. 4), oral invocation resulting in salvation (σωθήσεται), and its link to apostolic preaching in verses 14–15.",
         },
         {
             "id": "B001-6",
@@ -1155,6 +1411,22 @@ def _verify_extraction_artifact(source_dir: Path, ledger_map: dict[str, dict]) -
                 f"extraction.md [{eid}]: Short Exact Quotation field mismatch:\n  Ledger: '{norm_row_quote}'\n  Ext field: '{norm_field_quote}'"
             )
 
+        # 7. NotebookLM Citation (line-anchored, exact 1 line, normalized equality with ledger)
+        cit_lines = re.findall(r"(?m)^-\s+\*\*NotebookLM Citation:\*\*\s*([^\n]+)$", blk)
+        if len(cit_lines) != 1:
+            raise ValueError(f"extraction.md [{eid}]: Expected exactly one NotebookLM Citation line, found {len(cit_lines)}")
+
+        def _norm_cit(val: str) -> str:
+            cleaned = val.strip().strip('"` ').strip()
+            return normalize_text_for_match(cleaned)
+
+        norm_row_cit = _norm_cit(row["notebooklm_citation"])
+        norm_ext_cit = _norm_cit(cit_lines[0])
+        if not norm_row_cit or norm_row_cit != norm_ext_cit:
+            raise ValueError(
+                f"extraction.md [{eid}]: NotebookLM Citation mismatch:\n  Ledger: '{norm_row_cit}'\n  Ext: '{norm_ext_cit}'"
+            )
+
 
 def _verify_canonical_queue_alignment() -> None:
     """Verify CANONICAL_B001_COMPARISONS against research-queue/B001-pauline-txt-pilot.md when present."""
@@ -1246,8 +1518,74 @@ def _verify_relevance_scan_and_canonical(source_dir: Path, check_search_log: boo
                     raise ValueError(f"full_volume_search_log.md [{b_id}]: Expected category {exp_cat}, got {cat_str}")
 
 
+def _parse_structured_container(cont_val: str) -> dict[str, str]:
+    """Parse strict `Key: Value | Key: Value` bibliographic container lines without trailing prose."""
+    cleaned = cont_val.strip()
+    if cleaned.startswith("`") and cleaned.endswith("`"):
+        cleaned = cleaned[1:-1].strip()
+    parts = [p.strip() for p in cleaned.split(" | ")]
+    if not parts:
+        raise ValueError(f"Empty Container / Venue string: '{cont_val}'")
+    parsed: dict[str, str] = {}
+    for part in parts:
+        m = re.match(r"^([^:|]+):\s*(.+)$", part)
+        if not m:
+            raise ValueError(f"Malformed Container / Venue field segment '{part}' in '{cont_val}'")
+        k = m.group(1).strip()
+        v = m.group(2).strip()
+        if k in parsed:
+            raise ValueError(f"Duplicate Container / Venue field key '{k}' in '{cont_val}'")
+        parsed[k] = v
+    return parsed
+
+
+def _parse_oliver_references_page(ref_val: str) -> tuple[int, tuple[str, ...]]:
+    """Parse anchored `Printed p. <N> [PDF p. <N>] (`key1`, ...)` without unparsed trailing text."""
+    m = re.fullmatch(
+        r"`?Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]`?\s*\((.+)\)",
+        ref_val.strip(),
+    )
+    if not m:
+        raise ValueError(f"Oliver References Page must match single-page strict grammar, got '{ref_val}'")
+    prn = int(m.group(1))
+    pdf = int(m.group(2))
+    if prn != pdf:
+        raise ValueError(f"Monotonic mismatch in Oliver References Page: Printed p. {prn} != PDF p. {pdf}")
+    inner = m.group(3).strip()
+    keys = tuple(re.findall(r"`([^`]+)`", inner))
+    expected_inner = ", ".join(f"`{k}`" for k in keys)
+    if not keys or expected_inner != inner:
+        raise ValueError(f"Malformed reference key tuple '{inner}' in '{ref_val}'")
+    return prn, keys
+
+
+def _extract_pdf_reference_entry(ref_txt: str, ref_key: str) -> str:
+    """Extract the specific reference entry block headed by `ref_key` on pp. 11–12."""
+    m_start = re.search(rf"(?m)^{re.escape(ref_key)}", ref_txt)
+    if not m_start:
+        raise ValueError(f"PDF References page missing entry header starting with '{ref_key}'")
+    rest = ref_txt[m_start.end():]
+    m_next = re.search(
+        r"(?m)^(?:[A-Z][A-Za-zÀ-ÿ' .-]+,\s+(?:[A-Z]\.|W\. &|G\.K\.|H\.G\.|J\.P\.|B\.M\.)|http://www\.hts\.org\.za|doi:10\.)",
+        rest,
+    )
+    end_offset = m_next.start() if m_next else len(rest)
+    return ref_txt[m_start.start(): m_start.end() + end_offset]
+
+
+def _extract_pdf_footnote_body(pg_txt: str, fn_num: int) -> str:
+    """Extract the specific footnote body text starting with `^{fn_num}.` on the target page."""
+    m_start = re.search(rf"(?m)^{fn_num}\.", pg_txt)
+    if not m_start:
+        raise ValueError(f"Footnote {fn_num}. header not found on page")
+    rest = pg_txt[m_start.end():]
+    m_next = re.search(r"(?m)^(?:\d+\.|http://www\.hts\.org\.za|doi:10\.)", rest)
+    end_offset = m_next.start() if m_next else len(rest)
+    return pg_txt[m_start.start(): m_start.end() + end_offset]
+
+
 def _verify_supporting_prose_artifacts(source_dir: Path) -> None:
-    """Verify synthesis headings/loci and clean prose discipline across argument_map & counterevidence."""
+    """Verify synthesis headings/loci, self-audit provenance, and clean prose discipline."""
     synth_path = source_dir / "oliver_romans_10_chiasm_synthesis.md"
     if not synth_path.is_file():
         raise FileNotFoundError(f"Missing oliver_romans_10_chiasm_synthesis.md in {source_dir}")
@@ -1264,6 +1602,9 @@ def _verify_supporting_prose_artifacts(source_dir: Path) -> None:
                 f"synthesis missing expected locus '{expected_loc}' within its subsection block '{subsec_title}'"
             )
 
+    if re.search(r"Peter quotes\s+\*{0,2}Acts\s+2:17", synth_txt):
+        raise ValueError("synthesis: Must state Peter quotes Joel in Acts 2:17–21, not that Peter quotes Acts 2:17–21")
+
     for fname in ("argument_map.md", "counterevidence.md"):
         fpath = source_dir / fname
         if not fpath.is_file():
@@ -1274,10 +1615,32 @@ def _verify_supporting_prose_artifacts(source_dir: Path) -> None:
                 raise ValueError(f"{fname}: Raw NotebookLM UI token '{ui_tok.strip()}' must be removed")
         if "Acts 2:21" in ftxt:
             raise ValueError(f"{fname}: Erroneous 'Acts 2:21' reference must be corrected to 'Acts 2:17–21'")
+        if re.search(r"Peter quotes\s+\*{0,2}Acts\s+2:17", ftxt):
+            raise ValueError(f"{fname}: Must state Peter quotes Joel in Acts 2:17–21, not that Peter quotes Acts 2:17–21")
+
+    ce_txt = (source_dir / "counterevidence.md").read_text(encoding="utf-8")
+    for req_ce in (
+        "Hart", "Hodges", "13:11", "Hodge", "Sanday", "Barclay", "Boice", "Godet",
+        "Nygren", "Moo", "Rm 9:30; 10:4, 11", "Aho", "Kruse", "Ito", "Dunn", "Johnson",
+        "Murray", "Shedd", "Schreiner", "Hapax Legomenon", "total contrast", "odd exception",
+        "clear symphony", "Lund", "Fetler", "Jewett", "Matlock", "P01F-P005", "P03F-P004",
+    ):
+        if req_ce not in ce_txt:
+            raise ValueError(f"counterevidence.md: Missing required Round 3 counterevidence/locator element '{req_ce}'")
+
+    audit_path = source_dir / "notebooklm_self_audit.md"
+    if not audit_path.is_file():
+        raise FileNotFoundError(f"Missing notebooklm_self_audit.md in {source_dir}")
+    audit_txt = audit_path.read_text(encoding="utf-8")
+    if "PC01–PC11" in audit_txt:
+        raise ValueError("notebooklm_self_audit.md: Stale 'PC01–PC11' count must be corrected to 'PC01–PC12'")
+    for req_aud in ("12 positive controls", "PC01–PC12", "72", "prompt_2_raw.json", "prompt_4_raw.json", "S09F-E009", "S09F-E010", "28 leads total"):
+        if req_aud not in audit_txt:
+            raise ValueError(f"notebooklm_self_audit.md: Missing required reconciliation token '{req_aud}'")
 
 
 def _verify_bibliography_leads(source_dir: Path, page_texts: list[str] | None = None) -> None:
-    """Enforce exact 26-lead inventory, structured metadata, locators, provenance, and PDF witness fidelity."""
+    """Enforce exact 28-lead inventory, structured container equality, anchored ref page, and PDF bindings."""
     bib_path = source_dir / "bibliography_leads.md"
     if not bib_path.is_file():
         raise FileNotFoundError(f"Missing bibliography_leads.md in {source_dir}")
@@ -1326,12 +1689,30 @@ def _verify_bibliography_leads(source_dir: Path, page_texts: list[str] | None = 
         cont_lines = re.findall(r"(?m)^-\s+\*\*Container / Venue:\*\*\s*([^\n]+)$", blk)
         if len(cont_lines) != 1:
             raise ValueError(f"bibliography_leads.md [{lead_header}]: Expected 1 Container / Venue line, found {len(cont_lines)}")
-        cont_val = cont_lines[0].strip()
-        for tok in lead["container_tokens"]:
-            if tok.lower() not in cont_val.lower():
+        parsed_container = _parse_structured_container(cont_lines[0].strip())
+        expected_fields = lead["container_fields"]
+        if set(parsed_container.keys()) != set(expected_fields.keys()):
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Container field keys mismatch: "
+                f"expected {sorted(expected_fields.keys())}, got {sorted(parsed_container.keys())}"
+            )
+        for fk, expected_fv in expected_fields.items():
+            if normalize_text_for_match(parsed_container[fk]) != normalize_text_for_match(expected_fv):
                 raise ValueError(
-                    f"bibliography_leads.md [{lead_header}]: Container / Venue missing required token '{tok}' in '{cont_val}'"
+                    f"bibliography_leads.md [{lead_header}]: Container field '{fk}' mismatch: "
+                    f"expected '{expected_fv}', got '{parsed_container[fk]}'"
                 )
+
+        if "external_verification_tokens" in lead:
+            ext_lines = re.findall(r"(?m)^-\s+\*\*External Bibliographic Verification:\*\*\s*([^\n]+)$", blk)
+            if len(ext_lines) != 1:
+                raise ValueError(f"bibliography_leads.md [{lead_header}]: Missing External Bibliographic Verification line")
+            for ext_tok in lead["external_verification_tokens"]:
+                if ext_tok.lower() not in ext_lines[0].lower():
+                    raise ValueError(
+                        f"bibliography_leads.md [{lead_header}]: External Bibliographic Verification missing '{ext_tok}'"
+                    )
+
         for bad_tok in lead["forbidden_tokens"]:
             if bad_tok.lower() in blk.lower():
                 raise ValueError(
@@ -1343,11 +1724,11 @@ def _verify_bibliography_leads(source_dir: Path, page_texts: list[str] | None = 
             raise ValueError(
                 f"bibliography_leads.md [{lead_header}]: Expected 1 Oliver References Page line, found {len(ref_lines)}"
             )
-        ref_val = ref_lines[0].strip()
-        exp_ref_marker = f"Printed p. {lead['ref_page']} [PDF p. {lead['ref_page']}]"
-        if exp_ref_marker not in ref_val or lead["ref_key"] not in ref_val:
+        parsed_ref_page, parsed_ref_keys = _parse_oliver_references_page(ref_lines[0].strip())
+        if parsed_ref_page != lead["ref_page"] or parsed_ref_keys != lead["ref_keys"]:
             raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: Oliver References Page mismatch: expected '{exp_ref_marker}' & '{lead['ref_key']}', got '{ref_val}'"
+                f"bibliography_leads.md [{lead_header}]: Oliver References Page mismatch: "
+                f"expected (p. {lead['ref_page']}, {lead['ref_keys']}), got (p. {parsed_ref_page}, {parsed_ref_keys})"
             )
 
         loc_lines = re.findall(r"(?m)^-\s+\*\*Oliver Locators:\*\*\s*([^\n]+)$", blk)
@@ -1382,20 +1763,25 @@ def _verify_bibliography_leads(source_dir: Path, page_texts: list[str] | None = 
 
         if page_texts is not None:
             ref_txt = page_texts[lead["ref_page"] - 1]
-            if lead["witness_token"] not in ref_txt or str(lead["year"]) not in ref_txt:
-                raise ValueError(
-                    f"bibliography_leads.md [{lead_header}]: PDF Reference page {lead['ref_page']} witness check failed"
-                )
+            for rk in lead["ref_keys"]:
+                entry_txt = _extract_pdf_reference_entry(ref_txt, rk)
+                norm_entry = normalize_text_for_match(entry_txt)
+                if str(lead["year"]) not in norm_entry or normalize_text_for_match(lead["ref_entry_token"]) not in norm_entry:
+                    raise ValueError(
+                        f"bibliography_leads.md [{lead_header}]: PDF Reference entry '{rk}' on p. {lead['ref_page']} "
+                        f"failed token/year witness check ('{lead['ref_entry_token']}')"
+                    )
             for pg in parsed_bib_loc["printed_pages"]:
                 if lead["witness_token"] not in page_texts[pg - 1]:
                     raise ValueError(
                         f"bibliography_leads.md [{lead_header}]: Witness token '{lead['witness_token']}' not found on PDF p. {pg}"
                     )
             for fn_pg, fn_num in parsed_bib_loc["footnotes"]:
-                pg_txt = page_texts[fn_pg - 1]
-                if not re.search(rf"(?m)^{fn_num}\.", pg_txt):
+                fn_body = _extract_pdf_footnote_body(page_texts[fn_pg - 1], fn_num)
+                if lead["witness_token"] not in fn_body or str(lead["year"]) not in fn_body:
                     raise ValueError(
-                        f"bibliography_leads.md [{lead_header}]: Footnote {fn_num} not found on PDF p. {fn_pg}"
+                        f"bibliography_leads.md [{lead_header}]: Witness '{lead['witness_token']} ({lead['year']})' "
+                        f"not bound inside footnote {fn_num} on PDF p. {fn_pg}"
                     )
 
 
@@ -1425,6 +1811,9 @@ def verify_cross_artifact_consistency(
         raise ValueError(f"provenance_manifest.json: expected source_id S09F, got {man.get('source_id')}")
     if man.get("ingested_volume", {}).get("sha256") != EXPECTED_RAW_PDF_SHA256:
         raise ValueError("provenance_manifest.json: raw PDF SHA-256 mismatch")
+    art_struct = man.get("ingested_volume", {}).get("page_mapping", {}).get("article_structure", "")
+    if "Figure 1, p. 4; Figure 2, p. 6; Figure 3, p. 9" not in art_struct or "Figures 1-3: Chiasms and word combinations (pp. 4, 7)" in art_struct:
+        raise ValueError(f"provenance_manifest.json: Figures 1-3 must map to pp. 4, 6, 9, got '{art_struct}'")
 
 
 def generate_search_log_markdown(

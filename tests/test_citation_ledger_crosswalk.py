@@ -4045,8 +4045,8 @@ def test_s09f_cross_artifact_adversarial_mutations(tmp_path):
     # Mutation 14 (R2-F4b): Fake Gibbs container restoring "Online Publication"
     bib_file.write_text(
         orig_bib.replace(
-            "Dated web resource: `newtestamentresearch.com` (viewed 11 November 2014; URL `http://newtestamentresearch.com/nt%20research-mk%202/chiastic_structuring.htm`; formal publisher/monograph status `UNKNOWN` in Oliver 2015)",
-            "Online Publication / Research Monograph: `newtestamentresearch.com`",
+            "Type: web_resource | Site: newtestamentresearch.com | Viewed: 11 November 2014 | URL: http://newtestamentresearch.com/nt%20research-mk%202/chiastic_structuring.htm | Publisher Status: Formal publisher/monograph status UNKNOWN in Oliver 2015",
+            "Type: web_resource | Site: Online Publication / Research Monograph: newtestamentresearch.com",
         ),
         encoding="utf-8",
     )
@@ -4054,7 +4054,7 @@ def test_s09f_cross_artifact_adversarial_mutations(tmp_path):
         verify_cross_artifact_consistency(test_dir)
     bib_file.write_text(orig_bib, encoding="utf-8")
 
-    # Mutation 15 (R2-F4c): Incorrect bibliographic metadata (Bechtler title / Kruse city / Hart external pages)
+    # Mutation 15 (R2-F4c & R3-F2): Incorrect bibliographic metadata & strict structured equality
     bib_file.write_text(
         orig_bib.replace(
             '*"Christ, the Τέλος of the law: The goal of Romans 10:4"*',
@@ -4067,10 +4067,46 @@ def test_s09f_cross_artifact_adversarial_mutations(tmp_path):
     bib_file.write_text(orig_bib, encoding="utf-8")
 
     bib_file.write_text(
-        orig_bib.replace("Cambridge: Wm B Eerdmans Publishing Co.", "Grand Rapids, MI: Wm B Eerdmans Publishing Co."),
+        orig_bib.replace("City: Cambridge | Publisher: Wm B Eerdmans Publishing Co.", "City: Grand Rapids, MI | Publisher: Wm B Eerdmans Publishing Co."),
         encoding="utf-8",
     )
-    with pytest.raises(ValueError, match="Container / Venue missing required token 'Cambridge'"):
+    with pytest.raises(ValueError, match="Container field 'City' mismatch"):
+        verify_cross_artifact_consistency(test_dir)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # R3-F2a: Ito fake-venue trailing-prose counterexample fails closed under strict equality
+    bib_file.write_text(
+        orig_bib.replace(
+            "Venue: *Novum Testamentum* | Vol.: 48 | No.: 3 | Pages: 234–260",
+            "Venue: *Novum Testamentum* (Fake Journal) | Vol.: 48 | No.: 3 | Pages: 234–260",
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="Container field 'Venue' mismatch"):
+        verify_cross_artifact_consistency(test_dir)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # R3-F2b: False/extra reference-page tuple on Ito fails closed under anchored parser
+    bib_file.write_text(
+        orig_bib.replace(
+            "`Printed p. 12 [PDF p. 12]` (`Ito, A., 2006`)",
+            "`Printed p. 12 [PDF p. 12]` and p. 11 (`Ito, A., 2006`)",
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="Oliver References Page must match single-page strict grammar"):
+        verify_cross_artifact_consistency(test_dir)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # R3-F2c: Hart p. 23 / pp. 23 regression rejected
+    bib_file.write_text(
+        orig_bib.replace(
+            "Vol. 12, No. 23 (Autumn 1999), pp. 3–35",
+            "Vol. 12, p. 23 (Autumn 1999)",
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="Forbidden unprinted/fabricated metadata|External Bibliographic Verification missing|Forbidden token"):
         verify_cross_artifact_consistency(test_dir)
     bib_file.write_text(orig_bib, encoding="utf-8")
 
@@ -4091,16 +4127,60 @@ def test_s09f_cross_artifact_adversarial_mutations(tmp_path):
         verify_cross_artifact_consistency(test_dir)
     bib_file.write_text(orig_bib, encoding="utf-8")
 
-    # Mutation 17 (R2-F4e): PDF text-layer witness verification rejects missing page witness
+    # Mutation 17 (R2-F4e & R3-F2d/e): PDF text-layer witness verification rejects missing page/footnote/entry witness
     if page_texts is not None:
         corrupted_pages = list(page_texts)
         corrupted_pages[0] = "Empty page without Kruse or Bechtler or Lund"
         with pytest.raises(ValueError, match="Witness token .* not found on PDF p. 1"):
             verify_cross_artifact_consistency(test_dir, page_texts=corrupted_pages)
 
+        # R3-F2d: Moving Käsemann (1973) out of fn. 2 onto body text on PDF p. 2 fails closed
+        fn_corrupted = list(page_texts)
+        fn_corrupted[1] = fn_corrupted[1].replace("Käsemann (1973)", "OtherScholar (1999)") + "\n"
+        fn_corrupted[1] = "Käsemann (1973) in body only\n" + fn_corrupted[1]
+        with pytest.raises(ValueError, match="not bound inside footnote 2 on PDF p. 2"):
+            verify_cross_artifact_consistency(test_dir, page_texts=fn_corrupted)
+
+        # R3-F2e: Corrupting Ito's specific reference entry on p. 12 fails even when 2006 exists elsewhere on p. 12
+        ref_corrupted = list(page_texts)
+        ref_corrupted[11] = ref_corrupted[11].replace("written Torah and the oral Gospel", "unrelated work title")
+        with pytest.raises(ValueError, match="PDF Reference entry 'Ito, A., 2006' on p. 12 failed"):
+            verify_cross_artifact_consistency(test_dir, page_texts=ref_corrupted)
+
+    # R3-F3: Stale Figures (pp. 4, 7) in provenance_manifest.json fails closed
+    man_file = test_dir / "provenance_manifest.json"
+    orig_man = man_file.read_text(encoding="utf-8")
+    man_file.write_text(
+        orig_man.replace("Figure 1, p. 4; Figure 2, p. 6; Figure 3, p. 9", "pp. 4, 7"),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="Figures 1-3 must map to pp. 4, 6, 9"):
+        verify_cross_artifact_consistency(test_dir)
+    man_file.write_text(orig_man, encoding="utf-8")
+
+
+def test_s09f_r3_f3_extraction_citation_equality(tmp_path):
+    """Enforce NotebookLM Citation equality between extraction.md and citation_ledger.csv (S09F-R3-F3)."""
+    import shutil
+    import pytest
+    from scripts.verify_s09f_negative_search import verify_cross_artifact_consistency
+
+    repo_root = Path(__file__).resolve().parent.parent
+    s09f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S09F"
+    test_dir = tmp_path / "S09F"
+    shutil.copytree(s09f_dir, test_dir)
+
+    ext_file = test_dir / "extraction.md"
+    orig_ext = ext_file.read_text(encoding="utf-8")
+    mutated_ext = orig_ext.replace("- **NotebookLM Citation:** [8]", "- **NotebookLM Citation:** [99999]")
+    assert mutated_ext != orig_ext
+    ext_file.write_text(mutated_ext, encoding="utf-8")
+    with pytest.raises(ValueError, match="NotebookLM Citation mismatch"):
+        verify_cross_artifact_consistency(test_dir)
+
 
 def test_s09f_r1_f1_textual_fidelity_joel_quotation():
-    """Verify S09F deliverables distinguish primary texts (P01F/P03F) from Oliver's secondary claims."""
+    """Verify S09F deliverables distinguish primary texts (P01F/P03F) from Oliver's claims and preserve R3 fixes."""
     repo_root = Path(__file__).resolve().parent.parent
     s09f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S09F"
 
@@ -4108,6 +4188,8 @@ def test_s09f_r1_f1_textual_fidelity_joel_quotation():
     arg_text = (s09f_dir / "argument_map.md").read_text(encoding="utf-8")
     cnt_text = (s09f_dir / "counterevidence.md").read_text(encoding="utf-8")
     aud_text = (s09f_dir / "notebooklm_self_audit.md").read_text(encoding="utf-8")
+    syn_text = (s09f_dir / "oliver_romans_10_chiasm_synthesis.md").read_text(encoding="utf-8")
+    bib_text = (s09f_dir / "bibliography_leads.md").read_text(encoding="utf-8")
     meta_text = (s09f_dir / "metadata.md").read_text(encoding="utf-8")
 
     # No assertions of verbatim quotation for Romans 10:13 / Joel 3:5
@@ -4115,20 +4197,34 @@ def test_s09f_r1_f1_textual_fidelity_joel_quotation():
         assert "verbatim quotation of lxx joel" not in text.lower(), f"{name} contains prohibited verbatim LXX Joel claim"
         assert "quotes joel 2:32 verbatim" not in text.lower(), f"{name} contains prohibited quotes Joel verbatim claim"
 
-    # Must explicitly state the text-critical adaptation: omission of καὶ ἔσται and introduction of γάρ
+    # Must explicitly state the text-critical adaptation and exact accepted primary IDs
     assert "καὶ ἔσται" in ext_text and "γάρ" in ext_text, "extraction.md must document omission of kai estai and addition of gar"
     assert "καὶ ἔσται" in cnt_text and "γάρ" in cnt_text, "counterevidence.md must document omission of kai estai and addition of gar"
     assert "καὶ ἔσται" in aud_text and "γάρ" in aud_text, "notebooklm_self_audit.md must document omission of kai estai and addition of gar"
+    assert "P01F-P005" in cnt_text and "P03F-P004" in cnt_text, "counterevidence.md must cite accepted primary IDs P01F-P005 and P03F-P004"
 
-    # R2-F2 source fidelity and locator cleanliness
+    # R2-F2 & R3 source fidelity and locator cleanliness
     for name, text in [("metadata.md", meta_text), ("argument_map.md", arg_text), ("counterevidence.md", cnt_text)]:
         for ui_tok in ("expand_more", "unfold_less", "keep_pin", "thumb_up", "\nThoughts\n"):
             assert ui_tok not in text, f"{name} contains stale NotebookLM UI token {ui_tok!r}"
+        assert "Peter quotes Acts 2:17" not in text and "Peter quotes **Acts 2:17" not in text
+    assert "Peter quotes Joel" in arg_text and "Peter quotes Joel" in cnt_text and "Peter quotes Joel" in syn_text
 
     assert "implicates them in his own context" in ext_text
     assert "4-3-2-1" in ext_text
     assert "Project Primary-Text Note" in cnt_text and "P01F-P004" in cnt_text and "P03F-P003" in cnt_text
     assert "Acts 2:17–21" in cnt_text and "Acts 2:21" not in cnt_text
+
+    # R3-F1: Restored counterevidence & supplemental direct-locus leads
+    for req in ("Nygren", "Rm 9:30; 10:4, 11", "Murray", "Shedd", "Hapax Legomenon", "total contrast", "odd exception", "Lund", "Fetler"):
+        assert req in cnt_text and req in arg_text, f"Missing restored R3-F1 element '{req}'"
+    assert "### Robert Jewett (2007)" in bib_text and "### R. Barry Matlock (2010)" in bib_text
+    assert "Vol. 12, No. 23 (Autumn 1999), pp. 3–35" in bib_text and "12, 23" in bib_text
+
+    # R3-F3: Self-audit PC01-PC12 & raw anchor reconciliation
+    assert "PC01–PC11" not in aud_text
+    assert "12 positive controls" in aud_text and "PC01–PC12" in aud_text
+    assert "72" in aud_text and "prompt_2_raw.json" in aud_text and "prompt_4_raw.json" in aud_text
 
 
 
