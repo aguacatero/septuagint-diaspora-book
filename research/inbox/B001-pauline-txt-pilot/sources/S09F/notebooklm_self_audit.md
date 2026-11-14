@@ -38,3 +38,43 @@ To eliminate ambiguity between exploratory browser captures and the 10 committed
 1. **Citation Ledger vs. Extraction Parity:** Every `evidence_id` (`S09F-E001`–`S09F-E010`), `b001_id`, `author_claim`, `short_quote`, `printed_page`, `source_locator`, and `notebooklm_citation` matches byte-for-byte / normalized-token equality between `citation_ledger.csv` and `extraction.md`.
 2. **Negative Search Audit:** Exhaustive automated pattern verification across all 12 PDF pages of `oliver_2015_romans_10.pdf` confirms `YES` exclusively on `B001-4` and `B001-5` and `NO` across all 10 remaining B001 loci, with all **12 positive controls (`PC01–PC12`)** verified against their target pages.
 3. **Bibliographic Audit Honesty:** All 26 selected bibliographic leads plus 2 supplemental direct-locus `B001-4` leads (`Robert Jewett (2007)` and `R. Barry Matlock (2010)`) = **28 leads total** in `bibliography_leads.md` are reconciled against Oliver (2015) pp. 1–12 (`References` on pp. 11–12) and exact body/footnote witnesses. Internal PDF text-layer matching is documented strictly as **source-witness provenance**, while J. F. Hart (`1999`) additionally records verified external JOTGES metadata (`Vol. 12, No. 23, Autumn 1999, pp. 3–35`) separately from Oliver's raw printed container (`12, 23`).
+
+---
+
+## 4. Round 4 Review Disposition
+
+- **Reviewed SHA:** `d9e0740fe81a137709ccf6ed0dbd2b1a18030c8f`
+- **Verdict:** `SOURCE_PACKET: ACCEPT` (GitHub PR #2 Comment [`#6871141165`](https://github.com/aguacatero/septuagint-diaspora-book/pull/2#issuecomment-6871141165))
+- **Findings Disposition:**
+  - **S09F-R3-F1:** CLOSED (counterevidence, exegetical alternatives, Lund/Fetler premise, and Jewett/Matlock supplemental direct-locus leads preserved).
+  - **S09F-R3-F2:** CLOSED (Hart raw `'12, 23'` segregated from externally confirmed Vol. 12, No. 23, Autumn 1999, pp. 3–35; strict structured container equality, anchored reference-page tuples, and reference-entry / footnote-body PDF bindings verified).
+  - **S09F-R3-F3:** CLOSED (`NotebookLM Citation` line-anchored equality enforced, `PC01–PC12` and 72 exploratory CDP anchor provenance reconciled, `provenance_manifest.json` Figures mapped to pp. 4, 6, 9, and `Acts 2:17–21` / `1 Cor 1:2` / `P01F-P005` / `P03F-P004` corrected).
+- **Nonblocking Scholarly Precision Note (Retain in Later Passage Synthesis):**
+  - On Oliver p. 7, Oliver explicitly allows the possibility that Hart's equation of calling on the Lord with confession of Christ's lordship may be true (`"This may be true, but..."`) before posing his conditional challenge as to why v. 13 omits `"believe"`. Subsequent passage synthesis (`B001-5`) must distinguish that conditional challenge from a categorical dismissal, and must likewise treat Oliver's wider Pauline theological tension (`pp. 10–11`) as Oliver's exegetical interpretation rather than proof of interpolation or distinct authorship.
+
+---
+
+## 5. Promotion to `SDP-01 Paul` (Cumulative Synthesis Notebook)
+
+- **Promotion Status:** `PROMOTED`
+- **Cumulative Notebook:** `SDP-01 Paul` (`65d4bea4-7939-4754-bb7b-09d420e8ff19`)
+- **Promoted Source:** `oliver_2015_romans_10.pdf` (602,923 bytes, SHA-256 `8148a72d1e0a3138df70a19156b8adbcd4482311bce4b3254fb2746175e31789`)
+- **Cumulative Source Count:** **12 of 12** unique PDF sources verified present in `SDP-01 Paul`:
+  1. `sblgnt.pdf` (`P01F`)
+  2. `swete_lxx_vol1_p02f_target.pdf` (`P02F`)
+  3. `swete_lxx_vol3_p03f_target.pdf` (`P03F`)
+  4. `aageson_1984_pauls_use_of_scripture.pdf` (`S01F`)
+  5. `sanday_headlam_1895_romans_icc.pdf` (`S02F`)
+  6. `robertson_plummer_1911_1corinthians_icc.pdf` (`S03F`)
+  7. `lightfoot_1914_galatians.pdf` (`S04F`)
+  8. `wilk_1998_jesaja_paulus.pdf` (`S05`)
+  9. `ryskova_2019_isaiah_romans.pdf` (`S06F`)
+  10. `baaij_2005_romans_4_3.pdf` (`S07F`)
+  11. `tanner_2005_hosea_romans_9.pdf` (`S08F`)
+  12. `oliver_2015_romans_10.pdf` (`S09F`)
+- **Source-Grounded Retrieval Verification:** Executed via `scripts/promote_to_sdp01.py --source-id S09F` with probe query:
+  `"In Willem Oliver's Romans 10:5–13 revisited, how does he analyze Romans 10:11 (Is 28:16 LXX) and Romans 10:13 (Joel 2:32) within the double chiasm and prophetic encasement of Romans 10:5–13?"`
+  - Response length: 640 characters
+  - Citation markers: 6 grounded citations
+  - Verification: `PASSED`
+

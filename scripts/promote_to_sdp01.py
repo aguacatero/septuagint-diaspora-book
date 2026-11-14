@@ -29,6 +29,7 @@ PROBE_QUERIES = {
     "S06F": "In Mireia Ryšková's The Reception of the Book of Isaiah in Paul's Letter to the Romans, what is her analysis regarding Paul's insertion of pas in Romans 10:11 and the application of Isaiah 28:16 to Christ?",
     "S07F": "In Pieter K. Baaij's Paulus als Schriftuitlegger: Genesis 15:5b–6 in Romeinen 4:3, what is his analysis regarding the simple dative to Theo as a dativus causae and the passive elogisthe?",
     "S08F": "In J. Paul Tanner's The New Covenant and Paul's Quotations from Hosea in Romans 9:25–26, what is his analysis regarding the New Covenant as the theological bridge for Gentile inclusion as vessels of mercy without replacing Israel?",
+    "S09F": "In Willem Oliver's Romans 10:5–13 revisited, how does he analyze Romans 10:11 (Is 28:16 LXX) and Romans 10:13 (Joel 2:32) within the double chiasm and prophetic encasement of Romans 10:5–13?",
     "P01F": "In this Greek New Testament edition, what text is printed for 1 Corinthians 1:19?",
     "P02F": "In this Septuagint edition, what Greek text is printed for Genesis 15:6?",
     "P03F": "In this Septuagint edition, what Greek text is printed for Isaiah 29:14?",
