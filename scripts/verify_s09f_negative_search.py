@@ -34,6 +34,7 @@ EXPECTED_TEXT_CHARS = 68862
 EXPECTED_PAGE_COUNT = 12
 EXPECTED_TOTAL_PAGES = 12
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
 PDF_DEFAULT = Path("/Users/chrisrodriguez/Downloads/oliver_2015_romans_10.pdf")
 DEFAULT_OUT_PATH = Path("research/inbox/B001-pauline-txt-pilot/sources/S09F/full_volume_search_log.md")
 DEFAULT_LEDGER_PATH = Path("research/inbox/B001-pauline-txt-pilot/sources/S09F/citation_ledger.csv")
@@ -55,7 +56,7 @@ EXPECTED_LEDGER_COLUMNS = [
     "notes",
 ]
 
-EXPECTED_EVIDENCE_IDS = [f"S09F-E00{i}" for i in range(1, 9)]
+EXPECTED_EVIDENCE_IDS = [f"S09F-E{i:03d}" for i in range(1, 11)]
 
 AUTHORITATIVE_EVIDENCE_LOCI = {
     "S09F-E001": {"printed": (5,), "pdf": (5,), "fn": None, "locator": "Printed p. 5 [PDF p. 5]"},
@@ -66,301 +67,437 @@ AUTHORITATIVE_EVIDENCE_LOCI = {
     "S09F-E006": {"printed": (10,), "pdf": (10,), "fn": None, "locator": "Printed p. 10 [PDF p. 10]"},
     "S09F-E007": {"printed": (5,), "pdf": (5,), "fn": None, "locator": "Printed p. 5 [PDF p. 5]"},
     "S09F-E008": {"printed": (3,), "pdf": (3,), "fn": None, "locator": "Printed p. 3 [PDF p. 3]"},
+    "S09F-E009": {"printed": (3,), "pdf": (3,), "fn": None, "locator": "Printed p. 3 [PDF p. 3]"},
+    "S09F-E010": {"printed": (3,), "pdf": (3,), "fn": 5, "locator": "Printed p. 3 [PDF p. 3], fn. 5"},
 }
 
 EXPECTED_EVIDENCE_B001_MAP = {
-    "S09F-E001": "B001-4",
-    "S09F-E002": "B001-4",
-    "S09F-E003": "B001-4",
-    "S09F-E004": "B001-4",
-    "S09F-E005": "B001-4",
+    "S09F-E001": "B001-CONTEXT",
+    "S09F-E002": "B001-CONTEXT",
+    "S09F-E003": "B001-CONTEXT",
+    "S09F-E004": "B001-CONTEXT",
+    "S09F-E005": "B001-4, B001-5",
     "S09F-E006": "B001-5",
     "S09F-E007": "B001-5",
-    "S09F-E008": "B001-4, B001-5",
+    "S09F-E008": "B001-CONTEXT",
+    "S09F-E009": "B001-4",
+    "S09F-E010": "B001-4",
+}
+
+VALID_B001_PASSAGE_ID_RE = re.compile(
+    r"^(?:B001-(?:[1-9]|1[0-2]|CONTEXT))(?:\s*,\s*B001-(?:[1-9]|1[0-2]|CONTEXT))*$"
+)
+
+CANONICAL_B001_COMPARISONS = {
+    "B001-1": "Romans 4:3 / Genesis 15:6",
+    "B001-2": "Romans 9:25 / Hosea 2:23",
+    "B001-3": "Romans 9:26 / Hosea 1:10",
+    "B001-4": "Romans 10:11 / Isaiah 28:16",
+    "B001-5": "Romans 10:13 / Joel 2:32",
+    "B001-6": "Romans 11:34 / Isaiah 40:13",
+    "B001-7": "Romans 15:12 / Isaiah 11:10",
+    "B001-8": "1 Corinthians 1:19 / Isaiah 29:14",
+    "B001-9": "1 Corinthians 6:16 / Genesis 2:24",
+    "B001-10": "1 Corinthians 9:9 / Deuteronomy 25:4",
+    "B001-11": "1 Corinthians 10:7 / Exodus 32:6",
+    "B001-12": "Galatians 3:13 / Deuteronomy 21:23",
 }
 
 EXPECTED_SYNTHESIS_SUBSECTIONS = {
-    "1. Overarching Chiastic Structure and Old Testament Framing (Rom 10:5–13)": "Printed pp. 3–5 [PDF pp. 3–5]",
-    "2. Textual and Hermeneutical Relationship to Deuteronomy 30:12–14 (MT & LXX)": "Printed pp. 4–5 [PDF pp. 4–5]",
-    "3. 'Mouth' and 'Heart' in Deuteronomy 30:14 and the Chiastic Inversion in Romans 10:9–10": "Printed pp. 8–10 [PDF pp. 8–10]",
-    "4. Theological Debate: Contrast (Moses vs. Faith) or Prophetic Testimony to Christ?": "Printed pp. 4–7 [PDF pp. 4–7]",
+    "1. B001-4: Romans 10:11 / Isaiah 28:16 (`Substantive`)": "Printed pp. 3, 4, 5, 7, 10, and 11 [PDF pp. 3, 4, 5, 7, 10, 11]",
+    "2. B001-5: Romans 10:13 / Joel 2:32 [LXX 3:5] (`Substantive`)": "Printed pp. 4, 5, 7, 8, 9, 10, and 11 [PDF pp. 4, 5, 7, 8, 9, 10, 11]",
+    "3. B001-CONTEXT: Romans 10:5–10 & Pericope Encasement (`Contextual Only`)": "Printed p. 9",
 }
 
 EXPECTED_RELEVANCE_TABLE_LOCI = {
-    "B001-1": ("NO", "N/A"),
-    "B001-2": ("NO", "N/A"),
-    "B001-3": ("NO", "N/A"),
-    "B001-4": ("YES", (3, 8, 3, 8)),
-    "B001-5": ("YES", (4, 11, 4, 11)),
-    "B001-6": ("NO", "N/A"),
-    "B001-7": ("NO", "N/A"),
-    "B001-8": ("NO", "N/A"),
-    "B001-9": ("NO", "N/A"),
-    "B001-10": ("NO", "N/A"),
-    "B001-11": ("NO", "N/A"),
-    "B001-12": ("NO", "N/A"),
+    "B001-1": {"comparison": "Romans 4:3 / Genesis 15:6", "status": "NO", "pages": (), "depth": "N/A"},
+    "B001-2": {"comparison": "Romans 9:25 / Hosea 2:23", "status": "NO", "pages": (), "depth": "N/A"},
+    "B001-3": {"comparison": "Romans 9:26 / Hosea 1:10", "status": "NO", "pages": (), "depth": "N/A"},
+    "B001-4": {"comparison": "Romans 10:11 / Isaiah 28:16", "status": "YES", "pages": (3, 4, 5, 7, 10, 11), "depth": "Substantive"},
+    "B001-5": {"comparison": "Romans 10:13 / Joel 2:32", "status": "YES", "pages": (4, 5, 7, 8, 9, 10, 11), "depth": "Substantive"},
+    "B001-6": {"comparison": "Romans 11:34 / Isaiah 40:13", "status": "NO", "pages": (), "depth": "N/A"},
+    "B001-7": {"comparison": "Romans 15:12 / Isaiah 11:10", "status": "NO", "pages": (), "depth": "N/A"},
+    "B001-8": {"comparison": "1 Corinthians 1:19 / Isaiah 29:14", "status": "NO", "pages": (), "depth": "N/A"},
+    "B001-9": {"comparison": "1 Corinthians 6:16 / Genesis 2:24", "status": "NO", "pages": (), "depth": "N/A"},
+    "B001-10": {"comparison": "1 Corinthians 9:9 / Deuteronomy 25:4", "status": "NO", "pages": (), "depth": "N/A"},
+    "B001-11": {"comparison": "1 Corinthians 10:7 / Exodus 32:6", "status": "NO", "pages": (), "depth": "N/A"},
+    "B001-12": {"comparison": "Galatians 3:13 / Deuteronomy 21:23", "status": "NO", "pages": (), "depth": "N/A"},
 }
+
+FORBIDDEN_BIB_CONTAINERS = (
+    "online publication",
+    "research monograph",
+    "vol. 38b",
+    "pp. 3–35",
+    "pp. 268–275",
+    "pp. 556–563",
+    "pp. 330–342",
+)
 
 EXPECTED_BIBLIOGRAPHY_LEADS = [
     {
         "header": "Akio Ito (2006)",
-        "author": "Akio Ito",
-        "title": '*"The written Torah and the oral Gospel: Romans 10:5–13 in the dynamic tension between orality and literacy"*',
+        "citation": '*"The written Torah and the oral Gospel: Romans 10:5–13 in the dynamic tension between orality and literacy"*',
         "year": 2006,
-        "container": "Novum Testamentum",
+        "witness_token": "Ito",
+        "ref_page": 12,
+        "ref_key": "Ito, A., 2006",
+        "container_type": "journal",
+        "container_tokens": ("Novum Testamentum", "48", "3", "234–260"),
+        "forbidden_tokens": (),
         "printed_pages": (4, 5, 6, 8, 9),
         "pdf_pages": (4, 5, 6, 8, 9),
-        "footnote": None,
+        "footnotes": (),
     },
     {
         "header": "J. F. Hart (1999)",
-        "author": "J. F. Hart",
-        "title": '*"Why confess Christ? The use and abuse of Romans 10:9–10"*',
+        "citation": '*"Why confess Christ? The use and abuse of Romans 10:9–10"*',
         "year": 1999,
-        "container": "Journal of the Grace Evangelical Society",
-        "printed_pages": (1, 3, 4, 5, 7, 8),
-        "pdf_pages": (1, 3, 4, 5, 7, 8),
-        "footnote": None,
+        "witness_token": "Hart",
+        "ref_page": 12,
+        "ref_key": "Hart, J.F., 1999",
+        "container_type": "journal",
+        "container_tokens": ("Journal of the Grace Evangelical Society", "12", "23", "faithalone.org"),
+        "forbidden_tokens": ("pp. 3–35", "3–35"),
+        "printed_pages": (1, 2, 3, 4, 5, 7, 8),
+        "pdf_pages": (1, 2, 3, 4, 5, 7, 8),
+        "footnotes": ((5, 11),),
     },
     {
         "header": "James D. G. Dunn (1988)",
-        "author": "James D. G. Dunn",
-        "title": "*Romans 9–16* (Word Biblical Commentary, Vol. 38B)",
+        "citation": "*Romans 1–8* (`1988a`) and *Romans 9–16* (`1988b`)",
         "year": 1988,
-        "container": "Word Books",
+        "witness_token": "Dunn",
+        "ref_page": 12,
+        "ref_key": "Dunn, J.D.G., 1988a",
+        "container_type": "book",
+        "container_tokens": ("Word Biblical Commentary", "Dallas, TX", "Word Books"),
+        "forbidden_tokens": ("38B",),
         "printed_pages": (2, 3, 4, 8),
         "pdf_pages": (2, 3, 4, 8),
-        "footnote": None,
+        "footnotes": (),
     },
     {
         "header": "Colin G. Kruse (2012)",
-        "author": "Colin G. Kruse",
-        "title": "*Paul’s Letter to the Romans* (Pillar New Testament Commentary)",
+        "citation": "*Paul’s letter to the Romans*",
         "year": 2012,
-        "container": "Eerdmans",
+        "witness_token": "Kruse",
+        "ref_page": 12,
+        "ref_key": "Kruse, C.G., 2012",
+        "container_type": "book",
+        "container_tokens": ("The Pillar New Testament Commentary", "Cambridge", "Eerdmans"),
+        "forbidden_tokens": ("Grand Rapids",),
         "printed_pages": (1, 4, 7, 8),
         "pdf_pages": (1, 4, 7, 8),
-        "footnote": None,
+        "footnotes": ((1, 1),),
     },
     {
         "header": "H.-J. Eckstein (1988)",
-        "author": "H.-J. Eckstein",
-        "title": '*"Nahe ist dir das Wort: Exegetische Erwägungen zu Röm 10, 8"*',
+        "citation": '*"“Nahe ist dir das Wort:“ Exegetische Erwägungen zu Röm 10, 8"*',
         "year": 1988,
-        "container": "Zeitschrift für die Neutestamentliche Wissenschaft",
+        "witness_token": "Eckstein",
+        "ref_page": 12,
+        "ref_key": "Eckstein, H-J., 1988",
+        "container_type": "journal",
+        "container_tokens": ("Zeitschrift für Neutestamentliche Wissenschaft", "79", "204–220"),
+        "forbidden_tokens": (),
         "printed_pages": (3,),
         "pdf_pages": (3,),
-        "footnote": None,
+        "footnotes": (),
     },
     {
         "header": "Walter C. Kaiser Jr. (1971)",
-        "author": "Walter C. Kaiser Jr.",
-        "title": '*"Leviticus 18:5 and Paul: Do this and you shall live (eternally?)"*',
+        "citation": '*"Leviticus 18:5 and Paul: Do this and you shall live (eternally?)"*',
         "year": 1971,
-        "container": "Journal of the Evangelical Theological Society",
+        "witness_token": "Kaiser",
+        "ref_page": 12,
+        "ref_key": "Kaiser, W.C. (Jr.), 1971",
+        "container_type": "journal",
+        "container_tokens": ("Journal of the Evangelical Theological Society", "14", "1", "20–28"),
+        "forbidden_tokens": (),
         "printed_pages": (3,),
         "pdf_pages": (3,),
-        "footnote": None,
+        "footnotes": (),
     },
     {
         "header": "Bruce C. Dunson (2011)",
-        "author": "Bruce C. Dunson",
-        "title": '*"Faith in Romans: The salvation of the individual or life in community?"*',
+        "citation": '*"Faith in Romans: The salvation of the individual or life in community?"*',
         "year": 2011,
-        "container": "Journal for the Study of the New Testament",
+        "witness_token": "Dunson",
+        "ref_page": 12,
+        "ref_key": "Dunson, B.C., 2011",
+        "container_type": "journal",
+        "container_tokens": ("Journal for the Study of the New Testament", "34", "1", "19–46"),
+        "forbidden_tokens": (),
         "printed_pages": (2, 3, 6, 7, 11),
         "pdf_pages": (2, 3, 6, 7, 11),
-        "footnote": None,
+        "footnotes": ((2, 2), (6, 12)),
     },
     {
         "header": "Adolf Schlatter (1991)",
-        "author": "Adolf Schlatter",
-        "title": "*Gottes Gerechtigkeit: Ein Kommentar zum Römerbrief*",
+        "citation": "*Gottes Gerechtigkeit: Ein Kommentar zum Römerbrief*",
         "year": 1991,
-        "container": "Calwer Verlag",
+        "witness_token": "Schlatter",
+        "ref_page": 12,
+        "ref_key": "Schlatter, A., 1991",
+        "container_type": "book",
+        "container_tokens": ("Stuttgart", "Calver Verlag"),
+        "forbidden_tokens": (),
         "printed_pages": (9,),
         "pdf_pages": (9,),
-        "footnote": None,
+        "footnotes": (),
     },
     {
         "header": "G. Aho (1981)",
-        "author": "G. Aho",
-        "title": '*"3D Sunday in Lent"*',
+        "citation": '*"3D Sunday in Lent"*',
         "year": 1981,
-        "container": "Concordia Theological Quarterly",
+        "witness_token": "Aho",
+        "ref_page": 11,
+        "ref_key": "Aho, G., 1981",
+        "container_type": "journal",
+        "container_tokens": ("Concordia Theological Quarterly", "45", "4", "308–309"),
+        "forbidden_tokens": (),
         "printed_pages": (3, 8),
         "pdf_pages": (3, 8),
-        "footnote": None,
+        "footnotes": ((3, 5),),
     },
     {
         "header": "Douglas J. Moo (1996)",
-        "author": "Douglas J. Moo",
-        "title": "*The Epistle to the Romans* (NICNT)",
+        "citation": "*The epistle to the Romans*",
         "year": 1996,
-        "container": "Eerdmans",
+        "witness_token": "Moo",
+        "ref_page": 12,
+        "ref_key": "Moo, D.J., 1996",
+        "container_type": "book",
+        "container_tokens": ("New International Commentary on the New Testament", "Grand Rapids, MI", "Eerdmans"),
+        "forbidden_tokens": (),
         "printed_pages": (2, 8),
         "pdf_pages": (2, 8),
-        "footnote": None,
+        "footnotes": ((8, 20),),
     },
     {
         "header": "Herman Ridderbos (1959)",
-        "author": "Herman Ridderbos",
-        "title": "*Commentaar op het Nieuwe Testament: Aan de Romeinen*",
+        "citation": "*Commentaar op het Nieuwe Testament: Aan de Romeinen*",
         "year": 1959,
-        "container": "J. H. Kok",
+        "witness_token": "Ridderbos",
+        "ref_page": 12,
+        "ref_key": "Ridderbos, H., 1959",
+        "container_type": "book",
+        "container_tokens": ("Kampen", "JH Kok"),
+        "forbidden_tokens": (),
         "printed_pages": (6,),
         "pdf_pages": (6,),
-        "footnote": 13,
+        "footnotes": ((6, 13),),
     },
     {
         "header": "Zane C. Hodges (1989)",
-        "author": "Zane C. Hodges",
-        "title": "*Absolutely Free: A Biblical Reply to Lordship Salvation*",
+        "citation": "*Absolutely free: A Biblical reply to lordship salvation*",
         "year": 1989,
-        "container": "Redención Viva",
+        "witness_token": "Hodges",
+        "ref_page": 12,
+        "ref_key": "Hodges, Z.C., 1989",
+        "container_type": "book",
+        "container_tokens": ("Dallas, TX", "Redención Viva"),
+        "forbidden_tokens": (),
         "printed_pages": (7, 8, 9),
         "pdf_pages": (7, 8, 9),
-        "footnote": None,
+        "footnotes": (),
     },
     {
         "header": "J. Ross Wagner (2002)",
-        "author": "J. Ross Wagner",
-        "title": '*Heralds of the Good News: Isaiah and Paul "in concert" in the Letter to the Romans*',
+        "citation": "*Heralds of the Good News: Isaiah and Paul “in concert” in the letter to the Romans*",
         "year": 2002,
-        "container": "Brill",
+        "witness_token": "Wagner",
+        "ref_page": 12,
+        "ref_key": "Wagner, J.R., 2002",
+        "container_type": "book",
+        "container_tokens": ("Novum Testamentum, suppl. 101", "Leiden/Boston/Köln", "EJ Brill"),
+        "forbidden_tokens": (),
         "printed_pages": (5,),
         "pdf_pages": (5,),
-        "footnote": None,
+        "footnotes": (),
     },
     {
         "header": "Karl Olav Sandnes (1991)",
-        "author": "Karl Olav Sandnes",
-        "title": "*Paul – One of the Prophets?: A Contribution to the Apostle’s Self-Understanding*",
+        "citation": "*Paul – One of the prophets?: A contribution to the apostle’s selfunderstanding*",
         "year": 1991,
-        "container": "J.C.B. Mohr",
+        "witness_token": "Sandnes",
+        "ref_page": 12,
+        "ref_key": "Sandnes, K.O., 1991",
+        "container_type": "book",
+        "container_tokens": ("43/2", "Tübingen", "JCB Mohr"),
+        "forbidden_tokens": (),
         "printed_pages": (5,),
         "pdf_pages": (5,),
-        "footnote": None,
+        "footnotes": (),
     },
     {
         "header": "J. D. M. Derrett (1983)",
-        "author": "J. D. M. Derrett",
-        "title": '*"The reason for the cock-crowings"*',
+        "citation": '*"The reason for the cock-crowings"*',
         "year": 1983,
-        "container": "New Testament Studies",
+        "witness_token": "Derrett",
+        "ref_page": 12,
+        "ref_key": "Derrett, J.D.M., 1983",
+        "container_type": "journal",
+        "container_tokens": ("New Testament Studies", "29", "1", "142–144"),
+        "forbidden_tokens": (),
         "printed_pages": (4,),
         "pdf_pages": (4,),
-        "footnote": 9,
+        "footnotes": ((4, 9),),
     },
     {
         "header": "Nils W. Lund (1942)",
-        "author": "Nils W. Lund",
-        "title": "*Chiasmus in the New Testament: A Study in Formgeschichte*",
+        "citation": "*Chiasmus in the New Testament: A study in Formgeschichte*",
         "year": 1942,
-        "container": "University of North Carolina Press",
+        "witness_token": "Lund",
+        "ref_page": 12,
+        "ref_key": "Lund, N.W., 1942",
+        "container_type": "book",
+        "container_tokens": ("Chapel Hill, NC", "The University of North Carolina Press"),
+        "forbidden_tokens": (),
         "printed_pages": (1, 2),
         "pdf_pages": (1, 2),
-        "footnote": None,
+        "footnotes": (),
     },
     {
         "header": "J. M. Gibbs (2013)",
-        "author": "J. M. Gibbs",
-        "title": "*Chiastic Structuring: An Introduction*",
+        "citation": "*Chiastic structuring: An introduction*",
         "year": 2013,
-        "container": "Online Publication / Research Monograph",
+        "witness_token": "Gibbs",
+        "ref_page": 12,
+        "ref_key": "Gibbs, J.M., 2013",
+        "container_type": "web_resource",
+        "container_tokens": ("Dated web resource", "newtestamentresearch.com", "viewed 11 November 2014", "chiastic_structuring.htm", "UNKNOWN"),
+        "forbidden_tokens": ("Online Publication", "Research Monograph"),
         "printed_pages": (2,),
         "pdf_pages": (2,),
-        "footnote": None,
+        "footnotes": (),
     },
     {
         "header": "Ulrich Wilckens (1980)",
-        "author": "Ulrich Wilckens",
-        "title": "*Der Brief an die Römer* (EKKNT 6)",
+        "citation": "*Der Brief an die Römer*",
         "year": 1980,
-        "container": "Benziger Verlag",
+        "witness_token": "Wilckens",
+        "ref_page": 12,
+        "ref_key": "Wilckens, U., 1980",
+        "container_type": "book",
+        "container_tokens": ("6", "Zürich", "Benziger Verlag"),
+        "forbidden_tokens": (),
         "printed_pages": (6,),
         "pdf_pages": (6,),
-        "footnote": 14,
+        "footnotes": ((6, 14),),
     },
     {
         "header": "Eduard Lohse (2003)",
-        "author": "Eduard Lohse",
-        "title": "*Der Brief an die Römer* (KEK 4)",
+        "citation": "*Der Brief an die Römer*",
         "year": 2003,
-        "container": "Vandenhoeck & Ruprecht",
+        "witness_token": "Lohse",
+        "ref_page": 12,
+        "ref_key": "Lohse, E., 2003",
+        "container_type": "book",
+        "container_tokens": ("4", "Göttingen", "Vandenhoeck & Ruprecht"),
+        "forbidden_tokens": (),
         "printed_pages": (6,),
         "pdf_pages": (6,),
-        "footnote": 14,
+        "footnotes": ((6, 14),),
     },
     {
         "header": "William Sanday & Arthur C. Headlam (1902)",
-        "author": "William Sanday & Arthur C. Headlam",
-        "title": "*A Critical and Exegetical Commentary on the Epistle to the Romans* (ICC)",
+        "citation": "*A critical and exegetical commentary on the epistle to the Romans*",
         "year": 1902,
-        "container": "T & T Clark",
+        "witness_token": "Sanday",
+        "ref_page": 12,
+        "ref_key": "Sanday, W. & Headlam, A.C., 1902",
+        "container_type": "book",
+        "container_tokens": ("Edinburgh", "T & T Clark"),
+        "forbidden_tokens": (),
         "printed_pages": (7, 8),
         "pdf_pages": (7, 8),
-        "footnote": None,
+        "footnotes": (),
     },
     {
         "header": "Ernst Käsemann (1973)",
-        "author": "Ernst Käsemann",
-        "title": "*An die Römer* (HNT 8a)",
+        "citation": "*An die Römer*",
         "year": 1973,
-        "container": "Mohr Siebeck",
+        "witness_token": "Käsemann",
+        "ref_page": 12,
+        "ref_key": "Käsemann, E., 1973",
+        "container_type": "book",
+        "container_tokens": ("Handbuch zum Neuen Testament 8a", "Tübingen", "Mohr Siebeck", "UNKNOWN"),
+        "forbidden_tokens": ("pp. 268–275", "268–275"),
         "printed_pages": (2,),
         "pdf_pages": (2,),
-        "footnote": None,
+        "footnotes": ((2, 2),),
     },
     {
         "header": "Steven R. Bechtler (1994)",
-        "author": "Steven R. Bechtler",
-        "title": '*"Christ, the telos of the Law: The aim of Romans 10:4–14"*',
+        "citation": '*"Christ, the Τέλος of the law: The goal of Romans 10:4"*',
         "year": 1994,
-        "container": "Catholic Biblical Quarterly",
-        "printed_pages": (1, 6, 7, 11),
-        "pdf_pages": (1, 6, 7, 11),
-        "footnote": None,
+        "witness_token": "Bechtler",
+        "ref_page": 11,
+        "ref_key": "Bechtler, S.R., 1994",
+        "container_type": "journal",
+        "container_tokens": ("Catholic Biblical Quarterly", "56", "2", "288–308"),
+        "forbidden_tokens": ("Christ, the End of the Law",),
+        "printed_pages": (1, 6, 7),
+        "pdf_pages": (1, 6, 7),
+        "footnotes": (),
     },
     {
         "header": "Thomas R. Schreiner (1998)",
-        "author": "Thomas R. Schreiner",
-        "title": "*Romans* (Baker Exegetical Commentary on the New Testament)",
+        "citation": "*Romans*",
         "year": 1998,
-        "container": "Baker Book House",
+        "witness_token": "Schreiner",
+        "ref_page": 12,
+        "ref_key": "Schreiner, T.R., 1998",
+        "container_type": "book",
+        "container_tokens": ("Baker Exegetical Commentary on the New Testament", "Grand Rapids, MI", "Baker Book House", "UNKNOWN"),
+        "forbidden_tokens": ("pp. 556–563", "556–563"),
         "printed_pages": (8,),
         "pdf_pages": (8,),
-        "footnote": None,
+        "footnotes": (),
     },
     {
         "header": "N. T. Wright (2002)",
-        "author": "N. T. Wright",
-        "title": '*"The Letter to the Romans: Introduction, Commentary, and Reflections"*',
+        "citation": '*"The letter to the Romans: Introduction, commentary, and reflections"*',
         "year": 2002,
-        "container": "Abingdon Press",
+        "witness_token": "Wright",
+        "ref_page": 12,
+        "ref_key": "Wright, N.T., 2002",
+        "container_type": "chapter",
+        "container_tokens": ("L.E. Keck (ed.)", "The new interpreter’s Bible", "Vol. X", "pp. 393–770", "Nashville, TN", "Abingdon Press"),
+        "forbidden_tokens": (),
         "printed_pages": (2,),
         "pdf_pages": (2,),
-        "footnote": None,
+        "footnotes": (),
     },
     {
         "header": "Francis Watson (2004)",
-        "author": "Francis Watson",
-        "title": "*Paul and the Hermeneutics of Faith*",
+        "citation": "*Paul and the hermeneutics of faith*",
         "year": 2004,
-        "container": "T & T Clark",
+        "witness_token": "Watson",
+        "ref_page": 12,
+        "ref_key": "Watson, F., 2004",
+        "container_type": "book",
+        "container_tokens": ("London", "T & T Clark", "UNKNOWN"),
+        "forbidden_tokens": ("pp. 330–342", "330–342"),
         "printed_pages": (2, 3),
         "pdf_pages": (2, 3),
-        "footnote": None,
+        "footnotes": (),
     },
     {
         "header": "Mark A. Seifrid (2007)",
-        "author": "Mark A. Seifrid",
-        "title": '*"Romans"*',
+        "citation": '*"Romans"*',
         "year": 2007,
-        "container": "Baker Academic",
+        "witness_token": "Seifrid",
+        "ref_page": 12,
+        "ref_key": "Seifrid, M.A., 2007",
+        "container_type": "chapter",
+        "container_tokens": ("G.K. Beale & D.A. Carson (eds.)", "Commentary on the New Testament use of the Old Testament", "pp. 607–694", "Grand Rapids, MI", "Baker Academic"),
+        "forbidden_tokens": (),
         "printed_pages": (2,),
         "pdf_pages": (2,),
-        "footnote": None,
+        "footnotes": (),
     },
 ]
 
@@ -537,48 +674,61 @@ def parse_source_locator(loc_str: str) -> dict:
 
 
 def parse_bib_locator(loc_str: str) -> dict:
-    """Strict parser for bibliographic locators supporting single page, page with fn, or multiple discrete pages.
+    """Strict parser for bibliographic locators supporting per-page optional footnote tokens.
 
-    Enforces monotonic invariant (printed = PDF, offset = 0) and rejects trailing fragments or malformed brackets.
+    Permissible form:
+      Printed p. N [PDF p. N](, fn. M)?(, p. K [PDF p. K](, fn. L)?)*
+    Enforces monotonic invariant (printed = PDF, offset = 0), strictly ordered unique pages,
+    and valid footnote attachment to the immediately preceding page token.
     """
-    loc = loc_str.strip()
+    loc = loc_str.strip().strip("`")
     if not loc.startswith("Printed "):
         raise ValueError(f"Bibliographic locator must start with 'Printed ': '{loc_str}'")
 
-    # Check for footnote
-    fn_matches = re.findall(r"\bfn\.\s*(\d+)\b", loc)
-    if len(fn_matches) > 1:
-        raise ValueError(f"Conflicting duplicate footnote references in locator: '{loc_str}'")
-    fn = int(fn_matches[0]) if fn_matches else None
+    tokens = [s.strip() for s in loc.split(",")]
+    prn_list: list[int] = []
+    pdf_list: list[int] = []
+    footnotes: list[tuple[int, int]] = []
+    last_page: int | None = None
+    seen_fns_for_page: set[tuple[int, int]] = set()
 
-    # Strip footnote portion for page parsing
-    loc_pages = re.sub(r",\s*fn\.\s*\d+\b", "", loc).strip()
-
-    # Split into page segments
-    segments = [s.strip() for s in loc_pages.split(",")]
-    prn_list = []
-    pdf_list = []
-
-    for i, seg in enumerate(segments):
-        if seg.count("[") != 1 or seg.count("]") != 1:
-            raise ValueError(f"Expected exactly one [PDF ...] pair in segment '{seg}' of '{loc_str}'")
+    for i, tok in enumerate(tokens):
         if i == 0:
-            m = re.match(r"^Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]$", seg)
+            m = re.match(r"^Printed\s+p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]$", tok)
+            if not m:
+                raise ValueError(f"Malformed initial bibliographic locator segment '{tok}' in '{loc_str}'")
+        elif tok.startswith("fn."):
+            m_fn = re.match(r"^fn\.\s*(\d+)$", tok)
+            if not m_fn or last_page is None:
+                raise ValueError(f"Malformed or misplaced footnote token '{tok}' in '{loc_str}'")
+            fn_num = int(m_fn.group(1))
+            pair = (last_page, fn_num)
+            if pair in seen_fns_for_page:
+                raise ValueError(f"Conflicting duplicate footnote reference '{tok}' in '{loc_str}'")
+            seen_fns_for_page.add(pair)
+            footnotes.append(pair)
+            continue
         else:
-            m = re.match(r"^p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]$", seg)
-        if not m:
-            raise ValueError(f"Malformed bibliographic page locator segment '{seg}' in '{loc_str}'")
+            if tok.count("[") != 1 or tok.count("]") != 1:
+                raise ValueError(f"Expected exactly one [PDF ...] pair in segment '{tok}' of '{loc_str}'")
+            m = re.match(r"^p\.\s*(\d+)\s*\[PDF\s+p\.\s*(\d+)\]$", tok)
+            if not m:
+                raise ValueError(f"Malformed bibliographic page locator segment '{tok}' in '{loc_str}'")
+
         prn = int(m.group(1))
         pdf = int(m.group(2))
         if prn != pdf:
             raise ValueError(f"Monotonic pagination mismatch: printed {prn} != PDF {pdf} in '{loc_str}'")
+        if prn_list and prn <= prn_list[-1]:
+            raise ValueError(f"Duplicate or non-increasing page {prn} in bibliographic locator '{loc_str}'")
         prn_list.append(prn)
         pdf_list.append(pdf)
+        last_page = prn
 
     return {
         "printed_pages": tuple(prn_list),
         "pdf_pages": tuple(pdf_list),
-        "footnote": fn,
+        "footnotes": tuple(footnotes),
     }
 
 
@@ -752,11 +902,22 @@ def verify_ledger_witnesses(rows: list[dict], page_texts: list[str]) -> list[dic
             raise ValueError(f"{eid}: Quote is too short for reliable witness matching: '{quote}'")
 
         if norm_quote not in norm_target_text:
-            raise ValueError(
-                f"{eid}: Quote text not found on declared printed p. {display_printed} [PDF p. {display_pdf}]:\n"
-                f"Quote: '{quote}'\n"
-                f"Normalized: '{norm_quote}'"
-            )
+            layout_matched = False
+            if eid == "S09F-E004" and "4-3-2-1" in quote and PDF_DEFAULT.is_file():
+                res_layout = subprocess.run(
+                    ["pdftotext", "-layout", "-f", "9", "-l", "9", str(PDF_DEFAULT), "-"],
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                )
+                has_hyphen_wrap = re.search(r"4-3-2-\s*\n\s*1\s+combinations", res_layout.stdout) is not None
+                layout_matched = has_hyphen_wrap and (norm_quote.replace("4-3-2-1", "4-3-21") in norm_target_text)
+            if not layout_matched:
+                raise ValueError(
+                    f"{eid}: Quote text not found on declared printed p. {display_printed} [PDF p. {display_pdf}]:\n"
+                    f"Quote: '{quote}'\n"
+                    f"Normalized: '{norm_quote}'"
+                )
 
         witnesses.append({
             "evidence_id": eid,
@@ -796,17 +957,17 @@ def execute_full_volume_search(page_texts: list[str], witnesses: list[dict]) -> 
         },
         {
             "id": "B001-4",
-            "comparison": "Romans 10:6–8 / Deuteronomy 30:12–14 (and Rom 10:11 / Isa 28:16, Rom 10:5 / Lev 18:5)",
-            "patterns": [r"\b10:6\b", r"\b10:7\b", r"\b10:8\b", r"\bDeut(?:eronomy)?\s*30\b", r"\bDt\s*30\b", r"\b10:11\b", r"\bIsa(?:iah)?\s*28:16\b", r"\b10:5\b", r"\bLev(?:iticus)?\s*18:5\b"],
-            "category": "EXTENDED_DISCUSSION",
-            "judgment": "Extended discussion across pp. 3–11. Oliver analyzes Paul's adaptation of Deuteronomy 30:11–14, alteration of sea to abyss, omission of obedience clauses, antithetical chiasm with Leviticus 18:5, and universal climax with Isaiah 28:16.",
+            "comparison": "Romans 10:11 / Isaiah 28:16",
+            "patterns": [r"\b(?:romans|rom|rm)\s*10:(?:[^;\n]*,\s*)?11\b", r"\b(?:isaiah|isa|is)\s*28:16\b"],
+            "category": "SUBSTANTIVE_DISCUSSION",
+            "judgment": "Substantive discussion across pp. 3, 4, 5, 7, 10, 11 (without MT-vs-LXX text-critical collation). Oliver identifies Is 28:16 (LXX), links Rom 10:11 (καταισχύνω) to Rom 1:16 (ἐπαισχύνομαι), qualifies Aho (1981:308) on p. 3 fn. 5, and places v. 11 in the fourfold γάρ universality chain (p. 7).",
         },
         {
             "id": "B001-5",
-            "comparison": "Romans 10:13 / Joel 2:32 (LXX 3:5)",
-            "patterns": [r"\b10:13\b", r"\bJoel\s*2:32\b", r"\bJoel\s*3:5\b", r"\bJl\s*2:32\b"],
+            "comparison": "Romans 10:13 / Joel 2:32",
+            "patterns": [r"\b(?:romans|rom|rm)\s*10:(?:[^;\n]*,\s*)?13\b", r"\bJoel\s*2:32\b", r"\bJoel\s*3:5\b", r"\bJl\s*2:32\b"],
             "category": "SUBSTANTIVE_DISCUSSION",
-            "judgment": "Substantive discussion across pp. 4, 5, 7, 8, 10, 11. Oliver analyzes the quotation of Joel 2:32 (LXX 3:5), oral invocation resulting in salvation, and its link to apostolic preaching in verses 14–15.",
+            "judgment": "Substantive discussion across pp. 4, 5, 7, 8, 9, 10, 11. Oliver analyzes the quotation of Joel 2:32 (Acts 2:17–21, p. 4 fn. 10), oral invocation resulting in salvation (σωθήσεται), and its link to apostolic preaching in verses 14–15.",
         },
         {
             "id": "B001-6",
@@ -865,7 +1026,7 @@ def execute_full_volume_search(page_texts: list[str], witnesses: list[dict]) -> 
     for tgt in targets:
         hit_count = 0
         for pat in tgt["patterns"]:
-            matches = list(re.finditer(pat, full_normalized_text))
+            matches = list(re.finditer(pat, full_normalized_text, re.IGNORECASE))
             hit_count += len(matches)
 
         if tgt["category"] == "CONFIRMED_ABSENT" and hit_count != 0:
@@ -889,115 +1050,204 @@ def execute_full_volume_search(page_texts: list[str], witnesses: list[dict]) -> 
     return results
 
 
-def verify_cross_artifact_consistency(source_dir: Path, ledger_rows: list[dict] | None = None) -> None:
-    """Verifies that extraction.md, relevance_scan.md, synthesis, bibliography_leads.md, and manifest match."""
-    if ledger_rows is None:
-        ledger_rows = load_evidence_ledger(source_dir / "citation_ledger.csv")
-    ledger_map = {r["evidence_id"]: r for r in ledger_rows}
-
-    # 1. extraction.md checks (Section/evidence-ID-bound and field-bound)
+def _verify_extraction_artifact(source_dir: Path, ledger_map: dict[str, dict]) -> None:
+    """Enforce exact evidence-ID coverage and line-anchored field equality for extraction.md."""
     extr_path = source_dir / "extraction.md"
     if not extr_path.is_file():
         raise FileNotFoundError(f"Missing extraction.md in {source_dir}")
     extr_txt = extr_path.read_text(encoding="utf-8")
 
-    ext_blocks = re.split(r"(?=###\s+S09F-E\d{3})", extr_txt)
+    ext_blocks = re.split(r"(?=^###\s+)", extr_txt, flags=re.MULTILINE)
     ext_block_map: dict[str, str] = {}
     for blk in ext_blocks:
-        m = re.search(r"###\s+(S09F-E\d{3})", blk)
+        m = re.match(r"^###\s+([^\s\n]+)", blk)
         if m:
-            eid = m.group(1)
+            eid = m.group(1).strip()
             if eid in ext_block_map:
                 raise ValueError(f"extraction.md: Duplicate section block for {eid}")
             ext_block_map[eid] = blk
 
+    expected_set = set(EXPECTED_EVIDENCE_IDS)
+    actual_set = set(ext_block_map.keys())
+    extra_ids = sorted(actual_set - expected_set)
+    missing_ids = sorted(expected_set - actual_set)
+    if extra_ids:
+        raise ValueError(f"extraction.md: Unexpected extra section block(s): {extra_ids}")
+    if missing_ids:
+        raise ValueError(f"extraction.md: Missing discrete section block(s): {missing_ids}")
+
     for eid in EXPECTED_EVIDENCE_IDS:
-        if eid not in ext_block_map:
-            raise ValueError(f"extraction.md: Missing discrete section block for evidence ID {eid}")
         blk = ext_block_map[eid]
         row = ledger_map[eid]
         auth_spec = AUTHORITATIVE_EVIDENCE_LOCI[eid]
 
-        # Enforce exactly one Proposed Evidence ID matching block ID
-        m_prop = re.findall(r"-\s+\*\*Proposed Evidence ID:\*\*\s*`?([^\n`]+)`?", blk)
+        # 1. Proposed Evidence ID (line-anchored, single)
+        m_prop = re.findall(r"(?m)^-\s+\*\*Proposed Evidence ID:\*\*\s*`?([^\n`]+)`?\s*$", blk)
         if len(m_prop) != 1 or m_prop[0].strip() != eid:
             raise ValueError(f"extraction.md [{eid}]: Expected exactly one Proposed Evidence ID `{eid}`, got {m_prop}")
 
-        # Enforce B001 Passage ID matching ledger and expected map
-        raw_b001 = re.findall(r"-\s+\*\*B001 Passage ID:\*\*\s*([^\n(]+)", blk)
+        # 2. B001 Passage ID (line-anchored, full line, strict syntax — never truncate at '(')
+        raw_b001 = re.findall(r"(?m)^-\s+\*\*B001 Passage ID:\*\*\s*([^\n]+)$", blk)
         m_b001 = [x.strip("` ").strip() for x in raw_b001]
-        if len(m_b001) != 1 or m_b001[0] != row["b001_id"].strip():
-            raise ValueError(f"extraction.md [{eid}]: B001 ID mismatch: expected '{row['b001_id']}', got {m_b001}")
+        if len(m_b001) != 1:
+            raise ValueError(f"extraction.md [{eid}]: Expected exactly one B001 Passage ID line, got {m_b001}")
+        if not VALID_B001_PASSAGE_ID_RE.fullmatch(m_b001[0]):
+            raise ValueError(f"extraction.md [{eid}]: Invalid B001 Passage ID syntax '{m_b001[0]}'")
+        if m_b001[0] != row["b001_id"].strip():
+            raise ValueError(f"extraction.md [{eid}]: B001 ID mismatch: expected '{row['b001_id']}', got '{m_b001[0]}'")
         if m_b001[0] != EXPECTED_EVIDENCE_B001_MAP[eid]:
-            raise ValueError(f"extraction.md [{eid}]: B001 ID mismatch: expected '{EXPECTED_EVIDENCE_B001_MAP[eid]}', got '{m_b001[0]}'")
+            raise ValueError(
+                f"extraction.md [{eid}]: B001 ID mismatch: expected '{EXPECTED_EVIDENCE_B001_MAP[eid]}', got '{m_b001[0]}'"
+            )
 
-        # Enforce exactly one Source Locator line matching authoritative locator and ledger
-        loc_lines = re.findall(r"-\s+\*\*Source Locator:\*\*\s*([^\n]+)", blk)
+        # 3. Author's Claim (line-anchored, exact 1 line, normalized equality with ledger)
+        claim_lines = re.findall(r"(?m)^-\s+\*\*Author's Claim:\*\*\s*([^\n]+)$", blk)
+        if len(claim_lines) != 1:
+            raise ValueError(f"extraction.md [{eid}]: Expected exactly one Author's Claim line, found {len(claim_lines)}")
+        norm_row_claim = normalize_text_for_match(row["author_claim"])
+        norm_ext_claim = normalize_text_for_match(claim_lines[0].strip())
+        if norm_row_claim != norm_ext_claim:
+            raise ValueError(
+                f"extraction.md [{eid}]: Author's Claim mismatch:\n  Ledger: '{norm_row_claim}'\n  Ext: '{norm_ext_claim}'"
+            )
+
+        # 4. Source Locator (line-anchored, exact 1 line, strict parser vs ledger & authoritative)
+        loc_lines = re.findall(r"(?m)^-\s+\*\*Source Locator:\*\*\s*([^\n]+)$", blk)
         if len(loc_lines) != 1:
             raise ValueError(f"extraction.md [{eid}]: Expected exactly one Source Locator line, found {len(loc_lines)}")
-        act_loc = loc_lines[0].strip()
-        parsed_ext_loc = parse_source_locator(act_loc)
+        parsed_ext_loc = parse_source_locator(loc_lines[0].strip())
         parsed_ledger_loc = parse_source_locator(row["source_locator"])
 
-        if parsed_ext_loc["printed_pages"] != auth_spec["printed"]:
-            raise ValueError(
-                f"extraction.md [{eid}]: Printed page mismatch: expected {auth_spec['printed']}, got {parsed_ext_loc['printed_pages']}"
-            )
-        if parsed_ext_loc["pdf_pages"] != auth_spec["pdf"]:
-            raise ValueError(
-                f"extraction.md [{eid}]: PDF page mismatch: expected {auth_spec['pdf']}, got {parsed_ext_loc['pdf_pages']}"
-            )
-        if parsed_ext_loc["footnote"] != auth_spec["fn"]:
-            raise ValueError(
-                f"extraction.md [{eid}]: Footnote mismatch: expected {auth_spec['fn']}, got {parsed_ext_loc['footnote']}"
-            )
+        for field_key, spec_key in (("printed_pages", "printed"), ("pdf_pages", "pdf"), ("footnote", "fn")):
+            if parsed_ext_loc[field_key] != auth_spec[spec_key]:
+                raise ValueError(
+                    f"extraction.md [{eid}]: {field_key} mismatch: expected {auth_spec[spec_key]}, got {parsed_ext_loc[field_key]}"
+                )
+            if parsed_ext_loc[field_key] != parsed_ledger_loc[field_key]:
+                raise ValueError(
+                    f"extraction.md [{eid}]: {field_key} does not match ledger: {parsed_ext_loc[field_key]} vs {parsed_ledger_loc[field_key]}"
+                )
 
-        if (
-            parsed_ext_loc["printed_pages"] != parsed_ledger_loc["printed_pages"] or
-            parsed_ext_loc["pdf_pages"] != parsed_ledger_loc["pdf_pages"] or
-            parsed_ext_loc["footnote"] != parsed_ledger_loc["footnote"]
-        ):
-            raise ValueError(
-                f"extraction.md [{eid}]: Parsed locator does not match ledger:\n  Ext: {parsed_ext_loc}\n  Ledger: {parsed_ledger_loc}"
-            )
-
-        # Enforce exactly one Printed Page Number matching ledger
-        m_page = re.findall(r"-\s+\*\*Printed Page Number:\*\*\s*([^\n]+)", blk)
+        # 5. Printed Page Number (line-anchored, full-field strict grammar + ledger/authoritative check)
+        m_page = re.findall(r"(?m)^-\s+\*\*Printed Page Number:\*\*\s*([^\n]+)$", blk)
         if len(m_page) != 1:
             raise ValueError(f"extraction.md [{eid}]: Expected exactly one Printed Page Number line, found {len(m_page)}")
-        m_p_num = re.search(r"(\d+)", m_page[0])
-        if not m_p_num or int(m_p_num.group(1)) != int(row["printed_page"]):
-            raise ValueError(f"extraction.md [{eid}]: Printed page mismatch: expected {row['printed_page']}, got {m_page}")
+        parsed_prn_field = parse_source_locator(m_page[0].strip())
+        if parsed_prn_field["footnote"] is not None or parsed_prn_field["section"] is not None:
+            raise ValueError(f"extraction.md [{eid}]: Printed Page Number must not include fn/Section: '{m_page[0]}'")
+        if parsed_prn_field["printed_pages"] != auth_spec["printed"] or parsed_prn_field["pdf_pages"] != auth_spec["pdf"]:
+            raise ValueError(
+                f"extraction.md [{eid}]: Printed Page Number tuple mismatch: expected {auth_spec['printed']}, got {parsed_prn_field['printed_pages']}"
+            )
+        if parsed_prn_field["printed_pages"] != (int(row["printed_page"]),):
+            raise ValueError(
+                f"extraction.md [{eid}]: Printed Page Number mismatch vs ledger: expected {row['printed_page']}, got {parsed_prn_field['printed_pages']}"
+            )
 
-        # Enforce Short Exact Quotation strictly field-bound matching ledger
-        quote_lines = re.findall(r"-\s+\*\*Short Exact Quotation:\*\*\s*([^\n]+)", blk)
+        # 6. Short Exact Quotation (line-anchored, exact 1 line, normalized equality with ledger)
+        quote_lines = re.findall(r"(?m)^-\s+\*\*Short Exact Quotation:\*\*\s*([^\n]+)$", blk)
         if len(quote_lines) != 1:
             raise ValueError(f"extraction.md [{eid}]: Expected exactly one Short Exact Quotation line, found {len(quote_lines)}")
-        raw_field_quote = quote_lines[0].strip()
-        clean_field_quote = raw_field_quote.strip(' "')
-        clean_row_quote = row["short_quote"].strip(' "')
-        norm_row_quote = normalize_text_for_match(clean_row_quote)
-        norm_field_quote = normalize_text_for_match(clean_field_quote)
+        norm_row_quote = normalize_text_for_match(row["short_quote"].strip(' "'))
+        norm_field_quote = normalize_text_for_match(quote_lines[0].strip().strip(' "'))
         if norm_row_quote != norm_field_quote:
             raise ValueError(
                 f"extraction.md [{eid}]: Short Exact Quotation field mismatch:\n  Ledger: '{norm_row_quote}'\n  Ext field: '{norm_field_quote}'"
             )
 
-    # 2. relevance_scan.md checks
+
+def _verify_canonical_queue_alignment() -> None:
+    """Verify CANONICAL_B001_COMPARISONS against research-queue/B001-pauline-txt-pilot.md when present."""
+    pilot_path = REPO_ROOT / "research-queue" / "B001-pauline-txt-pilot.md"
+    if not pilot_path.is_file():
+        return
+    pilot_txt = pilot_path.read_text(encoding="utf-8")
+    if "PAU-B001-04-TXT" not in pilot_txt or "Romans 10:11" not in pilot_txt or "Isaiah 28:16" not in pilot_txt:
+        raise ValueError("Canonical batch contract PAU-B001-04-TXT mismatch in research-queue/B001-pauline-txt-pilot.md")
+    m04 = re.search(r"PAU-B001-04-TXT[^\n]+", pilot_txt)
+    if not m04 or "Romans 10:11" not in m04.group(0) or "Isaiah 28:16" not in m04.group(0):
+        raise ValueError("Canonical table row PAU-B001-04-TXT must map to Romans 10:11 and Isaiah 28:16")
+
+
+def _verify_relevance_scan_and_canonical(source_dir: Path, check_search_log: bool) -> None:
+    """Validate every YES and NO row of relevance_scan.md and canonical B001 comparison fidelity."""
+    _verify_canonical_queue_alignment()
+
     rel_path = source_dir / "relevance_scan.md"
     if not rel_path.is_file():
         raise FileNotFoundError(f"Missing relevance_scan.md in {source_dir}")
     rel_txt = rel_path.read_text(encoding="utf-8")
 
-    for b_id, (exp_status, exp_range) in EXPECTED_RELEVANCE_TABLE_LOCI.items():
-        if b_id not in rel_txt:
-            raise ValueError(f"relevance_scan.md missing entry for {b_id}")
-        if exp_status == "NO":
-            pat = rf"\b{re.escape(b_id)}\b[^\n]*\bNO\b"
-            if not re.search(pat, rel_txt):
-                raise ValueError(f"relevance_scan.md does not record NO for absent locus {b_id}")
+    row_pattern = re.compile(
+        r"^\|\s*\*\*(B001-\d+)\*\*\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|$",
+        re.MULTILINE,
+    )
+    parsed_rows: dict[str, tuple[str, str, str, str, str]] = {}
+    for m in row_pattern.finditer(rel_txt):
+        b_id = m.group(1).strip()
+        if b_id in parsed_rows:
+            raise ValueError(f"relevance_scan.md: Duplicate table row for {b_id}")
+        parsed_rows[b_id] = tuple(m.group(i).strip() for i in range(2, 7))  # type: ignore[assignment]
 
-    # 3. synthesis checks
+    if set(parsed_rows.keys()) != set(EXPECTED_RELEVANCE_TABLE_LOCI.keys()):
+        raise ValueError(
+            f"relevance_scan.md: Table rows mismatch: expected {sorted(EXPECTED_RELEVANCE_TABLE_LOCI)}, "
+            f"got {sorted(parsed_rows)}"
+        )
+
+    for b_id, spec in EXPECTED_RELEVANCE_TABLE_LOCI.items():
+        comparison, discussed, locator, depth, _desc = parsed_rows[b_id]
+        if normalize_text_for_match(comparison) != normalize_text_for_match(spec["comparison"]):
+            raise ValueError(
+                f"relevance_scan.md [{b_id}]: Comparison mismatch against canonical B001 table: "
+                f"expected '{spec['comparison']}', got '{comparison}'"
+            )
+        if discussed != spec["status"]:
+            raise ValueError(
+                f"relevance_scan.md [{b_id}]: Discussed status mismatch: expected '{spec['status']}', got '{discussed}'"
+            )
+        if depth != spec["depth"]:
+            raise ValueError(
+                f"relevance_scan.md [{b_id}]: Depth mismatch: expected '{spec['depth']}', got '{depth}'"
+            )
+        if spec["status"] == "NO":
+            if locator != "N/A":
+                raise ValueError(f"relevance_scan.md [{b_id}]: Expected locator 'N/A' for NO row, got '{locator}'")
+        else:
+            parsed_loc = parse_bib_locator(locator)
+            if parsed_loc["printed_pages"] != spec["pages"] or parsed_loc["pdf_pages"] != spec["pages"]:
+                raise ValueError(
+                    f"relevance_scan.md [{b_id}]: Page tuple mismatch: expected {spec['pages']}, got {parsed_loc['printed_pages']}"
+                )
+            if parsed_loc["footnotes"] != ():
+                raise ValueError(
+                    f"relevance_scan.md [{b_id}]: Unexpected footnote token in table locator '{locator}'"
+                )
+
+    if "- **B001-4 (Romans 10:11 / Isaiah 28:16):** Discussed — **Substantive**" not in rel_txt:
+        raise ValueError("relevance_scan.md missing canonical summary bullet for B001-4 (Romans 10:11 / Isaiah 28:16)")
+
+    if check_search_log:
+        log_path = source_dir / "full_volume_search_log.md"
+        if log_path.is_file():
+            log_txt = log_path.read_text(encoding="utf-8")
+            log_row_re = re.compile(r"^\|\s*`(B001-\d+)`\s*\|\s*([^|]+?)\s*\|\s*`([^`]+)`\s*\|", re.MULTILINE)
+            log_rows = {m.group(1): (m.group(2).strip(), m.group(3).strip()) for m in log_row_re.finditer(log_txt)}
+            for b_id, spec in EXPECTED_RELEVANCE_TABLE_LOCI.items():
+                if b_id not in log_rows:
+                    raise ValueError(f"full_volume_search_log.md missing search row for {b_id}")
+                comp_str, cat_str = log_rows[b_id]
+                if normalize_text_for_match(comp_str) != normalize_text_for_match(spec["comparison"]):
+                    raise ValueError(
+                        f"full_volume_search_log.md [{b_id}]: Comparison mismatch '{comp_str}' != '{spec['comparison']}'"
+                    )
+                exp_cat = "SUBSTANTIVE_DISCUSSION" if spec["status"] == "YES" else "CONFIRMED_ABSENT"
+                if cat_str != exp_cat:
+                    raise ValueError(f"full_volume_search_log.md [{b_id}]: Expected category {exp_cat}, got {cat_str}")
+
+
+def _verify_supporting_prose_artifacts(source_dir: Path) -> None:
+    """Verify synthesis headings/loci and clean prose discipline across argument_map & counterevidence."""
     synth_path = source_dir / "oliver_romans_10_chiasm_synthesis.md"
     if not synth_path.is_file():
         raise FileNotFoundError(f"Missing oliver_romans_10_chiasm_synthesis.md in {source_dir}")
@@ -1014,128 +1264,157 @@ def verify_cross_artifact_consistency(source_dir: Path, ledger_rows: list[dict] 
                 f"synthesis missing expected locus '{expected_loc}' within its subsection block '{subsec_title}'"
             )
 
-    # 4. bibliography_leads.md checks (Authoritative per-lead structured authentication)
+    for fname in ("argument_map.md", "counterevidence.md"):
+        fpath = source_dir / fname
+        if not fpath.is_file():
+            raise FileNotFoundError(f"Missing {fname} in {source_dir}")
+        ftxt = fpath.read_text(encoding="utf-8")
+        for ui_tok in ("expand_more", "unfold_less", "keep_pin", "thumb_up", "\nThoughts\n"):
+            if ui_tok in ftxt:
+                raise ValueError(f"{fname}: Raw NotebookLM UI token '{ui_tok.strip()}' must be removed")
+        if "Acts 2:21" in ftxt:
+            raise ValueError(f"{fname}: Erroneous 'Acts 2:21' reference must be corrected to 'Acts 2:17–21'")
+
+
+def _verify_bibliography_leads(source_dir: Path, page_texts: list[str] | None = None) -> None:
+    """Enforce exact 26-lead inventory, structured metadata, locators, provenance, and PDF witness fidelity."""
     bib_path = source_dir / "bibliography_leads.md"
     if not bib_path.is_file():
         raise FileNotFoundError(f"Missing bibliography_leads.md in {source_dir}")
     bib_txt = bib_path.read_text(encoding="utf-8")
 
-    bib_blocks = re.split(r"(?=###\s+)", bib_txt)
+    lower_bib = bib_txt.lower()
+    for bad in FORBIDDEN_BIB_CONTAINERS:
+        if bad in lower_bib:
+            raise ValueError(f"bibliography_leads.md: Forbidden unprinted/fabricated metadata '{bad}'")
+
+    bib_blocks = re.split(r"(?=^###\s+)", bib_txt, flags=re.MULTILINE)
     bib_block_map: dict[str, str] = {}
     for blk in bib_blocks:
-        m = re.match(r"###\s+([^\n]+)", blk)
+        m = re.match(r"^###\s+([^\n]+)", blk)
         if m:
             entry_title = m.group(1).strip()
             if entry_title in bib_block_map:
                 raise ValueError(f"bibliography_leads.md: Duplicate section block for '{entry_title}'")
             bib_block_map[entry_title] = blk
 
+    expected_headers = {lead["header"] for lead in EXPECTED_BIBLIOGRAPHY_LEADS}
+    actual_headers = set(bib_block_map.keys())
+    extra_headers = sorted(actual_headers - expected_headers)
+    missing_headers = sorted(expected_headers - actual_headers)
+    if extra_headers:
+        raise ValueError(f"bibliography_leads.md: Unexpected extra lead block(s): {extra_headers}")
+    if missing_headers:
+        raise ValueError(f"bibliography_leads.md: Missing expected lead block(s): {missing_headers}")
+
     for lead in EXPECTED_BIBLIOGRAPHY_LEADS:
         lead_header = lead["header"]
-        if lead_header not in bib_block_map:
-            raise ValueError(f"bibliography_leads.md missing expected header '{lead_header}'")
         blk = bib_block_map[lead_header]
 
-        # 1. Enforce Header Year
         m_hdr_year = re.search(r"\((\d{4})\)", lead_header)
-        if not m_hdr_year:
-            raise ValueError(f"bibliography_leads.md [{lead_header}]: Cannot parse 4-digit year in header")
-        hdr_year = int(m_hdr_year.group(1))
-        if hdr_year != lead["year"]:
+        if not m_hdr_year or int(m_hdr_year.group(1)) != lead["year"]:
+            raise ValueError(f"bibliography_leads.md [{lead_header}]: Header year mismatch")
+
+        cit_lines = re.findall(r"(?m)^-\s+\*\*Citation:\*\*\s*([^\n]+)$", blk)
+        if len(cit_lines) != 1:
+            raise ValueError(f"bibliography_leads.md [{lead_header}]: Expected 1 Citation line, found {len(cit_lines)}")
+        if normalize_text_for_match(lead["citation"]) != normalize_text_for_match(cit_lines[0].strip()):
             raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: Header year {hdr_year} does not match authoritative year {lead['year']}"
+                f"bibliography_leads.md [{lead_header}]: Citation mismatch: expected '{lead['citation']}', got '{cit_lines[0].strip()}'"
             )
 
-        # 2. Enforce exactly one Author line
-        auth_lines = re.findall(r"-\s+\*\*Authors?:\*\*\s*([^\n]+)", blk)
-        if len(auth_lines) != 1:
-            raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: Expected exactly one Author line, found {len(auth_lines)}"
-            )
-        act_auth = auth_lines[0].strip()
-        exp_auth = lead["author"]
-        if normalize_text_for_match(exp_auth) != normalize_text_for_match(act_auth):
-            raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: Author mismatch: expected '{exp_auth}', got '{act_auth}'"
-            )
-
-        # 3. Enforce exactly one Title line
-        title_lines = re.findall(r"-\s+\*\*Title:\*\*\s*([^\n]+)", blk)
-        if len(title_lines) != 1:
-            raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: Expected exactly one Title line, found {len(title_lines)}"
-            )
-        act_title = title_lines[0].strip()
-        exp_title = lead["title"]
-        if normalize_text_for_match(exp_title) != normalize_text_for_match(act_title):
-            raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: Title mismatch: expected '{exp_title}', got '{act_title}'"
-            )
-
-        # 4. Enforce exactly one Publication Year line and primary container
-        pub_lines = re.findall(r"-\s+\*\*Publication Year:\*\*\s*([^\n]+)", blk)
-        if len(pub_lines) != 1:
-            raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: Expected exactly one Publication Year line, found {len(pub_lines)}"
-            )
-        act_pub = pub_lines[0].strip()
-        m_pub = re.match(r"^(\d{4})\s*\((.*)\)$", act_pub)
-        if not m_pub:
-            raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: Malformed Publication Year field: '{act_pub}'"
-            )
-        act_year = int(m_pub.group(1))
-        if act_year != lead["year"]:
-            raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: Publication year mismatch: expected {lead['year']}, got {act_year}"
-            )
-
-        details = m_pub.group(2).strip()
-        if details.startswith("*"):
-            mj = re.match(r"^\*([^*]+)\*", details)
-            if not mj:
+        cont_lines = re.findall(r"(?m)^-\s+\*\*Container / Venue:\*\*\s*([^\n]+)$", blk)
+        if len(cont_lines) != 1:
+            raise ValueError(f"bibliography_leads.md [{lead_header}]: Expected 1 Container / Venue line, found {len(cont_lines)}")
+        cont_val = cont_lines[0].strip()
+        for tok in lead["container_tokens"]:
+            if tok.lower() not in cont_val.lower():
                 raise ValueError(
-                    f"bibliography_leads.md [{lead_header}]: Malformed italicized journal container in '{details}'"
+                    f"bibliography_leads.md [{lead_header}]: Container / Venue missing required token '{tok}' in '{cont_val}'"
                 )
-            act_container = mj.group(1).strip()
-        elif "Online Publication" in details:
-            act_container = "Online Publication / Research Monograph"
-        else:
-            mb = re.search(r":\s*([^,\)]+)", details)
-            if not mb:
+        for bad_tok in lead["forbidden_tokens"]:
+            if bad_tok.lower() in blk.lower():
                 raise ValueError(
-                    f"bibliography_leads.md [{lead_header}]: Malformed book publication container in '{details}'"
+                    f"bibliography_leads.md [{lead_header}]: Forbidden token '{bad_tok}' found in block"
                 )
-            act_container = mb.group(1).strip()
 
-        if normalize_text_for_match(lead["container"]) != normalize_text_for_match(act_container):
+        ref_lines = re.findall(r"(?m)^-\s+\*\*Oliver References Page:\*\*\s*([^\n]+)$", blk)
+        if len(ref_lines) != 1:
             raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: Primary container mismatch: expected '{lead['container']}', got '{act_container}'"
+                f"bibliography_leads.md [{lead_header}]: Expected 1 Oliver References Page line, found {len(ref_lines)}"
+            )
+        ref_val = ref_lines[0].strip()
+        exp_ref_marker = f"Printed p. {lead['ref_page']} [PDF p. {lead['ref_page']}]"
+        if exp_ref_marker not in ref_val or lead["ref_key"] not in ref_val:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Oliver References Page mismatch: expected '{exp_ref_marker}' & '{lead['ref_key']}', got '{ref_val}'"
             )
 
-        # 5. Enforce exactly one Source Locator line and parse strict bibliography locator
-        loc_lines = re.findall(r"-\s+\*\*Source Locator:\*\*\s*([^\n]+)", blk)
+        loc_lines = re.findall(r"(?m)^-\s+\*\*Oliver Locators:\*\*\s*([^\n]+)$", blk)
         if len(loc_lines) != 1:
             raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: Expected exactly one Source Locator line, found {len(loc_lines)}"
+                f"bibliography_leads.md [{lead_header}]: Expected 1 Oliver Locators line, found {len(loc_lines)}"
             )
-        act_loc = loc_lines[0].strip()
-        parsed_bib_loc = parse_bib_locator(act_loc)
-
-        if parsed_bib_loc["printed_pages"] != lead["printed_pages"]:
+        parsed_bib_loc = parse_bib_locator(loc_lines[0].strip())
+        if parsed_bib_loc["printed_pages"] != lead["printed_pages"] or parsed_bib_loc["pdf_pages"] != lead["pdf_pages"]:
             raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: Printed page mismatch: expected {lead['printed_pages']}, got {parsed_bib_loc['printed_pages']}"
+                f"bibliography_leads.md [{lead_header}]: Locator page mismatch: expected {lead['printed_pages']}, got {parsed_bib_loc['printed_pages']}"
             )
-        if parsed_bib_loc["pdf_pages"] != lead["pdf_pages"]:
+        if parsed_bib_loc["footnotes"] != lead["footnotes"]:
             raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: PDF page mismatch: expected {lead['pdf_pages']}, got {parsed_bib_loc['pdf_pages']}"
-            )
-        if parsed_bib_loc["footnote"] != lead["footnote"]:
-            raise ValueError(
-                f"bibliography_leads.md [{lead_header}]: Footnote mismatch: expected {lead['footnote']}, got {parsed_bib_loc['footnote']}"
+                f"bibliography_leads.md [{lead_header}]: Footnote mismatch: expected {lead['footnotes']}, got {parsed_bib_loc['footnotes']}"
             )
 
-    # 5. provenance_manifest.json checks
+        prov_lines = re.findall(r"(?m)^-\s+\*\*Source-Witness Provenance:\*\*\s*([^\n]+)$", blk)
+        if len(prov_lines) != 1:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Expected 1 Source-Witness Provenance line, found {len(prov_lines)}"
+            )
+        prov_val = prov_lines[0].strip()
+        if "oliver_2015_romans_10.pdf" not in prov_val or "References" not in prov_val:
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Source-Witness Provenance must cite oliver_2015_romans_10.pdf & References: '{prov_val}'"
+            )
+        if "independent external" in prov_val.lower() or "crossref" in prov_val.lower():
+            raise ValueError(
+                f"bibliography_leads.md [{lead_header}]: Must not misrepresent internal witness match as external verification: '{prov_val}'"
+            )
+
+        if page_texts is not None:
+            ref_txt = page_texts[lead["ref_page"] - 1]
+            if lead["witness_token"] not in ref_txt or str(lead["year"]) not in ref_txt:
+                raise ValueError(
+                    f"bibliography_leads.md [{lead_header}]: PDF Reference page {lead['ref_page']} witness check failed"
+                )
+            for pg in parsed_bib_loc["printed_pages"]:
+                if lead["witness_token"] not in page_texts[pg - 1]:
+                    raise ValueError(
+                        f"bibliography_leads.md [{lead_header}]: Witness token '{lead['witness_token']}' not found on PDF p. {pg}"
+                    )
+            for fn_pg, fn_num in parsed_bib_loc["footnotes"]:
+                pg_txt = page_texts[fn_pg - 1]
+                if not re.search(rf"(?m)^{fn_num}\.", pg_txt):
+                    raise ValueError(
+                        f"bibliography_leads.md [{lead_header}]: Footnote {fn_num} not found on PDF p. {fn_pg}"
+                    )
+
+
+def verify_cross_artifact_consistency(
+    source_dir: Path,
+    ledger_rows: list[dict] | None = None,
+    page_texts: list[str] | None = None,
+    verify_search_log: bool = True,
+) -> None:
+    """Verify extraction.md, relevance_scan.md, synthesis, prose artifacts, bibliography_leads.md, and manifest."""
+    if ledger_rows is None:
+        ledger_rows = load_evidence_ledger(source_dir / "citation_ledger.csv")
+    ledger_map = {r["evidence_id"]: r for r in ledger_rows}
+
+    _verify_extraction_artifact(source_dir, ledger_map)
+    _verify_relevance_scan_and_canonical(source_dir, check_search_log=verify_search_log)
+    _verify_supporting_prose_artifacts(source_dir)
+    _verify_bibliography_leads(source_dir, page_texts=page_texts)
+
     man_path = source_dir / "provenance_manifest.json"
     if not man_path.is_file():
         raise FileNotFoundError(f"Missing provenance_manifest.json in {source_dir}")
@@ -1218,13 +1497,18 @@ def generate_search_log_markdown(
         "",
         "## 4. Verification Metadata and Cryptographic Signatures",
         "",
-        f"- **Verification Timestamp:** `2026-11-10T10:30:00Z`",
-        f"- **PDF Path:** `/Users/chrisrodriguez/Downloads/oliver_2015_romans_10.pdf`",
+        "- **Verification Timestamp:** `2026-11-13T16:30:00Z`",
+        "- **PDF Path:** `/Users/chrisrodriguez/Downloads/oliver_2015_romans_10.pdf`",
         f"- **Raw PDF SHA-256:** `{pdf_sha}`",
         f"- **Text Layer SHA-256:** `{text_sha}`",
-        f"- **Evidence Ledger:** `research/inbox/B001-pauline-txt-pilot/sources/S09F/citation_ledger.csv`",
-        f"- **Deliverables Directory:** `research/inbox/B001-pauline-txt-pilot/sources/S09F/`",
-        f"- **Overall Determination:** `PASSED` — All 12 positive controls verified across the 12-page volume; all 8 evidence ledger rows verified with exact physical text witnesses; 10 absent loci confirmed with zero hits; cross-artifact consistency verified.",
+        "- **Evidence Ledger:** `research/inbox/B001-pauline-txt-pilot/sources/S09F/citation_ledger.csv`",
+        "- **Deliverables Directory:** `research/inbox/B001-pauline-txt-pilot/sources/S09F/`",
+        (
+            f"- **Overall Determination:** `PASSED` — All {len(pos_controls)} positive controls verified across the "
+            f"{EXPECTED_PAGE_COUNT}-page volume; all {len(witnesses)} evidence ledger rows verified (5 direct B001-4/B001-5 "
+            "+ 5 B001-CONTEXT pericope-context rows) with exact physical text witnesses; 10 absent loci confirmed with zero hits; "
+            "cross-artifact consistency verified."
+        ),
         "",
     ])
 
@@ -1273,7 +1557,12 @@ def main():
     rows = load_evidence_ledger(args.ledger)
     witnesses = verify_ledger_witnesses(rows, page_texts)
     search_results = execute_full_volume_search(page_texts, witnesses)
-    verify_cross_artifact_consistency(args.source_dir)
+    verify_cross_artifact_consistency(
+        args.source_dir,
+        ledger_rows=rows,
+        page_texts=page_texts,
+        verify_search_log=args.check_only,
+    )
 
     rendered_md = generate_search_log_markdown(
         raw_size, raw_sha, text_chars, text_bytes, text_sha,

@@ -3722,20 +3722,22 @@ def test_s09f_citation_ledger_crosswalk_integrity():
     with open(csv_path, encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
 
-    assert len(rows) == 8, f"Expected 8 ledger rows for S09F, found {len(rows)}"
+    assert len(rows) == 10, f"Expected 10 ledger rows for S09F, found {len(rows)}"
 
     expected_b001_map = {
-        "S09F-E001": "B001-4",
-        "S09F-E002": "B001-4",
-        "S09F-E003": "B001-4",
-        "S09F-E004": "B001-4",
-        "S09F-E005": "B001-4",
+        "S09F-E001": "B001-CONTEXT",
+        "S09F-E002": "B001-CONTEXT",
+        "S09F-E003": "B001-CONTEXT",
+        "S09F-E004": "B001-CONTEXT",
+        "S09F-E005": "B001-4, B001-5",
         "S09F-E006": "B001-5",
         "S09F-E007": "B001-5",
-        "S09F-E008": "B001-4, B001-5",
+        "S09F-E008": "B001-CONTEXT",
+        "S09F-E009": "B001-4",
+        "S09F-E010": "B001-4",
     }
 
-    expected_ids = [f"S09F-E00{i}" for i in range(1, 9)]
+    expected_ids = [f"S09F-E{i:03d}" for i in range(1, 11)]
     for idx, r in enumerate(rows):
         eid = r["evidence_id"]
         assert eid == expected_ids[idx], f"Expected {expected_ids[idx]}, got {eid}"
@@ -3848,160 +3850,257 @@ def test_s09f_adversarial_pagination_and_negative_search_assertions():
 
 
 def test_s09f_cross_artifact_adversarial_mutations(tmp_path):
-    """Verify cross-artifact integrity checks fail closed on adversarial mutations."""
+    """Verify hardened cross-artifact integrity checks fail closed on R1 and R2 adversarial mutations."""
     import shutil
     import pytest
-    from scripts.verify_s09f_negative_search import verify_cross_artifact_consistency
+    from scripts.verify_s09f_negative_search import (
+        verify_cross_artifact_consistency,
+        extract_page_texts,
+        PDF_DEFAULT,
+    )
 
     repo_root = Path(__file__).resolve().parent.parent
     s09f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S09F"
     test_dir = tmp_path / "S09F"
     shutil.copytree(s09f_dir, test_dir)
 
-    # Clean verification passes
-    verify_cross_artifact_consistency(test_dir)
+    page_texts = extract_page_texts(PDF_DEFAULT) if PDF_DEFAULT.is_file() else None
 
-    # Mutation 1: Missing evidence record in extraction.md
+    # Clean verification passes (with and without PDF page_texts witness check)
+    verify_cross_artifact_consistency(test_dir, page_texts=page_texts)
+
+    # --- R1 & R2 extraction.md mutations ---
     ext_file = test_dir / "extraction.md"
     orig_ext = ext_file.read_text(encoding="utf-8")
-    mutated_ext_missing = orig_ext.replace("### S09F-E001", "### S09F-MUTATED")
-    ext_file.write_text(mutated_ext_missing, encoding="utf-8")
-    with pytest.raises(ValueError, match="extraction.md: Missing discrete section block for evidence ID S09F-E001"):
+
+    # Mutation 1: Missing evidence record in extraction.md
+    ext_file.write_text(orig_ext.replace("### S09F-E001", "### S09F-MUTATED"), encoding="utf-8")
+    with pytest.raises(ValueError, match="Unexpected extra section block"):
         verify_cross_artifact_consistency(test_dir)
     ext_file.write_text(orig_ext, encoding="utf-8")
 
-    # Mutation 2: Missing expected locator in extraction.md record
-    mutated_ext_loc = orig_ext.replace("Printed p. 5 [PDF p. 5]", "Printed p. 99 [PDF p. 99]")
-    ext_file.write_text(mutated_ext_loc, encoding="utf-8")
-    with pytest.raises(ValueError, match="Printed page mismatch: expected \\(5,\\), got \\(99,\\)"):
+    # Mutation 2 (R2-F3d): Extra unique evidence block ### S09F-E999 in extraction.md
+    ext_file.write_text(
+        orig_ext + "\n### S09F-E999\n- **Proposed Evidence ID:** S09F-E999\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="Unexpected extra section block.*S09F-E999"):
         verify_cross_artifact_consistency(test_dir)
     ext_file.write_text(orig_ext, encoding="utf-8")
 
-    # Mutation 3: Missing synthesis subsection in oliver_romans_10_chiasm_synthesis.md
-    synth_file = test_dir / "oliver_romans_10_chiasm_synthesis.md"
-    orig_synth = synth_file.read_text(encoding="utf-8")
-    mutated_synth = orig_synth.replace(
-        "## 1. Overarching Chiastic Structure and Old Testament Framing (Rom 10:5–13)",
-        "## 1. Mutated Title"
+    # Mutation 3 (R2-F3a): Fabricated Author's Claim while ledger stays valid
+    ext_file.write_text(
+        orig_ext.replace(
+            "- **Author's Claim:** Paul constructs an antithetical a-b-b-a chiasm in Romans 10:5a and 6a to contrast righteousness based on the Law with righteousness based on faith.",
+            "- **Author's Claim:** A fabricated author claim not present in Oliver or the ledger.",
+        ),
+        encoding="utf-8",
     )
-    synth_file.write_text(mutated_synth, encoding="utf-8")
-    with pytest.raises(ValueError, match="synthesis missing expected subsection heading"):
-        verify_cross_artifact_consistency(test_dir)
-    synth_file.write_text(orig_synth, encoding="utf-8")
-
-    # Mutation 4: Author misattribution in bibliography_leads.md
-    bib_file = test_dir / "bibliography_leads.md"
-    orig_bib = bib_file.read_text(encoding="utf-8")
-    mutated_bib_auth = orig_bib.replace("- **Author:** Akio Ito", "- **Author:** Another Scholar")
-    bib_file.write_text(mutated_bib_auth, encoding="utf-8")
-    with pytest.raises(ValueError, match="Author mismatch: expected 'Akio Ito'"):
-        verify_cross_artifact_consistency(test_dir)
-    bib_file.write_text(orig_bib, encoding="utf-8")
-
-    # Mutation 5: Primary container mismatch in bibliography_leads.md
-    mutated_bib_cont = orig_bib.replace("Novum Testamentum", "Unrelated Journal")
-    bib_file.write_text(mutated_bib_cont, encoding="utf-8")
-    with pytest.raises(ValueError, match="Primary container mismatch: expected 'Novum Testamentum'"):
-        verify_cross_artifact_consistency(test_dir)
-    bib_file.write_text(orig_bib, encoding="utf-8")
-
-    # Mutation 6: Missing footnote witness in bibliography_leads.md
-    mutated_bib_fn = orig_bib.replace("fn. 13", "fn. 99")
-    bib_file.write_text(mutated_bib_fn, encoding="utf-8")
-    with pytest.raises(ValueError, match="Footnote mismatch: expected 13, got 99"):
-        verify_cross_artifact_consistency(test_dir)
-    bib_file.write_text(orig_bib, encoding="utf-8")
-
-    # Mutation 7 (S09F-R1-F2a): Bogus source locator masked by valid Printed Page Number
-    mutated_ext_bogus_loc = orig_ext.replace(
-        "- **Printed Page Number:** Printed p. 5 [PDF p. 5]\n- **Source Locator:** Printed p. 5 [PDF p. 5]",
-        "- **Printed Page Number:** Printed p. 5 [PDF p. 5]\n- **Source Locator:** Printed p. 12 [PDF p. 12]"
-    )
-    ext_file.write_text(mutated_ext_bogus_loc, encoding="utf-8")
-    with pytest.raises(ValueError, match="Printed page mismatch: expected \\(5,\\), got \\(12,\\)"):
+    with pytest.raises(ValueError, match="Author's Claim mismatch"):
         verify_cross_artifact_consistency(test_dir)
     ext_file.write_text(orig_ext, encoding="utf-8")
 
-    # Mutation 8 (S09F-R1-F2b): Fabricated Short Exact Quotation while ledger remains valid
-    mutated_ext_fab_quote = orig_ext.replace(
-        '- **Short Exact Quotation:** "This contrast is set in the form of a stark a-b-b-a chiasm in verses 5a and 6a"',
-        '- **Short Exact Quotation:** "A completely invented but nonempty quotation"'
+    # Mutation 4 (R2-F3b): Duplicate Author's Claim line in extraction.md
+    claim_line = "- **Author's Claim:** Paul constructs an antithetical a-b-b-a chiasm in Romans 10:5a and 6a to contrast righteousness based on the Law with righteousness based on faith."
+    ext_file.write_text(orig_ext.replace(claim_line, claim_line + "\n" + claim_line), encoding="utf-8")
+    with pytest.raises(ValueError, match="Expected exactly one Author's Claim line, found 2"):
+        verify_cross_artifact_consistency(test_dir)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 5 (R2-F3c): Mismatched [PDF p. 99] in Printed Page Number field
+    ext_file.write_text(
+        orig_ext.replace("- **Printed Page Number:** Printed p. 5 [PDF p. 5]", "- **Printed Page Number:** Printed p. 5 [PDF p. 99]", 1),
+        encoding="utf-8",
     )
-    ext_file.write_text(mutated_ext_fab_quote, encoding="utf-8")
+    with pytest.raises(ValueError, match="Monotonic pagination mismatch: printed 5 != PDF 99"):
+        verify_cross_artifact_consistency(test_dir)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 6 (R2-F3e): Trailing bogus parenthetical on B001 Passage ID
+    ext_file.write_text(
+        orig_ext.replace("- **B001 Passage ID:** B001-CONTEXT", "- **B001 Passage ID:** B001-CONTEXT (bogus)", 1),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="Invalid B001 Passage ID syntax"):
+        verify_cross_artifact_consistency(test_dir)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 7 (R1-F2a): Bogus source locator masked by valid Printed Page Number
+    ext_file.write_text(
+        orig_ext.replace(
+            "- **Printed Page Number:** Printed p. 5 [PDF p. 5]\n- **Source Locator:** Printed p. 5 [PDF p. 5]",
+            "- **Printed Page Number:** Printed p. 5 [PDF p. 5]\n- **Source Locator:** Printed p. 12 [PDF p. 12]",
+            1,
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="printed_pages mismatch"):
+        verify_cross_artifact_consistency(test_dir)
+    ext_file.write_text(orig_ext, encoding="utf-8")
+
+    # Mutation 8 (R1-F2b): Fabricated Short Exact Quotation
+    ext_file.write_text(
+        orig_ext.replace(
+            '- **Short Exact Quotation:** "This contrast is set in the form of a stark a-b-b-a chiasm in verses 5a and 6a"',
+            '- **Short Exact Quotation:** "A completely invented but nonempty quotation"',
+        ),
+        encoding="utf-8",
+    )
     with pytest.raises(ValueError, match="Short Exact Quotation field mismatch"):
         verify_cross_artifact_consistency(test_dir)
     ext_file.write_text(orig_ext, encoding="utf-8")
 
-    # Mutation 9 (S09F-R1-F2c): Duplicate field in extraction block
-    mutated_ext_dup_field = orig_ext.replace(
-        "- **Source Locator:** Printed p. 5 [PDF p. 5]",
-        "- **Source Locator:** Printed p. 5 [PDF p. 5]\n- **Source Locator:** Printed p. 5 [PDF p. 5]"
+    # Mutation 9 (R1-F2c): Duplicate field in extraction block
+    ext_file.write_text(
+        orig_ext.replace(
+            "- **Source Locator:** Printed p. 5 [PDF p. 5]",
+            "- **Source Locator:** Printed p. 5 [PDF p. 5]\n- **Source Locator:** Printed p. 5 [PDF p. 5]",
+            1,
+        ),
+        encoding="utf-8",
     )
-    ext_file.write_text(mutated_ext_dup_field, encoding="utf-8")
     with pytest.raises(ValueError, match="Expected exactly one Source Locator line, found 2"):
         verify_cross_artifact_consistency(test_dir)
     ext_file.write_text(orig_ext, encoding="utf-8")
 
-    # Mutation 10 (S09F-R1-F2d): Mismatched B001 ID in extraction block
-    mutated_ext_mismatch_b001 = orig_ext.replace(
-        "### S09F-E001\n- **Proposed Evidence ID:** S09F-E001\n- **B001 Passage ID:** B001-4",
-        "### S09F-E001\n- **Proposed Evidence ID:** S09F-E001\n- **B001 Passage ID:** B001-1"
+    # Mutation 10 (R1-F2d): Mismatched B001 ID in extraction block
+    ext_file.write_text(
+        orig_ext.replace(
+            "### S09F-E001\n- **Proposed Evidence ID:** S09F-E001\n- **B001 Passage ID:** B001-CONTEXT",
+            "### S09F-E001\n- **Proposed Evidence ID:** S09F-E001\n- **B001 Passage ID:** B001-1",
+        ),
+        encoding="utf-8",
     )
-    ext_file.write_text(mutated_ext_mismatch_b001, encoding="utf-8")
     with pytest.raises(ValueError, match="B001 ID mismatch"):
         verify_cross_artifact_consistency(test_dir)
     ext_file.write_text(orig_ext, encoding="utf-8")
 
-    # Mutation 11 (S09F-R1-F3a): Fabricated publication year (1999 -> 2099) in bibliography
-    mutated_bib_year = orig_bib.replace(
-        "- **Publication Year:** 1999 (*Journal of the Grace Evangelical Society*",
-        "- **Publication Year:** 2099 (*Journal of the Grace Evangelical Society*"
+    # --- R2-F1 & R2-F3 relevance_scan.md + canonical substitution mutations ---
+    rel_file = test_dir / "relevance_scan.md"
+    orig_rel = rel_file.read_text(encoding="utf-8")
+    csv_file = test_dir / "citation_ledger.csv"
+    orig_csv = csv_file.read_text(encoding="utf-8")
+    log_file = test_dir / "full_volume_search_log.md"
+    orig_log = log_file.read_text(encoding="utf-8")
+
+    # Mutation 11 (R2-F1): Coordinated substitution of B001-4 comparison across ALL local artifacts
+    sub_rel = orig_rel.replace("Romans 10:11 / Isaiah 28:16", "Romans 10:6–8 / Deuteronomy 30:12–14")
+    sub_ext = orig_ext.replace("B001-CONTEXT", "B001-4")
+    sub_csv = orig_csv.replace("B001-CONTEXT", "B001-4")
+    sub_log = orig_log.replace("Romans 10:11 / Isaiah 28:16", "Romans 10:6–8 / Deuteronomy 30:12–14")
+    rel_file.write_text(sub_rel, encoding="utf-8")
+    ext_file.write_text(sub_ext, encoding="utf-8")
+    csv_file.write_text(sub_csv, encoding="utf-8")
+    log_file.write_text(sub_log, encoding="utf-8")
+    with pytest.raises(ValueError, match="B001 ID mismatch|Comparison mismatch against canonical B001 table"):
+        verify_cross_artifact_consistency(test_dir)
+    # Even when extraction & csv keep valid IDs, coordinated relevance_scan + search_log substitution fails
+    ext_file.write_text(orig_ext, encoding="utf-8")
+    csv_file.write_text(orig_csv, encoding="utf-8")
+    with pytest.raises(ValueError, match="Comparison mismatch against canonical B001 table"):
+        verify_cross_artifact_consistency(test_dir)
+    rel_file.write_text(orig_rel, encoding="utf-8")
+    log_file.write_text(orig_log, encoding="utf-8")
+
+    # Mutation 12 (R2-F3f): Mutated positive row in relevance_scan.md (wrong status / page / depth)
+    rel_file.write_text(orig_rel.replace("| **B001-4** | Romans 10:11 / Isaiah 28:16 | YES |", "| **B001-4** | Romans 10:11 / Isaiah 28:16 | NO |"), encoding="utf-8")
+    with pytest.raises(ValueError, match="Discussed status mismatch"):
+        verify_cross_artifact_consistency(test_dir)
+    rel_file.write_text(orig_rel, encoding="utf-8")
+
+    rel_file.write_text(orig_rel.replace("p. 11 [PDF p. 11]", "p. 12 [PDF p. 12]", 1), encoding="utf-8")
+    with pytest.raises(ValueError, match="Page tuple mismatch"):
+        verify_cross_artifact_consistency(test_dir)
+    rel_file.write_text(orig_rel, encoding="utf-8")
+
+    rel_file.write_text(orig_rel.replace("| Substantive |", "| Extended |", 1), encoding="utf-8")
+    with pytest.raises(ValueError, match="Depth mismatch"):
+        verify_cross_artifact_consistency(test_dir)
+    rel_file.write_text(orig_rel, encoding="utf-8")
+
+    # --- Synthesis mutation ---
+    synth_file = test_dir / "oliver_romans_10_chiasm_synthesis.md"
+    orig_synth = synth_file.read_text(encoding="utf-8")
+    synth_file.write_text(
+        orig_synth.replace("## 1. B001-4: Romans 10:11 / Isaiah 28:16 (`Substantive`)", "## 1. Mutated Title"),
+        encoding="utf-8",
     )
-    bib_file.write_text(mutated_bib_year, encoding="utf-8")
-    with pytest.raises(ValueError, match="Publication year mismatch: expected 1999, got 2099"):
+    with pytest.raises(ValueError, match="synthesis missing expected subsection heading"):
+        verify_cross_artifact_consistency(test_dir)
+    synth_file.write_text(orig_synth, encoding="utf-8")
+
+    # --- R2-F4 bibliography_leads.md hardened mutations ---
+    bib_file = test_dir / "bibliography_leads.md"
+    orig_bib = bib_file.read_text(encoding="utf-8")
+
+    # Mutation 13 (R2-F4a): Extra unique lead block in bibliography_leads.md
+    bib_file.write_text(
+        orig_bib + "\n\n### Fake Scholar (2025)\n- **Citation:** *Invented*\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="Unexpected extra lead block.*Fake Scholar"):
         verify_cross_artifact_consistency(test_dir)
     bib_file.write_text(orig_bib, encoding="utf-8")
 
-    # Mutation 12 (S09F-R1-F3b): False publication container with real journal mentioned in passing
-    mutated_bib_passing_cont = orig_bib.replace(
-        "- **Publication Year:** 2006 (*Novum Testamentum*, Vol. 48, No. 3, pp. 234–260)",
-        "- **Publication Year:** 2006 (*Bogus Journal*, mentioning Novum Testamentum in text)"
+    # Mutation 14 (R2-F4b): Fake Gibbs container restoring "Online Publication"
+    bib_file.write_text(
+        orig_bib.replace(
+            "Dated web resource: `newtestamentresearch.com` (viewed 11 November 2014; URL `http://newtestamentresearch.com/nt%20research-mk%202/chiastic_structuring.htm`; formal publisher/monograph status `UNKNOWN` in Oliver 2015)",
+            "Online Publication / Research Monograph: `newtestamentresearch.com`",
+        ),
+        encoding="utf-8",
     )
-    bib_file.write_text(mutated_bib_passing_cont, encoding="utf-8")
-    with pytest.raises(ValueError, match="Primary container mismatch: expected 'Novum Testamentum'"):
+    with pytest.raises(ValueError, match="Forbidden unprinted/fabricated metadata"):
         verify_cross_artifact_consistency(test_dir)
     bib_file.write_text(orig_bib, encoding="utf-8")
 
-    # Mutation 13 (S09F-R1-F3c): Forged title in Title line masked in Notes
-    mutated_bib_title = orig_bib.replace(
-        '- **Title:** *"The written Torah and the oral Gospel: Romans 10:5–13 in the dynamic tension between orality and literacy"*',
-        '- **Title:** *"Completely Fabricated Title on Romans"*\n- **Notes:** Reference to The written Torah and the oral Gospel'
+    # Mutation 15 (R2-F4c): Incorrect bibliographic metadata (Bechtler title / Kruse city / Hart external pages)
+    bib_file.write_text(
+        orig_bib.replace(
+            '*"Christ, the Τέλος of the law: The goal of Romans 10:4"*',
+            '*"Christ, the End of the Law: The aim of Romans 10:4–14"*',
+        ),
+        encoding="utf-8",
     )
-    bib_file.write_text(mutated_bib_title, encoding="utf-8")
-    with pytest.raises(ValueError, match="Title mismatch"):
+    with pytest.raises(ValueError, match="Citation mismatch"):
         verify_cross_artifact_consistency(test_dir)
     bib_file.write_text(orig_bib, encoding="utf-8")
 
-    # Mutation 14 (S09F-R1-F3d): Altered PDF page in bibliography locator (e.g. Akio Ito p. 99)
-    mutated_bib_loc = orig_bib.replace(
-        "- **Source Locator:** Printed p. 4 [PDF p. 4], p. 5 [PDF p. 5], p. 6 [PDF p. 6], p. 8 [PDF p. 8], p. 9 [PDF p. 9]",
-        "- **Source Locator:** Printed p. 99 [PDF p. 99]"
+    bib_file.write_text(
+        orig_bib.replace("Cambridge: Wm B Eerdmans Publishing Co.", "Grand Rapids, MI: Wm B Eerdmans Publishing Co."),
+        encoding="utf-8",
     )
-    bib_file.write_text(mutated_bib_loc, encoding="utf-8")
-    with pytest.raises(ValueError, match="Printed page mismatch"):
+    with pytest.raises(ValueError, match="Container / Venue missing required token 'Cambridge'"):
         verify_cross_artifact_consistency(test_dir)
     bib_file.write_text(orig_bib, encoding="utf-8")
 
-    # Mutation 15 (S09F-R1-F3e): Duplicate bibliography entry block
-    mutated_bib_dup = orig_bib + "\n\n### Akio Ito (2006)\n- **Author:** Akio Ito\n"
-    bib_file.write_text(mutated_bib_dup, encoding="utf-8")
-    with pytest.raises(ValueError, match="Duplicate section block for 'Akio Ito \\(2006\\)'"):
+    bib_file.write_text(orig_bib.replace("Printed p. 11 [PDF p. 11], fn.", "Printed p. 11 [PDF p. 11]").replace("fn. 13", "fn. 99"), encoding="utf-8")
+    with pytest.raises(ValueError, match="Footnote mismatch"):
         verify_cross_artifact_consistency(test_dir)
     bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 16 (R2-F4d): Claiming independent external verification in Source-Witness Provenance
+    bib_file.write_text(
+        orig_bib.replace(
+            "Verified in `oliver_2015_romans_10.pdf` text layer (`References`, p. 12; inline body citations `Ito 2006:...` on pp. 4, 5, 6, 8, 9).",
+            "Independently verified via Crossref DOI lookup in external catalog; oliver_2015_romans_10.pdf References.",
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="Must not misrepresent internal witness match as external verification"):
+        verify_cross_artifact_consistency(test_dir)
+    bib_file.write_text(orig_bib, encoding="utf-8")
+
+    # Mutation 17 (R2-F4e): PDF text-layer witness verification rejects missing page witness
+    if page_texts is not None:
+        corrupted_pages = list(page_texts)
+        corrupted_pages[0] = "Empty page without Kruse or Bechtler or Lund"
+        with pytest.raises(ValueError, match="Witness token .* not found on PDF p. 1"):
+            verify_cross_artifact_consistency(test_dir, page_texts=corrupted_pages)
 
 
 def test_s09f_r1_f1_textual_fidelity_joel_quotation():
-    """Verify S09F deliverables accurately distinguish LXX Joel 3:5 from Romans 10:13 without false verbatim claims."""
+    """Verify S09F deliverables distinguish primary texts (P01F/P03F) from Oliver's secondary claims."""
     repo_root = Path(__file__).resolve().parent.parent
     s09f_dir = repo_root / "research/inbox/B001-pauline-txt-pilot/sources/S09F"
 
@@ -4009,6 +4108,7 @@ def test_s09f_r1_f1_textual_fidelity_joel_quotation():
     arg_text = (s09f_dir / "argument_map.md").read_text(encoding="utf-8")
     cnt_text = (s09f_dir / "counterevidence.md").read_text(encoding="utf-8")
     aud_text = (s09f_dir / "notebooklm_self_audit.md").read_text(encoding="utf-8")
+    meta_text = (s09f_dir / "metadata.md").read_text(encoding="utf-8")
 
     # No assertions of verbatim quotation for Romans 10:13 / Joel 3:5
     for name, text in [("extraction.md", ext_text), ("argument_map.md", arg_text), ("counterevidence.md", cnt_text)]:
@@ -4019,6 +4119,16 @@ def test_s09f_r1_f1_textual_fidelity_joel_quotation():
     assert "καὶ ἔσται" in ext_text and "γάρ" in ext_text, "extraction.md must document omission of kai estai and addition of gar"
     assert "καὶ ἔσται" in cnt_text and "γάρ" in cnt_text, "counterevidence.md must document omission of kai estai and addition of gar"
     assert "καὶ ἔσται" in aud_text and "γάρ" in aud_text, "notebooklm_self_audit.md must document omission of kai estai and addition of gar"
+
+    # R2-F2 source fidelity and locator cleanliness
+    for name, text in [("metadata.md", meta_text), ("argument_map.md", arg_text), ("counterevidence.md", cnt_text)]:
+        for ui_tok in ("expand_more", "unfold_less", "keep_pin", "thumb_up", "\nThoughts\n"):
+            assert ui_tok not in text, f"{name} contains stale NotebookLM UI token {ui_tok!r}"
+
+    assert "implicates them in his own context" in ext_text
+    assert "4-3-2-1" in ext_text
+    assert "Project Primary-Text Note" in cnt_text and "P01F-P004" in cnt_text and "P03F-P003" in cnt_text
+    assert "Acts 2:17–21" in cnt_text and "Acts 2:21" not in cnt_text
 
 
 
